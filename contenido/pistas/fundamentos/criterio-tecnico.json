@@ -1,0 +1,188 @@
+{
+  "pista": "fundamentos",
+  "familia": "criterio-tecnico",
+  "preguntas": [
+    {
+      "id": "fund-criterio-tecnico-01",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "criterio-tecnico",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "senior",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "Heredas un módulo de código legado difícil de mantener. ¿Cómo decides si lo refactorizas de forma incremental o lo reescribes desde cero?",
+        "en": "You inherit a hard-to-maintain legacy module. How do you decide whether to refactor it incrementally or rewrite it from scratch?"
+      },
+      "rubrica": {
+        "junior": [
+          "Reconoce que reescribir todo desde cero tiene riesgos, no es la opción por defecto"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Cita el riesgo conocido de las reescrituras completas: perder comportamiento no documentado, el \"big rewrite\" que nunca termina",
+          "Prefiere justificar una estrategia incremental (por ejemplo, patrón strangler fig) salvo que el código esté realmente aislado y sea pequeño",
+          "Menciona cómo se ganaría confianza antes de tocar el módulo (characterization tests, métricas de uso real)"
+        ]
+      },
+      "respuestaModelo": "Por defecto prefiero refactorizar de forma incremental antes que reescribir desde cero, porque una reescritura completa arriesga perder comportamiento no documentado que los usuarios dependen de él sin saberlo, y ese tipo de proyectos tiende a alargarse indefinidamente mientras el sistema viejo sigue en producción. Antes de tocar nada, añadiría characterization tests que capturen el comportamiento actual, y miraría métricas de uso real para saber qué partes del módulo importan de verdad. Solo consideraría una reescritura completa si el módulo está realmente aislado, es pequeño, y el coste de entenderlo para refactorizarlo supera el de rehacerlo con las reglas de negocio ya claras.",
+      "etiquetas": ["criterio-tecnico", "legado"],
+      "fuentes": [
+        {
+          "url": "https://github.com/yangshun/tech-interview-handbook",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Tema recurrente de criterio senior citado de forma genérica; sin cita textual específica localizada durante la investigación."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "fund-criterio-tecnico-02",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "criterio-tecnico",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "senior",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "El negocio pide una feature nueva pero tú ves deuda técnica que la haría más frágil. ¿Cómo planteas la conversación?",
+        "en": "The business wants a new feature but you see technical debt that would make it fragile. How do you frame that conversation?"
+      },
+      "rubrica": {
+        "junior": [
+          "Reconoce que hay que comunicar el riesgo, no solo callarlo o negarse a hacer la feature"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Traduce la deuda técnica a impacto de negocio (riesgo, tiempo futuro, incidentes) en vez de jerga técnica",
+          "Propone alternativas concretas (hacerlo con el riesgo asumido y documentado, o invertir primero un tiempo acotado en la deuda)",
+          "No presenta la deuda técnica como un bloqueo absoluto sin negociación"
+        ]
+      },
+      "respuestaModelo": "Planteo la conversación en términos de impacto de negocio, no de jerga técnica: en vez de decir \"hay deuda técnica\", explico qué riesgo concreto trae (por ejemplo, \"con el estado actual, esta feature va a tardar el doble en el futuro cada vez que la toquemos, o hay más probabilidad de un incidente en producción\"). Doy opciones en vez de un bloqueo: hacerlo ahora asumiendo y documentando el riesgo, o invertir un tiempo acotado en resolver la deuda antes de construir encima, dejando que el negocio decida con la información completa. No presento la deuda técnica como un veto absoluto, porque casi siempre hay un balance razonable entre velocidad y salud del código.",
+      "etiquetas": ["criterio-tecnico", "deuda-tecnica"],
+      "fuentes": [
+        {
+          "url": "https://github.com/yangshun/tech-interview-handbook",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Tema clásico de entrevista de liderazgo técnico; sin cita textual específica localizada."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "fund-criterio-tecnico-03",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "criterio-tecnico",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "junior",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "Explica qué es una API a alguien que no tiene conocimientos técnicos, en menos de un minuto.",
+        "en": "Explain what an API is to someone with no technical background, in under a minute."
+      },
+      "rubrica": {
+        "junior": [
+          "Usa una analogía comprensible sin jerga técnica",
+          "La explicación cabe realmente en menos de un minuto (es corta y directa)"
+        ],
+        "senior": [
+          "Lo anterior",
+          "La analogía es propia y precisa, no genérica ni forzada",
+          "Comprueba que la persona entendió antes de dar por terminada la explicación",
+          "Evita simplificar tanto que la explicación se vuelve incorrecta"
+        ]
+      },
+      "respuestaModelo": "Una API es como la carta de un restaurante: tú no entras a la cocina a preparar el plato, pides algo del menú y el camarero te trae el resultado, sin que necesites saber cómo se cocina por dentro. Un programa hace lo mismo con otro programa: le pide algo concreto (\"dame el clima de Madrid\") sin necesitar saber cómo ese otro programa lo calcula por dentro, y recibe una respuesta con el formato acordado. Comprobaría que la analogía quedó clara preguntando si tiene sentido antes de dar la explicación por terminada.",
+      "etiquetas": ["criterio-tecnico", "comunicacion"],
+      "fuentes": [
+        {
+          "url": "https://coderslink.com/talento/blog/preguntas-esenciales-en-una-entrevista-de-programador/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen"
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "fund-criterio-tecnico-04",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "criterio-tecnico",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "junior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Te hacen una pregunta técnica en la entrevista y no sabes la respuesta. ¿Qué haces?",
+        "en": "You're asked a technical question in the interview and you don't know the answer. What do you do?"
+      },
+      "rubrica": {
+        "junior": [
+          "Admite honestamente que no lo sabe en vez de improvisar una respuesta inventada"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica cómo lo buscaría o verificaría en un caso real",
+          "Relaciona el concepto con algo cercano que sí conoce para mostrar razonamiento en vez de silencio total",
+          "Mantiene la calma y sigue participando en la conversación en vez de bloquearse"
+        ]
+      },
+      "respuestaModelo": "Admito que no lo sé, en vez de improvisar algo que suene bien pero sea incorrecto; un entrevistador nota la diferencia y prefiere honestidad. Si el concepto se parece a algo que sí conozco, lo digo en voz alta (\"no he trabajado con X directamente, pero por cómo funciona Y que sí conozco, imagino que...\"), porque eso muestra cómo razono aunque no tenga el dato exacto. Y explico cómo lo verificaría en un caso real: documentación oficial, código fuente, o preguntando a alguien del equipo con más experiencia en esa área, en vez de quedarme bloqueado.",
+      "etiquetas": ["criterio-tecnico", "entrevista"],
+      "fuentes": [
+        {
+          "url": "https://coderslink.com/talento/blog/preguntas-esenciales-en-una-entrevista-de-programador/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen"
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "fund-criterio-tecnico-05",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "criterio-tecnico",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "mid",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "Tienes que elegir entre dos librerías para resolver el mismo problema (por ejemplo, gestión de estado). ¿Qué criterios usas para decidir?",
+        "en": "You have to choose between two libraries that solve the same problem (e.g. state management). What criteria do you use to decide?"
+      },
+      "rubrica": {
+        "junior": ["Menciona al menos dos criterios objetivos (no solo preferencia personal)"],
+        "senior": [
+          "Lo anterior",
+          "Menciona mantenimiento activo y tamaño del bundle como criterios concretos",
+          "Menciona la curva de aprendizaje del equipo y la compatibilidad con el stack actual",
+          "Reconoce que la decisión correcta depende del contexto del equipo y del proyecto, no de una preferencia universal"
+        ]
+      },
+      "respuestaModelo": "Miro criterios objetivos antes que preferencia personal: si el proyecto tiene mantenimiento activo (commits y releases recientes, issues respondidos), el tamaño que añade al bundle, la curva de aprendizaje para el equipo actual, y qué tan bien encaja con el stack que ya usamos. También pesa la comunidad y documentación disponible, porque afecta cuánto tiempo se pierde resolviendo dudas. La decisión final depende del contexto: para un equipo pequeño con poco tiempo, la opción más simple de aprender puede ganar aunque la otra sea técnicamente más potente; no hay una respuesta universal, solo la que mejor encaja con las restricciones reales del proyecto.",
+      "etiquetas": ["criterio-tecnico"],
+      "fuentes": [
+        {
+          "url": "https://github.com/yangshun/tech-interview-handbook",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Formato genérico de pregunta de criterio técnico citado en múltiples guías; sin fuente única textual localizada."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

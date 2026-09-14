@@ -1,0 +1,137 @@
+{
+  "pista": "typescript",
+  "familia": "narrowing",
+  "preguntas": [
+    {
+      "id": "ts-narrowing-01",
+      "version": 1,
+      "pista": "typescript",
+      "familia": "narrowing",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué es el \"narrowing\" (estrechamiento) de tipos en TypeScript? Da un ejemplo con `typeof` y otro con un discriminated union.",
+        "en": "What is type \"narrowing\" in TypeScript? Give an example with `typeof` and another with a discriminated union."
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que narrowing es reducir un tipo unión a uno más específico dentro de un `if`",
+          "Da un ejemplo con `typeof` distinguiendo `string` de `number`"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Da un ejemplo de narrowing con `instanceof` para distinguir clases",
+          "Da un ejemplo con un discriminated union y `switch` sobre el campo discriminante",
+          "Menciona que TypeScript hace este análisis de flujo automáticamente, sin necesitar castear manualmente"
+        ]
+      },
+      "respuestaModelo": "Narrowing es cuando TypeScript reduce automáticamente un tipo unión a uno más específico dentro de una rama de código, basándose en una comprobación en tiempo de ejecución. Con `typeof valor === 'string'`, dentro del `if` TypeScript sabe que `valor` es `string`, sin necesitar un cast manual. Con `instanceof`, `if (error instanceof RangoInvalidoError)` estrecha el tipo dentro del bloque a esa clase concreta. Con un discriminated union como `{ kind: 'circulo', radio: number } | { kind: 'cuadrado', lado: number }`, un `switch (forma.kind)` estrecha el tipo en cada `case` según el valor literal de `kind`, permitiendo acceder a `radio` o `lado` sin comprobación adicional dentro de cada rama. En todos los casos, el análisis de flujo de TypeScript hace el trabajo automáticamente a partir de la comprobación en tiempo de ejecución.",
+      "etiquetas": ["narrowing"],
+      "fuentes": [
+        {
+          "url": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html",
+          "fecha": "2026-09-14",
+          "tipo": "resumen"
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ts-narrowing-kata-discriminated-union",
+      "version": 1,
+      "pista": "typescript",
+      "familia": "narrowing",
+      "tipo": "kata",
+      "modos": ["kata"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué es un \"discriminated union\" (unión discriminada) en TypeScript? Modela una forma (`Circle`, `Rectangle`) con este patrón y una función `area(shape)` que use un `switch` exhaustivo.",
+        "en": "What is a \"discriminated union\" in TypeScript? Model a shape (`Circle`, `Rectangle`) using this pattern and an `area` function that uses an exhaustive `switch`."
+      },
+      "rubrica": {
+        "junior": [
+          "Pasa todos los casos de prueba",
+          "Usa una propiedad literal común (`kind`) para distinguir cada variante"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que la propiedad discriminante permite a TypeScript estrechar el tipo dentro de cada rama del `switch`",
+          "Menciona el patrón de \"exhaustiveness checking\" con una función `assertNever` en el `default`",
+          "Explica qué pasaría si se añade un tercer tipo (`Triangle`) sin actualizar `area`: el `default` con `assertNever` lo detectaría en compilación"
+        ]
+      },
+      "respuestaModelo": "Un discriminated union es una unión de varios tipos que comparten una propiedad literal común (el \"discriminante\", aquí `kind`) con un valor distinto en cada variante. Gracias a esa propiedad, TypeScript puede estrechar el tipo dentro de cada `case` de un `switch` sin necesitar un cast: dentro de `case 'circle'` sabe que la forma tiene `radius`, dentro de `case 'rectangle'` sabe que tiene `width` y `height`. El patrón de exhaustividad usa una función `assertNever(valor: never)` en el `default` del `switch`: si en el futuro se añade una tercera variante (`Triangle`) sin actualizar `area`, el compilador se queja en el `default` porque ese caso ya no sería `never`, avisando en tiempo de compilación de que falta manejarlo, en vez de descubrirlo en producción.",
+      "kata": {
+        "funcion": "area",
+        "codigoInicial": "type Shape =\n  | { kind: 'circle'; radius: number }\n  | { kind: 'rectangle'; width: number; height: number };\n\nfunction assertNever(valor: never): never {\n  throw new Error('Caso no manejado: ' + JSON.stringify(valor));\n}\n\nexport function area(shape: Shape): number {\n  switch (shape.kind) {\n    // tu código: un case por variante, y un default con assertNever\n    default:\n      return assertNever(shape as never);\n  }\n}\n",
+        "casos": [
+          {
+            "nombre": "área de un círculo de radio 2",
+            "entrada": [{ "kind": "circle", "radius": 2 }],
+            "esperado": 12.566370614359172
+          },
+          {
+            "nombre": "área de un rectángulo 3x4",
+            "entrada": [{ "kind": "rectangle", "width": 3, "height": 4 }],
+            "esperado": 12
+          },
+          {
+            "nombre": "área de un círculo de radio 1",
+            "entrada": [{ "kind": "circle", "radius": 1 }],
+            "esperado": 3.141592653589793
+          }
+        ],
+        "tiempoMin": 15,
+        "congelarAleatorio": false
+      },
+      "etiquetas": ["narrowing", "discriminated-union"],
+      "fuentes": [
+        {
+          "url": "https://www.lucaspaganini.com/academy/discriminated-unions-types-typescript-narrowing-4/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen"
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ts-narrowing-02",
+      "version": 1,
+      "pista": "typescript",
+      "familia": "narrowing",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "senior",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "¿Qué representa el tipo `never` en TypeScript? Da un ejemplo de uso en una función que siempre lanza una excepción y otro en un `switch` exhaustivo.",
+        "en": "What does the `never` type represent in TypeScript? Give an example in a function that always throws, and another in an exhaustive `switch`."
+      },
+      "rubrica": {
+        "junior": ["Explica que `never` representa un valor que nunca ocurre"],
+        "senior": [
+          "Lo anterior",
+          "Da el ejemplo de una función `function fallar(msg: string): never { throw new Error(msg) }`, que nunca retorna normalmente",
+          "Da el ejemplo del `default` de un `switch` exhaustivo, donde el valor restante debería ser `never` si se manejaron todos los casos",
+          "Distingue `never` de `void`: `void` es \"no devuelve nada útil pero retorna\", `never` es \"no retorna en absoluto\""
+        ]
+      },
+      "respuestaModelo": "`never` representa un valor que nunca puede ocurrir: el tipo de retorno de una función que nunca termina normalmente, porque siempre lanza una excepción o entra en un bucle infinito. `function fallar(msg: string): never { throw new Error(msg); }` tiene tipo de retorno `never` porque nunca llega a devolver nada. El otro uso clásico es en el `default` de un `switch` exhaustivo sobre un discriminated union: si se manejaron todos los casos posibles en los `case` anteriores, lo que llega al `default` debería tener tipo `never`, y pasarlo a una función `assertNever(valor: never)` hace que el compilador avise si en el futuro se añade una variante sin manejar. `never` es distinto de `void`: `void` significa \"la función retorna pero no devuelve nada útil\", mientras `never` significa \"la función no retorna en absoluto\".",
+      "etiquetas": ["narrowing"],
+      "fuentes": [
+        {
+          "url": "https://www.lucaspaganini.com/academy/discriminated-unions-types-typescript-narrowing-4/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen"
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

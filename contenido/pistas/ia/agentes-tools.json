@@ -1,0 +1,261 @@
+{
+  "pista": "ia",
+  "familia": "agentes-tools",
+  "preguntas": [
+    {
+      "id": "ia-agentes-tools-01",
+      "version": 1,
+      "pista": "ia",
+      "familia": "agentes-tools",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué es un agente de IA en el contexto de desarrollo de software?",
+        "en": "What is an AI \"agent\" in the context of software development?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que un agente decide de forma iterativa qué acciones tomar para cumplir un objetivo",
+          "Distingue un agente de dar una única respuesta a una única petición"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Menciona el bucle de llamar herramientas, leer resultados y decidir el siguiente paso",
+          "Da un ejemplo real de agente usado en desarrollo (Claude Code, un asistente que explora un repo)"
+        ]
+      },
+      "respuestaModelo": "Un agente de IA es un sistema donde un LLM decide de forma iterativa qué acciones tomar, llamar una herramienta, leer el resultado, decidir el siguiente paso, para cumplir un objetivo, en vez de limitarse a dar una única respuesta a una única petición. En desarrollo de software esto se ve, por ejemplo, en un asistente que puede explorar un repositorio, ejecutar tests, leer el resultado de esos tests y ajustar el código en base a lo que encontró, todo dentro de la misma tarea sin que el humano tenga que dar una instrucción nueva en cada paso.",
+      "etiquetas": ["agentes", "fundamentos"],
+      "fuentes": [
+        {
+          "url": "https://docs.anthropic.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Concepto estándar de la industria (Anthropic, OpenAI, terminología de agentes), según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-agentes-tools-02",
+      "version": 1,
+      "pista": "ia",
+      "familia": "agentes-tools",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué es function calling o tool use y para qué sirve?",
+        "en": "What is function calling / tool use and what is it for?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que el modelo genera una petición estructurada (nombre de función más argumentos)",
+          "Explica que la aplicación ejecuta la acción real y devuelve el resultado al modelo"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Da un ejemplo concreto (consultar una API, leer una base de datos)",
+          "Menciona que esto le permite al modelo razonar con información actualizada que no tenía en su entrenamiento"
+        ]
+      },
+      "respuestaModelo": "Function calling, o tool use, es la capacidad del modelo de, en vez de solo generar texto libre, generar una petición estructurada con el nombre de una función y sus argumentos, para que la aplicación ejecute una acción real, por ejemplo llamar a una API externa o consultar una base de datos, y le devuelva el resultado. Con eso el modelo puede seguir razonando con información actualizada o específica que nunca vio durante su entrenamiento, como el estado actual de un pedido o el precio de una acción en tiempo real, en vez de tener que inventarlo.",
+      "etiquetas": ["agentes", "tool-use"],
+      "fuentes": [
+        {
+          "url": "https://docs.anthropic.com/en/docs/agents-and-tools/tool-use/overview",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Documentación de tool use de Anthropic/OpenAI, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-agentes-tools-03",
+      "version": 1,
+      "pista": "ia",
+      "familia": "agentes-tools",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Explica el bucle básico de un agente tipo ReAct (razonar, actuar, observar).",
+        "en": "Explain the basic loop of a ReAct-style agent (reason-act-observe)."
+      },
+      "rubrica": {
+        "junior": [
+          "Describe las tres fases: razonar, actuar (ejecutar herramienta), observar el resultado"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que el ciclo se repite hasta que el modelo decide que tiene suficiente información",
+          "Menciona que el bucle necesita un límite (número de pasos, timeout) para no quedar atrapado"
+        ]
+      },
+      "respuestaModelo": "En un agente ReAct el modelo razona sobre cuál es el siguiente paso más útil, elige y ejecuta una herramienta, y observa el resultado que le devuelve esa herramienta antes de decidir el siguiente movimiento. El ciclo razonar-actuar-observar se repite tantas veces como haga falta hasta que el modelo considera que ya tiene suficiente información para responder o completar la tarea. Es imprescindible poner un límite explícito, un número máximo de iteraciones o un timeout, porque sin él un agente puede quedarse repitiendo el mismo patrón indefinidamente si no encuentra una salida clara.",
+      "etiquetas": ["agentes", "react"],
+      "fuentes": [
+        {
+          "url": "https://docs.anthropic.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Patrón ReAct estándar en la literatura de agentes de LLM, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-agentes-tools-04",
+      "version": 1,
+      "pista": "ia",
+      "familia": "agentes-tools",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "senior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué riesgos tiene dar a un agente de IA permisos de escritura, por ejemplo borrar archivos o ejecutar comandos?",
+        "en": "What are the risks of giving an AI agent write permissions (e.g. deleting files or running commands)?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que el modelo puede tomar acciones irreversibles por una interpretación incorrecta del contexto"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Menciona el principio de menor privilegio",
+          "Propone confirmación humana en acciones destructivas y sandboxing",
+          "Menciona el riesgo de instrucciones inyectadas que empujen al agente a actuar mal"
+        ]
+      },
+      "respuestaModelo": "El riesgo principal es que el modelo tome acciones irreversibles basándose en una interpretación incorrecta del contexto, o incluso en instrucciones inyectadas dentro de algo que está procesando, como un fichero o un resultado de herramienta con texto malicioso. Se mitiga con el principio de menor privilegio, dando al agente solo el acceso estrictamente necesario, exigiendo confirmación humana explícita antes de cualquier acción destructiva o difícil de revertir, ejecutando el agente en un entorno aislado (sandboxing), y fijando límites explícitos de qué rutas, comandos o recursos puede tocar en vez de confiar solo en que el modelo se comporte bien por defecto.",
+      "etiquetas": ["agentes", "seguridad"],
+      "fuentes": [
+        {
+          "url": "https://owasp.org/www-project-top-10-for-large-language-model-applications/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Síntesis propia sobre diseño seguro de agentes, coherente con OWASP Top 10 for LLM Applications, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-agentes-tools-05",
+      "version": 1,
+      "pista": "ia",
+      "familia": "agentes-tools",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué diferencia hay entre un agente autónomo y un asistente tipo Copilot que sugiere código?",
+        "en": "Difference between an autonomous agent and a Copilot-style assistant that suggests code."
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que el asistente tipo Copilot sugiere y el humano decide y aplica cada cambio",
+          "Explica que un agente autónomo puede encadenar pasos sin intervención en cada uno"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica por qué un agente autónomo exige más control y observabilidad",
+          "Da un ejemplo de cuándo conviene cada modelo de interacción"
+        ]
+      },
+      "respuestaModelo": "Un asistente tipo Copilot sugiere y el humano decide y aplica cada cambio de forma individual, así que el control queda en manos de la persona en todo momento. Un agente autónomo puede encadenar múltiples pasos, llamar varias herramientas seguidas, y ejecutar acciones sin que haya intervención humana en cada paso intermedio, lo que exige mucho más control y observabilidad, porque nadie está revisando cada decisión en el momento en que se toma. Copilot encaja bien para tareas cortas donde el humano quiere quedarse con el control fino; el agente autónomo encaja mejor para tareas largas y bien acotadas donde revisar cada paso sería demasiado lento.",
+      "etiquetas": ["agentes", "copilot"],
+      "fuentes": [
+        {
+          "url": "https://docs.anthropic.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Síntesis propia sobre categorías de herramientas de IA para desarrollo, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-agentes-tools-06",
+      "version": 1,
+      "pista": "ia",
+      "familia": "agentes-tools",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "senior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Cómo depurarías un agente que entra en un bucle repitiendo la misma llamada a herramienta?",
+        "en": "How would you debug an agent stuck in a loop repeating the same tool call?"
+      },
+      "rubrica": {
+        "junior": [
+          "Propone revisar los logs de razonamiento y de las observaciones que recibe el modelo"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Identifica que un error poco claro de la herramienta puede hacer que el modelo repita la misma acción",
+          "Propone añadir un límite duro de iteraciones",
+          "Propone mejorar el mensaje de error/resultado devuelto para que el modelo pueda cambiar de estrategia"
+        ]
+      },
+      "respuestaModelo": "Lo primero es revisar los logs del razonamiento del agente y de las observaciones que recibió tras cada llamada: muchas veces la causa es que la herramienta devuelve un error poco claro y el modelo interpreta que vale la pena repetir la misma acción esperando un resultado distinto. Como salvaguarda estructural conviene añadir un límite duro de iteraciones que corte el bucle aunque el modelo no se dé cuenta por sí solo. Y como arreglo de fondo, mejorar el mensaje de error o el resultado que recibe la herramienta para que sea lo bastante informativo como para que el modelo pueda cambiar de estrategia en vez de repetir ciegamente.",
+      "etiquetas": ["agentes", "debugging"],
+      "fuentes": [
+        {
+          "url": "https://docs.anthropic.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Síntesis propia basada en patrones de debugging de agentes, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-agentes-tools-07",
+      "version": 1,
+      "pista": "ia",
+      "familia": "agentes-tools",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "senior",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "¿Qué es un sistema multiagente y cuándo aporta frente a un único agente?",
+        "en": "What is a multi-agent system and when is it worth it over a single agent?"
+      },
+      "rubrica": {
+        "junior": ["Explica que varios agentes especializados se coordinan entre sí"],
+        "senior": [
+          "Lo anterior",
+          "Explica cuándo aporta valor: separación de responsabilidades o paralelismo",
+          "Reconoce el coste añadido de coordinación y por qué solo se justifica si un único agente no basta"
+        ]
+      },
+      "respuestaModelo": "Un sistema multiagente son varios agentes especializados, por ejemplo uno que planifica, otro que ejecuta y otro que revisa, coordinados entre sí para completar una tarea conjunta. Aporta valor cuando la tarea se beneficia claramente de separar responsabilidades, cada agente con su propio prompt y herramientas enfocadas, o de ejecutar partes en paralelo. Pero añade complejidad real de coordinación, más superficie de fallo y más coste, así que solo se justifica cuando un único agente bien diseñado, con buen prompting y buenas herramientas, demuestra no ser suficiente para la tarea; no es el punto de partida por defecto.",
+      "etiquetas": ["agentes", "multiagente"],
+      "fuentes": [
+        {
+          "url": "https://docs.anthropic.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Síntesis propia sobre arquitecturas de agentes, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

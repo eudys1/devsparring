@@ -1,0 +1,303 @@
+{
+  "pista": "ia",
+  "familia": "llm-fundamentos",
+  "preguntas": [
+    {
+      "id": "ia-llm-fundamentos-01",
+      "version": 1,
+      "pista": "ia",
+      "familia": "llm-fundamentos",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué es un LLM (Large Language Model) y cómo genera texto?",
+        "en": "What is an LLM and how does it generate text?"
+      },
+      "rubrica": {
+        "junior": [
+          "Define LLM como un modelo entrenado sobre grandes volúmenes de texto",
+          "Explica que genera texto token a token de forma autorregresiva",
+          "Menciona que predice el token más probable dado el contexto previo"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Relaciona la arquitectura transformer y el mecanismo de atención como base del modelo",
+          "Distingue entrenamiento (aprender patrones) de inferencia (generar en producción)"
+        ]
+      },
+      "respuestaModelo": "Un LLM es un modelo de lenguaje entrenado con una red transformer sobre enormes cantidades de texto, aprendiendo a estimar qué palabra (token) es más probable a continuación de un texto dado. En inferencia genera de forma autorregresiva: produce un token, lo añade al contexto y repite el proceso hasta terminar la respuesta. No entiende el mundo como una persona, sino que aprovecha patrones estadísticos del lenguaje observados durante el entrenamiento. Por eso puede sonar coherente sin estar necesariamente verificando ningún hecho.",
+      "etiquetas": ["fundamentos", "transformer"],
+      "fuentes": [
+        {
+          "url": "https://docs.anthropic.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Concepto estándar de la industria, ver documentación de modelos de Anthropic/OpenAI, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-llm-fundamentos-02",
+      "version": 1,
+      "pista": "ia",
+      "familia": "llm-fundamentos",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué es un token y por qué no equivale a una palabra?",
+        "en": "What is a token and why is it not the same as a word?"
+      },
+      "rubrica": {
+        "junior": [
+          "Define token como la unidad de texto que procesa el modelo",
+          "Explica que puede ser una palabra, parte de una palabra o un símbolo"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Menciona el algoritmo de tokenización (BPE u otro) que divide en subpalabras",
+          "Relaciona el número de tokens con el coste y con el límite de contexto"
+        ]
+      },
+      "respuestaModelo": "Un token es la unidad mínima de texto que el modelo procesa, generada por un tokenizador que suele usar un algoritmo tipo BPE para dividir el texto en subpalabras. Una palabra común puede ser un único token, pero una palabra larga, poco frecuente o en otro idioma puede partirse en varios. Esto importa en la práctica porque el precio de la API y el límite de la ventana de contexto se miden en tokens, no en palabras, así que un texto con muchas palabras raras consume más tokens de lo que parece a simple vista.",
+      "etiquetas": ["tokenizacion"],
+      "fuentes": [
+        {
+          "url": "https://docs.anthropic.com/en/api/messages",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Documentación de tokenización de proveedores de LLM (Anthropic/OpenAI), según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-llm-fundamentos-03",
+      "version": 1,
+      "pista": "ia",
+      "familia": "llm-fundamentos",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué es la ventana de contexto (context window) y qué pasa cuando se supera?",
+        "en": "What is the context window and what happens when it is exceeded?"
+      },
+      "rubrica": {
+        "junior": [
+          "Define ventana de contexto como el máximo de tokens (entrada más salida) por llamada",
+          "Menciona que al superarla la petición falla o se trunca"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica estrategias para gestionar historiales largos: resumir, recortar, usar RAG en vez de meter todo en el prompt",
+          "Comenta el trade-off entre ventanas grandes y coste/latencia"
+        ]
+      },
+      "respuestaModelo": "La ventana de contexto es el número máximo de tokens, sumando entrada y salida, que el modelo puede manejar en una sola llamada. Si se supera, la API devuelve un error o el sistema tiene que truncar el historial más antiguo antes de enviarlo. En una aplicación de chat con conversaciones largas esto obliga a decidir una estrategia: resumir el historial periódicamente, recortar los mensajes más viejos, o apoyarse en RAG para traer solo el contexto relevante en vez de arrastrar toda la conversación en cada llamada.",
+      "etiquetas": ["contexto"],
+      "fuentes": [
+        {
+          "url": "https://docs.anthropic.com/en/docs/build-with-claude/context-windows",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Documentación estándar de LLM APIs, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-llm-fundamentos-04",
+      "version": 1,
+      "pista": "ia",
+      "familia": "llm-fundamentos",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué es la temperatura en la generación de un LLM y cómo afecta al resultado?",
+        "en": "What is temperature in LLM generation and how does it affect output?"
+      },
+      "rubrica": {
+        "junior": [
+          "Define temperatura como el parámetro que controla la aleatoriedad del muestreo",
+          "Explica que temperatura baja da respuestas más deterministas y alta da más variedad"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Da un ejemplo de cuándo usar cada extremo (clasificación vs generación creativa)",
+          "Menciona el riesgo de incoherencia con temperatura alta"
+        ]
+      },
+      "respuestaModelo": "La temperatura reescala la distribución de probabilidad sobre el siguiente token antes de muestrear. Con temperatura cercana a cero el modelo casi siempre elige el token más probable, dando respuestas repetibles y predecibles, útil para clasificación o extracción de datos. Con temperatura alta se amplifican las opciones menos probables, lo que da más variedad y creatividad a cambio de más riesgo de respuestas incoherentes o poco fiables. La elección depende de la tarea: nunca conviene subir la temperatura en tareas donde se necesita exactitud.",
+      "etiquetas": ["sampling"],
+      "fuentes": [
+        {
+          "url": "https://docs.anthropic.com/en/api/messages",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Documentación de parámetros de sampling de APIs de LLM, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-llm-fundamentos-05",
+      "version": 1,
+      "pista": "ia",
+      "familia": "llm-fundamentos",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué diferencia hay entre top-p (nucleus sampling) y la temperatura?",
+        "en": "What is the difference between top-p (nucleus sampling) and temperature?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que la temperatura reescala toda la distribución de probabilidad",
+          "Explica que top-p restringe el muestreo al conjunto de tokens cuya probabilidad acumulada supera p"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Comenta que combinarlos añade dos fuentes de aleatoriedad y que muchos equipos fijan uno de los dos en producción",
+          "Da un ejemplo de cómo depuraría un comportamiento inesperado causado por ambos parámetros a la vez"
+        ]
+      },
+      "respuestaModelo": "La temperatura afecta a toda la distribución de probabilidad de los tokens candidatos, mientras que top-p recorta la cola: solo considera el conjunto más pequeño de tokens cuya probabilidad acumulada supera el valor p, descartando las opciones muy improbables antes de muestrear. En la práctica se pueden combinar, pero eso añade dos fuentes de aleatoriedad difíciles de razonar juntas, así que en producción es habitual fijar uno de los dos parámetros al valor por defecto y ajustar solo el otro para tener un comportamiento más predecible.",
+      "etiquetas": ["sampling"],
+      "fuentes": [
+        {
+          "url": "https://docs.anthropic.com/en/api/messages",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Documentación de parámetros de sampling, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-llm-fundamentos-06",
+      "version": 1,
+      "pista": "ia",
+      "familia": "llm-fundamentos",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "senior",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "¿Por qué un LLM puede dar respuestas distintas ante el mismo prompt aunque la temperatura sea 0?",
+        "en": "Why can an LLM give different answers to the same prompt even at temperature 0?"
+      },
+      "rubrica": {
+        "junior": [
+          "Reconoce que temperatura 0 reduce mucho la aleatoriedad pero no la elimina del todo"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que operaciones de punto flotante no asociativas en GPU y el batching dinámico pueden introducir variación",
+          "Menciona que los proveedores pueden actualizar la versión del modelo sin previo aviso salvo que se fije una versión exacta",
+          "Deja claro que no hay una única fuente que cuantifique el peso de cada causa"
+        ]
+      },
+      "respuestaModelo": "Aunque temperatura 0 hace que el modelo elija casi siempre el token más probable, no garantiza determinismo absoluto. El hardware de inferencia (operaciones de coma flotante no asociativas en GPU, el orden en que se agrupan las peticiones en un batch) puede introducir pequeñas variaciones numéricas que a veces cambian qué token gana el empate. A eso se suma que muchos proveedores actualizan silenciosamente la versión del modelo detrás de un alias, así que si no se fija una versión exacta, parte de la variación puede venir simplemente de estar hablando con un modelo distinto entre dos llamadas.",
+      "etiquetas": ["no-determinismo", "produccion"],
+      "fuentes": [
+        {
+          "url": "https://docs.anthropic.com/en/api/messages",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Discusión técnica habitual sobre no determinismo en inferencia de LLM; hipótesis parcial, no confirmado con una fuente única que lo cuantifique, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-llm-fundamentos-07",
+      "version": 1,
+      "pista": "ia",
+      "familia": "llm-fundamentos",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué es un modelo multimodal? Da un ejemplo de uso en una app web normal.",
+        "en": "What is a multimodal model? Give an example use in a regular web app."
+      },
+      "rubrica": {
+        "junior": [
+          "Define multimodal como un modelo que acepta y/o genera más de un tipo de dato",
+          "Da un ejemplo concreto de uso en una app (imagen, audio)"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Distingue entre modelos que solo aceptan varios tipos de entrada y los que también generan varios tipos de salida",
+          "Comenta una limitación práctica de usar visión en producción (coste, latencia, calidad variable de la imagen de entrada)"
+        ]
+      },
+      "respuestaModelo": "Un modelo multimodal acepta y/o genera más de un tipo de dato, por ejemplo texto e imagen, en vez de trabajar solo con texto. En una app web normal esto se traduce en casos como dejar que un usuario suba una captura de un formulario roto y pedirle al modelo que identifique el problema visual, o generar automáticamente texto alternativo para las imágenes que suben los usuarios. Conviene recordar que añadir imágenes al prompt suele subir el coste y la latencia frente a una llamada solo de texto, así que hay que medir si compensa antes de usarlo por defecto.",
+      "etiquetas": ["multimodal"],
+      "fuentes": [
+        {
+          "url": "https://docs.anthropic.com/en/docs/build-with-claude/vision",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Documentación de modelos multimodales de proveedores (Anthropic, OpenAI, Google), según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-llm-fundamentos-08",
+      "version": 1,
+      "pista": "ia",
+      "familia": "llm-fundamentos",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué diferencia hay entre un modelo base y un modelo instruct o afinado para chat?",
+        "en": "What is the difference between a base model and an instruct/chat-tuned model?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que el modelo base solo predice continuaciones de texto plausibles",
+          "Explica que el modelo instruct se afina para seguir instrucciones y mantener formato de conversación"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Menciona el proceso de post-entrenamiento (instruction tuning, RLHF o similar)",
+          "Comenta por qué el modelo instruct es más seguro y predecible como asistente de producto"
+        ]
+      },
+      "respuestaModelo": "El modelo base es el resultado del preentrenamiento: solo sabe continuar texto de forma plausible según lo que vio en su corpus, sin ningún concepto de seguir instrucciones ni de mantener un formato de conversación. El modelo instruct pasa por una fase adicional de afinado, típicamente instruction tuning y RLHF u otra técnica de alineación, para aprender a responder a peticiones concretas, mantener un rol de asistente y evitar salidas problemáticas. En un producto real casi siempre se usa el modelo instruct porque es el que da respuestas útiles y controlables desde la primera petición.",
+      "etiquetas": ["post-entrenamiento"],
+      "fuentes": [
+        {
+          "url": "https://docs.anthropic.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Documentación general de post-entrenamiento de LLM (RLHF/instruction tuning), según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

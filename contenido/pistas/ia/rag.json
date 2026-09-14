@@ -1,0 +1,262 @@
+{
+  "pista": "ia",
+  "familia": "rag",
+  "preguntas": [
+    {
+      "id": "ia-rag-01",
+      "version": 1,
+      "pista": "ia",
+      "familia": "rag",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué es RAG (Retrieval-Augmented Generation) y qué problema resuelve frente a usar solo el LLM?",
+        "en": "What is RAG and what problem does it solve versus just using the LLM?"
+      },
+      "rubrica": {
+        "junior": [
+          "Define RAG como combinar recuperación de información con generación",
+          "Explica que reduce la dependencia del conocimiento parametrico del modelo"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Menciona que permite usar datos propios o privados sin reentrenar el modelo",
+          "Relaciona RAG con la reducción de alucinaciones al anclar la respuesta en contexto real"
+        ]
+      },
+      "respuestaModelo": "RAG combina un paso de recuperación con la generación del LLM: en vez de confiar solo en lo que el modelo aprendió durante su entrenamiento, que puede estar desactualizado o no incluir datos privados de la empresa, se busca contexto relevante en una fuente externa y se inyecta en el prompt antes de generar la respuesta. Esto resuelve dos problemas a la vez: permite usar información propia sin reentrenar nada, y reduce la tasa de alucinaciones porque el modelo tiene datos concretos en los que apoyarse en vez de inventar a partir de patrones generales.",
+      "etiquetas": ["rag", "fundamentos"],
+      "fuentes": [
+        {
+          "url": "https://www.datacamp.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "DataCamp, Top 30 RAG Interview Questions and Answers for 2026, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-rag-02",
+      "version": 1,
+      "pista": "ia",
+      "familia": "rag",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Describe el pipeline completo de un sistema RAG.",
+        "en": "Describe the full pipeline of a RAG system."
+      },
+      "rubrica": {
+        "junior": [
+          "Menciona chunking, embedding e indexado de los documentos",
+          "Menciona que en tiempo de consulta se recupera contexto relevante y se pasa al LLM"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Incluye el paso de reranking antes de generar",
+          "Explica el orden completo con sus dependencias: chunk, embed, index, retrieve, rerank, generate"
+        ]
+      },
+      "respuestaModelo": "El pipeline empieza troceando los documentos fuente en fragmentos manejables (chunking), generando un embedding de cada fragmento y guardándolos en un vector store. En tiempo de consulta, la pregunta del usuario se convierte también en embedding, se recuperan los fragmentos más relevantes por similitud, opcionalmente se reordenan con un reranker más preciso, y finalmente esos fragmentos se pasan como contexto al LLM junto con la pregunta original para generar la respuesta final. Cada uno de esos pasos, chunk, embed, index, retrieve, rerank, generate, puede fallar por separado y conviene poder medirlos por separado.",
+      "etiquetas": ["rag", "pipeline"],
+      "fuentes": [
+        {
+          "url": "https://interviewbaba.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "interviewbaba.com / DataCamp, pipeline chunk, embed, index, retrieve, rerank, generate, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-rag-03",
+      "version": 1,
+      "pista": "ia",
+      "familia": "rag",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué problemas tiene un chunking mal hecho?",
+        "en": "What problems does bad chunking cause?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que chunks demasiado grandes diluyen la relevancia",
+          "Explica que chunks demasiado pequeños pierden contexto necesario"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Da un ejemplo de cortar a mitad de una idea o de una tabla y cómo rompe la coherencia recuperada",
+          "Propone una mitigación concreta (overlap entre chunks, respetar límites semánticos como párrafos)"
+        ]
+      },
+      "respuestaModelo": "Si los chunks son demasiado grandes, cada uno mezcla varios temas y el embedding resultante diluye la relevancia, así que la búsqueda trae fragmentos que solo tocan el tema por encima y desperdician espacio de contexto. Si son demasiado pequeños, se pierde el contexto que le daba sentido a la frase, por ejemplo una cifra sin el párrafo que explica a qué se refiere. Cortar justo a mitad de una idea o de una fila de una tabla es especialmente dañino porque el fragmento recuperado queda incompleto y el modelo puede rellenar el hueco inventando. Ayuda respetar límites semánticos naturales del documento (párrafos, secciones) y dejar cierto solapamiento entre chunks consecutivos.",
+      "etiquetas": ["rag", "chunking"],
+      "fuentes": [
+        {
+          "url": "https://www.igmguru.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Guías de entrevista RAG (igmGuru, cloudsoftsol.com), según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-rag-04",
+      "version": 1,
+      "pista": "ia",
+      "familia": "rag",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "senior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Cómo sabes si tu sistema RAG está fallando en producción?",
+        "en": "How do you know your RAG system is \"failing\" in production?"
+      },
+      "rubrica": {
+        "junior": [
+          "Menciona que hay que medir la calidad de las respuestas de alguna forma, no solo confiar visualmente"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Separa explícitamente la fase de recuperación (recall/precision de los chunks relevantes) de la fase de generación (fidelidad al contexto, tasa de alucinación)",
+          "Explica por qué sin esa separación no se sabe si el fallo es de búsqueda o del LLM ignorando el contexto",
+          "Propone cómo instrumentar cada fase (evals de recuperación, evals de fidelidad)"
+        ]
+      },
+      "respuestaModelo": "Hay que medir por separado la fase de recuperación y la de generación, porque son fallos distintos con soluciones distintas. En recuperación se mide si los chunks devueltos son realmente los relevantes para la pregunta, con métricas de recall y precisión sobre un set de preguntas de referencia. En generación se mide si la respuesta final es fiel al contexto recuperado, es decir, si el modelo usa lo que se le dio o inventa por encima. Sin esa separación, un fallo visible en producción, una respuesta mala, puede venir de cualquiera de las dos fases y se pierde tiempo intentando arreglar el paso equivocado.",
+      "etiquetas": ["rag", "evaluacion", "produccion"],
+      "fuentes": [
+        {
+          "url": "https://topgenaijobs.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Síntesis de guías de entrevista RAG orientadas a system design (topgenaijobs.com, assessarc.com), según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-rag-05",
+      "version": 1,
+      "pista": "ia",
+      "familia": "rag",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Cuándo NO usarías RAG?",
+        "en": "When would you NOT use RAG?"
+      },
+      "rubrica": {
+        "junior": [
+          "Da al menos un caso donde RAG no aporta (información que cabe entera en el prompt, latencia crítica)"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Menciona el caso de necesitar un estilo/formato muy específico y consistente, donde fine-tuning encaja mejor",
+          "Justifica cada caso con el trade-off de coste, latencia o consistencia frente a RAG"
+        ]
+      },
+      "respuestaModelo": "No conviene usar RAG cuando la información necesaria cabe entera en el prompt sin coste relevante, por ejemplo un documento corto que se puede pegar directamente. Tampoco aporta gran cosa cuando lo que se necesita es un estilo o formato muy específico y consistente en cada respuesta, algo que un fine-tuning suele lograr mejor que meter ejemplos en el contexto cada vez. Y en casos donde la latencia es crítica, añadir una búsqueda vectorial antes de generar puede no ser aceptable si el presupuesto de tiempo es muy ajustado; ahí conviene precalcular o simplificar el flujo.",
+      "etiquetas": ["rag", "trade-offs"],
+      "fuentes": [
+        {
+          "url": "https://docs.anthropic.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Síntesis propia a partir de comparativas RAG vs fine-tuning en guías 2026, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-rag-06",
+      "version": 1,
+      "pista": "ia",
+      "familia": "rag",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué es el reranking en un pipeline RAG y por qué se añade después de la búsqueda vectorial?",
+        "en": "What is reranking in a RAG pipeline and why is it added after vector search?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que la búsqueda vectorial inicial es rápida pero aproximada",
+          "Explica que el reranker reordena un número reducido de candidatos con más precisión"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Menciona que suele usarse un modelo más pesado tipo cross-encoder para el reranking",
+          "Explica por qué no se aplica ese modelo pesado a todo el índice directamente"
+        ]
+      },
+      "respuestaModelo": "La búsqueda vectorial inicial recorre el índice entero de forma rápida pero aproximada, así que trae un conjunto de candidatos razonablemente relevantes aunque no perfectamente ordenados. El reranker toma ese conjunto reducido, normalmente unas decenas de candidatos, y lo reordena con un modelo más pesado, a menudo un cross-encoder que compara la pregunta y cada candidato juntos en vez de comparar vectores sueltos. Aplicar ese modelo pesado a todo el índice sería demasiado caro, pero aplicarlo solo a los candidatos preseleccionados mejora bastante la relevancia final sin disparar el coste.",
+      "etiquetas": ["rag", "reranking"],
+      "fuentes": [
+        {
+          "url": "https://www.datacamp.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Guías de entrevista RAG (DataCamp), según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-rag-07",
+      "version": 1,
+      "pista": "ia",
+      "familia": "rag",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "senior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Cómo mantienes un vector store sincronizado con la fuente de verdad, por ejemplo una base de datos de productos que cambia cada día?",
+        "en": "How do you keep a vector store in sync with the source of truth (e.g. a product database that changes daily)?"
+      },
+      "rubrica": {
+        "junior": ["Propone algún mecanismo para actualizar el índice cuando cambian los datos"],
+        "senior": [
+          "Lo anterior",
+          "Describe un pipeline de indexación incremental (eventos de cambio o cron) que solo re-embebe lo modificado",
+          "Menciona metadatos de versión/timestamp para poder invalidar o purgar entradas obsoletas",
+          "Aclara que reindexar todo desde cero solo tiene sentido si el volumen lo permite"
+        ]
+      },
+      "respuestaModelo": "Lo habitual es montar un pipeline de indexación incremental disparado por eventos de cambio en la base de datos de origen o por un job periódico, que solo re-embebe y actualiza los registros que cambiaron en vez de reprocesar todo el catálogo. Cada entrada del índice lleva metadatos de versión o timestamp que permiten detectar y purgar entradas obsoletas cuando un producto se elimina o cambia de forma significativa. Reindexar todo desde cero es más simple de implementar, pero solo es viable si el volumen de datos y la frecuencia de cambio son lo bastante bajos como para que el coste y el tiempo de reindexado no afecten a la disponibilidad del sistema.",
+      "etiquetas": ["rag", "produccion", "sincronizacion"],
+      "fuentes": [
+        {
+          "url": "https://topgenaijobs.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Guías de entrevista RAG orientadas a producción (topgenaijobs.com), según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

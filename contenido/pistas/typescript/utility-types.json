@@ -1,0 +1,126 @@
+{
+  "pista": "typescript",
+  "familia": "utility-types",
+  "preguntas": [
+    {
+      "id": "ts-utility-types-kata-partial",
+      "version": 1,
+      "pista": "typescript",
+      "familia": "utility-types",
+      "tipo": "kata",
+      "modos": ["kata"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Explica qué hacen los utility types `Partial<T>`, `Pick<T, K>`, `Omit<T, K>` y `Record<K, V>`. Implementa `actualizarUsuario(usuario, cambios)`, donde `cambios` es un `Partial<Usuario>` que se fusiona sobre `usuario`.",
+        "en": "Explain what the utility types `Partial<T>`, `Pick<T, K>`, `Omit<T, K>` and `Record<K, V>` do. Implement `actualizarUsuario(usuario, cambios)`, where `cambios` is a `Partial<Usuario>` merged onto `usuario`."
+      },
+      "rubrica": {
+        "junior": [
+          "Pasa todos los casos de prueba",
+          "Explica `Partial<T>` como \"todas las propiedades de T, opcionales\""
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica `Pick<T, K>` (subconjunto de propiedades) y `Omit<T, K>` (todas menos las indicadas) con un ejemplo de construir un DTO a partir de una entidad",
+          "Explica `Record<K, V>` como forma de tipar un diccionario (`Record<string, number>`)",
+          "Explica por qué `Partial<Usuario>` es el tipo correcto para `cambios` (no todos los campos son obligatorios en una actualización parcial)"
+        ]
+      },
+      "respuestaModelo": "`Partial<T>` genera un tipo con todas las propiedades de `T` pero opcionales, ideal para un objeto de cambios parciales como en un formulario de edición. `Pick<T, K>` construye un tipo con solo un subconjunto de propiedades de `T` (por ejemplo `Pick<Usuario, 'id' | 'nombre'>` para un DTO reducido). `Omit<T, K>` hace lo contrario: todas las propiedades de `T` excepto las indicadas, útil para construir un DTO de creación que excluye el `id` autogenerado. `Record<K, V>` tipa un diccionario donde las claves son de tipo `K` y los valores de tipo `V`, como `Record<string, number>` para un mapa de conteos. `actualizarUsuario` usa `Partial<Usuario>` para `cambios` precisamente porque en una actualización no todos los campos son obligatorios, y fusiona con spread (`{...usuario, ...cambios}`) sobre el objeto original.",
+      "kata": {
+        "funcion": "actualizarUsuario",
+        "codigoInicial": "interface Usuario {\n  id: number;\n  nombre: string;\n  email: string;\n}\n\nexport function actualizarUsuario(usuario: Usuario, cambios: Partial<Usuario>): Usuario {\n  // tu código\n}\n",
+        "casos": [
+          {
+            "nombre": "actualiza solo el nombre",
+            "entrada": [
+              { "id": 1, "nombre": "Ana", "email": "ana@correo.com" },
+              { "nombre": "Ana María" }
+            ],
+            "esperado": { "id": 1, "nombre": "Ana María", "email": "ana@correo.com" }
+          },
+          {
+            "nombre": "sin cambios devuelve el usuario igual",
+            "entrada": [{ "id": 2, "nombre": "Luis", "email": "luis@correo.com" }, {}],
+            "esperado": { "id": 2, "nombre": "Luis", "email": "luis@correo.com" }
+          },
+          {
+            "nombre": "actualiza dos campos a la vez",
+            "entrada": [
+              { "id": 3, "nombre": "Eva", "email": "eva@correo.com" },
+              { "nombre": "Eva María", "email": "nuevo@correo.com" }
+            ],
+            "esperado": { "id": 3, "nombre": "Eva María", "email": "nuevo@correo.com" }
+          }
+        ],
+        "tiempoMin": 15,
+        "congelarAleatorio": false
+      },
+      "etiquetas": ["utility-types"],
+      "fuentes": [
+        {
+          "url": "https://github.com/typescript-cheatsheets/react",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Kata adaptada, no copiada literalmente."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ts-utility-types-kata-index-signature",
+      "version": 1,
+      "pista": "typescript",
+      "familia": "utility-types",
+      "tipo": "kata",
+      "modos": ["kata"],
+      "nivelMinimo": "mid",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "¿Qué es una \"index signature\" en TypeScript (`{ [clave: string]: number }`)? ¿En qué se diferencia de usar `Record<string, number>`? Implementa `contarPalabras(texto)` que devuelva un `Record<string, number>` con la frecuencia de cada palabra.",
+        "en": "What is an \"index signature\" in TypeScript (`{ [key: string]: number }`)? How does it differ from `Record<string, number>`? Implement `contarPalabras(texto)` returning a `Record<string, number>` with word frequencies."
+      },
+      "rubrica": {
+        "junior": [
+          "Pasa todos los casos de prueba",
+          "Explica que ambas formas tipan un objeto usado como diccionario"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que `Record<string, number>` es azúcar sintáctico sobre una index signature, más legible cuando la clave es simple",
+          "Explica que una index signature admite forma más específica (por ejemplo combinada con propiedades fijas conocidas), algo que `Record` no permite directamente",
+          "Comenta el manejo de mayúsculas/minúsculas y puntuación al contar palabras (normalización antes de contar)"
+        ]
+      },
+      "respuestaModelo": "Una index signature (`{ [clave: string]: number }`) declara que un objeto puede tener cualquier número de propiedades cuyo nombre es un string y cuyo valor es un número, sin conocer las claves concretas de antemano. `Record<string, number>` es azúcar sintáctico sobre exactamente ese mismo patrón, más legible para el caso simple de un diccionario homogéneo. La index signature es más flexible cuando se necesita combinarla con propiedades fijas conocidas además de las dinámicas, algo que `Record` no expresa directamente. `contarPalabras` normaliza el texto a minúsculas, lo separa en palabras, y va incrementando el contador de cada una en un objeto que actúa como diccionario tipado con `Record<string, number>`.",
+      "kata": {
+        "funcion": "contarPalabras",
+        "codigoInicial": "export function contarPalabras(texto: string): Record<string, number> {\n  // tu código\n}\n",
+        "casos": [
+          {
+            "nombre": "cuenta repeticiones simples",
+            "entrada": ["a b a c b a"],
+            "esperado": { "a": 3, "b": 2, "c": 1 }
+          },
+          { "nombre": "texto vacío da objeto vacío", "entrada": [""], "esperado": {} },
+          { "nombre": "una sola palabra", "entrada": ["hola"], "esperado": { "hola": 1 } }
+        ],
+        "tiempoMin": 15,
+        "congelarAleatorio": false
+      },
+      "etiquetas": ["utility-types"],
+      "fuentes": [
+        {
+          "url": "https://github.com/typescript-cheatsheets/react",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Extensión del tema de utility types documentado en el repo; kata redactada de cero."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

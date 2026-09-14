@@ -1,0 +1,220 @@
+{
+  "pista": "ia",
+  "familia": "evals-alucinaciones",
+  "preguntas": [
+    {
+      "id": "ia-evals-alucinaciones-01",
+      "version": 1,
+      "pista": "ia",
+      "familia": "evals-alucinaciones",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué es una alucinación en un LLM?",
+        "en": "What is a hallucination in an LLM?"
+      },
+      "rubrica": {
+        "junior": [
+          "Define alucinación como una respuesta que suena coherente pero es factualmente incorrecta o inventada"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Distingue alucinación de un simple error de sintaxis o formato",
+          "Da un ejemplo concreto (una cita inventada, una función que no existe en una librería)"
+        ]
+      },
+      "respuestaModelo": "Una alucinación es cuando el modelo genera una respuesta que suena coherente y segura pero es factualmente incorrecta o directamente inventada, sin base real en el contexto proporcionado ni en conocimiento verificable. Es distinto de un simple error de sintaxis: el texto puede estar perfectamente bien escrito y sonar convincente, ese es justamente el problema. Un ejemplo típico en desarrollo es un modelo que sugiere un método que no existe en una librería concreta, con una sintaxis plausible pero completamente inventada.",
+      "etiquetas": ["evals", "alucinaciones", "fundamentos"],
+      "fuentes": [
+        {
+          "url": "https://docs.anthropic.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Concepto estándar de la industria, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-evals-alucinaciones-02",
+      "version": 1,
+      "pista": "ia",
+      "familia": "evals-alucinaciones",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Por qué alucina un modelo si está entrenado para ser correcto?",
+        "en": "Why does a model hallucinate if it's \"trained to be correct\"?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que el modelo está optimizado para predecir texto plausible, no para verificar hechos"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que si no tiene la información o el contexto no la incluye, igual genera la continuación más probable",
+          "Relaciona esto con por qué el resultado puede ser gramaticalmente convincente pero incorrecto"
+        ]
+      },
+      "respuestaModelo": "El modelo está optimizado para predecir el texto más plausible dado el contexto, no para verificar hechos contra una fuente externa en tiempo real. Si no tiene la información necesaria, o esa información no está en el contexto que se le dio, el modelo igual genera la continuación estadísticamente más probable según lo que aprendió durante el entrenamiento, que puede sonar completamente correcta desde el punto de vista lingüístico y a la vez ser factualmente falsa. Esa es la raíz del problema: el modelo no distingue internamente entre 'sé esto con certeza' y 'esto suena a lo que se diría aquí'.",
+      "etiquetas": ["evals", "alucinaciones"],
+      "fuentes": [
+        {
+          "url": "https://docs.anthropic.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Síntesis propia sobre entrenamiento de LLM, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-evals-alucinaciones-03",
+      "version": 1,
+      "pista": "ia",
+      "familia": "evals-alucinaciones",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué es un eval en el contexto de aplicaciones con LLM y en qué se diferencia de un test unitario tradicional?",
+        "en": "What is an \"eval\" in the context of LLM applications and how is it different from a traditional unit test?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que un eval mide la calidad de las respuestas sobre un conjunto de casos representativos"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Menciona que a veces se usa una métrica o incluso otro LLM como juez",
+          "Explica por qué hace falta esto en vez de comparar una salida exacta esperada"
+        ]
+      },
+      "respuestaModelo": "Un eval mide la calidad de las respuestas de un sistema con LLM sobre un conjunto de casos representativos, a menudo con una métrica definida o incluso otro LLM haciendo de juez, en vez de comparar contra una única salida exacta esperada como haría un test unitario tradicional. Hace falta este enfoque distinto porque la salida de un LLM no es determinista ni tiene un único resultado correcto: dos respuestas con palabras distintas pueden ser igual de válidas, así que 'assert igual a X' no funciona como criterio, y en su lugar se necesita puntuar la calidad según criterios explícitos.",
+      "etiquetas": ["evals", "testing"],
+      "fuentes": [
+        {
+          "url": "https://docs.anthropic.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Síntesis propia sobre prácticas de evaluación de LLM apps, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-evals-alucinaciones-04",
+      "version": 1,
+      "pista": "ia",
+      "familia": "evals-alucinaciones",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "senior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué es usar LLM como juez (LLM-as-judge) para evaluar y qué limitaciones tiene?",
+        "en": "What is using an \"LLM as judge\" for evaluation and what are its limitations?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que se usa otro LLM (o el mismo con otro prompt) para puntuar la calidad de una respuesta"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que permite escalar evaluación sin revisión humana de cada caso",
+          "Menciona que hereda sesgos del modelo juez y puede ser inconsistente entre ejecuciones",
+          "Concluye que no sustituye una muestra de revisión humana periódica"
+        ]
+      },
+      "respuestaModelo": "LLM-as-judge consiste en usar otro LLM, a veces el mismo modelo con un prompt distinto, para puntuar la calidad de una respuesta según criterios definidos de antemano, en vez de que una persona revise cada caso a mano. Es útil porque permite escalar la evaluación a muchos más casos de los que un equipo humano podría revisar manualmente. Pero hereda los sesgos del modelo que hace de juez, puede ser inconsistente entre ejecuciones distintas del mismo caso, y por eso no sustituye una muestra de revisión humana periódica que sirva de referencia para validar que el juez automático sigue midiendo lo correcto.",
+      "etiquetas": ["evals", "llm-as-judge"],
+      "fuentes": [
+        {
+          "url": "https://docs.anthropic.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Síntesis propia sobre prácticas de evals de LLM apps, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-evals-alucinaciones-05",
+      "version": 1,
+      "pista": "ia",
+      "familia": "evals-alucinaciones",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Cómo reducirías la tasa de alucinaciones en un chatbot que responde sobre la documentación de tu producto?",
+        "en": "How would you reduce hallucination rate in a chatbot that answers about your product docs?"
+      },
+      "rubrica": {
+        "junior": ["Propone anclar las respuestas con RAG sobre la documentación real"],
+        "senior": [
+          "Lo anterior",
+          "Propone instruir al modelo a decir 'no lo sé' si el contexto no cubre la pregunta",
+          "Propone añadir citas/enlaces a la fuente para que sea verificable por el usuario"
+        ]
+      },
+      "respuestaModelo": "Primero ancharía las respuestas con RAG sobre la documentación real del producto, en vez de dejar que el modelo responda solo con lo que aprendió en su entrenamiento general. En el prompt instruiría explícitamente al modelo a decir que no lo sabe cuando el contexto recuperado no cubre la pregunta, en vez de rellenar el hueco con una respuesta plausible pero inventada. Y añadiría citas o enlaces a la fuente exacta de donde sale cada afirmación, para que el usuario pueda verificarla directamente y no dependa solo de confiar ciegamente en la respuesta.",
+      "etiquetas": ["evals", "alucinaciones", "rag"],
+      "fuentes": [
+        {
+          "url": "https://docs.anthropic.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Síntesis propia, coherente con prácticas de RAG, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-evals-alucinaciones-06",
+      "version": 1,
+      "pista": "ia",
+      "familia": "evals-alucinaciones",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "senior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Diseña, a grandes rasgos, un set de evaluación para un feature nuevo que usa un LLM antes de lanzarlo a producción.",
+        "en": "Sketch an evaluation set for a new LLM-powered feature before shipping it to production."
+      },
+      "rubrica": {
+        "junior": ["Menciona reunir casos reales o representativos, incluyendo casos límite"],
+        "senior": [
+          "Lo anterior",
+          "Define métricas claras: precisión del contenido, formato, coste, latencia, tasa de rechazo",
+          "Propone correr el eval en cada cambio de prompt o modelo como parte del pipeline",
+          "Propone mantener un subconjunto de revisión humana continua tras el lanzamiento"
+        ]
+      },
+      "respuestaModelo": "Empezaría reuniendo casos reales o representativos de la tarea, incluyendo casos límite y adversarios que intenten romper el feature, no solo los casos felices. Definiría métricas claras: precisión del contenido generado, adherencia al formato esperado, coste por llamada, latencia, y tasa de rechazo o de respuestas tipo 'no lo sé'. Ese eval se correría automáticamente en cada cambio de prompt o de modelo, como parte del pipeline, para detectar regresiones antes de desplegar. Y tras el lanzamiento mantendría un subconjunto de revisión humana continua sobre tráfico real, porque ningún eval offline captura todos los casos que aparecen en producción.",
+      "etiquetas": ["evals", "produccion"],
+      "fuentes": [
+        {
+          "url": "https://docs.anthropic.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Síntesis propia sobre prácticas de shipping de features con LLM, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

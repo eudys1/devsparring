@@ -1,0 +1,276 @@
+{
+  "pista": "arquitectura",
+  "familia": "razonamiento",
+  "preguntas": [
+    {
+      "id": "arq-razonamiento-paginacion-millon-filas",
+      "version": 1,
+      "pista": "arquitectura",
+      "familia": "razonamiento",
+      "tipo": "razonamiento",
+      "modos": ["verbal", "diseno"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Tienes que mostrar un listado de 1.000.000 de filas en el panel de admin sin que la base de datos ni el navegador sufran. Explica tu solución de extremo a extremo.",
+        "en": "You need to show a listing of 1,000,000 rows in the admin panel without straining the database or the browser. Explain your end-to-end solution."
+      },
+      "rubrica": {
+        "junior": [
+          "Propone paginar en el backend en vez de traer el millón de filas de golpe",
+          "Propone renderizar solo una página de filas en el frontend, no montar el millón de nodos DOM"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Usa paginación por keyset/cursor con índice compuesto en el backend, nunca OFFSET grande",
+          "En el frontend, renderiza solo la página actual, o usa virtualización si hace falta scroll continuo",
+          "Para 'ver el total', propone una cuenta aproximada (cache o estimación) en vez de un COUNT(*) exacto costoso en cada request"
+        ]
+      },
+      "respuestaModelo": "En el backend, paginación por keyset/cursor con un índice compuesto que siga el orden de la query, nunca traer el millón de filas ni hacer un `OFFSET` grande, cuyo coste crece con la página. En el frontend, renderizar solo una página de filas a la vez, o usar virtualización (`react-window`, `@tanstack/react-virtual`) si el diseño pide scroll continuo, en vez de montar un millón de nodos DOM que colgarían el navegador. Si el panel necesita mostrar 'de cuántas filas en total', conviene una cuenta aproximada (cacheada, o una estimación del planner de Postgres) en vez de un `COUNT(*)` exacto sobre la tabla completa en cada request, que es costoso y no aporta valor real para un admin.",
+      "etiquetas": ["arquitectura", "paginacion", "razonamiento"],
+      "fuentes": [
+        {
+          "url": "https://blog.sequinstream.com/keyset-cursors-not-offsets-for-postgres-pagination/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Síntesis de las fuentes de paginación keyset vs offset ya citadas en la pista de datos, aplicadas end-to-end a un caso de arquitectura."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "arq-razonamiento-subida-video-3gb",
+      "version": 1,
+      "pista": "arquitectura",
+      "familia": "razonamiento",
+      "tipo": "razonamiento",
+      "modos": ["verbal", "diseno"],
+      "nivelMinimo": "senior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Un usuario necesita subir un vídeo de 3GB desde el navegador. Diseña el flujo completo (frontend, backend, almacenamiento) para que no falle por timeout ni sature tu servidor.",
+        "en": "A user needs to upload a 3GB video from the browser. Design the full flow (frontend, backend, storage) so it doesn't fail on timeout or overload your server."
+      },
+      "rubrica": {
+        "junior": [
+          "Reconoce que el archivo no debería pasar por el servidor Node propio",
+          "Menciona subir a un almacenamiento de objetos tipo S3"
+        ],
+        "senior": [
+          "Lo anterior",
+          "El backend solo genera URLs pre-firmadas hacia el almacenamiento de objetos, por cada parte del multipart upload",
+          "El cliente sube los chunks directo al storage en paralelo, con reintento por parte",
+          "El backend confirma la subida completa (uniendo las partes) y solo entonces guarda la referencia en la base de datos",
+          "Menciona expiración corta de las URLs firmadas por seguridad"
+        ]
+      },
+      "respuestaModelo": "El archivo no debería pasar por el servidor Node propio, para no saturar su memoria ni su ancho de banda con un vídeo de 3GB. El backend solo genera URLs pre-firmadas hacia un almacenamiento de objetos (S3 o equivalente), una por cada parte de una subida multipart. El cliente sube los chunks directo al storage, en paralelo, con reintento individual por parte si alguna falla, sin volver a subir el archivo entero. Cuando todas las partes están subidas, el backend confirma la unión del multipart upload ante el storage y solo entonces guarda la referencia (URL, tamaño, metadata) en la base de datos. Las URLs firmadas deberían tener una expiración corta, para que no sirvan para nada útil si se filtran.",
+      "etiquetas": ["arquitectura", "uploads", "s3", "razonamiento"],
+      "fuentes": [
+        {
+          "url": "https://dev.to/traindex/multipart-upload-for-large-files-using-pre-signed-urls-aws-4hg4",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Síntesis de guías de subida multipart con presigned URLs; pregunta y explicación redactadas de nuevo."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "arq-razonamiento-autocompletado",
+      "version": 1,
+      "pista": "arquitectura",
+      "familia": "razonamiento",
+      "tipo": "razonamiento",
+      "modos": ["verbal", "diseno"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Diseña la búsqueda con autocompletado de un buscador de productos: qué pasa en cada tecla que pulsa el usuario, del frontend al backend.",
+        "en": "Design the search-with-autocomplete for a product search: what happens on every keystroke, from frontend to backend."
+      },
+      "rubrica": {
+        "junior": [
+          "Propone debounce en el input para no disparar una petición por cada tecla",
+          "Menciona usar un índice en el backend en vez de un LIKE sin índice sobre una tabla grande"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Ajusta el debounce a un rango razonable (~200-300ms)",
+          "Cancela peticiones en vuelo obsoletas, o ignora respuestas que llegan fuera de orden, para evitar la condición de carrera de una respuesta lenta pisando a la más reciente",
+          "Menciona cache local de resultados ya vistos",
+          "En el backend, elige un índice de prefijos o un motor de búsqueda dedicado (Postgres pg_trgm, Elasticsearch, Meilisearch) según la escala, en vez de LIKE '%texto%' sin índice"
+        ]
+      },
+      "respuestaModelo": "En el frontend, un debounce de unos 200-300ms en el input evita disparar una petición por cada tecla pulsada. Como pueden quedar varias peticiones en vuelo a la vez, hace falta cancelar las obsoletas (con `AbortController`) o al menos ignorar las respuestas que lleguen fuera de orden, para que una respuesta lenta de una búsqueda antigua no pise a la más reciente en pantalla. Una cache local de resultados ya vistos evita repetir peticiones si el usuario borra y vuelve a escribir lo mismo. En el backend, buscar con `LIKE '%texto%'` sin índice sobre una tabla grande es lento porque no puede usar un índice B-tree normal; según la escala conviene un índice de prefijos con `pg_trgm` en Postgres, o un motor de búsqueda dedicado como Elasticsearch o Meilisearch si el volumen y la latencia lo justifican.",
+      "etiquetas": ["arquitectura", "autocompletado", "debounce", "razonamiento"],
+      "fuentes": [
+        {
+          "url": "https://www.greatfrontend.com/questions/system-design/autocomplete",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Contenido de producto comercial parcialmente de pago; pregunta y explicación redactadas de nuevo a partir del tema."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "arq-razonamiento-doble-cobro-checkout",
+      "version": 1,
+      "pista": "arquitectura",
+      "familia": "razonamiento",
+      "tipo": "razonamiento",
+      "modos": ["verbal", "diseno"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Un formulario de checkout permite hacer doble clic en 'Pagar' por accidente, o el usuario reintenta tras un timeout de red. ¿Cómo evitas cobrar dos veces?",
+        "en": "A checkout form lets users accidentally double-click 'Pay' (or a user retries after a network timeout). How do you avoid charging twice?"
+      },
+      "rubrica": {
+        "junior": [
+          "Propone deshabilitar el botón de pago tras el primer clic",
+          "Reconoce que eso solo no es suficiente si el usuario recarga la página"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Identifica que deshabilitar el botón es solo defensa de UX, no protección real",
+          "Describe la protección real: una Idempotency-Key generada por el cliente, enviada al backend, que guarda el resultado del primer intento",
+          "Explica que ante reintentos con la misma key el backend responde igual sin volver a cobrar",
+          "Menciona el fallo del enfoque solo-UX: si el usuario recarga la página y reenvía el formulario, el botón deshabilitado ya no protege nada"
+        ]
+      },
+      "respuestaModelo": "Deshabilitar el botón tras el primer clic es una defensa de UX razonable pero no es protección real: si el usuario recarga la página y reenvía el formulario, el botón vuelve a estar habilitado y la protección desaparece. La protección real es una `Idempotency-Key` generada por el cliente (un UUID por intento de pago) y enviada en la petición; el backend la guarda junto al resultado del primer intento, y si llega un reintento con la misma key (por doble clic o por un reintento tras timeout), responde con el mismo resultado ya guardado sin volver a ejecutar el cobro. Este es exactamente el mismo patrón de idempotencia que protege cualquier endpoint de pago independientemente del origen del reintento.",
+      "etiquetas": ["arquitectura", "idempotencia", "pagos", "razonamiento"],
+      "fuentes": [
+        {
+          "url": "https://zuplo.com/learning-center/implementing-idempotency-keys-in-rest-apis-a-complete-guide",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Mismo patrón de idempotencia citado en la pregunta de arq-apis-02, aplicado al caso concreto de doble clic en checkout."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "arq-razonamiento-feed-tiempo-real",
+      "version": 1,
+      "pista": "arquitectura",
+      "familia": "razonamiento",
+      "tipo": "razonamiento",
+      "modos": ["verbal", "diseno"],
+      "nivelMinimo": "senior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Tu feed necesita mostrar '5 nuevos posts' en tiempo real sin que el usuario recargue. ¿WebSockets, Server-Sent Events o polling? Justifica.",
+        "en": "Your feed needs to show '5 new posts' in real time without the user reloading. WebSockets, Server-Sent Events, or polling? Justify."
+      },
+      "rubrica": {
+        "junior": [
+          "Identifica que el caso es unidireccional (servidor a cliente), no bidireccional",
+          "Menciona al menos dos de las tres opciones con una diferencia básica"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Elige SSE para este caso unidireccional simple, más simple que WebSockets, con reconexión automática nativa sobre HTTP normal",
+          "Explica que WebSockets se justifican solo si el cliente también necesita enviar datos en tiempo real (chat, colaboración)",
+          "Reconoce que polling es la opción más simple y a veces suficiente si la 'tiempo real' no es crítica, a costa de latencia y carga innecesaria"
+        ]
+      },
+      "respuestaModelo": "Para un caso unidireccional simple, el servidor avisando al cliente de 'hay contenido nuevo', Server-Sent Events es más simple que WebSockets: funciona sobre HTTP normal, trae reconexión automática nativa en el navegador, y no exige mantener sockets bidireccionales que aquí no se necesitan. WebSockets se justifican cuando además el cliente necesita enviar datos en tiempo real hacia el servidor, como en un chat o una herramienta colaborativa; usarlos solo para notificar 'hay posts nuevos' es más infraestructura de la que hace falta. Polling (consultar cada N segundos) es la opción más simple de implementar y a veces suficiente si la inmediatez no es crítica, a costa de más latencia percibida y carga innecesaria en el servidor cuando no hay nada nuevo.",
+      "etiquetas": ["arquitectura", "tiempo-real", "sse", "websockets", "razonamiento"],
+      "fuentes": [
+        {
+          "url": "https://engineeringenablement.substack.com/p/how-i-would-design-a-real-time-chat-application",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Conocimiento consolidado sobre comparativa de mecanismos de tiempo real, contrastado con guías de diseño de chat/feed ya citadas."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "arq-razonamiento-export-csv-200k",
+      "version": 1,
+      "pista": "arquitectura",
+      "familia": "razonamiento",
+      "tipo": "razonamiento",
+      "modos": ["verbal", "diseno"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Tienes que exportar un reporte de 200.000 filas a CSV desde un botón de la interfaz. ¿Lo generas síncronamente en el request o de otra forma? Explica.",
+        "en": "You need to export a 200,000-row report to CSV from a button in the UI. Do you generate it synchronously in the request, or some other way? Explain."
+      },
+      "rubrica": {
+        "junior": [
+          "Reconoce que generar 200.000 filas dentro del mismo request bloquea al servidor mucho tiempo",
+          "Propone alguna alternativa asíncrona (cola, notificación cuando esté listo)"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica la opción de cola de trabajo: generar el CSV en background y avisar al usuario cuando esté listo",
+          "Explica la alternativa de streaming de la respuesta con backpressure en vez de construir el CSV entero en memoria",
+          "Justifica por qué nunca bloquear el request-response principal con un trabajo de minutos: satura el pool de conexiones/hilos disponible para otras peticiones"
+        ]
+      },
+      "respuestaModelo": "Para un volumen de 200.000 filas, generar el CSV de forma síncrona dentro del mismo request es arriesgado: puede tardar varios segundos o minutos, y mientras tanto ocupa una conexión/hilo del servidor que debería estar disponible para otras peticiones. Hay dos alternativas razonables: generar el CSV de forma asíncrona en una cola de trabajo y avisar al usuario cuando esté listo (por email, notificación en la UI, o un endpoint que consulta el estado), o hacer streaming de la respuesta con backpressure, escribiendo filas al stream HTTP a medida que se leen de la base de datos, en vez de construir el CSV entero en memoria antes de enviarlo. La clave es nunca bloquear el request-response del servidor web principal con un trabajo que puede tardar minutos.",
+      "etiquetas": ["arquitectura", "exportacion", "streaming", "razonamiento"],
+      "fuentes": [
+        {
+          "url": "https://github.com/goldbergyoni/nodebestpractices",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Síntesis propia basada en patrones de streams de Node documentados en nodebestpractices (CC BY-SA 4.0); pregunta redactada de nuevo."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "arq-razonamiento-catalogo-carga-rapida",
+      "version": 1,
+      "pista": "arquitectura",
+      "familia": "razonamiento",
+      "tipo": "razonamiento",
+      "modos": ["verbal", "diseno"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Un cliente pide 'que la web cargue instantánea' en un catálogo de productos con imágenes pesadas. Prioriza 3 acciones concretas y explica el porqué de ese orden.",
+        "en": "A client asks for 'instant loading' on a product catalog with heavy images. Prioritize 3 concrete actions and explain why in that order."
+      },
+      "rubrica": {
+        "junior": [
+          "Propone optimizar las imágenes como primera acción",
+          "Da al menos una segunda acción razonable (reducir JS, reservar espacio de imágenes)"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Prioriza por impacto medible: LCP primero, porque suele ser la imagen principal (formato, tamaño, componente de imagen optimizada)",
+          "Sigue con lo que bloquea interactividad: JS innecesario en el critical path",
+          "Cierra con CLS: reservar espacio de imágenes para evitar saltos visuales",
+          "Rechaza optimizar a ciegas sin medir antes con datos reales de campo (CrUX/RUM), no solo un test de laboratorio"
+        ]
+      },
+      "respuestaModelo": "El orden se decide por impacto medible en Core Web Vitals, no por intuición. Primero, LCP: en un catálogo con imágenes pesadas, la imagen principal suele ser el elemento más grande visible, así que optimizar su formato (WebP/AVIF), tamaño servido y prioridad de carga es lo que más mueve la métrica. Segundo, lo que bloquea la interactividad: JavaScript innecesario en el critical path que retrasa que la página responda a la primera interacción del usuario. Tercero, CLS: reservar el espacio de las imágenes con dimensiones explícitas para que no salten el layout mientras cargan. Antes de declarar la tarea terminada, conviene medir con datos reales de campo (CrUX o RUM propio) y no solo con un test de laboratorio, porque el rendimiento percibido por usuarios reales puede diferir bastante de un entorno controlado.",
+      "etiquetas": ["arquitectura", "rendimiento", "core-web-vitals", "razonamiento"],
+      "fuentes": [
+        {
+          "url": "https://www.corewebvitals.io/core-web-vitals",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Síntesis de guías de Core Web Vitals 2026; pregunta y explicación redactadas de nuevo."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

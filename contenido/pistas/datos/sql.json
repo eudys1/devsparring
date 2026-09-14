@@ -1,0 +1,199 @@
+{
+  "pista": "datos",
+  "familia": "sql",
+  "preguntas": [
+    {
+      "id": "datos-sql-01",
+      "version": 1,
+      "pista": "datos",
+      "familia": "sql",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Explícame los tipos de JOIN (INNER, LEFT, RIGHT, FULL OUTER) y pon un ejemplo de cuándo usarías cada uno.",
+        "en": "Explain the types of JOIN (INNER, LEFT, RIGHT, FULL OUTER) with an example of when you'd use each."
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que INNER JOIN solo devuelve filas con coincidencia en ambas tablas",
+          "Explica que LEFT JOIN devuelve todas las filas de la izquierda aunque no haya coincidencia, con NULL en las columnas de la derecha"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Da un ejemplo de negocio concreto para cada tipo (todos los usuarios con sus pedidos si tienen, frente a solo usuarios que sí compraron)",
+          "Explica RIGHT JOIN como el LEFT JOIN invertido y por qué casi nadie lo usa en la práctica (se prefiere reescribir como LEFT JOIN cambiando el orden de las tablas)",
+          "Explica qué pasa con las columnas sin match en un FULL OUTER JOIN y cuándo tiene sentido usarlo"
+        ]
+      },
+      "respuestaModelo": "`INNER JOIN` solo trae filas que tienen coincidencia en ambas tablas. `LEFT JOIN` trae todas las filas de la tabla izquierda aunque no haya coincidencia en la derecha, rellenando con NULL. `RIGHT JOIN` es el espejo del LEFT pero casi nadie lo usa, se prefiere reescribir como LEFT cambiando el orden. `FULL OUTER JOIN` combina ambos lados: trae todo, con NULL donde falte. Ejemplo típico: `usuarios LEFT JOIN pedidos` para ver todos los usuarios y sus pedidos si tienen, frente a `usuarios INNER JOIN pedidos` para quedarte solo con los que sí compraron.",
+      "etiquetas": ["sql", "joins"],
+      "fuentes": [
+        {
+          "url": "https://github.com/jaimin-bariya/Awesome-SQL-Interview",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Patrón muy recurrente en bancos de preguntas SQL; pregunta redactada de nuevo a partir del tema, sin copiar texto del repositorio."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "datos-sql-02",
+      "version": 1,
+      "pista": "datos",
+      "familia": "sql",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué diferencia hay entre WHERE y HAVING en una consulta con GROUP BY?",
+        "en": "What's the difference between WHERE and HAVING in a query with GROUP BY?"
+      },
+      "rubrica": {
+        "junior": [
+          "Dice que WHERE filtra filas antes de agrupar y no puede usar funciones de agregación",
+          "Dice que HAVING filtra grupos después de agregar"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Da un ejemplo concreto con HAVING COUNT(*) > 5 o similar",
+          "Explica que se pueden combinar en la misma query (WHERE reduce filas primero, HAVING filtra el resultado agregado después) y por qué eso es más eficiente que filtrar todo con HAVING"
+        ]
+      },
+      "respuestaModelo": "`WHERE` filtra filas individuales ANTES de que se agrupen, así que no puede usar funciones de agregación como `COUNT` o `SUM`. `HAVING` filtra los grupos DESPUÉS de calcular la agregación, por ejemplo `GROUP BY customer_id HAVING COUNT(*) > 5` para quedarte con clientes con más de 5 pedidos. Conviene usar `WHERE` para descartar filas cuanto antes (reduce el trabajo de agrupar) y reservar `HAVING` solo para condiciones que dependen del resultado agregado. Confundir los dos es un error clásico de sintaxis en entrevistas de nivel junior.",
+      "etiquetas": ["sql", "group-by"],
+      "fuentes": [
+        {
+          "url": "https://github.com/jaimin-bariya/Awesome-SQL-Interview",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Patrón muy recurrente en bancos de preguntas SQL; pregunta redactada de nuevo."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "datos-sql-03",
+      "version": 1,
+      "pista": "datos",
+      "familia": "sql",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Cuéntame de una query lenta que optimizaste en producción. ¿Cómo la encontraste y qué cambiaste exactamente?",
+        "en": "Tell me about a slow query you optimized in production. How did you find it and what exactly did you change?"
+      },
+      "rubrica": {
+        "junior": [
+          "Cuenta una situación concreta con contexto (qué tabla, qué endpoint o proceso afectaba)",
+          "Explica qué cambió (índice, reescritura de la query) aunque sea de forma general"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Usa evidencia real para localizar la query (slow query log, EXPLAIN ANALYZE, APM) en vez de adivinar",
+          "Explica el cambio concreto con detalle técnico (índice nuevo y por qué esas columnas, N+1 eliminado, desnormalización puntual)",
+          "Da el resultado medido en tiempo o carga, no solo 'ahora va más rápido'",
+          "Reflexiona sobre cómo evitaría que el problema volviera a aparecer (alertas, revisión de queries en PR)"
+        ]
+      },
+      "respuestaModelo": "Una respuesta que aprueba sigue el formato STAR: describe el síntoma (un endpoint lento, una tarea que empezó a tardar minutos), cómo lo localizó con evidencia real (slow query log de Postgres, `EXPLAIN ANALYZE`, o una traza de APM como Datadog/New Relic) en vez de suponer, y el cambio exacto que hizo: un índice compuesto nuevo, eliminar un N+1, reescribir un `OFFSET` grande por keyset pagination, o desnormalizar un campo calculado. Cierra con el resultado medido (de 3s a 80ms, de 500 a 20 queries) y qué puso en marcha para detectar regresiones similares antes de que lleguen a producción.",
+      "etiquetas": ["sql", "rendimiento", "comportamental"],
+      "fuentes": [
+        {
+          "url": "https://www.glassdoor.com/Interview/full-stack-developer-mid-interview-questions-SRCH_KO0,24.htm",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Patrón habitual de pregunta comportamental de datos en procesos fullstack."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "datos-sql-04",
+      "version": 1,
+      "pista": "datos",
+      "familia": "sql",
+      "tipo": "razonamiento",
+      "modos": ["verbal", "diseno"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Tienes las tablas `customers(id, name)`, `orders(id, customer_id, created_at, status)` y `order_items(id, order_id, product_id, quantity, unit_price)`. Escribe la consulta para los 5 clientes que más han gastado en pedidos completados en los últimos 30 días, incluyendo a los que no tienen pedidos (deben salir con 0, no desaparecer).",
+        "en": "You have tables `customers(id, name)`, `orders(id, customer_id, created_at, status)` and `order_items(id, order_id, product_id, quantity, unit_price)`. Write the query for the top 5 customers by spend on completed orders in the last 30 days, including customers with no orders (they should show 0, not disappear)."
+      },
+      "contexto": "```sql\n-- Tablas disponibles\ncustomers(id, name)\norders(id, customer_id, created_at, status)\norder_items(id, order_id, product_id, quantity, unit_price)\n```",
+      "rubrica": {
+        "junior": [
+          "Usa GROUP BY customer y SUM(quantity * unit_price) para calcular el gasto",
+          "Ordena por gasto descendente y limita a 5 filas"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Parte de un LEFT JOIN desde customers (no INNER JOIN) para no perder clientes sin pedidos en el periodo",
+          "Coloca el filtro de fecha y estado en la condición del ON (o en un subquery), no en el WHERE, para no convertir el LEFT JOIN en INNER JOIN",
+          "Usa COALESCE(SUM(...), 0) para que los clientes sin pedidos salgan con gasto 0",
+          "Explica qué índice ayudaría en una tabla orders grande (compuesto sobre customer_id y created_at, o created_at y status)"
+        ]
+      },
+      "respuestaModelo": "```sql\nSELECT\n  c.id,\n  c.name,\n  COALESCE(SUM(oi.quantity * oi.unit_price), 0) AS total_spent\nFROM customers c\nLEFT JOIN orders o\n  ON o.customer_id = c.id\n  AND o.status = 'completed'\n  AND o.created_at >= NOW() - INTERVAL '30 days'\nLEFT JOIN order_items oi ON oi.order_id = o.id\nGROUP BY c.id, c.name\nORDER BY total_spent DESC\nLIMIT 5;\n```\nLa clave es que el filtro de estado y fecha vive en la condición del `ON`, no en el `WHERE`: si se pusiera en `WHERE`, cualquier fila donde `o` es NULL (cliente sin pedidos en el periodo) se descartaría y el `LEFT JOIN` se comportaría como un `INNER JOIN`. Un índice compuesto `(customer_id, created_at)` o `(created_at, status)` en `orders` evita un escaneo completo cuando la tabla crece.",
+      "etiquetas": ["sql", "joins", "agregacion"],
+      "fuentes": [
+        {
+          "url": "https://github.com/jaimin-bariya/Awesome-SQL-Interview",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Ejercicio de agregación + JOIN reconstruido a partir de un patrón recurrente en bancos de preguntas SQL, no copiado de ningún test propietario."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "datos-sql-05",
+      "version": 1,
+      "pista": "datos",
+      "familia": "sql",
+      "tipo": "review",
+      "modos": ["review"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Revisa esta consulta de un reporte de gasto por cliente. ¿Qué problemas encuentras?",
+        "en": "Review this customer spend report query. What problems do you find?"
+      },
+      "contexto": "```sql\nSELECT\n  c.*,\n  SUM(oi.quantity * oi.unit_price) AS total_spent\nFROM customers c\nLEFT JOIN orders o ON o.customer_id = c.id\nLEFT JOIN order_items oi ON oi.order_id = o.id\nWHERE o.created_at >= NOW() - INTERVAL '30 days'\n  AND o.status = 'completed'\nGROUP BY c.id\nORDER BY total_spent DESC\nLIMIT 5;\n```",
+      "rubrica": {
+        "junior": [
+          "Detecta que el WHERE sobre columnas de orders anula el LEFT JOIN y descarta a los clientes sin pedidos",
+          "Detecta que SELECT c.* trae columnas innecesarias (y potencialmente sensibles)"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica cómo arreglarlo: mover el filtro de fecha y estado a la condición del ON, o filtrar en un subquery antes del JOIN",
+          "Señala la falta de un índice compuesto sobre orders (created_at, status) o (customer_id, created_at) para que la query no escanee la tabla entera al crecer",
+          "Propone seleccionar solo las columnas necesarias (id, name) en vez de c.*"
+        ]
+      },
+      "respuestaModelo": "Tres problemas: (1) el `WHERE o.created_at >= ... AND o.status = 'completed'` filtra sobre columnas del lado derecho del `LEFT JOIN`, así que cualquier fila con `o` NULL (cliente sin pedidos en el periodo) se descarta, convirtiendo de facto el `LEFT JOIN` en un `INNER JOIN`; el filtro debe ir en la condición del `ON`. (2) Sin un índice compuesto que cubra `created_at` y `status` en `orders`, esta query fuerza un escaneo completo en una tabla grande. (3) `SELECT c.*` trae todas las columnas de `customers`, incluidas posibles columnas sensibles futuras, cuando el reporte solo necesita `id` y `name`; además acopla el reporte a cualquier cambio de esquema en esa tabla.",
+      "etiquetas": ["sql", "joins", "review", "indices"],
+      "fuentes": [
+        {
+          "url": "https://github.com/jaimin-bariya/Awesome-SQL-Interview",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Fragmento escrito para esta investigación con errores típicos documentados en bancos de preguntas SQL sobre JOIN; no es copia de ningún ejercicio propietario."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

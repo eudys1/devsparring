@@ -1,0 +1,115 @@
+{
+  "pista": "web",
+  "familia": "autenticacion",
+  "preguntas": [
+    {
+      "id": "web-autenticacion-01",
+      "version": 1,
+      "pista": "web",
+      "familia": "autenticacion",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Compara JWT con sesiones basadas en cookies del lado del servidor. ¿Cuándo elegirías cada una?",
+        "en": "Compare JWT with server-side cookie sessions. When would you choose each?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que las sesiones en servidor son fáciles de revocar (borrar la fila/entrada)",
+          "Explica que JWT es autocontenido y sin estado, bueno para escalar horizontalmente"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica la dificultad de revocar un JWT antes de que expire sin una lista negra",
+          "Menciona que en ambos casos el token/cookie debe ir `httpOnly`, `Secure`, `SameSite`, nunca en `localStorage`"
+        ]
+      },
+      "respuestaModelo": "Una sesión guardada en el servidor (por ejemplo en Redis) es fácil de revocar al instante: basta con borrar esa entrada y el usuario queda deslogueado en la siguiente petición, pero requiere un almacenamiento compartido si hay varios servidores detrás de un balanceador. Un JWT es autocontenido y sin estado: el propio token lleva la información firmada, lo que facilita escalar horizontalmente y encaja bien en arquitecturas de microservicios donde no todos los servicios comparten la misma base de sesiones, pero a cambio es difícil de revocar antes de que expire sin mantener una lista negra, lo que reintroduce parte del estado que se quería evitar. En ambos casos, el token o el identificador de sesión debe viajar en una cookie `httpOnly`, `Secure` y con `SameSite` configurado, nunca en `localStorage`, porque una cookie `httpOnly` no es accesible desde JavaScript y reduce el impacto de un XSS.",
+      "etiquetas": ["autenticacion", "jwt", "sesiones"],
+      "fuentes": [
+        {
+          "url": "https://owasp.org/Top10/2025/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Patrón estándar de autenticación en entrevistas fullstack, contrastado con la categoría de fallos de autenticación del OWASP Top 10:2025."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "web-autenticacion-02",
+      "version": 1,
+      "pista": "web",
+      "familia": "autenticacion",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué es OAuth 2.0 y qué diferencia hay entre autenticación y autorización?",
+        "en": "What is OAuth 2.0 and what's the difference between authentication and authorization?"
+      },
+      "rubrica": {
+        "junior": [
+          "Distingue autenticación ('¿quién eres?') de autorización ('¿qué puedes hacer?')"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que OAuth 2.0 es un protocolo de AUTORIZACIÓN, que delega acceso a recursos sin compartir la contraseña",
+          "Distingue el rol de authorization server, resource server y client, y menciona que OpenID Connect añade la parte de autenticación encima de OAuth"
+        ]
+      },
+      "respuestaModelo": "Autenticación responde a '¿quién eres?': verificar la identidad de alguien. Autorización responde a '¿qué puedes hacer?': decidir qué recursos o acciones tiene permitidas esa identidad ya verificada. OAuth 2.0 es, estrictamente, un protocolo de autorización: permite que una aplicación acceda a recursos de un usuario en otro servicio sin que ese usuario tenga que compartir su contraseña con la aplicación, delegando el acceso mediante tokens con un alcance concreto. Define tres roles claros: el authorization server (quien emite los tokens tras verificar al usuario), el resource server (quien guarda el dato protegido y valida el token) y el client (la aplicación que quiere acceder). La parte de autenticación propiamente dicha, como en 'iniciar sesión con Google', la aporta OpenID Connect, una capa construida encima de OAuth 2.0 específicamente para identificar al usuario, no solo para autorizar acceso a recursos.",
+      "etiquetas": ["autenticacion", "oauth", "autorizacion"],
+      "fuentes": [
+        {
+          "url": "https://owasp.org/Top10/2025/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Conocimiento consolidado sobre RFC 6749, contrastado con la clasificación OWASP de fallos de control de acceso."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "web-autenticacion-03",
+      "version": 1,
+      "pista": "web",
+      "familia": "autenticacion",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué son las cookies `SameSite=Strict/Lax/None` y qué ataque previenen?",
+        "en": "What are `SameSite=Strict/Lax/None` cookies and what attack do they prevent?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que `SameSite` limita cuándo el navegador envía una cookie en peticiones cross-site"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Distingue `Strict` (nunca cross-site), `Lax` (navegación top-level GET, por defecto en navegadores modernos) y `None` (siempre, exige `Secure`)",
+          "Explica que mitiga CSRF porque un sitio malicioso ya no puede 'montarse' en la sesión autenticada de la víctima"
+        ]
+      },
+      "respuestaModelo": "El atributo `SameSite` de una cookie controla en qué peticiones el navegador la incluye automáticamente cuando el origen que hace la petición es distinto del origen que la emitió. `Strict` nunca la envía en peticiones cross-site, ni siquiera al navegar desde un enlace externo; `Lax`, el valor por defecto en navegadores modernos, la envía solo en navegación de nivel superior de tipo GET (como hacer clic en un enlace), pero no en peticiones disparadas por un formulario o script de otro sitio; `None` la envía siempre en cualquier contexto cross-site, pero exige además el atributo `Secure`. Esto mitiga CSRF (cross-site request forgery) porque un sitio malicioso que intente disparar una petición automática hacia la app legítima ya no consigue que el navegador adjunte la cookie de sesión de la víctima, rompiendo el ataque en el punto donde antes 'se montaba' sobre la sesión ya autenticada.",
+      "etiquetas": ["autenticacion", "cookies", "csrf"],
+      "fuentes": [
+        {
+          "url": "https://owasp.org/Top10/2025/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Referencia a CSRF como parte de control de acceso roto en el OWASP Top 10:2025."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

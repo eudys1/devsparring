@@ -1,0 +1,152 @@
+{
+  "pista": "fundamentos",
+  "familia": "concurrencia",
+  "preguntas": [
+    {
+      "id": "fund-concurrencia-01",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "concurrencia",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "JavaScript es de un solo hilo, entonces ¿cómo puede manejar operaciones asíncronas sin bloquear la interfaz?",
+        "en": "JavaScript is single-threaded, so how can it handle asynchronous operations without blocking the UI?"
+      },
+      "rubrica": {
+        "junior": [
+          "Reconoce que el hilo principal delega operaciones de I/O al entorno (navegador o Node)",
+          "Menciona la existencia del event loop de forma general"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que las callbacks/promesas vuelven a una cola de tareas, no se ejecutan de inmediato",
+          "Explica que el event loop las procesa cuando el call stack está vacío",
+          "Distingue que el entorno (navegador, libuv en Node) sí puede usar hilos internos aunque el JS que corre sea single-threaded"
+        ]
+      },
+      "respuestaModelo": "El motor de JavaScript ejecuta el código en un único hilo, pero delega las operaciones de I/O (peticiones de red, temporizadores, lectura de archivos) al entorno que lo rodea: el navegador o, en Node, libuv, que sí puede usar hilos internos para eso. Cuando esas operaciones terminan, su callback o la resolución de la promesa se coloca en una cola de tareas, y el event loop la ejecuta solo cuando el call stack del hilo principal está vacío. Así el hilo de JavaScript nunca se queda bloqueado esperando una respuesta de red: sigue procesando otro código mientras tanto.",
+      "etiquetas": ["concurrencia", "event-loop"],
+      "fuentes": [
+        {
+          "url": "https://github.com/h5bp/Front-end-Developer-Interview-Questions/blob/main/src/questions/javascript-questions.md",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Pregunta adaptada, no copiada literalmente."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    },
+    {
+      "id": "fund-concurrencia-02",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "concurrencia",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Da un ejemplo de condición de carrera (race condition) que puede ocurrir en el frontend, por ejemplo con peticiones fetch, y cómo la evitarías.",
+        "en": "Give an example of a race condition that can happen in the frontend, for example with fetch requests, and how you'd avoid it."
+      },
+      "rubrica": {
+        "junior": [
+          "Describe el caso clásico del autocompletado donde una respuesta vieja llega después que una más reciente",
+          "Propone alguna forma de descartar respuestas obsoletas"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Propone una solución concreta: un token/id de petición, `AbortController`, o quedarse solo con la última promesa",
+          "Explica por qué el orden de llegada de las respuestas no está garantizado aunque el orden de envío sí lo esté",
+          "Menciona un caso adicional distinto al autocompletado (doble clic en un botón de guardar, por ejemplo)"
+        ]
+      },
+      "respuestaModelo": "El caso clásico es un autocompletado de búsqueda: el usuario escribe rápido, se disparan varias peticiones fetch, y la respuesta de una petición antigua puede llegar después que la de una más reciente y pisar el resultado correcto en pantalla, porque el orden de llegada de las respuestas de red no está garantizado. Para evitarlo, guardo un identificador incremental de la última petición enviada y descarto cualquier respuesta que no corresponda a esa última petición, o cancelo la petición anterior con `AbortController` en cuanto se dispara una nueva. Un caso similar ocurre con un doble clic en un botón de guardar que dispara dos peticiones: ahí conviene deshabilitar el botón mientras la primera está en curso.",
+      "etiquetas": ["concurrencia", "asincronia"],
+      "fuentes": [
+        {
+          "url": "https://news.ycombinator.com/item?id=14667256",
+          "fecha": "2026-09-14",
+          "tipo": "leida"
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "fund-concurrencia-03",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "concurrencia",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "senior",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "Node.js corre en un solo hilo para el JavaScript, pero ¿cómo manejarías una tarea intensiva en CPU (por ejemplo, procesar un CSV enorme) sin bloquear el servidor?",
+        "en": "Node.js runs JavaScript on a single thread, so how would you handle a CPU-intensive task (e.g. processing a huge CSV) without blocking the server?"
+      },
+      "rubrica": {
+        "junior": [
+          "Reconoce que una tarea de CPU pesada en el hilo principal bloquea todas las demás peticiones"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Propone mover el trabajo a un `worker_thread` o a un proceso hijo (`child_process`)",
+          "Menciona como alternativa trocear el trabajo (chunking) con `setImmediate` o colas si no se puede usar un hilo separado",
+          "Explica el trade-off: mover a otro hilo/proceso añade complejidad de serialización de datos entre hilos"
+        ]
+      },
+      "respuestaModelo": "Un trabajo de CPU intensivo ejecutado directamente en el event loop bloquea todo el servidor: mientras se procesa el CSV, ninguna otra petición se atiende, aunque sea I/O. La solución habitual es mover ese trabajo a un `worker_thread`, que corre en un hilo separado con su propio event loop y se comunica con el principal mediante paso de mensajes, o a un `child_process` si el trabajo es más pesado aún y conviene aislarlo en otro proceso. Si no se puede usar un hilo separado, una alternativa es trocear el CSV en bloques y procesarlos con `setImmediate` entre bloque y bloque, cediendo el control al event loop periódicamente para no bloquearlo de una sola vez. El coste de mover a un worker es la serialización de datos al pasarlos entre hilos, que no es gratis para estructuras grandes.",
+      "etiquetas": ["concurrencia", "node"],
+      "fuentes": [
+        {
+          "url": "https://github.com/h5bp/Front-end-Developer-Interview-Questions/blob/main/src/questions/javascript-questions.md",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Pregunta base sobre event loop leída de primera mano; la extensión a Worker Threads es hipótesis razonada del informe, no verificada contra una fuente de entrevista específica."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "fund-concurrencia-04",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "concurrencia",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "Un test o una funcionalidad falla de forma intermitente (a veces pasa, a veces no) y sospechas que es un problema de asincronía. ¿Cómo lo depurarías?",
+        "en": "A test or feature fails intermittently (sometimes it passes, sometimes it doesn't) and you suspect it's an async issue. How would you debug it?"
+      },
+      "rubrica": {
+        "junior": ["Sospecha de una condición de carrera o de un `await` que falta"],
+        "senior": [
+          "Lo anterior",
+          "Propone reproducir el fallo de forma controlada, por ejemplo forzando delays artificiales",
+          "Propone ejecutar el test muchas veces en bucle para aumentar la probabilidad de reproducirlo",
+          "Evita \"arreglar a ciegas\" (añadir un `setTimeout` random) sin haber entendido la causa primero"
+        ]
+      },
+      "respuestaModelo": "Antes de tocar nada sospecho de una condición de carrera: un `await` que falta en algún punto, dos promesas cuyo orden de resolución no está garantizado, o un test que depende de un temporizador real. Para reproducirlo de forma controlada, ejecuto el test muchas veces en bucle (localmente o en CI con un flag de repetición) para aumentar la probabilidad de que falle, y si tengo una hipótesis de dónde está la carrera, fuerzo un delay artificial ahí para confirmar o descartar. Evito \"arreglar a ciegas\" añadiendo un `setTimeout` arbitrario para que el test pase, porque eso esconde el bug real y lo puede reintroducir en otro entorno con timing distinto.",
+      "etiquetas": ["concurrencia", "testing", "asincronia"],
+      "fuentes": [
+        {
+          "url": "https://news.ycombinator.com/item?id=14667256",
+          "fecha": "2026-09-14",
+          "tipo": "leida"
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

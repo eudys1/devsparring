@@ -1,0 +1,92 @@
+{
+  "pista": "javascript",
+  "familia": "closures",
+  "preguntas": [
+    {
+      "id": "js-closures-01",
+      "version": 1,
+      "pista": "javascript",
+      "familia": "closures",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué es un closure y para qué lo has usado?",
+        "en": "What is a closure and when have you used one?"
+      },
+      "rubrica": {
+        "junior": [
+          "Define closure como una función que conserva acceso al ámbito léxico donde se creó",
+          "Da un ejemplo concreto (un contador, un callback, una función que devuelve otra)"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica cómo se usa para encapsular estado privado y para módulos",
+          "Menciona el riesgo clásico de capturar la variable de un bucle con var y cómo lo evita let",
+          "Relaciona con fugas de memoria por referencias retenidas y con dependencias de hooks en React"
+        ]
+      },
+      "respuestaModelo": "Un closure es una función que recuerda las variables del ámbito donde se definió aunque se ejecute fuera de él. Un `crearContador()` que devuelve `() => ++n` es el ejemplo típico: `n` no es accesible desde fuera pero sigue viva. Sirve para estado privado, memoización y callbacks. El fallo clásico es `for (var i…)` con un `setTimeout`: todas las funciones ven el mismo `i`; con `let` cada iteración tiene su propio enlace. Un senior menciona que las referencias retenidas por closures pueden impedir liberar memoria y que en React una función capturada en un `useEffect` ve el estado del render en que se creó (stale closure).",
+      "etiquetas": ["scope", "memoria"],
+      "fuentes": [
+        {
+          "url": "https://github.com/lydiahallie/javascript-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Pregunta adaptada, no copiada."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    },
+    {
+      "id": "js-closures-kata-contador",
+      "version": 1,
+      "pista": "javascript",
+      "familia": "closures",
+      "tipo": "kata",
+      "modos": ["kata"],
+      "nivelMinimo": "junior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Implementa `crearContador(inicial)` que devuelva un objeto con `incrementar()`, `decrementar()` y `valor()`. El estado no debe ser accesible desde fuera.",
+        "en": "Implement `crearContador(initial)` returning an object with `incrementar()`, `decrementar()` and `valor()`. The state must not be reachable from outside."
+      },
+      "rubrica": {
+        "junior": [
+          "Pasa todos los casos de prueba",
+          "El estado vive en una variable capturada, no en una propiedad pública"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica por qué esto es un closure y qué alternativas hay (clase con campo privado #)",
+          "Comenta qué pasa si se crean dos contadores: cada uno tiene su propio estado"
+        ]
+      },
+      "respuestaModelo": "Una función externa guarda `let n = inicial` y devuelve tres funciones que la leen y modifican. Como `n` solo existe en ese ámbito, nadie puede tocarla desde fuera. Cada llamada a `crearContador` crea un ámbito nuevo, así que dos contadores son independientes.",
+      "kata": {
+        "funcion": "probarContador",
+        "codigoInicial": "// Implementa crearContador. La función probarContador la usa el runner:\n// recibe una lista de operaciones y devuelve el valor final.\nexport function crearContador(inicial: number) {\n  // tu código\n}\n\nexport function probarContador(inicial: number, operaciones: string[]): number {\n  const c = crearContador(inicial) as { incrementar(): void; decrementar(): void; valor(): number };\n  for (const op of operaciones) {\n    if (op === '+') c.incrementar();\n    if (op === '-') c.decrementar();\n  }\n  return c.valor();\n}\n",
+        "casos": [
+          { "nombre": "empieza en el valor inicial", "entrada": [5, []], "esperado": 5 },
+          { "nombre": "incrementa y decrementa", "entrada": [0, ["+", "+", "-"]], "esperado": 1 },
+          { "nombre": "admite negativos", "entrada": [0, ["-", "-"]], "esperado": -2 }
+        ],
+        "tiempoMin": 10,
+        "congelarAleatorio": false
+      },
+      "etiquetas": ["scope"],
+      "fuentes": [
+        {
+          "url": "https://github.com/yangshun/tech-interview-handbook",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Ejercicio clásico de closures."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

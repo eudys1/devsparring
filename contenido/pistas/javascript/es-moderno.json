@@ -1,0 +1,335 @@
+{
+  "pista": "javascript",
+  "familia": "es-moderno",
+  "preguntas": [
+    {
+      "id": "js-es-moderno-01",
+      "version": 1,
+      "pista": "javascript",
+      "familia": "es-moderno",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué hacen `?.` (optional chaining) y `??` (nullish coalescing)? ¿En qué se diferencia `??` de `||`?",
+        "en": "What do `?.` (optional chaining) and `??` (nullish coalescing) do? How does `??` differ from `||`?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que `?.` evita un error al acceder a una propiedad de algo que puede ser `null`/`undefined`",
+          "Explica que `??` da un valor por defecto cuando el original es `null`/`undefined`"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Distingue que `??` solo cae al valor por defecto si el original es `null` o `undefined`, mientras `||` cae con cualquier valor falsy",
+          "Cita el bug clásico de `cantidad || 10` cuando `cantidad` es `0`",
+          "Menciona que `?.` se puede encadenar con llamadas a función (`obj.metodo?.()`) y con acceso a arrays (`arr?.[0]`)"
+        ]
+      },
+      "respuestaModelo": "`?.` (optional chaining) accede a una propiedad, llama a un método, o indexa un array, devolviendo `undefined` en corto-circuito si el valor de la izquierda es `null` o `undefined`, en vez de lanzar `TypeError`. `??` (nullish coalescing) devuelve el operando derecho solo si el izquierdo es `null` o `undefined`, a diferencia de `||`, que cae al operando derecho ante cualquier valor falsy, incluidos `0`, `''` o `false`. El bug clásico es `cantidad || 10`: si `cantidad` vale `0` (un valor legítimo), la expresión da `10` en vez de `0`; `cantidad ?? 10` trata `0` como válido y solo cae al default si `cantidad` es `null` o `undefined`.",
+      "etiquetas": ["es-moderno"],
+      "fuentes": [
+        {
+          "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Nullish_coalescing",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Hipótesis basada en conocimiento general de la especificación ES2020, no verificada contra una fuente de entrevista específica en el informe original."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "js-es-moderno-02",
+      "version": 1,
+      "pista": "javascript",
+      "familia": "es-moderno",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "Nombra 3 características introducidas desde ES2020 en adelante que usas en tu día a día.",
+        "en": "Name 3 features introduced from ES2020 onward that you use day to day."
+      },
+      "rubrica": {
+        "junior": [
+          "Nombra correctamente al menos 2 features post-ES2020 (optional chaining, nullish coalescing, `Promise.allSettled`, `BigInt`, top-level await, `Array.at`)"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica brevemente qué problema resuelve cada una que menciona, no solo el nombre",
+          "Menciona al menos una feature menos conocida (top-level await, `structuredClone`, `Object.hasOwn`)",
+          "Distingue features del lenguaje (ECMAScript) de APIs del navegador/Node que a veces se confunden con ellas"
+        ]
+      },
+      "respuestaModelo": "Optional chaining (`?.`) y nullish coalescing (`??`), de ES2020, para acceder a propiedades anidadas de forma segura y dar valores por defecto sin el bug de `||` con `0`. `Promise.allSettled`, también de ES2020, para esperar varias promesas sin que el fallo de una cancele el resultado de las demás. Y top-level `await` en módulos ES (ES2022), que permite usar `await` fuera de una función `async` a nivel de módulo, útil para inicializar configuración asíncrona al cargar un módulo. `structuredClone` como API global (no parte del estándar ECMAScript en sí, pero disponible en navegadores y Node modernos) también se usa mucho para clones profundos sin librerías.",
+      "etiquetas": ["es-moderno"],
+      "fuentes": [
+        {
+          "url": "https://github.com/tc39/proposals/blob/main/finished-proposals.md",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Tema genérico de \"novedades del lenguaje\" sin cita textual de entrevista específica encontrada en el informe original."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "js-es-moderno-kata-destructuring-spread",
+      "version": 1,
+      "pista": "javascript",
+      "familia": "es-moderno",
+      "tipo": "kata",
+      "modos": ["kata"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Implementa `combinarConSpread(a, b)` que devuelva un nuevo array con todos los elementos de `a` seguidos de todos los de `b`, usando el operador spread (sin `concat`).",
+        "en": "Implement `combinarConSpread(a, b)` returning a new array with all elements of `a` followed by all of `b`, using the spread operator (no `concat`)."
+      },
+      "rubrica": {
+        "junior": [
+          "Pasa todos los casos de prueba usando spread",
+          "No muta ninguno de los dos arrays de entrada"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que el spread hace copia superficial, igual que `slice`/`concat`",
+          "Da un ejemplo de destructuring de objeto además del de array (aunque no se pida en el código) para mostrar que domina ambos",
+          "Comenta un caso donde el spread no basta (objetos anidados que hay que combinar profundamente)"
+        ]
+      },
+      "respuestaModelo": "`[...a, ...b]` expande los elementos de `a` y de `b` dentro de un array literal nuevo, sin mutar ninguno de los dos originales, resultado equivalente a `a.concat(b)` pero con una sintaxis más flexible que también sirve para insertar elementos sueltos en medio (`[...a, x, ...b]`). El spread hace copia superficial, igual que `slice`: si los elementos son objetos, las referencias internas se comparten entre el array combinado y los originales. Destructuring es la operación inversa: extraer valores de un array o de un objeto a variables sueltas, como `const [primero, ...resto] = arr` o `const { nombre, ...otros } = obj`. Para combinar objetos anidados de forma profunda, el spread superficial no basta y hace falta una fusión recursiva o una utilidad como `structuredClone` combinada con la lógica de merge.",
+      "kata": {
+        "funcion": "combinarConSpread",
+        "codigoInicial": "export function combinarConSpread<T>(a: T[], b: T[]): T[] {\n  // tu código: usa el operador spread\n}\n",
+        "casos": [
+          {
+            "nombre": "combina dos arrays de números",
+            "entrada": [
+              [1, 2],
+              [3, 4]
+            ],
+            "esperado": [1, 2, 3, 4]
+          },
+          {
+            "nombre": "el primer array vacío deja solo el segundo",
+            "entrada": [[], [1]],
+            "esperado": [1]
+          },
+          { "nombre": "ambos vacíos da array vacío", "entrada": [[], []], "esperado": [] }
+        ],
+        "tiempoMin": 10,
+        "congelarAleatorio": false
+      },
+      "etiquetas": ["es-moderno"],
+      "fuentes": [
+        {
+          "url": "https://github.com/h5bp/Front-end-Developer-Interview-Questions/blob/main/src/questions/javascript-questions.md",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Kata adaptada, no copiada literalmente."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    },
+    {
+      "id": "js-es-moderno-kata-tagged-template",
+      "version": 1,
+      "pista": "javascript",
+      "familia": "es-moderno",
+      "tipo": "kata",
+      "modos": ["kata"],
+      "nivelMinimo": "junior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Implementa `formatearMensaje(nombre, puntos)` que use un template literal etiquetado (tagged template) para envolver cada valor interpolado entre `**`, por ejemplo `\"Hola **Ana**, tienes **10** puntos\"`.",
+        "en": "Implement `formatearMensaje(nombre, puntos)` using a tagged template literal to wrap each interpolated value in `**`, e.g. `\"Hola **Ana**, tienes **10** puntos\"`."
+      },
+      "rubrica": {
+        "junior": [
+          "Pasa todos los casos de prueba",
+          "Usa una función etiquetada aplicada a un template literal, no concatenación manual"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que una tagged template recibe el array de strings literales y los valores interpolados por separado",
+          "Explica el orden: siempre hay un string literal más que valores interpolados (el primero y el último trozo)",
+          "Da un caso de uso real de tagged templates (sanitizar HTML, i18n, `styled-components`)"
+        ]
+      },
+      "respuestaModelo": "Una tagged template es una función que se coloca justo antes de un template literal (`miFuncion\\`texto ${valor}\\``) y recibe dos cosas: un array con los trozos de texto literal entre las interpolaciones, y los valores interpolados como argumentos sueltos. Siempre hay un string literal más que valores, porque el primer y el último trozo de texto rodean todas las interpolaciones. Aquí la función de etiqueta reconstruye el string uniendo cada trozo literal con su valor interpolado envuelto en `**`. Un caso de uso real de esta técnica es sanitizar HTML antes de insertarlo (escapando los valores interpolados automáticamente) o librerías como `styled-components`, que usan tagged templates para procesar CSS.",
+      "kata": {
+        "funcion": "formatearMensaje",
+        "codigoInicial": "function resaltar(strings: TemplateStringsArray, ...valores: unknown[]): string {\n  // tu código: reconstruye el string envolviendo cada valor en **\n  return '';\n}\n\nexport function formatearMensaje(nombre: string, puntos: number): string {\n  return resaltar`Hola ${nombre}, tienes ${puntos} puntos`;\n}\n",
+        "casos": [
+          {
+            "nombre": "resalta nombre y puntos",
+            "entrada": ["Ana", 10],
+            "esperado": "Hola **Ana**, tienes **10** puntos"
+          },
+          {
+            "nombre": "funciona con otro nombre y cero puntos",
+            "entrada": ["Luis", 0],
+            "esperado": "Hola **Luis**, tienes **0** puntos"
+          }
+        ],
+        "tiempoMin": 15,
+        "congelarAleatorio": false
+      },
+      "etiquetas": ["es-moderno", "strings"],
+      "fuentes": [
+        {
+          "url": "https://github.com/h5bp/Front-end-Developer-Interview-Questions/blob/main/src/questions/javascript-questions.md",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Kata adaptada, no copiada literalmente."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    },
+    {
+      "id": "js-es-moderno-kata-rest-parameters",
+      "version": 1,
+      "pista": "javascript",
+      "familia": "es-moderno",
+      "tipo": "kata",
+      "modos": ["kata"],
+      "nivelMinimo": "junior",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "Implementa `tipoDeResto(...args)` que devuelva el resultado de `typeof args` dentro de la función, para comprobar qué tipo de dato produce un rest parameter.",
+        "en": "Implement `tipoDeResto(...args)` returning the result of `typeof args` inside the function, to check what data type a rest parameter produces."
+      },
+      "rubrica": {
+        "junior": ["Pasa el caso de prueba (`typeof args === 'object'`)"],
+        "senior": [
+          "Lo anterior",
+          "Explica que un rest parameter agrupa el resto de argumentos en un array real, no en un objeto `arguments` como antes de ES6",
+          "Explica que `Array.isArray(args)` sería `true`, aunque `typeof` diga `'object'` (porque los arrays son objetos)",
+          "Compara brevemente con el objeto `arguments` clásico, que no tiene los métodos de array"
+        ]
+      },
+      "respuestaModelo": "`...args` en la firma de una función agrupa cualquier número de argumentos sobrantes en un array real. Por eso `typeof args` da `'object'`, igual que con cualquier array, aunque `Array.isArray(args)` confirmaría específicamente que es un array. Esto es una mejora frente al objeto `arguments` clásico disponible en funciones normales antes de los rest parameters: `arguments` se parece a un array pero no tiene sus métodos (`map`, `filter`, etc.) sin convertirlo antes, mientras que un rest parameter ya es un array de verdad, usable directamente con cualquier método de array.",
+      "kata": {
+        "funcion": "tipoDeResto",
+        "codigoInicial": "export function tipoDeResto(...args: unknown[]): string {\n  // tu código\n}\n",
+        "casos": [
+          {
+            "nombre": "el rest parameter es de tipo object",
+            "entrada": [1, 2, 3],
+            "esperado": "object"
+          },
+          {
+            "nombre": "sin argumentos también es object (array vacío)",
+            "entrada": [],
+            "esperado": "object"
+          }
+        ],
+        "tiempoMin": 10,
+        "congelarAleatorio": false
+      },
+      "etiquetas": ["es-moderno"],
+      "fuentes": [
+        {
+          "url": "https://github.com/lydiahallie/javascript-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Kata adaptada, no copiada literalmente."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    },
+    {
+      "id": "js-es-moderno-kata-generators",
+      "version": 1,
+      "pista": "javascript",
+      "familia": "es-moderno",
+      "tipo": "kata",
+      "modos": ["kata"],
+      "nivelMinimo": "senior",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "Escribe un generator `function* contador()` que genere una secuencia infinita de números empezando en 0, y una función `tomarN(n)` que devuelva los primeros `n` valores de esa secuencia usando el generator (sin bucles infinitos que no terminen).",
+        "en": "Write a `function* contador()` generator producing an infinite sequence of numbers starting at 0, and a `tomarN(n)` function returning the first `n` values from that sequence using the generator (no unterminated infinite loops)."
+      },
+      "rubrica": {
+        "junior": [
+          "Pasa todos los casos de prueba",
+          "El generator usa `yield` dentro de un bucle `while(true)`"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que un generator pausa su ejecución en cada `yield` y la retoma en la siguiente llamada a `.next()`",
+          "Explica por qué `tomarN` puede consumir una secuencia infinita sin colgarse: corta el bucle manualmente tras `n` valores",
+          "Da un caso de uso real de generators (iterar estructuras grandes de forma perezosa sin cargarlas enteras en memoria)"
+        ]
+      },
+      "respuestaModelo": "`function* contador()` es un generator: al llamarlo no ejecuta el cuerpo, devuelve un objeto iterador. Cada llamada a `.next()` ejecuta el cuerpo hasta el siguiente `yield`, devuelve ese valor, y pausa la ejecución ahí hasta la próxima llamada a `.next()`. Dentro de `contador` un `while (true) { yield i++; }` genera una secuencia infinita sin colgar el programa, porque no se ejecuta toda de una vez: solo avanza un paso por cada `.next()`. `tomarN(n)` crea el iterador con `contador()` y hace un bucle `for` que llama `.next()` exactamente `n` veces, cortando ahí, sin necesidad de que la secuencia termine por sí sola. El caso de uso real es recorrer una fuente de datos muy grande (o infinita, como un stream) de forma perezosa, consumiendo solo lo que hace falta sin cargarlo todo en memoria de golpe.",
+      "kata": {
+        "funcion": "tomarN",
+        "codigoInicial": "export function* contador(): Generator<number> {\n  // tu código: yield 0, 1, 2, 3... para siempre\n}\n\nexport function tomarN(n: number): number[] {\n  const resultado: number[] = [];\n  const iterador = contador();\n  // tu código: toma exactamente n valores del iterador y páralo ahí\n  return resultado;\n}\n",
+        "casos": [
+          { "nombre": "toma los primeros 5 valores", "entrada": [5], "esperado": [0, 1, 2, 3, 4] },
+          { "nombre": "cero valores devuelve array vacío", "entrada": [0], "esperado": [] },
+          { "nombre": "un solo valor", "entrada": [1], "esperado": [0] }
+        ],
+        "tiempoMin": 15,
+        "congelarAleatorio": false
+      },
+      "etiquetas": ["es-moderno", "iteradores"],
+      "fuentes": [
+        {
+          "url": "https://codesignal.com/blog/25-javascript-interview-questions-and-answers-from-basic-to-senior-level/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen"
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "js-es-moderno-03",
+      "version": 1,
+      "pista": "javascript",
+      "familia": "es-moderno",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "senior",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "¿Qué es un `Proxy` en JavaScript? Da un ejemplo simple de interceptar el acceso a una propiedad de un objeto.",
+        "en": "What is a `Proxy` in JavaScript? Give a simple example of intercepting property access on an object."
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que un `Proxy` envuelve un objeto y permite interceptar operaciones sobre él"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Da un ejemplo con el trap `get` interceptando una lectura de propiedad",
+          "Menciona `Reflect` como complemento habitual para delegar al comportamiento por defecto dentro de un trap",
+          "Da un caso de uso real (validación automática, logging de accesos, un ORM ligero)"
+        ]
+      },
+      "respuestaModelo": "Un `Proxy` envuelve un objeto y permite interceptar operaciones fundamentales sobre él (leer una propiedad, asignarla, comprobar si existe, etc.) mediante \"traps\". Por ejemplo, `new Proxy(objetivo, { get(obj, prop) { console.log('leyendo', prop); return Reflect.get(obj, prop); } })` intercepta cualquier lectura de propiedad, la loguea, y delega el comportamiento real a `Reflect.get`, que hace lo que haría el acceso normal. `Reflect` se usa junto a `Proxy` precisamente para no reimplementar a mano el comportamiento por defecto dentro de cada trap. Un caso de uso real es validar automáticamente que solo se asignen valores de un tipo esperado a un objeto, o construir un ORM ligero donde acceder a una propiedad dispara una consulta a base de datos de forma transparente.",
+      "etiquetas": ["es-moderno"],
+      "fuentes": [
+        {
+          "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Feature ES2015+ citada de forma recurrente en listados de JavaScript avanzado; sin cita textual de entrevista específica localizada en el informe original."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

@@ -1,0 +1,343 @@
+{
+  "pista": "typescript",
+  "familia": "tipos-interfaces",
+  "preguntas": [
+    {
+      "id": "ts-tipos-interfaces-01",
+      "version": 1,
+      "pista": "typescript",
+      "familia": "tipos-interfaces",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué significa que \"TypeScript es un superset de JavaScript\"? ¿Qué aporta que no tenga JS?",
+        "en": "What does it mean that \"TypeScript is a superset of JavaScript\"? What does it add that JS doesn't have?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que todo código JavaScript válido es también TypeScript válido",
+          "Menciona que aporta tipos estáticos comprobados antes de ejecutar"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que TypeScript se compila (transpila) a JavaScript, los tipos no existen en tiempo de ejecución",
+          "Menciona el beneficio principal: errores detectados en tiempo de desarrollo en vez de en producción",
+          "Reconoce el coste: build step adicional, curva de aprendizaje del sistema de tipos"
+        ]
+      },
+      "respuestaModelo": "Que TypeScript sea un superset de JavaScript significa que cualquier archivo `.js` válido es también un archivo `.ts` válido: TypeScript no cambia la sintaxis de JavaScript, la extiende. Lo que añade es un sistema de tipos estáticos que se comprueba en tiempo de desarrollo, antes de ejecutar nada, permitiendo detectar errores como pasar un string donde se espera un número mucho antes de que lleguen a producción. En tiempo de ejecución no existen los tipos: el compilador de TypeScript los quita al transpilar a JavaScript plano, así que el beneficio es enteramente durante el desarrollo (autocompletado, refactors seguros, documentación viva) a cambio de un paso de compilación adicional y una curva de aprendizaje del sistema de tipos.",
+      "etiquetas": ["typescript"],
+      "fuentes": [
+        {
+          "url": "https://github.com/Devinterview-io/typescript-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Licencia no confirmada; usado solo como señal de tema, no se copia texto."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ts-tipos-interfaces-02",
+      "version": 1,
+      "pista": "typescript",
+      "familia": "tipos-interfaces",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Nombra los tipos básicos de TypeScript (`string`, `number`, `boolean`, `array`, `tuple`, etc.) con un ejemplo de cada uno.",
+        "en": "Name TypeScript's basic types (`string`, `number`, `boolean`, `array`, `tuple`, etc.) with an example of each."
+      },
+      "rubrica": {
+        "junior": ["Nombra al menos 4 tipos básicos con la sintaxis correcta"],
+        "senior": [
+          "Lo anterior",
+          "Explica la diferencia entre `array` (`number[]`) y `tuple` (`[number, string]`): la tupla fija longitud y tipo por posición",
+          "Menciona `unknown`, `any` y `never` como parte del vocabulario de tipos, no solo los primitivos",
+          "Da un ejemplo de tipo unión (`string | number`) como parte de la respuesta"
+        ]
+      },
+      "respuestaModelo": "Los tipos básicos incluyen `string` (`'hola'`), `number` (`42`), `boolean` (`true`), `array` (`number[]` o `Array<number>`), y `tuple` (`[number, string]`), que a diferencia del array fija tanto la longitud como el tipo de cada posición. También forman parte del vocabulario básico `any` (desactiva el chequeo de tipos), `unknown` (tipo seguro para valores de origen desconocido, obliga a comprobar antes de usar), `void` (ausencia de valor de retorno), y `never` (un valor que nunca ocurre, como el retorno de una función que siempre lanza). Los tipos unión (`string | number`) combinan varios tipos posibles para una misma variable.",
+      "etiquetas": ["typescript"],
+      "fuentes": [
+        {
+          "url": "https://github.com/Devinterview-io/typescript-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Licencia no confirmada; usado solo como señal de tema, no se copia texto."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ts-tipos-interfaces-03",
+      "version": 1,
+      "pista": "typescript",
+      "familia": "tipos-interfaces",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Cuál es la diferencia entre `type` e `interface` en TypeScript? ¿Cuándo usarías uno u otro?",
+        "en": "What is the difference between `type` and `interface` in TypeScript? When would you use one over the other?"
+      },
+      "rubrica": {
+        "junior": [
+          "Sabe que ambos sirven para describir la forma de un objeto",
+          "Reconoce que `interface` se puede extender con `extends`"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica el \"declaration merging\": reabrir la misma `interface` para añadirle campos, algo que `type` no permite",
+          "Explica que `type` es más flexible para uniones, intersecciones y tipos condicionales",
+          "Da un criterio práctico: interface para formas de objetos o props públicas de una librería, type para uniones o tipos complejos, en vez de decir que da igual"
+        ]
+      },
+      "respuestaModelo": "Ambos describen la forma de un valor, y para el caso simple de un objeto son casi intercambiables. La diferencia práctica es que `interface` se puede extender con `extends` y admite \"declaration merging\": declarar la misma interfaz dos veces en el mismo scope combina ambas definiciones en una, útil para que una librería permita a quien la consume añadir campos a un tipo existente. `type` no permite eso, pero es más flexible para expresar uniones (`type Id = string | number`), intersecciones, y tipos condicionales que `interface` no puede representar. Un criterio práctico: `interface` para formas de objetos o props públicas de una librería pensadas para extenderse, `type` para uniones, tipos derivados o construcciones más complejas.",
+      "etiquetas": ["typescript"],
+      "fuentes": [
+        {
+          "url": "https://github.com/typescript-cheatsheets/react",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Pregunta adaptada, no copiada literalmente."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ts-tipos-interfaces-04",
+      "version": 1,
+      "pista": "typescript",
+      "familia": "tipos-interfaces",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué son las interfaces en TypeScript y cómo funcionan?",
+        "en": "What are interfaces in TypeScript and how do they work?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que una interfaz describe la forma esperada de un objeto (qué propiedades y de qué tipo)"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que el chequeo es estructural: cualquier objeto que tenga esas propiedades cumple la interfaz, sin necesidad de declarar `implements` explícitamente",
+          "Da un ejemplo de propiedad opcional (`campo?: tipo`) y de solo lectura (`readonly`)",
+          "Menciona que una clase puede implementar una interfaz explícitamente con `implements` para forzar el chequeo en tiempo de compilación"
+        ]
+      },
+      "respuestaModelo": "Una interfaz describe la forma que debe tener un objeto: qué propiedades tiene y de qué tipo, y opcionalmente qué métodos. TypeScript usa tipado estructural (duck typing): cualquier objeto que tenga las propiedades requeridas cumple la interfaz, sin necesidad de declararlo explícitamente. Se puede marcar una propiedad como opcional con `campo?: tipo` o como de solo lectura con `readonly campo: tipo`. Una clase puede además implementar una interfaz de forma explícita con `class Usuario implements Persona`, lo que hace que el compilador avise en tiempo de compilación si la clase deja de cumplir el contrato.",
+      "etiquetas": ["typescript"],
+      "fuentes": [
+        {
+          "url": "https://github.com/Devinterview-io/typescript-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Licencia no confirmada; usado solo como señal de tema, no se copia texto."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ts-tipos-interfaces-05",
+      "version": 1,
+      "pista": "typescript",
+      "familia": "tipos-interfaces",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Cuál es la diferencia entre `unknown` y `any` en TypeScript? ¿Por qué se recomienda `unknown` en lugar de `any`?",
+        "en": "What is the difference between `unknown` and `any` in TypeScript? Why is `unknown` recommended over `any`?"
+      },
+      "rubrica": {
+        "junior": ["Explica que `any` desactiva el chequeo de tipos por completo"],
+        "senior": [
+          "Lo anterior",
+          "Explica que `unknown` obliga a comprobar/estrechar el tipo (con `typeof`, `instanceof`, o un type guard) antes de poder usarlo",
+          "Recomienda `unknown` como valor por defecto para datos externos (respuestas de API), reservando `any` como último recurso",
+          "Da un ejemplo concreto de código que compila con `any` pero no con `unknown` sin antes comprobar el tipo"
+        ]
+      },
+      "respuestaModelo": "`any` desactiva por completo el chequeo de tipos: se puede llamar cualquier método o acceder a cualquier propiedad sobre un valor `any` sin que el compilador se queje, aunque eso rompa en tiempo de ejecución. `unknown` es el tipo seguro equivalente: acepta cualquier valor igual que `any`, pero no permite operar con él directamente, obliga a comprobar o estrechar el tipo primero (con `typeof`, `instanceof`, o un type guard propio) antes de usarlo. Por ejemplo, `function f(x: unknown) { x.toUpperCase() }` no compila hasta que se comprueba `typeof x === 'string'` antes; con `any` compilaría sin avisos y fallaría en tiempo de ejecución si `x` no es un string. Por eso se recomienda `unknown` como valor por defecto para datos de origen externo (respuesta de una API, `JSON.parse`), dejando `any` solo como último recurso deliberado.",
+      "etiquetas": ["typescript"],
+      "fuentes": [
+        {
+          "url": "https://dev.to/lucaspaganini/unknown-vs-any-in-typescript-1i31",
+          "fecha": "2026-09-14",
+          "tipo": "resumen"
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ts-tipos-interfaces-06",
+      "version": 1,
+      "pista": "typescript",
+      "familia": "tipos-interfaces",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué son los `enum` en TypeScript? ¿Por qué muchos equipos prefieren usar una unión de string literals en vez de un enum?",
+        "en": "What are `enum`s in TypeScript? Why do many teams prefer a union of string literals over an enum?"
+      },
+      "rubrica": {
+        "junior": ["Explica que un enum agrupa un conjunto fijo de valores con nombre"],
+        "senior": [
+          "Lo anterior",
+          "Explica que los enums numéricos generan código JS extra en tiempo de ejecución y tienen comportamientos sorprendentes (mapeo inverso)",
+          "Explica que una unión de literales (`type Status = \"pending\" | \"done\"`) suele ser más simple, no genera código extra y se integra mejor con narrowing",
+          "Menciona `as const` sobre un array u objeto como alternativa para derivar la unión sin repetir los valores"
+        ]
+      },
+      "respuestaModelo": "Un `enum` agrupa un conjunto fijo de valores con nombre, como `enum Estado { Pendiente, Hecho }`. Un enum numérico por defecto asigna 0, 1, 2... y además genera un objeto JavaScript real en tiempo de ejecución con mapeo inverso (`Estado[0] === 'Pendiente'`), lo que añade código extra al bundle y puede sorprender. Una unión de string literals (`type Estado = 'pendiente' | 'hecho'`) no genera ningún código en tiempo de ejecución, es puramente un tipo, y se integra mejor con narrowing en un `switch`. Por eso muchos equipos prefieren la unión de literales, reservando `enum` para casos donde de verdad se necesita el objeto en tiempo de ejecución. Una alternativa para no repetir los valores es definir un array con `as const` y derivar el tipo unión de sus elementos.",
+      "etiquetas": ["typescript"],
+      "fuentes": [
+        {
+          "url": "https://github.com/Devinterview-io/typescript-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Licencia no confirmada; usado solo como señal de tema, no se copia texto."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ts-tipos-interfaces-07",
+      "version": 1,
+      "pista": "typescript",
+      "familia": "tipos-interfaces",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué es la inferencia de tipos (\"type inference\") en TypeScript? ¿Cuándo conviene anotar el tipo explícitamente aunque se pueda inferir?",
+        "en": "What does \"type inference\" mean in TypeScript? When is it worth annotating the type explicitly even if it can be inferred?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que TypeScript puede deducir el tipo sin anotarlo explícitamente (`const x = 5` es `number`)"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Da un ejemplo de cuándo anotar explícitamente aporta valor: la firma pública de una función exportada, para documentar el contrato",
+          "Explica el riesgo de dejar que se infiera un tipo demasiado amplio o `any` en casos donde no hay suficiente información",
+          "Reconoce que sobre-anotar tipos obvios (`const x: number = 5`) es ruido innecesario"
+        ]
+      },
+      "respuestaModelo": "TypeScript deduce el tipo de una variable, un parámetro con valor por defecto, o el retorno de una función a partir del valor asignado o del código, sin que haga falta escribirlo explícitamente: `const x = 5` ya es `number` para el compilador. Conviene anotar explícitamente en la firma pública de una función exportada o de una API, porque el tipo documenta el contrato para quien la consuma sin tener que leer la implementación, y evita que un cambio interno cambie silenciosamente el tipo de retorno inferido. También conviene anotar cuando TypeScript no tiene suficiente información y terminaría infiriendo algo demasiado amplio, como `any` en un parámetro sin valor por defecto. Fuera de esos casos, anotar tipos obvios como `const x: number = 5` es ruido innecesario que no aporta nada sobre lo que ya infiere el compilador.",
+      "etiquetas": ["typescript"],
+      "fuentes": [
+        {
+          "url": "https://github.com/Devinterview-io/typescript-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Licencia no confirmada; usado solo como señal de tema, no se copia texto."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ts-tipos-interfaces-kata-as-const",
+      "version": 1,
+      "pista": "typescript",
+      "familia": "tipos-interfaces",
+      "tipo": "kata",
+      "modos": ["kata"],
+      "nivelMinimo": "mid",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "Implementa `coloresValidos()` que devuelva `['rojo', 'verde', 'azul']` usando `as const`, y `esColorValido(valor)` que compruebe si un string es uno de esos tres colores.",
+        "en": "Implement `coloresValidos()` returning `['rojo', 'verde', 'azul']` using `as const`, and `esColorValido(valor)` checking whether a string is one of those three colors."
+      },
+      "rubrica": {
+        "junior": ["Pasa todos los casos de prueba", "Usa `as const` en el array de colores"],
+        "senior": [
+          "Lo anterior",
+          "Explica que `as const` hace el array de solo lectura y cada elemento se infiere como su literal exacto, no como `string`",
+          "Explica cómo derivaría un tipo unión (`'rojo' | 'verde' | 'azul'`) a partir del array con `typeof` e indexado",
+          "Comenta que `as const` no cambia nada en tiempo de ejecución, es una anotación que solo afecta al tipo"
+        ]
+      },
+      "respuestaModelo": "`as const` sobre un array literal lo convierte en de solo lectura (`readonly`) y hace que TypeScript infiera cada elemento como su valor literal exacto (`'rojo'`) en vez de ensancharlo a `string`. Con eso, se puede derivar el tipo unión de colores válidos con `(typeof coloresValidos())[number]`, sin tener que escribirlo por duplicado. `esColorValido` comprueba en tiempo de ejecución con `includes` si el valor recibido está en ese array. Es importante notar que `as const` no cambia nada en tiempo de ejecución: el array sigue siendo el mismo array de JavaScript, la diferencia es puramente de tipos en tiempo de compilación.",
+      "kata": {
+        "funcion": "esColorValido",
+        "codigoInicial": "export function coloresValidos() {\n  return ['rojo', 'verde', 'azul'] as const;\n}\n\ntype Color = (ReturnType<typeof coloresValidos>)[number];\n\nexport function esColorValido(valor: string): valor is Color {\n  // tu código\n}\n",
+        "casos": [
+          { "nombre": "rojo es válido", "entrada": ["rojo"], "esperado": true },
+          { "nombre": "verde es válido", "entrada": ["verde"], "esperado": true },
+          { "nombre": "amarillo no es válido", "entrada": ["amarillo"], "esperado": false }
+        ],
+        "tiempoMin": 15,
+        "congelarAleatorio": false
+      },
+      "etiquetas": ["typescript"],
+      "fuentes": [
+        {
+          "url": "https://github.com/typescript-cheatsheets/react",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Kata adaptada, no copiada literalmente."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ts-tipos-interfaces-08",
+      "version": 1,
+      "pista": "typescript",
+      "familia": "tipos-interfaces",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "¿Qué diferencia hay entre un enum numérico y un enum de string en TypeScript? ¿Cuál da más seguridad al depurar?",
+        "en": "What is the difference between a numeric enum and a string enum in TypeScript? Which gives more safety when debugging?"
+      },
+      "rubrica": {
+        "junior": [
+          "Sabe que un enum numérico asigna 0, 1, 2... por defecto y uno de string usa el valor literal"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que un enum numérico dificulta depurar (un log solo muestra un número sin contexto)",
+          "Explica que un enum de string muestra el valor legible directamente en logs",
+          "Menciona el riesgo de reordenar miembros en un enum numérico y romper valores ya persistidos (por ejemplo en una base de datos)"
+        ]
+      },
+      "respuestaModelo": "Un enum numérico asigna por defecto 0, 1, 2... a cada miembro en el orden en que se declaran, salvo que se especifique otro valor. Un enum de string asigna directamente el valor literal indicado a cada miembro. El enum de string da más seguridad al depurar porque un `console.log` muestra el valor legible directamente (`'ACTIVO'`), mientras uno numérico solo muestra un número sin contexto (`2`), obligando a consultar la definición del enum para saber qué representa. El riesgo adicional de un enum numérico es que si se reordena o inserta un miembro en medio, los valores numéricos de los siguientes miembros cambian, lo que rompe silenciosamente datos ya persistidos en una base de datos que dependían del número concreto.",
+      "etiquetas": ["typescript"],
+      "fuentes": [
+        {
+          "url": "https://github.com/Devinterview-io/typescript-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Licencia no confirmada; usado solo como señal de tema, no se copia texto."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

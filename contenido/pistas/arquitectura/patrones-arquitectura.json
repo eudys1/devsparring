@@ -1,0 +1,82 @@
+{
+  "pista": "arquitectura",
+  "familia": "patrones-arquitectura",
+  "preguntas": [
+    {
+      "id": "arq-patrones-arquitectura-01",
+      "version": 1,
+      "pista": "arquitectura",
+      "familia": "patrones-arquitectura",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "senior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué es la arquitectura hexagonal (puertos y adaptadores) y qué problema concreto evita en un backend Node o TypeScript?",
+        "en": "What is hexagonal architecture (ports and adapters), and what concrete problem does it avoid in a Node/TypeScript backend?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que separa la lógica de negocio de los detalles técnicos (framework HTTP, ORM, proveedor de email)",
+          "Menciona el concepto de interfaces o 'puertos' como frontera entre ambos"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Da un ejemplo concreto: cambiar de Express a Fastify, o de Prisma a Drizzle, sin reescribir las reglas de negocio",
+          "Reconoce el coste: más indirección y más archivos, que puede ser sobreingeniería en un proyecto pequeño",
+          "Explica que el dominio no debería importar nada de las capas externas (framework, ORM), solo al revés"
+        ]
+      },
+      "respuestaModelo": "La arquitectura hexagonal separa la lógica de negocio, el 'dominio', de los detalles técnicos como el framework HTTP, el ORM o el proveedor de email, comunicándose con ellos a través de interfaces llamadas 'puertos', que luego implementan 'adaptadores' concretos. El problema que evita es que cambiar de Express a Fastify, o de Prisma a Drizzle, obligue a reescribir las reglas de negocio: como el dominio solo depende de interfaces abstractas, se puede sustituir el adaptador sin tocar la lógica central. El coste es más indirección y más archivos, lo que puede ser sobreingeniería en un CRUD pequeño donde ese cambio de tecnología nunca va a pasar.",
+      "etiquetas": ["arquitectura", "hexagonal", "patrones"],
+      "fuentes": [
+        {
+          "url": "https://github.com/goldbergyoni/nodebestpractices",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Patrón consolidado de Alistair Cockburn, contrastado con la sección de estructura de proyecto de nodebestpractices (CC BY-SA 4.0); pregunta redactada de nuevo."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "arq-patrones-arquitectura-02",
+      "version": 1,
+      "pista": "arquitectura",
+      "familia": "patrones-arquitectura",
+      "tipo": "razonamiento",
+      "modos": ["verbal", "diseno"],
+      "nivelMinimo": "senior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué son clean architecture y SOLID aplicados a un proyecto fullstack, sin caer en sobreingeniería para un CRUD simple?",
+        "en": "What are clean architecture and SOLID applied to a fullstack project, without over-engineering a simple CRUD?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica la idea central: las dependencias apuntan hacia el dominio, no al revés",
+          "Reconoce que no todo proyecto necesita aplicar el patrón completo"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica el principio sin recitar la lista completa de SOLID de memoria, con criterio propio de cuáles importan más en la práctica",
+          "Da un criterio claro de cuándo NO aplicarlo a rajatabla: un CRUD administrativo interno de bajo riesgo no necesita 4 capas si eso ralentiza al equipo sin beneficio real",
+          "Basa la decisión en la complejidad y volatilidad esperada del dominio, no en aplicar el patrón 'porque toca'"
+        ]
+      },
+      "respuestaModelo": "El principio central de clean architecture es que las dependencias apuntan hacia el dominio, nunca al revés: la lógica de negocio no sabe nada de la base de datos ni del framework HTTP que la expone. SOLID son un conjunto de principios de diseño orientado a objetos que ayudan a mantener ese aislamiento, sobre todo la inversión de dependencias (depender de interfaces, no de implementaciones concretas). El criterio para no caer en sobreingeniería es la complejidad y volatilidad esperada del dominio: un CRUD administrativo interno de bajo riesgo, que probablemente no cambiará de proveedor de base de datos ni tendrá lógica de negocio compleja, no necesita cuatro capas separadas si eso solo ralentiza al equipo sin beneficio real. El patrón se justifica cuando el dominio es complejo, cambia con frecuencia, o el coste de un acoplamiento fuerte a una tecnología concreta es alto.",
+      "etiquetas": ["arquitectura", "solid", "clean-architecture"],
+      "fuentes": [
+        {
+          "url": "https://blog.cleancoder.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Conocimiento consolidado sobre Clean Architecture de Robert C. Martin, contrastado con discusiones de la comunidad; pregunta redactada de nuevo."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

@@ -1,0 +1,205 @@
+{
+  "pista": "fundamentos",
+  "familia": "patrones",
+  "preguntas": [
+    {
+      "id": "fund-patrones-01",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "patrones",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué es el patrón Singleton, cuándo lo usarías y qué problemas trae (testing, estado global)?",
+        "en": "What is the Singleton pattern, when would you use it, and what problems does it cause (testing, global state)?"
+      },
+      "rubrica": {
+        "junior": [
+          "Define Singleton como un patrón que garantiza una única instancia compartida",
+          "Da un ejemplo de uso (conexión a base de datos, configuración)"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Reconoce el trade-off entre conveniencia y el riesgo de acoplar código a un estado global difícil de testear/mockear",
+          "Menciona alternativas como inyección de dependencias para no depender de un Singleton concreto",
+          "Explica cómo aislaría un Singleton en los tests (reset manual, factory que puede sustituirse)"
+        ]
+      },
+      "respuestaModelo": "Singleton garantiza que una clase tenga una única instancia accesible globalmente, típico en conexiones a base de datos o configuración de la app. El problema es que introduce estado global implícito: cualquier módulo puede depender de él sin que se vea en su firma, lo que dificulta testear en aislamiento (los tests se contaminan entre sí si el Singleton guarda estado) y sustituirlo por un doble de prueba. La alternativa habitual es inyectar la instancia como dependencia en vez de importarla directamente, manteniendo la garantía de instancia única a nivel de configuración de la app, no acoplada al código que la usa.",
+      "etiquetas": ["patrones", "testing"],
+      "fuentes": [
+        {
+          "url": "https://github.com/sudheerj/javascript-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Sin LICENSE visible; usado solo como señal de tema popular, no se copia texto."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "fund-patrones-02",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "patrones",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Explica el patrón Factory, el patrón Observer y el patrón Strategy, y da un caso de uso real de cada uno en una app web.",
+        "en": "Explain the Factory pattern, the Observer pattern and the Strategy pattern, and give a real use case for each in a web app."
+      },
+      "rubrica": {
+        "junior": [
+          "Define correctamente al menos dos de los tres patrones",
+          "Da un ejemplo genérico de cada uno"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Liga Observer con event listeners o pub-sub (por ejemplo un `EventEmitter`)",
+          "Liga Factory con la creación de objetos sin exponer la lógica de instanciación",
+          "Liga Strategy con sustituir algoritmos intercambiables sin tocar el código que los usa"
+        ]
+      },
+      "respuestaModelo": "Factory encapsula la lógica de crear objetos: en vez de que el cliente haga `new ClienteEmail()` o `new ClienteSMS()`, una función `crearNotificador(tipo)` decide qué clase instanciar. Observer permite que varios suscriptores reaccionen a un evento sin acoplarse entre sí, como el propio modelo de eventos del DOM o un `EventEmitter` de Node. Strategy permite intercambiar un algoritmo (por ejemplo distintas formas de calcular el precio con descuento) pasando la estrategia como parámetro, sin que el código cliente sepa cuál se está usando. Los tres comparten la idea de aislar una decisión (qué crear, quién se entera, qué algoritmo aplicar) detrás de una interfaz.",
+      "etiquetas": ["patrones", "diseno"],
+      "fuentes": [
+        {
+          "url": "https://www.adaface.com/blog/solid-principles-interview-questions/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen"
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "fund-patrones-03",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "patrones",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué es el patrón Repository y qué problema resuelve al separar la lógica de negocio del acceso a datos?",
+        "en": "What is the Repository pattern and what problem does it solve by separating business logic from data access?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que el Repository esconde de dónde vienen los datos detrás de una interfaz",
+          "Da un ejemplo simple (guardar/leer usuarios)"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que permite testear la lógica de negocio con un repositorio falso in-memory sin tocar una base de datos real",
+          "Menciona que el mismo repositorio puede cambiar de base de datos, API externa o caché sin tocar el resto del código",
+          "Reconoce cuándo es sobre-ingeniería (un CRUD trivial de una sola tabla)"
+        ]
+      },
+      "respuestaModelo": "El patrón Repository abstrae el origen de los datos (base de datos, API externa, caché) detrás de una interfaz simple con operaciones de dominio, como `buscarPorId` o `guardar`. La lógica de negocio depende de esa interfaz, no de una librería de base de datos concreta, lo que permite sustituirla en los tests por un repositorio en memoria y probar reglas de negocio sin levantar infraestructura real. También facilita cambiar de proveedor de datos con un impacto acotado. En proyectos muy pequeños puede ser sobre-ingeniería si solo hay un CRUD trivial sobre una tabla.",
+      "etiquetas": ["patrones", "testing", "diseno"],
+      "fuentes": [
+        {
+          "url": "https://www.adaface.com/blog/solid-principles-interview-questions/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen"
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "fund-patrones-kata-event-emitter",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "patrones",
+      "tipo": "kata",
+      "modos": ["kata"],
+      "nivelMinimo": "mid",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "Implementa una clase `EventEmitter` con métodos `on(evento, id)`, `off(evento, id)` y `emit(evento, dato)`, siguiendo el patrón Observer. Para poder probarla, cada callback registrado con `on` se identifica por un `id` de texto y, al dispararse, añade `{id, dato}` a un registro interno consultable con `emit`.",
+        "en": "Implement an `EventEmitter` class with `on(event, id)`, `off(event, id)` and `emit(event, data)` methods, following the Observer pattern. To make it testable, each callback registered with `on` is identified by a string `id` and, when triggered, appends `{id, data}` to an internal log returned by `emit`."
+      },
+      "rubrica": {
+        "junior": [
+          "Pasa todos los casos de prueba",
+          "`emit` dispara solo los listeners suscritos a ese evento, en orden de suscripción"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica la relación con el patrón Observer (sujeto/observadores desacoplados)",
+          "Comenta qué pasaría con listeners que lanzan una excepción (¿debería frenar a los demás?)",
+          "Menciona el riesgo de fuga de memoria si nunca se llama `off`"
+        ]
+      },
+      "respuestaModelo": "Un `EventEmitter` guarda un mapa de evento a lista de listeners. `on` añade un listener a la lista de ese evento, `off` lo quita buscando por `id`, y `emit` recorre la lista del evento y ejecuta cada listener con el dato recibido, devolviendo un registro de qué se ejecutó. Es la base del patrón Observer: el emisor no conoce a sus suscriptores, solo los invoca cuando ocurre el evento. El riesgo real en producción es no des-suscribir listeners que ya no se usan, lo que retiene referencias y produce fugas de memoria.",
+      "kata": {
+        "funcion": "probarEventEmitter",
+        "codigoInicial": "type Operacion =\n  | { op: 'on'; evento: string; id: string }\n  | { op: 'off'; evento: string; id: string }\n  | { op: 'emit'; evento: string; dato: unknown };\n\nexport class EventEmitter {\n  // tu código: on, off, emit\n  on(evento: string, id: string, escuchador: (dato: unknown) => void) {\n    // tu código\n  }\n  off(evento: string, id: string) {\n    // tu código\n  }\n  emit(evento: string, dato: unknown) {\n    // tu código\n  }\n}\n\n// La función probarEventEmitter la usa el runner: aplica una lista de\n// operaciones sobre un único EventEmitter y devuelve el registro de\n// disparos { id, dato } en el orden en que ocurrieron.\nexport function probarEventEmitter(operaciones: Operacion[]): { id: string; dato: unknown }[] {\n  const emisor = new EventEmitter();\n  const registro: { id: string; dato: unknown }[] = [];\n  for (const operacion of operaciones) {\n    if (operacion.op === 'on') {\n      emisor.on(operacion.evento, operacion.id, (dato) => registro.push({ id: operacion.id, dato }));\n    } else if (operacion.op === 'off') {\n      emisor.off(operacion.evento, operacion.id);\n    } else {\n      emisor.emit(operacion.evento, operacion.dato);\n    }\n  }\n  return registro;\n}\n",
+        "casos": [
+          {
+            "nombre": "un listener recibe el dato emitido",
+            "entrada": [
+              [
+                { "op": "on", "evento": "click", "id": "a" },
+                { "op": "emit", "evento": "click", "dato": 1 }
+              ]
+            ],
+            "esperado": [{ "id": "a", "dato": 1 }]
+          },
+          {
+            "nombre": "dos listeners del mismo evento se disparan en orden",
+            "entrada": [
+              [
+                { "op": "on", "evento": "click", "id": "a" },
+                { "op": "on", "evento": "click", "id": "b" },
+                { "op": "emit", "evento": "click", "dato": "x" }
+              ]
+            ],
+            "esperado": [
+              { "id": "a", "dato": "x" },
+              { "id": "b", "dato": "x" }
+            ]
+          },
+          {
+            "nombre": "off elimina solo el callback indicado",
+            "entrada": [
+              [
+                { "op": "on", "evento": "click", "id": "a" },
+                { "op": "on", "evento": "click", "id": "b" },
+                { "op": "off", "evento": "click", "id": "a" },
+                { "op": "emit", "evento": "click", "dato": "x" }
+              ]
+            ],
+            "esperado": [{ "id": "b", "dato": "x" }]
+          },
+          {
+            "nombre": "emitir un evento sin listeners no lanza error y devuelve registro vacío",
+            "entrada": [[{ "op": "emit", "evento": "sin-suscriptores", "dato": null }]],
+            "esperado": []
+          }
+        ],
+        "tiempoMin": 15,
+        "congelarAleatorio": false
+      },
+      "etiquetas": ["patrones", "observer"],
+      "fuentes": [
+        {
+          "url": "https://github.com/sudheerj/javascript-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Sin LICENSE visible; kata redactada de cero a partir del patrón Observer, no copiada."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

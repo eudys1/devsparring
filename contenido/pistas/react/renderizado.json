@@ -1,0 +1,193 @@
+{
+  "pista": "react",
+  "familia": "renderizado",
+  "preguntas": [
+    {
+      "id": "react-renderizado-01",
+      "version": 1,
+      "pista": "react",
+      "familia": "renderizado",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué es la reconciliación y el algoritmo de diffing de React? ¿Qué reglas asume sobre las listas?",
+        "en": "What is reconciliation and React's diffing algorithm? What rules does it assume about lists?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que React compara el árbol nuevo con el anterior en vez de repintar todo",
+          "Sabe que las listas se comparan usando la prop `key`"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que es un algoritmo heurístico O(n) por tipo y posición, no una comparación exhaustiva O(n^3)",
+          "Detalla que si el tipo de elemento cambia, React desmonta y remonta el subárbol entero",
+          "Explica que sin `key` estable React cae al orden posicional para decidir qué reusar"
+        ]
+      },
+      "respuestaModelo": "La reconciliación es el proceso por el que React compara el árbol de elementos que acaba de calcular con el árbol anterior para decidir el mínimo de cambios reales que aplicar al DOM. En vez de hacer una comparación exhaustiva entre árboles (que sería O(n^3)), usa un algoritmo heurístico O(n) que compara nodo a nodo por tipo y posición: si dos elementos son del mismo tipo, React actualiza sus props; si el tipo cambia, desmonta el subárbol antiguo y monta uno nuevo desde cero, perdiendo su estado interno. Para listas, React necesita una forma de identidad estable entre renders y usa la prop `key`: si las keys coinciden entre el render viejo y el nuevo, reutiliza esa instancia (y su estado); si no hay keys o son inestables, cae al orden posicional, lo que puede mezclar el estado de elementos que en realidad son distintos.",
+      "etiquetas": ["renderizado", "reconciliacion", "diffing"],
+      "fuentes": [
+        {
+          "url": "https://github.com/sudheerj/reactjs-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Pregunta adaptada de la sección Rendering & Reconciliation, no copiada literalmente."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    },
+    {
+      "id": "react-renderizado-02",
+      "version": 1,
+      "pista": "react",
+      "familia": "renderizado",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Por qué usar el índice del array como `key` es un antipatrón? ¿Cuándo sí es aceptable?",
+        "en": "Why is using the array index as `key` an anti-pattern? When is it actually acceptable?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que si la lista se reordena, inserta o borra, el índice deja de identificar al mismo elemento",
+          "Da un ejemplo de bug real (estado o inputs que se mezclan entre filas)"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Menciona casos concretos afectados: inputs no controlados, animaciones, estado interno del componente hijo",
+          "Explica que es aceptable solo si la lista es estática y nunca se reordena, filtra ni modifica"
+        ]
+      },
+      "respuestaModelo": "El índice de un array cambia cada vez que la lista se reordena, se filtra o se le añade/quita un elemento, así que deja de identificar de forma estable al mismo dato entre un render y el siguiente. React usa la `key` para decidir qué instancia del componente reutilizar; si dos búsquedas distintas producen listas donde el mismo índice apunta a usuarios diferentes, React puede reutilizar el DOM y el estado interno del elemento equivocado: un input no controlado que conserva el texto del usuario anterior, una animación que salta de sitio, o un estado local que se queda pegado a la posición en vez de al dato. Usar el índice solo es seguro cuando la lista es completamente estática (nunca se reordena, filtra, inserta ni borra un elemento en medio), en cuyo caso el índice y la identidad del dato coinciden siempre.",
+      "etiquetas": ["renderizado", "keys"],
+      "fuentes": [
+        {
+          "url": "https://github.com/sudheerj/reactjs-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Pregunta adaptada de la sección Keys, no copiada literalmente."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    },
+    {
+      "id": "react-renderizado-03",
+      "version": 1,
+      "pista": "react",
+      "familia": "renderizado",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "senior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué es React Fiber y qué problema del render \"bloqueante\" vino a resolver?",
+        "en": "What is React Fiber and what \"blocking render\" problem did it solve?"
+      },
+      "rubrica": {
+        "junior": ["Sabe que Fiber es la reescritura interna del reconciler de React"],
+        "senior": [
+          "Lo anterior",
+          "Explica que trabaja en unidades de trabajo interrumpibles en vez de recorrer el árbol de una sola pasada síncrona",
+          "Relaciona Fiber con la posibilidad de priorizar trabajo urgente (un input) sobre trabajo de fondo",
+          "Menciona que es la base de Concurrent React: Suspense, `useTransition`, `startTransition`"
+        ]
+      },
+      "respuestaModelo": "Antes de Fiber, React recorría el árbol de componentes de forma síncrona y recursiva: una vez empezado el render no se podía pausar, así que un árbol grande bloqueaba el hilo principal y el navegador no podía atender el teclado, el scroll ni las animaciones mientras tanto. Fiber reescribió el reconciler para trabajar en unidades de trabajo pequeñas e interrumpibles, cada una representada por un nodo 'fiber'; React puede pausar el trabajo a mitad, dejar que el navegador atienda algo más urgente (como una pulsación de teclado) y retomarlo después, o incluso descartarlo si ya no hace falta. Esta capacidad de priorizar e interrumpir es la base de lo que hoy se llama Concurrent React: `Suspense`, `useTransition` y `startTransition` existen porque Fiber hizo posible que React decida qué actualización es urgente y cuál puede esperar.",
+      "etiquetas": ["renderizado", "fiber", "concurrent-react"],
+      "fuentes": [
+        {
+          "url": "https://github.com/sudheerj/reactjs-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Pregunta adaptada, no copiada literalmente."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    },
+    {
+      "id": "react-renderizado-04",
+      "version": 1,
+      "pista": "react",
+      "familia": "renderizado",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué hace `key` distinto de una prop normal, y por qué React se queja si falta en un `.map()`?",
+        "en": "What makes `key` different from a normal prop, and why does React warn when it's missing in a `.map()`?"
+      },
+      "rubrica": {
+        "junior": [
+          "Sabe que `key` no llega al componente como prop normal",
+          "Explica que sirve para dar identidad estable a cada elemento de una lista"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que sin `key` React cae al orden posicional entre renders",
+          "Relaciona esa caída con bugs de estado mezclado al reordenar la lista"
+        ]
+      },
+      "respuestaModelo": "`key` es metadata especial que usa el reconciler de React, no una prop que reciba el componente: dentro del componente no existe `props.key`. Su función es dar una identidad estable a cada elemento de una lista para que React sepa, entre un render y el siguiente, qué instancia corresponde a qué dato. Cuando falta, React no tiene forma de distinguir 'este elemento se movió' de 'este elemento es nuevo y el viejo desapareció', así que cae al orden posicional como aproximación; eso funciona bien si la lista nunca cambia de orden, pero produce bugs de estado o DOM mezclado en cuanto se reordena, filtra o inserta algo en medio, motivo por el que React avisa en consola cuando detecta un `.map()` sin `key`.",
+      "etiquetas": ["renderizado", "keys"],
+      "fuentes": [
+        {
+          "url": "https://github.com/sudheerj/reactjs-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Pregunta adaptada de la sección Keys, no copiada literalmente."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    },
+    {
+      "id": "react-renderizado-review-lista-usuarios",
+      "version": 1,
+      "pista": "react",
+      "familia": "renderizado",
+      "tipo": "review",
+      "modos": ["review"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Revisa este componente de lista de usuarios con buscador. Tiene al menos 4 problemas: uno de dependencias, uno de rendimiento con las keys, uno de diseño y uno de accesibilidad. Encuéntralos y explica cómo los arreglarías.",
+        "en": "Review this user list component with a search box. It has at least 4 problems: a dependency bug, a key/performance issue, a design issue and an accessibility issue. Find them and explain how you'd fix them."
+      },
+      "contexto": "```tsx\nfunction UserList({ users }) {\n  const [query, setQuery] = useState('');\n  const [filtered, setFiltered] = useState(users);\n\n  useEffect(() => {\n    setFiltered(users.filter(u => u.name.includes(query)));\n  }, [query]);\n\n  return (\n    <div>\n      <input\n        value={query}\n        onChange={e => setQuery(e.target.value)}\n      />\n      <ul>\n        {filtered.map((user, index) => (\n          <li key={index} onClick={() => console.log('selected', user.id)}>\n            <img src={user.avatarUrl} onLoad={() => trackImageLoad(user.id)} />\n            {user.name}\n          </li>\n        ))}\n      </ul>\n    </div>\n  );\n}\n```",
+      "rubrica": {
+        "junior": [
+          "Detecta que el `useEffect` usa `users` sin declararlo en el array de dependencias, así que si `users` cambia sin que cambie `query`, `filtered` se queda desactualizado",
+          "Detecta que usar `index` como `key` en una lista que se filtra dinámicamente mezcla estado/DOM entre elementos distintos",
+          "Detecta que `<li onClick>` no es accesible por teclado ni tiene rol semántico"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que `filtered` es un valor derivado de `users` y `query`, y que sincronizarlo con un `useEffect` y un `useState` extra es innecesario: debería calcularse directamente en el render (con `useMemo` si el filtro es costoso)",
+          "Propone la key correcta (`user.id`) y explica por qué resuelve el problema de raíz, no solo lo parchea",
+          "Propone la solución de accesibilidad completa: usar `<button>` o añadir `tabIndex`, `role` y manejo de teclado"
+        ]
+      },
+      "respuestaModelo": "El primer bug es de dependencias incompletas: el efecto lee `users` pero solo está declarado `query`, así que si el padre pasa una lista nueva de `users` sin que el texto de búsqueda cambie, `filtered` se queda con datos viejos. El segundo problema es usar `index` como `key` en una lista que cambia con cada tecla: dos resultados de búsqueda distintos pueden compartir posición pero no representar al mismo usuario, y React puede reutilizar mal el DOM o el estado de esa fila. El fallo de diseño de fondo es que `filtered` ni siquiera debería ser estado: es un valor calculable directamente a partir de `users` y `query` en cada render (o memoizado con `useMemo` si filtrar es caro), lo que elimina el bug de dependencias de raíz en vez de solo corregir el array. Por último, el `<li onClick>` no es focuseable ni operable por teclado y no tiene rol semántico de opción seleccionable; lo correcto es usar un elemento interactivo nativo como `<button>` dentro del `<li>`, o añadir `tabIndex`, `role` y el manejo de `Enter`/`Espacio` a mano.",
+      "etiquetas": ["renderizado", "keys", "hooks", "accesibilidad", "review"],
+      "fuentes": [
+        {
+          "url": "https://github.com/sudheerj/reactjs-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Fragmento propio escrito para esta investigación, inspirado en patrones de bug documentados en las secciones Hooks y Keys del repositorio."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

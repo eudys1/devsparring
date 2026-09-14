@@ -1,0 +1,178 @@
+{
+  "pista": "ia",
+  "familia": "fine-tuning-eleccion",
+  "preguntas": [
+    {
+      "id": "ia-fine-tuning-eleccion-01",
+      "version": 1,
+      "pista": "ia",
+      "familia": "fine-tuning-eleccion",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué diferencia hay entre fine-tuning y RAG, y cuándo usarías cada uno?",
+        "en": "Difference between fine-tuning and RAG, and when would you use each?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que fine-tuning reentrena los pesos del modelo y RAG le da contexto externo en tiempo de consulta"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que RAG es mejor cuando la información cambia a menudo",
+          "Explica que fine-tuning es mejor cuando se necesita un estilo/formato muy consistente"
+        ]
+      },
+      "respuestaModelo": "El fine-tuning reentrena, al menos parcialmente, los pesos del modelo con ejemplos propios, cambiando su comportamiento o estilo de forma permanente. RAG deja el modelo intacto y en su lugar le da contexto externo en el momento de la consulta. RAG es la mejor opción cuando la información cambia a menudo y hay que poder actualizarla sin reentrenar nada, mientras que el fine-tuning encaja mejor cuando se necesita un estilo o formato muy consistente, o un comportamiento especializado que no se consigue solo con prompting y contexto añadido.",
+      "etiquetas": ["fine-tuning", "rag", "fundamentos"],
+      "fuentes": [
+        {
+          "url": "https://docs.anthropic.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Síntesis propia sobre comparativas estándar RAG vs fine-tuning, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-fine-tuning-eleccion-02",
+      "version": 1,
+      "pista": "ia",
+      "familia": "fine-tuning-eleccion",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "senior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Es el fine-tuning una buena forma de enseñarle hechos nuevos a un modelo?",
+        "en": "Is fine-tuning a good way to \"teach a model new facts\"?"
+      },
+      "rubrica": {
+        "junior": ["Reconoce que generalmente no es la mejor herramienta para eso"],
+        "senior": [
+          "Lo anterior",
+          "Explica que ajusta mejor patrones de comportamiento/estilo que hechos concretos y verificables",
+          "Concluye que RAG suele ser más fiable y más barato de mantener para hechos consultables y cambiantes"
+        ]
+      },
+      "respuestaModelo": "Generalmente no es la mejor herramienta para eso. El fine-tuning ajusta bien patrones de comportamiento y de estilo, pero es menos fiable a la hora de fijar hechos concretos y verificables de forma consistente, y desde luego no resuelve la necesidad de actualizar esa información con frecuencia: cada cambio de hechos exigiría un nuevo ciclo de reentrenamiento. Para hechos consultables y que cambian con el tiempo, RAG suele ser más fiable, porque el hecho vive en una fuente externa auditable, y más barato de mantener, porque actualizar la fuente no requiere reentrenar nada.",
+      "etiquetas": ["fine-tuning"],
+      "fuentes": [
+        {
+          "url": "https://docs.anthropic.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Síntesis propia sobre limitaciones conocidas del fine-tuning, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-fine-tuning-eleccion-03",
+      "version": 1,
+      "pista": "ia",
+      "familia": "fine-tuning-eleccion",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué criterios usarías para elegir qué modelo de LLM usar en una funcionalidad nueva?",
+        "en": "What criteria would you use to choose which LLM to use for a new feature?"
+      },
+      "rubrica": {
+        "junior": ["Menciona calidad de respuesta en la tarea concreta y coste"],
+        "senior": [
+          "Lo anterior",
+          "Menciona latencia y límites de contexto necesarios",
+          "Menciona capacidades requeridas (tool use, visión) y consideraciones de datos/cumplimiento"
+        ]
+      },
+      "respuestaModelo": "Empezaría midiendo la calidad de respuesta en la tarea concreta con un eval propio, no solo mirando benchmarks generales que no reflejan necesariamente el caso de uso real. Después consideraría el coste por llamada y la latencia, sobre todo si el volumen de tráfico esperado es alto, y los límites de contexto necesarios para la tarea. También pesarían las capacidades requeridas, como tool use o visión, que no todos los modelos ofrecen igual, y finalmente consideraciones de datos y cumplimiento normativo según dónde se aloje el proveedor y qué tipo de datos va a procesar.",
+      "etiquetas": ["seleccion-modelo"],
+      "fuentes": [
+        {
+          "url": "https://docs.anthropic.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Síntesis propia sobre prácticas de selección de modelo, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-fine-tuning-eleccion-04",
+      "version": 1,
+      "pista": "ia",
+      "familia": "fine-tuning-eleccion",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué es un modelo de razonamiento (reasoning model) y en qué se diferencia de un LLM convencional para esta tarea?",
+        "en": "What is a \"reasoning model\" and how does it differ from a conventional LLM for this task?"
+      },
+      "rubrica": {
+        "junior": ["Explica que dedica más cómputo/pasos internos a razonar antes de responder"],
+        "senior": [
+          "Lo anterior",
+          "Explica el trade-off de más latencia y coste a cambio de mejores resultados en tareas lógicas o de varios pasos",
+          "Reconoce que no siempre compensa usarlos para tareas simples"
+        ]
+      },
+      "respuestaModelo": "Un modelo de razonamiento está entrenado o configurado para dedicar más cómputo y más pasos internos a razonar antes de dar la respuesta final, a veces mostrando o resumiendo ese proceso intermedio. Esto suele mejorar los resultados en tareas lógicas o que requieren varios pasos encadenados, a cambio de más latencia y más coste por llamada. No siempre compensa usarlo: para una tarea simple, como clasificar un texto corto en una categoría, un modelo convencional suele dar un resultado igual de bueno mucho más rápido y barato, así que conviene reservarlo para tareas que de verdad se benefician del razonamiento extendido.",
+      "etiquetas": ["seleccion-modelo", "razonamiento"],
+      "fuentes": [
+        {
+          "url": "https://docs.anthropic.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Síntesis propia sobre la categoría de modelos de razonamiento extendido de proveedores actuales, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-fine-tuning-eleccion-05",
+      "version": 1,
+      "pista": "ia",
+      "familia": "fine-tuning-eleccion",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Tu empresa quiere añadir un chatbot que responde preguntas sobre las políticas internas de RRHH, que cambian cada trimestre. ¿Fine-tuning o RAG, y por qué?",
+        "en": "Your company wants a chatbot that answers questions about internal HR policies, which change every quarter. Fine-tuning or RAG, and why?"
+      },
+      "rubrica": {
+        "junior": ["Elige RAG y justifica que las políticas cambian con frecuencia"],
+        "senior": [
+          "Lo anterior",
+          "Explica que RAG permite actualizar la fuente sin reentrenar nada",
+          "Menciona que RAG facilita citar la política exacta como fuente, algo difícil con un modelo fine-tuned"
+        ]
+      },
+      "respuestaModelo": "RAG, sin dudarlo. Las políticas cambian cada trimestre, y con RAG basta con actualizar la fuente de datos, el documento con la política nueva, sin tener que reentrenar nada cada vez que cambia un párrafo. Además RAG facilita citar la política exacta como fuente de la respuesta, algo muy útil en un contexto de RRHH donde el empleado querrá poder verificar de dónde sale la información, mientras que con un modelo fine-tuned es mucho más difícil garantizar que la respuesta cita literalmente la versión vigente del documento.",
+      "etiquetas": ["fine-tuning", "rag", "caso-practico"],
+      "fuentes": [
+        {
+          "url": "https://docs.anthropic.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Síntesis propia, caso práctico típico de entrevista, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

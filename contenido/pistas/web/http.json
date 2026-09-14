@@ -1,0 +1,116 @@
+{
+  "pista": "web",
+  "familia": "http",
+  "preguntas": [
+    {
+      "id": "web-http-01",
+      "version": 1,
+      "pista": "web",
+      "familia": "http",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Explica la diferencia entre los métodos HTTP GET, POST, PUT, PATCH y DELETE, y cuáles son idempotentes.",
+        "en": "Explain the difference between HTTP GET, POST, PUT, PATCH and DELETE, and which ones are idempotent."
+      },
+      "rubrica": {
+        "junior": [
+          "Explica el propósito básico de cada método (leer, crear, reemplazar, modificar parcialmente, borrar)",
+          "Sabe que GET/PUT/DELETE son idempotentes y POST normalmente no"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que PUT reemplaza el recurso completo y PATCH aplica una modificación parcial",
+          "Explica que para POST que crean algo (pagos, reservas) hace falta una idempotency key manual porque el método no lo garantiza"
+        ]
+      },
+      "respuestaModelo": "GET lee un recurso sin modificarlo, POST normalmente crea uno nuevo, PUT reemplaza el recurso completo con lo que se envía, PATCH aplica una modificación parcial sobre campos concretos, y DELETE lo elimina. La idempotencia describe si repetir la misma petición produce el mismo estado final que ejecutarla una sola vez: GET, PUT, DELETE, HEAD y OPTIONS son idempotentes por definición HTTP, mientras que POST y PATCH normalmente no lo son. Esto importa en la práctica sobre todo con POST que crean algo con efecto real, como un pago o una reserva: como el método en sí no garantiza idempotencia, si el cliente reintenta tras un timeout de red puede duplicar la operación, y la única forma fiable de evitarlo es que el propio backend implemente una idempotency key generada por el cliente.",
+      "etiquetas": ["http", "metodos", "idempotencia"],
+      "fuentes": [
+        {
+          "url": "https://www.hellointerview.com/learn/system-design/core-concepts/api-design",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Semántica HTTP consolidada (RFC 9110/MDN) contrastada con la discusión de idempotencia de Hello Interview, resumen de búsqueda no leído en detalle."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "web-http-02",
+      "version": 1,
+      "pista": "web",
+      "familia": "http",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué significan los códigos HTTP 401 vs 403? Da un ejemplo de cuándo usar cada uno.",
+        "en": "What do HTTP status codes 401 vs 403 mean? Give an example of when to use each."
+      },
+      "rubrica": {
+        "junior": [
+          "Explica 401 como falta de autenticación válida",
+          "Explica 403 como autenticado pero sin permiso"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Da un ejemplo concreto de cada caso",
+          "Menciona que confundirlos es un error común detectado en revisiones de código"
+        ]
+      },
+      "respuestaModelo": "401 Unauthorized significa 'no sabemos quién eres': falta el token de autenticación, es inválido o expiró, y se espera que el cliente se autentique (o reautentique) antes de reintentar; un ejemplo es una petición a un endpoint protegido sin cabecera de autorización. 403 Forbidden significa 'sabemos quién eres pero no tienes permiso': el usuario está correctamente autenticado, pero su rol o sus permisos no le dan acceso a ese recurso concreto, como un usuario normal intentando acceder a un panel de administración. Confundir estos dos códigos es un error bastante frecuente que aparece en revisiones de código, y tiene consecuencias reales: devolver 401 cuando en realidad es un problema de permisos puede llevar al cliente a intentar reautenticarse en bucle sin ningún resultado.",
+      "etiquetas": ["http", "codigos-de-estado", "autenticacion"],
+      "fuentes": [
+        {
+          "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Patrón estándar de entrevistas backend/fullstack; especificación HTTP tratada como conocimiento consolidado en el informe fuente."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "web-http-03",
+      "version": 1,
+      "pista": "web",
+      "familia": "http",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Cómo funciona la cache HTTP con `Cache-Control`, `ETag` y `Last-Modified`? ¿Qué diferencia hay entre validación y expiración?",
+        "en": "How does HTTP caching work with `Cache-Control`, `ETag` and `Last-Modified`? What's the difference between validation and expiration?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica `Cache-Control: max-age` como expiración: cuánto tiempo se usa la respuesta sin preguntar al servidor"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica la validación con peticiones condicionales (`If-None-Match`/`If-Modified-Since`) contra `ETag`/`Last-Modified`, y el 304 sin body",
+          "Distingue `no-cache` (revalida siempre) de `no-store` (nunca cachea)"
+        ]
+      },
+      "respuestaModelo": "`Cache-Control: max-age` define la expiración: mientras no pase ese tiempo, el navegador usa la respuesta guardada sin ni siquiera preguntar al servidor si sigue siendo válida. Pasado ese tiempo (o si el servidor pide revalidación explícita), entra en juego la validación: el navegador hace una petición condicional con `If-None-Match` (comparando contra el `ETag` guardado) o `If-Modified-Since` (comparando contra `Last-Modified`), y si el servidor confirma que nada cambió responde con un 304 sin body, ahorrando el envío de la respuesta completa aunque sigue habiendo una petición de red. `no-cache` no significa 'no cachear': significa que siempre hay que revalidar antes de usar la copia guardada; `no-store` sí significa literalmente no guardar ninguna copia, ni siquiera para revalidar después, y se usa para respuestas sensibles que nunca deberían persistir en ningún cache intermedio.",
+      "etiquetas": ["http", "cache", "etag"],
+      "fuentes": [
+        {
+          "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Patrón estándar de HTTP caching (MDN/RFC 9111), tratado como conocimiento consolidado en el informe fuente."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

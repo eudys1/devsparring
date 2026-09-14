@@ -1,0 +1,76 @@
+{
+  "pista": "node",
+  "familia": "produccion",
+  "preguntas": [
+    {
+      "id": "node-produccion-01",
+      "version": 1,
+      "pista": "node",
+      "familia": "produccion",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Cómo estructurarías las variables de entorno y secretos entre local, staging y producción en una API Node?",
+        "en": "How would you structure environment variables and secrets across local, staging and production in a Node API?"
+      },
+      "rubrica": {
+        "junior": ["Sabe que nunca hay que comitear secretos al repo (`.env` en `.gitignore`)"],
+        "senior": [
+          "Lo anterior",
+          "Menciona un gestor de secretos en producción (Vault, parámetros del proveedor cloud) en vez de ficheros `.env` en el servidor",
+          "Explica que hay que validar la configuración al arrancar, fallando rápido si falta una variable requerida, en vez de descubrirlo en producción"
+        ]
+      },
+      "respuestaModelo": "El principio básico es que ningún secreto real se comitea nunca al repositorio: en local se usa un fichero `.env` explícitamente listado en `.gitignore`, con un `.env.example` sin valores reales como referencia para el equipo. En staging y producción no conviene depender de ficheros `.env` sueltos en el servidor; lo habitual es usar un gestor de secretos dedicado, como Vault o el sistema de parámetros/secretos del proveedor cloud (AWS Secrets Manager, variables de entorno cifradas de Vercel, etc.), que además da control de acceso y auditoría sobre quién puede ver o rotar cada secreto. Además, la app debería validar toda su configuración al arrancar, usando algo como un esquema Zod sobre `process.env`, y fallar de inmediato con un mensaje claro si falta una variable requerida, en vez de arrancar 'a medias' y descubrir el problema más tarde en producción cuando ya es demasiado tarde.",
+      "etiquetas": ["produccion", "secretos", "configuracion"],
+      "fuentes": [
+        {
+          "url": "https://github.com/goldbergyoni/nodebestpractices",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "CC-BY-SA-4.0. Contenido citado como referencia, no copiado literalmente; sección de configuración."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "node-produccion-02",
+      "version": 1,
+      "pista": "node",
+      "familia": "produccion",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "senior",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "Cuéntame de una vez que un servicio Node.js se cayó o se quedó sin memoria en producción. ¿Cómo lo diagnosticaste?",
+        "en": "Tell me about a time a Node.js service crashed or ran out of memory in production. How did you diagnose it?"
+      },
+      "rubrica": {
+        "junior": [
+          "Menciona herramientas reales (heap snapshot, `--inspect`, APM, logs estructurados) en vez de 'lo reinicié y ya'"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Identifica una causa raíz plausible (memory leak por listeners/timers no limpiados, cache sin límite, conexiones no cerradas)",
+          "Explica qué monitorización añadió después para detectarlo antes la próxima vez"
+        ]
+      },
+      "respuestaModelo": "Una respuesta que aprueba nombra herramientas concretas de diagnóstico, no 'lo reinicié y ya funcionó': un heap snapshot tomado con `--inspect` y Chrome DevTools para ver qué objetos se acumulaban en memoria sin liberarse, o un APM que mostraba el crecimiento progresivo de memoria a lo largo de varias horas hasta el crash, correlacionado con logs estructurados de esa ventana de tiempo. La causa raíz identificada suele ser algo concreto: listeners de eventos o `setInterval`s que nunca se limpiaban (acumulándose con cada nueva conexión o request), una cache en memoria sin límite de tamaño que crecía indefinidamente, o conexiones a base de datos que no se cerraban correctamente. Lo que distingue a una buena respuesta es explicar qué monitorización o alerta se añadió después del incidente (una alerta sobre uso de memoria creciente sostenido, un límite explícito en la cache, un test que verifica que los listeners se limpian) para detectar el problema antes de que vuelva a tumbar el servicio.",
+      "etiquetas": ["produccion", "comportamental", "memory-leak"],
+      "fuentes": [
+        {
+          "url": "https://www.glassdoor.com/Interview/full-stack-node-js-developer-interview-questions-SRCH_KO0,28.htm",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Resumen de búsqueda; patrón habitual de pregunta comportamental backend."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

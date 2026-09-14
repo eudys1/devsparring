@@ -1,0 +1,587 @@
+{
+  "pista": "comportamental",
+  "familia": "rrhh",
+  "preguntas": [
+    {
+      "id": "comp-rrhh-salario-01",
+      "version": 1,
+      "pista": "comportamental",
+      "familia": "rrhh",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Cuáles son tus expectativas salariales?",
+        "en": "What are your salary expectations?"
+      },
+      "rubrica": {
+        "junior": [
+          "Da una banda realista en vez de evadir la pregunta o decir 'lo que ustedes quieran'",
+          "Menciona que la banda se basa en investigación previa del mercado"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Menciona que hay flexibilidad según el paquete completo (beneficios, equity, teletrabajo)",
+          "Da una banda con amplitud razonable (15-20%) en vez de una cifra única cerrada"
+        ]
+      },
+      "respuestaModelo": "Una buena respuesta da una banda salarial, no una cifra única cerrada ni tampoco un evasivo 'lo que ustedes quieran ofrecer', ambas cosas generan desconfianza en el reclutador. Esa banda debería estar respaldada por investigación previa del mercado para ese puesto y esa ciudad, con una amplitud razonable de entre un 15 y un 20 por ciento. Añadir que hay flexibilidad según el paquete completo, beneficios, equity, posibilidad de teletrabajo, muestra que se está evaluando la oferta de forma integral y no solo el número base.",
+      "etiquetas": ["rrhh", "salario"],
+      "fuentes": [
+        {
+          "url": "https://www.coverflex.com/es/blog/expectativas-salariales",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Coverflex, Expectativas salariales: cómo responder (con ejemplos reales), actualizado 2026-08-28."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "comp-rrhh-motivos-salida-01",
+      "version": 1,
+      "pista": "comportamental",
+      "familia": "rrhh",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Por qué quieres dejar tu empresa actual?",
+        "en": "Why do you want to leave your current company?"
+      },
+      "rubrica": {
+        "junior": ["Enfoca la respuesta en lo que busca hacia adelante, no en quejas"],
+        "senior": [
+          "Lo anterior",
+          "Si hubo un conflicto real, lo describe en términos neutros sin desacreditar a nadie por nombre",
+          "Conecta el motivo con lo que busca en el nuevo puesto"
+        ]
+      },
+      "respuestaModelo": "Lo recomendable es enfocar la respuesta en lo que se busca hacia adelante, crecimiento, un reto nuevo, alineación de valores con la empresa a la que se aspira, en vez de quejarse del jefe o de la empresa anterior. Si el motivo real fue un conflicto, conviene reformularlo en términos neutros, 'diferentes formas de trabajar', sin desacreditar a nadie por nombre. Y si el motivo era aburrimiento o rutina, presentarlo como búsqueda de un reto más dinámico conecta mejor con el nuevo puesto que quejarse del anterior.",
+      "etiquetas": ["rrhh", "motivos-salida"],
+      "fuentes": [
+        {
+          "url": "https://rrhhdigital.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Agregado de blogs de RRHH españoles (rrhhdigital.com, iebschool.com), según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "comp-rrhh-disponibilidad-01",
+      "version": 1,
+      "pista": "comportamental",
+      "familia": "rrhh",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Cuál es tu disponibilidad de incorporación?",
+        "en": "What is your availability to start?"
+      },
+      "rubrica": {
+        "junior": ["Da un plazo realista considerando el preaviso con la empresa actual"],
+        "senior": [
+          "Lo anterior",
+          "Es honesto sobre compromisos previos (vacaciones reservadas, por ejemplo)"
+        ]
+      },
+      "respuestaModelo": "Conviene dar un plazo realista que tenga en cuenta el preaviso legal o contractual con la empresa actual, en vez de prometer una fecha imposible solo por sonar disponible. Si hay compromisos previos, unas vacaciones ya reservadas, por ejemplo, es mejor mencionarlo con honestidad desde el principio que descubrirlo después de aceptar la oferta, porque eso genera mucha más fricción que planificarlo con antelación.",
+      "etiquetas": ["rrhh", "disponibilidad"],
+      "fuentes": [
+        {
+          "url": "https://www.coverflex.com/es/blog/expectativas-salariales",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Pregunta estándar de screening, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "comp-rrhh-remoto-01",
+      "version": 1,
+      "pista": "comportamental",
+      "familia": "rrhh",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "junior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Cómo te organizas para trabajar en remoto o en un equipo distribuido?",
+        "en": "How do you organize yourself to work remotely or in a distributed team?"
+      },
+      "rubrica": {
+        "junior": ["Da al menos un hábito concreto de organización remota"],
+        "senior": [
+          "Lo anterior",
+          "Describe hábitos concretos (comunicación asíncrona, documentación escrita, bloques de foco)",
+          "Menciona cómo evita el aislamiento o la falta de visibilidad del trabajo propio"
+        ]
+      },
+      "respuestaModelo": "Una buena respuesta describe hábitos concretos, no un genérico 'me organizo bien': comunicación asíncrona por defecto para no depender de que todos estén conectados a la vez, documentar decisiones por escrito en vez de solo hablarlas, y bloques de foco protegidos para trabajo profundo. También conviene mencionar cómo evita el aislamiento o la falta de visibilidad del propio trabajo, con check-ins regulares o actualizaciones proactivas al equipo, algo que en remoto no ocurre de forma natural como en una oficina.",
+      "etiquetas": ["rrhh", "remoto"],
+      "fuentes": [
+        {
+          "url": "https://rrhhdigital.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Síntesis propia sobre prácticas habituales de screening en España dado el auge del híbrido/remoto, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "comp-rrhh-hueco-cv-01",
+      "version": 1,
+      "pista": "comportamental",
+      "familia": "rrhh",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "junior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Tienes un hueco de varios meses o años en tu CV. Cuéntame qué hiciste en ese periodo.",
+        "en": "There's a gap of several months or years in your CV, tell me what you did during that time."
+      },
+      "rubrica": {
+        "junior": ["Da una explicación honesta y breve, sin inventar un empleo que no existió"],
+        "senior": [
+          "Lo anterior",
+          "Enmarca el hueco en términos de lo que se hizo o se aprendió (formación, proyectos propios, cuidado familiar)",
+          "Mantiene el tono seguro, sin sonar avergonzado"
+        ]
+      },
+      "respuestaModelo": "Lo mejor es una explicación honesta y breve, enmarcada en términos de lo que se hizo o se aprendió durante ese periodo, formación, proyectos propios, búsqueda activa, cuidado familiar, en vez de inventar un empleo que no existió, algo que los reclutadores suelen verificar con referencias. Mantener un tono seguro al contarlo, sin sonar avergonzado, ayuda mucho más que intentar minimizar o esconder el hueco; en huecos largos, de más de un año, puede ayudar organizar el CV por competencias en vez de estrictamente cronológico.",
+      "etiquetas": ["rrhh", "cv", "hueco"],
+      "fuentes": [
+        {
+          "url": "https://huru.ai/es",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "huru.ai/es, curriculado.com, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "comp-rrhh-freelance-vuelta-01",
+      "version": 1,
+      "pista": "comportamental",
+      "familia": "rrhh",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Has trabajado varios años como freelance o autónomo, ¿por qué quieres volver a un puesto fijo ahora?",
+        "en": "You've worked several years as a freelancer, why do you want a full-time position now?"
+      },
+      "rubrica": {
+        "junior": [
+          "Enmarca el freelance como una etapa con aprendizajes concretos, no como un fracaso"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Da una razón positiva para el cambio (impacto a largo plazo, trabajo en equipo, estabilidad)",
+          "Menciona aprendizajes concretos del freelance (gestión de clientes, autonomía, entrega)"
+        ]
+      },
+      "respuestaModelo": "Una buena respuesta enmarca los años de freelance como una etapa con aprendizajes concretos, gestión de clientes, autonomía total sobre las entregas, capacidad de priorizar sin que nadie lo dijera, en vez de presentarlo como un fracaso que ahora se quiere dejar atrás. Y da una razón positiva y específica para el cambio: buscar impacto a largo plazo en un único producto, trabajar en equipo de forma sostenida, o estabilidad para poder planificar a más de un mes vista, en vez de sonar simplemente cansado de la incertidumbre.",
+      "etiquetas": ["rrhh", "freelance"],
+      "fuentes": [
+        {
+          "url": "https://huru.ai/es",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Pregunta derivada lógicamente de las guías de RRHH sobre huecos de CV; extrapolación razonable no confirmada con fuente directa exacta, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "comp-rrhh-freelance-ia-01",
+      "version": 1,
+      "pista": "comportamental",
+      "familia": "rrhh",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Cómo has usado herramientas de IA para ser más productivo trabajando por tu cuenta?",
+        "en": "How have you used AI tools to be more productive while working independently?"
+      },
+      "rubrica": {
+        "junior": ["Da un ejemplo concreto de tarea acelerada con IA, no una afirmación genérica"],
+        "senior": [
+          "Lo anterior",
+          "Explica cómo eso se tradujo en entregar más o mejor para los clientes",
+          "Menciona cómo mantuvo la calidad al delegar"
+        ]
+      },
+      "respuestaModelo": "Una buena respuesta da ejemplos concretos y verificables de tareas que aceleró con IA, generar el primer borrador de un módulo repetitivo, resumir requisitos de un cliente antes de una llamada, en vez de una afirmación genérica tipo 'uso mucho la IA'. Lo importante es explicar cómo eso se tradujo en entregar más o mejor para los clientes reales, y cómo mantuvo la calidad al delegar, revisando lo generado antes de entregarlo, en vez de simplemente producir más volumen sin control.",
+      "etiquetas": ["rrhh", "freelance", "ia"],
+      "fuentes": [
+        {
+          "url": "https://docs.anthropic.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Pregunta derivada de la combinación de freelance y uso de IA; no hay fuente específica citable que trate este cruce exacto, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "comp-rrhh-empresa-01",
+      "version": 1,
+      "pista": "comportamental",
+      "familia": "rrhh",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué sabes de nuestra empresa?",
+        "en": "What do you know about our company?"
+      },
+      "rubrica": {
+        "junior": ["Menciona algún detalle concreto y actual, no una respuesta genérica"],
+        "senior": [
+          "Lo anterior",
+          "Conecta lo investigado con por qué le interesa el puesto concreto",
+          "Muestra investigación real más allá de la página 'sobre nosotros'"
+        ]
+      },
+      "respuestaModelo": "Una buena respuesta menciona detalles concretos y actuales sobre el producto, una noticia reciente, algo específico de la cultura de la empresa, que demuestren investigación real y no una respuesta genérica que serviría para cualquier empresa del sector. Conectar esos detalles con por qué le interesa el puesto en concreto, no solo repetir información pública, es lo que distingue una respuesta memorable de una preparada de memoria sin reflexión.",
+      "etiquetas": ["rrhh", "screening"],
+      "fuentes": [
+        {
+          "url": "https://spain-internship.com/blog/job-interview-questions-spain-internships/",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Spain Internship, The 10 Most Common Job Interview Questions in Spain, 2025-11-24."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "comp-rrhh-fortalezas-debilidades-01",
+      "version": 1,
+      "pista": "comportamental",
+      "familia": "rrhh",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Cuáles son tus puntos fuertes y tus puntos débiles?",
+        "en": "What are your strengths and weaknesses?"
+      },
+      "rubrica": {
+        "junior": ["Da un punto fuerte concreto con ejemplo"],
+        "senior": [
+          "Lo anterior",
+          "Da un punto débil real, no un 'defecto disfrazado de virtud' tipo 'trabajo demasiado'",
+          "Muestra evidencia de que está trabajando activamente en mejorarlo"
+        ]
+      },
+      "respuestaModelo": "El punto fuerte conviene respaldarlo con un ejemplo concreto, no solo nombrarlo. El punto débil es donde más se nota la preparación: debe ser un defecto real, no un 'defecto disfrazado de virtud' del tipo 'trabajo demasiado' o 'soy demasiado perfeccionista', que suena hueco y poco creíble. Lo que da credibilidad es mostrar evidencia de que se está trabajando activamente en mejorarlo, con una acción concreta tomada, no solo reconocerlo de boquilla.",
+      "etiquetas": ["rrhh", "screening"],
+      "fuentes": [
+        {
+          "url": "https://spain-internship.com/blog/job-interview-questions-spain-internships/",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Spain Internship, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "comp-rrhh-por-que-contratarte-01",
+      "version": 1,
+      "pista": "comportamental",
+      "familia": "rrhh",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Por qué deberíamos contratarte a ti y no a otro candidato?",
+        "en": "Why should we hire you over other candidates?"
+      },
+      "rubrica": {
+        "junior": ["Conecta su experiencia con las necesidades específicas del puesto"],
+        "senior": [
+          "Lo anterior",
+          "Da un ejemplo concreto que respalde la afirmación",
+          "Evita una lista genérica de cualidades sin contexto"
+        ]
+      },
+      "respuestaModelo": "Una buena respuesta conecta la experiencia propia con las necesidades específicas del puesto que se está ofreciendo, en vez de recitar una lista genérica de cualidades que serviría para cualquier oferta. Respaldar esa conexión con un ejemplo concreto, un proyecto, un resultado, una habilidad demostrada en la práctica, es lo que la hace creíble frente a otro candidato que diga cosas similares sin pruebas.",
+      "etiquetas": ["rrhh", "screening"],
+      "fuentes": [
+        {
+          "url": "https://spain-internship.com/blog/job-interview-questions-spain-internships/",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Spain Internship, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "comp-rrhh-cinco-anos-01",
+      "version": 1,
+      "pista": "comportamental",
+      "familia": "rrhh",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Dónde te ves dentro de 5 años?",
+        "en": "Where do you see yourself in 5 years?"
+      },
+      "rubrica": {
+        "junior": ["Da un plan de crecimiento coherente con el puesto ofrecido"],
+        "senior": [
+          "Lo anterior",
+          "Es coherente con la trayectoria real del candidato",
+          "No promete algo que no piensa cumplir ni suena indiferente"
+        ]
+      },
+      "respuestaModelo": "Una buena respuesta plantea un plan de crecimiento coherente tanto con el puesto que se está ofreciendo como con la trayectoria real que ya tiene el candidato, sin prometer algo que en realidad no piensa cumplir solo por sonar comprometido. También hay que evitar el extremo contrario, sonar indiferente o sin ningún plan, porque transmite falta de ambición o de reflexión sobre la propia carrera.",
+      "etiquetas": ["rrhh", "screening"],
+      "fuentes": [
+        {
+          "url": "https://spain-internship.com/blog/job-interview-questions-spain-internships/",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Spain Internship, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "comp-rrhh-motivacion-01",
+      "version": 1,
+      "pista": "comportamental",
+      "familia": "rrhh",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué te motiva en el trabajo?",
+        "en": "What motivates you at work?"
+      },
+      "rubrica": {
+        "junior": ["Da motivadores específicos y creíbles, no genéricos"],
+        "senior": [
+          "Lo anterior",
+          "Evita respuestas que suenen a lo que 'se supone' que hay que decir",
+          "Conecta el motivador con un ejemplo real"
+        ]
+      },
+      "respuestaModelo": "Una buena respuesta da motivadores específicos y creíbles, resolver problemas concretos, ver el impacto visible de lo que se construye, aprender algo nuevo constantemente, en vez de una frase que suena a lo que 'se supone' que hay que decir en una entrevista. Conectar ese motivador con un ejemplo real de un momento en el que se sintió especialmente motivado en el trabajo le da mucha más credibilidad que la afirmación sola.",
+      "etiquetas": ["rrhh", "screening"],
+      "fuentes": [
+        {
+          "url": "https://spain-internship.com/blog/job-interview-questions-spain-internships/",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Spain Internship, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "comp-rrhh-preguntas-para-nosotros-01",
+      "version": 1,
+      "pista": "comportamental",
+      "familia": "rrhh",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Tienes preguntas para nosotros?",
+        "en": "Do you have any questions for us?"
+      },
+      "rubrica": {
+        "junior": ["Prepara al menos dos preguntas específicas, no ya respondidas en la oferta"],
+        "senior": [
+          "Lo anterior",
+          "Las preguntas versan sobre el equipo, el proceso de trabajo o los retos actuales",
+          "Nunca se queda sin ninguna pregunta"
+        ]
+      },
+      "respuestaModelo": "Conviene preparar de antemano dos o tres preguntas específicas sobre el equipo, el proceso de trabajo día a día o los retos actuales del área, evitando preguntas cuya respuesta ya estaba en la oferta publicada. No hacer ninguna pregunta se percibe casi siempre como desinterés, así que aunque la entrevista haya cubierto mucho terreno, siempre conviene tener alguna pregunta de reserva preparada de antemano.",
+      "etiquetas": ["rrhh", "screening"],
+      "fuentes": [
+        {
+          "url": "https://spain-internship.com/blog/job-interview-questions-spain-internships/",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Spain Internship, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "comp-rrhh-estres-01",
+      "version": 1,
+      "pista": "comportamental",
+      "familia": "rrhh",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "junior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Cómo manejas el estrés o la carga de trabajo alta?",
+        "en": "How do you handle stress or a high workload?"
+      },
+      "rubrica": {
+        "junior": ["Da un mecanismo concreto, no niega que el estrés exista"],
+        "senior": [
+          "Lo anterior",
+          "Menciona priorización explícita y comunicación temprana de sobrecarga",
+          "Menciona límites saludables"
+        ]
+      },
+      "respuestaModelo": "Una buena respuesta da un mecanismo concreto: priorización explícita de tareas cuando todo parece urgente, comunicación temprana con el equipo o el manager cuando la carga empieza a ser insostenible en vez de aguantar en silencio, y límites saludables sobre cuándo desconectar. Negar que el estrés exista, 'nunca me estreso', suena poco creíble; lo que se valora es un mecanismo real de gestión, no la ausencia de la emoción.",
+      "etiquetas": ["rrhh", "screening"],
+      "fuentes": [
+        {
+          "url": "https://rrhhdigital.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Pregunta estándar de screening de RRHH, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "comp-rrhh-trabajo-equipo-01",
+      "version": 1,
+      "pista": "comportamental",
+      "familia": "rrhh",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "junior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Cuéntame de tu experiencia trabajando en equipo.",
+        "en": "Tell me about your experience working in a team."
+      },
+      "rubrica": {
+        "junior": ["Da un ejemplo concreto de colaboración con un rol claro"],
+        "senior": [
+          "Lo anterior",
+          "Evita una descripción abstracta de 'me gusta trabajar en equipo'"
+        ]
+      },
+      "respuestaModelo": "Una buena respuesta da un ejemplo concreto de colaboración con un rol claro dentro del equipo, qué hizo exactamente, con quién, y qué se logró juntos, en vez de una descripción abstracta como 'me gusta trabajar en equipo' que no aporta nada verificable. Un ejemplo específico, aunque sea sencillo, siempre convence más que una afirmación general sobre la propia personalidad.",
+      "etiquetas": ["rrhh", "screening"],
+      "fuentes": [
+        {
+          "url": "https://rrhhdigital.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Pregunta estándar de screening, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "comp-rrhh-sueldo-actual-01",
+      "version": 1,
+      "pista": "comportamental",
+      "familia": "rrhh",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "junior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué sueldo tienes actualmente, o tenías en tu último puesto?",
+        "en": "What is your current (or most recent) salary?"
+      },
+      "rubrica": {
+        "junior": ["Responde con seguridad, sin sonar incómodo"],
+        "senior": [
+          "Lo anterior",
+          "Puede optar por dar una cifra o redirigir hacia las expectativas para el nuevo puesto según preferencia",
+          "Mantiene coherencia con la banda salarial que ya haya mencionado"
+        ]
+      },
+      "respuestaModelo": "Se puede responder con una cifra concreta si el candidato se siente cómodo haciéndolo, o redirigir la conversación hacia las expectativas para el nuevo puesto en vez del salario pasado, ambas son opciones legítimas según la comodidad de cada persona. Lo importante es responder con seguridad y mantener coherencia con la banda salarial que ya se haya mencionado antes en el proceso, para no dar señales contradictorias entre una pregunta y otra.",
+      "etiquetas": ["rrhh", "salario"],
+      "fuentes": [
+        {
+          "url": "https://www.coverflex.com/es/blog/expectativas-salariales",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Pregunta clásica de screening en España; legalidad no verificada en el informe, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "comp-rrhh-job-hopping-01",
+      "version": 1,
+      "pista": "comportamental",
+      "familia": "rrhh",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Por qué has cambiado de trabajo varias veces en poco tiempo?",
+        "en": "Why have you changed jobs several times in a short period (job hopping)?"
+      },
+      "rubrica": {
+        "junior": ["Da una razón específica para al menos uno de los cambios"],
+        "senior": [
+          "Lo anterior",
+          "Explica cada cambio con una razón específica y positiva (crecimiento, cambio de stack, cierre de la empresa)",
+          "Muestra un hilo conductor coherente en vez de que parezca aleatorio"
+        ]
+      },
+      "respuestaModelo": "Una respuesta senior explica cada cambio con una razón específica y positiva, una oportunidad de crecimiento real, un cambio de stack que le interesaba, el cierre de la empresa anterior, en vez de dar respuestas vagas o evasivas. Lo que más convence es mostrar un hilo conductor coherente entre esos cambios, una dirección clara en la que la carrera ha ido avanzando, en vez de que la sucesión de trabajos parezca aleatoria o impulsiva.",
+      "etiquetas": ["rrhh", "job-hopping"],
+      "fuentes": [
+        {
+          "url": "https://rrhhdigital.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Pregunta estándar de screening cuando el CV muestra rotación, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

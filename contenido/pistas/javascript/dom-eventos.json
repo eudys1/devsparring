@@ -1,0 +1,228 @@
+{
+  "pista": "javascript",
+  "familia": "dom-eventos",
+  "preguntas": [
+    {
+      "id": "js-dom-eventos-01",
+      "version": 1,
+      "pista": "javascript",
+      "familia": "dom-eventos",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Describe el \"event bubbling\" y el \"event capturing\" en el DOM. ¿Qué es event delegation y por qué es útil?",
+        "en": "Describe event bubbling and event capturing in the DOM. What is event delegation and why is it useful?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que un evento sube desde el elemento donde ocurrió hacia sus ancestros (bubbling)",
+          "Explica que event delegation es poner un listener en un ancestro en vez de en cada hijo"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica capturing como la fase inversa: el evento baja desde el ancestro hacia el elemento antes de burbujear",
+          "Explica que event delegation aprovecha el bubbling: se comprueba `event.target` en el listener del ancestro",
+          "Menciona el beneficio de rendimiento: un solo listener en vez de uno por elemento, y que funciona con elementos añadidos dinámicamente después"
+        ]
+      },
+      "respuestaModelo": "Cuando ocurre un evento en un elemento del DOM, por defecto recorre dos fases: primero capturing, donde el evento baja desde el `document` hasta el elemento donde realmente ocurrió, y luego bubbling, donde sube de vuelta desde ese elemento hasta sus ancestros. La mayoría de los listeners escuchan en la fase de bubbling por defecto. Event delegation aprovecha el bubbling: en vez de poner un listener en cada elemento hijo, se pone uno solo en un ancestro común, y dentro del listener se comprueba `event.target` para saber en qué hijo concreto ocurrió el clic. Esto es más eficiente (un listener en vez de miles) y funciona automáticamente con elementos añadidos dinámicamente después, sin tener que registrar un listener nuevo cada vez.",
+      "etiquetas": ["dom", "eventos"],
+      "fuentes": [
+        {
+          "url": "https://github.com/h5bp/Front-end-Developer-Interview-Questions/blob/main/src/questions/javascript-questions.md",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Pregunta adaptada, no copiada literalmente."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    },
+    {
+      "id": "js-dom-eventos-02",
+      "version": 1,
+      "pista": "javascript",
+      "familia": "dom-eventos",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Cuál es la diferencia entre un \"atributo\" HTML y una \"propiedad\" del objeto DOM en JavaScript?",
+        "en": "What is the difference between an HTML \"attribute\" and a DOM object \"property\" in JavaScript?"
+      },
+      "rubrica": {
+        "junior": [
+          "Reconoce que un atributo es lo escrito en el HTML y una propiedad es del objeto en JavaScript"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Da un ejemplo donde se desincronizan: el atributo `value` inicial de un input frente a `elemento.value` tras escribir el usuario",
+          "Explica que la mayoría de atributos generan una propiedad correspondiente automáticamente, pero no siempre con el mismo nombre (`class` vs `className`) ni el mismo tipo (string vs booleano)",
+          "Menciona `getAttribute`/`setAttribute` como forma de acceder al atributo directamente, distinto de la propiedad"
+        ]
+      },
+      "respuestaModelo": "El atributo es lo que está escrito literalmente en el HTML (`<input value=\"hola\">`), mientras que la propiedad es el valor actual del objeto DOM en JavaScript (`elemento.value`), y ambos pueden desincronizarse: si el usuario escribe en el input, `elemento.value` refleja lo que escribió, pero `elemento.getAttribute('value')` sigue devolviendo el valor original del HTML. La mayoría de atributos generan una propiedad correspondiente automáticamente, aunque no siempre con el mismo nombre (el atributo `class` corresponde a la propiedad `className`) ni el mismo tipo (un atributo booleano como `disabled` se refleja como propiedad `true`/`false`, no como el string `\"disabled\"`). `getAttribute`/`setAttribute` acceden siempre al atributo tal cual, útil cuando se necesita el valor original del HTML en vez del estado actual.",
+      "etiquetas": ["dom"],
+      "fuentes": [
+        {
+          "url": "https://github.com/h5bp/Front-end-Developer-Interview-Questions/blob/main/src/questions/javascript-questions.md",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Pregunta adaptada, no copiada literalmente."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    },
+    {
+      "id": "js-dom-eventos-03",
+      "version": 1,
+      "pista": "javascript",
+      "familia": "dom-eventos",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Cuáles son las diferencias entre `localStorage`, `sessionStorage` y las cookies?",
+        "en": "What are the differences between `localStorage`, `sessionStorage` and cookies?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que `localStorage` persiste entre sesiones y `sessionStorage` solo dura la pestaña",
+          "Sabe que las cookies se envían al servidor en cada petición y el storage no"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Da los límites de tamaño aproximados (cookies unos 4KB, storage varios MB)",
+          "Explica que las cookies pueden marcarse `HttpOnly`/`Secure` para reducir riesgo de robo por XSS, mientras el storage es accesible siempre desde JavaScript",
+          "Menciona que `sessionStorage` es independiente por pestaña, no se comparte aunque sea el mismo origen en otra pestaña"
+        ]
+      },
+      "respuestaModelo": "`localStorage` guarda datos por origen que persisten indefinidamente hasta que se borran explícitamente, con un límite de varios megabytes. `sessionStorage` guarda datos solo durante la vida de esa pestaña concreta: se borra al cerrarla, y no se comparte ni siquiera con otra pestaña del mismo sitio. Las cookies tienen un límite mucho menor (unos 4KB) y, a diferencia del storage, se envían automáticamente al servidor en cada petición HTTP a ese dominio, lo que las hace las únicas de las tres pensadas también para comunicación con el backend. Las cookies pueden marcarse `HttpOnly` (inaccesibles desde JavaScript, reduciendo el riesgo de robo por XSS) y `Secure` (solo se envían por HTTPS), mientras que tanto `localStorage` como `sessionStorage` son siempre accesibles desde cualquier script que corra en esa página.",
+      "etiquetas": ["dom", "almacenamiento"],
+      "fuentes": [
+        {
+          "url": "https://github.com/sudheerj/javascript-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Sin LICENSE visible; usado solo como señal de tema, no se copia texto."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "js-dom-eventos-04",
+      "version": 1,
+      "pista": "javascript",
+      "familia": "dom-eventos",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "¿Cuánto dura la información guardada en `sessionStorage`?",
+        "en": "How long does data stored in `sessionStorage` persist?"
+      },
+      "rubrica": {
+        "junior": ["Sabe que dura solo mientras la pestaña está abierta"],
+        "senior": [
+          "Lo anterior",
+          "Precisa que sobrevive a recargar la página (F5) pero no a cerrar la pestaña",
+          "Aclara que abrir la misma URL en una pestaña nueva no comparte el `sessionStorage` de la primera",
+          "Contrasta con `localStorage`, que sí persiste tras cerrar y reabrir el navegador"
+        ]
+      },
+      "respuestaModelo": "Los datos en `sessionStorage` duran mientras esa pestaña concreta esté abierta: sobreviven a recargar la página con F5, pero se borran en cuanto se cierra la pestaña. Abrir la misma URL en una pestaña nueva no hereda el `sessionStorage` de la primera, cada pestaña tiene el suyo propio aunque sea el mismo origen. Esto lo diferencia de `localStorage`, que persiste incluso después de cerrar y reabrir el navegador por completo, hasta que se borra explícitamente.",
+      "etiquetas": ["dom", "almacenamiento"],
+      "fuentes": [
+        {
+          "url": "https://github.com/lydiahallie/javascript-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Pregunta adaptada, no copiada literalmente."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    },
+    {
+      "id": "js-dom-eventos-05",
+      "version": 1,
+      "pista": "javascript",
+      "familia": "dom-eventos",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "¿Cuál es la diferencia entre \"feature detection\", \"feature inference\" y usar el UA string del navegador?",
+        "en": "What is the difference between feature detection, feature inference, and using the UA string?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica feature detection: comprobar si algo existe antes de usarlo (`if ('fetch' in window)`)"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica feature inference: asumir que si una API existe, otra relacionada también existe, sin comprobarla, y por qué es más frágil",
+          "Explica que el UA sniffing (leer `navigator.userAgent`) es la técnica menos fiable porque el string se puede falsificar o cambiar entre versiones",
+          "Recomienda feature detection como la práctica preferida en código moderno"
+        ]
+      },
+      "respuestaModelo": "Feature detection comprueba directamente si una funcionalidad concreta existe antes de usarla, por ejemplo `if ('fetch' in window)`, y actúa en consecuencia. Feature inference va un paso más allá y asume, sin comprobarlo, que si una API existe entonces otra relacionada también debería existir; es más frágil porque esa suposición puede dejar de cumplirse en el futuro. Usar el UA string (`navigator.userAgent`) para detectar el navegador es la técnica menos fiable de las tres: el string se puede falsificar, cambia de formato entre versiones, y no garantiza nada sobre qué funcionalidades soporta realmente ese navegador concreto. La práctica recomendada en código moderno es feature detection directa sobre la funcionalidad que se va a usar.",
+      "etiquetas": ["dom", "compatibilidad"],
+      "fuentes": [
+        {
+          "url": "https://github.com/h5bp/Front-end-Developer-Interview-Questions/blob/main/src/questions/javascript-questions.md",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Pregunta adaptada, no copiada literalmente."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    },
+    {
+      "id": "js-dom-eventos-06",
+      "version": 1,
+      "pista": "javascript",
+      "familia": "dom-eventos",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "Explica la política de mismo origen (same-origin policy) en relación con JavaScript y peticiones entre dominios.",
+        "en": "Explain the same-origin policy with regard to JavaScript and cross-domain requests."
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que un script solo puede acceder libremente a recursos del mismo origen"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Define origen como esquema + dominio + puerto, los tres deben coincidir",
+          "Explica CORS (cabeceras `Access-Control-Allow-Origin`) como el mecanismo del servidor para relajar esa restricción de forma controlada",
+          "Distingue que la restricción es del navegador (protege al usuario), no del servidor: una petición desde curl o Postman no la sufre"
+        ]
+      },
+      "respuestaModelo": "La same-origin policy es una restricción de seguridad del navegador: un script solo puede leer libremente respuestas de recursos que compartan el mismo origen, entendido como la combinación exacta de esquema (http/https), dominio y puerto. Si una página en `https://a.com` intenta leer la respuesta de una petición a `https://b.com`, el navegador la bloquea por defecto, aunque la petición técnicamente se haya enviado. CORS es el mecanismo que permite relajar esta restricción de forma controlada: el servidor de `b.com` responde con cabeceras como `Access-Control-Allow-Origin` indicando explícitamente qué orígenes tienen permiso para leer su respuesta. Es importante notar que esta restricción la aplica el navegador para proteger al usuario, no el servidor: una petición hecha desde curl o desde un backend no está sujeta a la same-origin policy.",
+      "etiquetas": ["dom", "seguridad"],
+      "fuentes": [
+        {
+          "url": "https://github.com/h5bp/Front-end-Developer-Interview-Questions/blob/main/src/questions/javascript-questions.md",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Pregunta adaptada, no copiada literalmente."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    }
+  ]
+}

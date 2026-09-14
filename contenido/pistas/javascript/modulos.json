@@ -1,0 +1,79 @@
+{
+  "pista": "javascript",
+  "familia": "modulos",
+  "preguntas": [
+    {
+      "id": "js-modulos-01",
+      "version": 1,
+      "pista": "javascript",
+      "familia": "modulos",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Cuál es la diferencia entre los módulos ES (`import`/`export`) y CommonJS (`require`/`module.exports`)?",
+        "en": "What is the difference between ES modules (`import`/`export`) and CommonJS (`require`/`module.exports`)?"
+      },
+      "rubrica": {
+        "junior": [
+          "Reconoce la sintaxis de cada uno (`import`/`export` vs `require`/`module.exports`)",
+          "Sabe que Node soporta ambos con matices de configuración"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que ESM se resuelve de forma estática (permite tree-shaking) y CommonJS de forma dinámica/síncrona en tiempo de ejecución",
+          "Menciona que ESM tiene top-level await y bindings en vivo (la importación ve cambios posteriores al valor exportado)",
+          "Sabe qué configuración activa cada uno en Node (`\"type\": \"module\"`, extensión `.mjs`)"
+        ]
+      },
+      "respuestaModelo": "CommonJS resuelve los `require` de forma dinámica y síncrona en tiempo de ejecución: se puede hacer `require` condicionalmente dentro de un `if`, y lo que se exporta es una copia del valor en el momento del `require`. Los módulos ES se resuelven de forma estática, antes de ejecutar el código, lo que permite a las herramientas de build hacer tree-shaking (eliminar exports no usados) y tener bindings en vivo: si el módulo exportador cambia el valor exportado después, el importador lo ve actualizado. ESM también soporta top-level `await`. Node soporta ambos, activando ESM con `\"type\": \"module\"` en el `package.json` o con extensión `.mjs`, y CommonJS por defecto o con `.cjs`.",
+      "etiquetas": ["modulos"],
+      "fuentes": [
+        {
+          "url": "https://github.com/sudheerj/javascript-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Sin LICENSE visible; usado solo como señal de tema, no se copia texto."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "js-modulos-02",
+      "version": 1,
+      "pista": "javascript",
+      "familia": "modulos",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué es una IIFE (Immediately Invoked Function Expression) y para qué se usaba antes de tener módulos?",
+        "en": "What is an IIFE (Immediately Invoked Function Expression) and what was it used for before modules existed?"
+      },
+      "rubrica": {
+        "junior": ["Reconoce la sintaxis `(function() { ... })()` y que se ejecuta inmediatamente"],
+        "senior": [
+          "Lo anterior",
+          "Explica que se usaba para crear un scope privado y evitar contaminar el objeto global",
+          "Menciona el módulo revelador (revealing module pattern) como aplicación práctica de la IIFE",
+          "Reconoce que hoy los módulos ES cumplen esa misma función de forma nativa, sin necesidad de la IIFE"
+        ]
+      },
+      "respuestaModelo": "Una IIFE es una función que se define y se invoca en el mismo momento, típicamente `(function() { ... })()`. Antes de tener módulos nativos, era la forma habitual de crear un scope privado: cualquier variable declarada dentro solo existía dentro de esa función, evitando contaminar el objeto global cuando varios scripts se cargaban en la misma página. Sobre esa base se construyó el \"revealing module pattern\": la IIFE devolvía un objeto con solo las funciones que se querían exponer públicamente, manteniendo el resto privado por closure. Hoy los módulos ES cumplen esa misma función de forma nativa (cada módulo tiene su propio scope), por lo que la IIFE para este propósito concreto ya no es necesaria, aunque el patrón sigue usándose en algunos bundles y scripts sueltos.",
+      "etiquetas": ["modulos", "closures"],
+      "fuentes": [
+        {
+          "url": "https://github.com/sudheerj/javascript-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Sin LICENSE visible; usado solo como señal de tema, no se copia texto."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

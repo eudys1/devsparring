@@ -1,0 +1,216 @@
+{
+  "pista": "javascript",
+  "familia": "tipos-coercion",
+  "preguntas": [
+    {
+      "id": "js-tipos-coercion-01",
+      "version": 1,
+      "pista": "javascript",
+      "familia": "tipos-coercion",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Cuál es la diferencia entre `==` y `===`? ¿Cuándo, si alguna vez, usarías `==`?",
+        "en": "What is the difference between `==` and `===`? When, if ever, would you use `==`?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que `===` compara sin conversión de tipos y `==` sí convierte antes de comparar"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Da un ejemplo donde `==` produce un resultado sorprendente (`'' == 0`, `null == undefined`)",
+          "Da el único caso donde suele aceptarse `==`: comparar contra `null` para capturar `null` y `undefined` a la vez",
+          "Recomienda `===` por defecto para evitar bugs sutiles de coerción"
+        ]
+      },
+      "respuestaModelo": "`===` compara valor y tipo sin convertir nada; `==` primero intenta convertir los operandos a un tipo común y después compara, lo que produce resultados poco intuitivos como `'' == 0` siendo `true` o `'0' == false` siendo `true`. Por eso la recomendación general es usar siempre `===`. El único caso donde `==` se acepta de forma consciente es comparar contra `null` (`valor == null`), porque esa comparación es `true` tanto si `valor` es `null` como si es `undefined`, ahorrando escribir las dos comparaciones por separado; fuera de ese caso concreto, `==` suele considerarse una fuente de bugs sutiles.",
+      "etiquetas": ["coercion"],
+      "fuentes": [
+        {
+          "url": "https://www.webreactiva.com/blog/15-preguntas-entrevistas-javascript",
+          "fecha": "2026-09-14",
+          "tipo": "leida"
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "js-tipos-coercion-kata-suma",
+      "version": 1,
+      "pista": "javascript",
+      "familia": "tipos-coercion",
+      "tipo": "kata",
+      "modos": ["kata"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Implementa `sumar(a, b)` que simplemente devuelva `a + b` tal cual lo haría JavaScript, sin ninguna conversión propia. El objetivo es predecir el resultado de la coerción de tipos del operador `+` en varios casos: arrays, objetos y strings numéricos.",
+        "en": "Implement `sumar(a, b)` that simply returns `a + b` as plain JavaScript would, with no conversion of your own. The goal is to predict the result of `+` operator coercion across arrays, objects, and numeric strings."
+      },
+      "rubrica": {
+        "junior": [
+          "Predice correctamente `1 + '1'` como `'11'` (concatenación cuando hay un string)",
+          "Predice correctamente `[] + []` como `''`"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Predice `[] + {}` como `'[object Object]'` y explica el porqué (ambos se convierten a string antes de concatenar)",
+          "Explica la regla general: si alguno de los dos operandos se convierte a string, `+` concatena; si ambos son numéricos, suma",
+          "Menciona `Symbol.toPrimitive`/`valueOf`/`toString` como el mecanismo real detrás de la conversión de objetos"
+        ]
+      },
+      "respuestaModelo": "El operador `+` primero convierte ambos operandos a un tipo primitivo (usando `valueOf`/`toString` o `Symbol.toPrimitive`), y si el resultado de cualquiera de los dos es un string, concatena; si ambos terminan siendo numéricos, suma. `1 + '1'` da `'11'` porque el número se convierte a string y se concatena. `[] + []` da `''` porque un array se convierte a string uniendo sus elementos, y un array vacío se convierte en `''`, así que es `'' + ''`. `[] + {}` da `'[object Object]'` porque el array se convierte en `''` y el objeto plano en `'[object Object]'`, y se concatenan. Entender esto evita depender de memoria y permite razonar cualquier caso nuevo a partir de la regla general.",
+      "kata": {
+        "funcion": "sumar",
+        "codigoInicial": "export function sumar(a: unknown, b: unknown): unknown {\n  // tu código: exactamente lo que hace + en JavaScript\n}\n",
+        "casos": [
+          {
+            "nombre": "número más string numérico concatena",
+            "entrada": [1, "1"],
+            "esperado": "11"
+          },
+          {
+            "nombre": "array vacío más array vacío da string vacío",
+            "entrada": [[], []],
+            "esperado": ""
+          },
+          {
+            "nombre": "array vacío más objeto plano",
+            "entrada": [[], {}],
+            "esperado": "[object Object]"
+          },
+          { "nombre": "dos números suma normal", "entrada": [2, 3], "esperado": 5 },
+          { "nombre": "string más string concatena", "entrada": ["a", "b"], "esperado": "ab" }
+        ],
+        "tiempoMin": 15,
+        "congelarAleatorio": false
+      },
+      "etiquetas": ["coercion"],
+      "fuentes": [
+        {
+          "url": "https://github.com/h5bp/Front-end-Developer-Interview-Questions/blob/main/src/questions/javascript-questions.md",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Pregunta adaptada, no copiada literalmente."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    },
+    {
+      "id": "js-tipos-coercion-02",
+      "version": 1,
+      "pista": "javascript",
+      "familia": "tipos-coercion",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Cuáles son los 8 valores \"falsy\" en JavaScript?",
+        "en": "What are the 8 \"falsy\" values in JavaScript?"
+      },
+      "rubrica": {
+        "junior": ["Nombra al menos 5 de los 8 valores falsy"],
+        "senior": [
+          "Lo anterior",
+          "Nombra los 8: `undefined`, `null`, `NaN`, `false`, `''`, `0`, `-0`, `0n`",
+          "Explica que todo lo demás (incluidos `[]` y `{}`) es truthy, contra la intuición de algunos",
+          "Menciona el bug clásico de usar `||` con `0` como valor válido y cómo `??` lo evita"
+        ]
+      },
+      "respuestaModelo": "Los 8 valores falsy en JavaScript son: `undefined`, `null`, `NaN`, `false`, `''` (string vacío), `0`, `-0` y `0n` (BigInt cero). Cualquier otro valor es truthy, incluido un array vacío `[]` o un objeto vacío `{}`, lo que sorprende a quien espera que \"vacío\" sea falsy. Esto importa en la práctica porque `cantidad || 10` da `10` también cuando `cantidad` vale `0`, un bug clásico; usar `cantidad ?? 10` solo cae al valor por defecto si `cantidad` es `null` o `undefined`, tratando `0` como un valor válido.",
+      "etiquetas": ["coercion"],
+      "fuentes": [
+        {
+          "url": "https://github.com/lydiahallie/javascript-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Pregunta adaptada, no copiada literalmente."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    },
+    {
+      "id": "js-tipos-coercion-03",
+      "version": 1,
+      "pista": "javascript",
+      "familia": "tipos-coercion",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Cuál es la diferencia entre una variable que vale `null`, una que vale `undefined` y una que no ha sido declarada?",
+        "en": "What is the difference between a variable that is `null`, `undefined`, or undeclared?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que `undefined` es el valor por defecto de una variable declarada sin asignar",
+          "Explica que `null` es una ausencia de valor asignada intencionalmente"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que acceder a una variable no declarada lanza `ReferenceError`, distinto de leer `undefined`",
+          "Menciona que `typeof variableNoDeclarada` no lanza error y devuelve `'undefined'`, una excepción útil para comprobar existencia",
+          "Menciona que `typeof null === 'object'`, un error histórico del lenguaje que no se puede corregir por compatibilidad"
+        ]
+      },
+      "respuestaModelo": "`undefined` es el valor que JavaScript asigna automáticamente a una variable declarada pero sin inicializar, o a un parámetro de función que no se pasó. `null` es un valor que alguien asigna intencionalmente para representar \"ausencia de valor\". Una variable no declarada es distinta de ambas: acceder a ella lanza `ReferenceError`, mientras que leer una variable declarada sin asignar da `undefined` sin error. Una excepción práctica es `typeof`: `typeof variableNoDeclarada` no lanza error y devuelve `'undefined'`, por eso se usa para comprobar si algo existe sin arriesgar una excepción. Un dato curioso (y un error histórico del lenguaje) es que `typeof null` devuelve `'object'`, no `'null'`, y no se puede corregir sin romper compatibilidad con código existente.",
+      "etiquetas": ["coercion"],
+      "fuentes": [
+        {
+          "url": "https://github.com/h5bp/Front-end-Developer-Interview-Questions/blob/main/src/questions/javascript-questions.md",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Pregunta adaptada, no copiada literalmente."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    },
+    {
+      "id": "js-tipos-coercion-04",
+      "version": 1,
+      "pista": "javascript",
+      "familia": "tipos-coercion",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Explica la diferencia entre objetos mutables e inmutables en JavaScript con un ejemplo de cada uno.",
+        "en": "Explain the difference between mutable and immutable objects in JavaScript with an example of each."
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que un objeto/array mutable se puede modificar tras crearse",
+          "Da un ejemplo de un valor primitivo inmutable (string, número)"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Aclara que los primitivos son siempre inmutables por diseño del lenguaje, no por convención",
+          "Explica que objetos y arrays son mutables por defecto, y da un ejemplo de mutación accidental (pasar un array a una función que lo modifica sin que el caller lo espere)",
+          "Menciona `Object.freeze`, spread o `structuredClone` como formas de trabajar de forma inmutable con objetos"
+        ]
+      },
+      "respuestaModelo": "Un valor primitivo (string, número, booleano) es inmutable por diseño del lenguaje: `'hola'.toUpperCase()` devuelve un string nuevo, no modifica el original, porque los strings no se pueden mutar. Un objeto o un array son mutables por defecto: `arr.push(1)` modifica el array original en el sitio, y si ese array se pasó como referencia a una función, quien la llamó ve el cambio aunque no lo esperara, una fuente común de bugs. Para trabajar de forma inmutable con objetos hay que hacerlo explícito: crear una copia con spread (`{...obj, campo: nuevo}`) en vez de mutar el original, o usar `Object.freeze` para impedir cambios de primer nivel.",
+      "etiquetas": ["coercion", "inmutabilidad"],
+      "fuentes": [
+        {
+          "url": "https://github.com/h5bp/Front-end-Developer-Interview-Questions/blob/main/src/questions/javascript-questions.md",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Pregunta adaptada, no copiada literalmente."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    }
+  ]
+}

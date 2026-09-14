@@ -1,0 +1,120 @@
+{
+  "pista": "arquitectura",
+  "familia": "monolito-servicios",
+  "preguntas": [
+    {
+      "id": "arq-monolito-servicios-01",
+      "version": 1,
+      "pista": "arquitectura",
+      "familia": "monolito-servicios",
+      "tipo": "razonamiento",
+      "modos": ["verbal", "diseno"],
+      "nivelMinimo": "senior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Monolito frente a microservicios: ¿qué problema organizativo, no solo técnico, resuelven los microservicios, y qué coste añaden?",
+        "en": "Monolith vs microservices: what organizational problem (not just technical) do microservices solve, and what cost do they add?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica la diferencia básica: un monolito se despliega como una unidad, microservicios se despliegan por separado",
+          "Menciona que microservicios añaden complejidad operativa"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica el problema organizativo real: muchos equipos compartiendo un solo deploy se pisan; microservicios permiten desplegar y escalar cada parte de forma independiente",
+          "Detalla el coste: observabilidad distribuida, consistencia eventual entre servicios, latencia de red donde antes había una llamada de función, más complejidad de testing de integración",
+          "Da un criterio de decisión: para un equipo pequeño, un monolito bien modularizado suele ser la opción más pragmática"
+        ]
+      },
+      "respuestaModelo": "El problema que resuelven los microservicios es más organizativo que técnico: cuando muchos equipos comparten un solo monolito y un solo pipeline de deploy, se pisan entre sí y cualquier cambio de uno bloquea a los demás. Separar el sistema en servicios independientes permite que cada equipo despliegue y escale solo la parte que le corresponde, sin coordinar con el resto. El coste real es operativo: hay que sumar observabilidad distribuida (trazas entre servicios), aceptar consistencia eventual donde antes había una transacción local, absorber la latencia de red donde antes había una llamada de función directa, y mucha más complejidad de testing de integración y despliegue. Para un equipo pequeño, un monolito bien modularizado suele ser la opción más pragmática; los microservicios se justifican cuando el problema organizativo (varios equipos, un solo deploy) ya es real, no antes.",
+      "etiquetas": ["arquitectura", "monolito", "microservicios"],
+      "fuentes": [
+        {
+          "url": "https://github.com/donnemartin/system-design-primer",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Contenido citado como referencia/inspiración de system-design-primer (CC BY-SA 4.0, exige atribución y compartir igual); pregunta y explicación redactadas de nuevo, sin copiar texto del repositorio."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "arq-monolito-servicios-02",
+      "version": 1,
+      "pista": "arquitectura",
+      "familia": "monolito-servicios",
+      "tipo": "diseno",
+      "modos": ["diseno"],
+      "nivelMinimo": "senior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Cómo diseñarías un sistema de colas y eventos para desacoplar 'usuario se registra' de 'enviar email de bienvenida' y 'crear registro en CRM'?",
+        "en": "How would you design a queue/event system to decouple 'user signs up' from 'send welcome email' and 'create CRM record'?"
+      },
+      "rubrica": {
+        "junior": [
+          "Propone que el registro publique un evento en vez de llamar directamente a cada servicio",
+          "Menciona que cada consumidor puede fallar sin tumbar el registro del usuario"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Describe el flujo completo: el endpoint de registro publica user.registered a una cola/bus; email y CRM se suscriben de forma independiente",
+          "Explica que cada consumidor reintenta por su cuenta si falla, sin bloquear a los demás",
+          "Menciona idempotencia en los consumidores (pueden recibir el mismo evento dos veces) y una dead-letter queue para eventos que fallan repetidamente"
+        ]
+      },
+      "respuestaModelo": "El endpoint de registro publica un evento (`user.registered`) a una cola o bus de mensajes en vez de llamar directamente a los servicios de email y CRM; con eso el registro del usuario se confirma en cuanto se guarda en la base de datos y se publica el evento, sin esperar a que el email o el CRM respondan. Cada consumidor (el servicio de email, el de CRM) se suscribe de forma independiente, procesa el evento a su ritmo y reintenta por su cuenta si falla, sin afectar a los demás ni al registro original. Como un mismo evento puede entregarse más de una vez (reintentos, at-least-once delivery), los consumidores deben ser idempotentes, por ejemplo comprobando si ya existe el registro en el CRM antes de crearlo. Una dead-letter queue recoge los eventos que fallan repetidamente para revisión manual en vez de perderlos o reintentar para siempre.",
+      "etiquetas": ["arquitectura", "colas", "eventos", "idempotencia"],
+      "fuentes": [
+        {
+          "url": "https://github.com/donnemartin/system-design-primer",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Contenido citado como referencia/inspiración de system-design-primer (CC BY-SA 4.0), sección de colas; pregunta y explicación redactadas de nuevo."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "arq-monolito-servicios-03",
+      "version": 1,
+      "pista": "arquitectura",
+      "familia": "monolito-servicios",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "senior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Cuéntame de una decisión de arquitectura que tomaste y que, con el tiempo, resultó equivocada. ¿Qué harías distinto hoy?",
+        "en": "Tell me about an architecture decision you made that turned out wrong over time. What would you do differently today?"
+      },
+      "rubrica": {
+        "junior": [
+          "Cuenta una decisión concreta con contexto suficiente",
+          "Reconoce qué salió mal sin excusas vagas"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica el contexto que hizo esa decisión razonable EN SU MOMENTO, no solo 'fui tonto'",
+          "Identifica qué señal temprana debería haber vigilado para detectarlo antes",
+          "Muestra aprendizaje aplicado a una decisión posterior, no solo arrepentimiento"
+        ]
+      },
+      "respuestaModelo": "Una respuesta que aprueba admite el error concreto sin excusas vagas ('elegimos X porque parecía la opción más simple con la información que teníamos entonces') y explica por qué esa decisión era razonable en su momento, no solo con retrospectiva. Identifica una señal temprana que debería haber vigilado (crecimiento de tráfico, cambio de requisitos, deuda técnica acumulada) y que, de haberla seguido, habría permitido corregir antes. Cierra mostrando cómo ese aprendizaje se aplicó a una decisión posterior, no solo como arrepentimiento sino como criterio ganado.",
+      "etiquetas": ["arquitectura", "comportamental"],
+      "fuentes": [
+        {
+          "url": "https://www.glassdoor.es/Entrevista/sr-react-developer-preguntas-de-entrevista-SRCH_KO0,18.htm",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Patrón habitual de pregunta comportamental de arquitectura en entrevistas senior; página no accesible sin cuenta en la investigación original."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

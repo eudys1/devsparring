@@ -1,0 +1,192 @@
+{
+  "pista": "fundamentos",
+  "familia": "testing",
+  "preguntas": [
+    {
+      "id": "fund-testing-01",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "testing",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Explica la pirámide de testing (unitarios, integración, e2e). ¿Por qué se recomienda tener más unitarios que e2e?",
+        "en": "Explain the testing pyramid (unit, integration, e2e). Why is it recommended to have more unit tests than e2e tests?"
+      },
+      "rubrica": {
+        "junior": [
+          "Describe los tres niveles (unitario, integración, e2e) y qué prueba cada uno",
+          "Dibuja o describe la forma de pirámide (más unitarios en la base)"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Justifica la forma por velocidad y coste, no solo la recita de memoria",
+          "Explica que un e2e roto es más difícil de depurar por su alcance amplio",
+          "Reconoce cuándo un proyecto real se aleja de la pirámide ideal (por ejemplo, testing trophy con más integración)"
+        ]
+      },
+      "respuestaModelo": "La pirámide propone muchos tests unitarios en la base (rápidos, baratos, prueban una función o módulo aislado), menos tests de integración en el medio (prueban que varias piezas colaboran bien) y pocos e2e en la cima (recorren la app real de punta a punta). Se recomienda esa proporción porque los unitarios son rápidos y baratos de mantener, mientras un e2e es lento, más frágil ante cambios de UI, y cuando falla es más difícil saber exactamente qué se rompió por su alcance amplio. En la práctica muchos equipos prefieren un \"testing trophy\" con más peso en integración, pero la lógica de coste-velocidad es la misma.",
+      "etiquetas": ["testing"],
+      "fuentes": [
+        {
+          "url": "https://www.glassdoor.com/Interview/frontend-javascript-developer-interview-questions-SRCH_KO0,29.htm",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Bloqueo HTTP 403 en WebFetch directo; contenido de resumen de búsqueda."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "fund-testing-02",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "testing",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué es TDD (red-green-refactor)? ¿Lo usas siempre o solo en ciertos casos? Justifica.",
+        "en": "What is TDD (red-green-refactor)? Do you always use it, or only in certain cases? Justify."
+      },
+      "rubrica": {
+        "junior": [
+          "Describe el ciclo: escribir un test que falla, hacerlo pasar con el mínimo código, refactorizar"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Da un criterio realista de cuándo NO usarlo (exploración de UI, prototipos donde el diseño aún cambia)",
+          "Explica el beneficio de TDD sobre el diseño de la API antes de implementarla",
+          "No lo presenta como dogma; reconoce que la disciplina real depende del contexto del equipo"
+        ]
+      },
+      "respuestaModelo": "TDD sigue el ciclo red-green-refactor: primero se escribe un test que falla porque la funcionalidad no existe, luego se escribe el mínimo código para que pase, y después se refactoriza con la seguridad de que el test sigue verde. Lo uso sobre todo cuando la lógica de negocio está clara (cálculos, validaciones, reglas), porque escribir el test primero ayuda a diseñar una API más simple de usar. No lo aplico igual en exploración de UI o prototipos donde el diseño todavía va a cambiar mucho, porque ahí escribir tests de antemano frena la iteración sin aportar tanto valor.",
+      "etiquetas": ["testing", "tdd"],
+      "fuentes": [
+        {
+          "url": "https://www.glassdoor.com/Interview/frontend-javascript-developer-interview-questions-SRCH_KO0,29.htm",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Bloqueo HTTP 403 en WebFetch directo; contenido de resumen de búsqueda."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "fund-testing-03",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "testing",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Cuál es la diferencia entre un mock, un stub y un spy? Da un ejemplo de cuándo usarías cada uno.",
+        "en": "What is the difference between a mock, a stub and a spy? Give an example of when you'd use each."
+      },
+      "rubrica": {
+        "junior": [
+          "Distingue al menos dos de los tres conceptos correctamente",
+          "Da un ejemplo de uso de un test doble en general"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Distingue los tres con precisión: stub devuelve datos fijos, spy observa llamadas reales, mock verifica expectativas",
+          "Da un ejemplo propio de cada uno (no genérico)",
+          "Explica el riesgo de abusar de mocks: tests acoplados a la implementación en vez de al comportamiento"
+        ]
+      },
+      "respuestaModelo": "Un stub reemplaza una dependencia devolviendo datos fijos, por ejemplo un `RepositorioDeUsuarios` falso que siempre devuelve el mismo usuario, útil cuando solo necesitas datos predecibles. Un spy envuelve una función real y registra cómo se llamó, útil para comprobar que se invocó `enviarEmail` con los argumentos correctos sin cambiar su comportamiento. Un mock va más allá: se configuran expectativas concretas (\"debe llamarse exactamente una vez con este argumento\") y el test falla si no se cumplen. Abusar de mocks acopla los tests a los detalles de implementación; conviene reservarlos para verificar interacciones críticas, no cualquier llamada interna.",
+      "etiquetas": ["testing"],
+      "fuentes": [
+        {
+          "url": "https://www.glassdoor.com/Interview/frontend-javascript-developer-interview-questions-SRCH_KO0,29.htm",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Tema de alta frecuencia hipotética; sin fuente única textual verificada de primera mano."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "fund-testing-04",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "testing",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Cuál es la diferencia práctica entre un test de integración y un test e2e (end-to-end)? Da un ejemplo de cada uno para una funcionalidad de login.",
+        "en": "What is the practical difference between an integration test and an e2e test? Give an example of each for a login feature."
+      },
+      "rubrica": {
+        "junior": [
+          "Distingue que integración prueba varias piezas propias juntas y e2e prueba la app completa",
+          "Da un ejemplo simple de cada uno para login"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Da un ejemplo de integración mockeando la red (formulario llama al servicio de auth con la red simulada)",
+          "Da un ejemplo de e2e recorriendo UI + backend real o casi real como un usuario",
+          "Reconoce que los e2e son más lentos y frágiles, por lo que se usan con moderación"
+        ]
+      },
+      "respuestaModelo": "Un test de integración verifica que varias piezas del propio sistema colaboran bien: por ejemplo, que el formulario de login llama correctamente al servicio de autenticación, mockeando la respuesta de red pero usando el código real del formulario y del servicio juntos. Un test e2e recorre la app real de punta a punta, simulando a un usuario real: abre el navegador, rellena el formulario de login contra un backend real o casi real, y comprueba que termina en la pantalla esperada. Los e2e dan más confianza porque prueban el sistema completo, pero son más lentos y frágiles ante cambios de UI, por eso se usan con moderación frente a los de integración.",
+      "etiquetas": ["testing"],
+      "fuentes": [
+        {
+          "url": "https://www.glassdoor.com/Interview/frontend-javascript-developer-interview-questions-SRCH_KO0,29.htm",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Bloqueo HTTP 403 en WebFetch directo; contenido de resumen de búsqueda."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "fund-testing-05",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "testing",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "mid",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "Te unes a un proyecto sin tests y te piden añadir una funcionalidad crítica de pagos. ¿Cómo lo abordas?",
+        "en": "You join a project with no tests and are asked to add a critical payments feature. How do you approach it?"
+      },
+      "rubrica": {
+        "junior": ["Menciona añadir tests alrededor de lo nuevo, no reescribir todo el proyecto"],
+        "senior": [
+          "Lo anterior",
+          "Descarta explícitamente \"escribir tests de todo el proyecto primero\" por poco realista",
+          "Propone characterization tests del código existente que va a tocar antes de modificarlo",
+          "Prioriza cobertura en la ruta crítica de pagos por el riesgo de negocio, no cobertura uniforme"
+        ]
+      },
+      "respuestaModelo": "No intentaría cubrir todo el proyecto de tests antes de empezar, sería poco realista y bloquearía la entrega. Primero escribiría characterization tests alrededor del código existente que voy a tocar, para capturar su comportamiento actual antes de modificarlo y detectar si rompo algo sin querer. Luego añadiría tests nuevos para la funcionalidad de pagos con prioridad alta, cubriendo los casos límite y de fallo (pago rechazado, timeout, reintentos) porque el riesgo de negocio ahí es mayor que en el resto del código sin tests.",
+      "etiquetas": ["testing"],
+      "fuentes": [
+        {
+          "url": "https://www.glassdoor.com/Interview/frontend-javascript-developer-interview-questions-SRCH_KO0,29.htm",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Variante práctica del tema de testing citado de forma genérica; bloqueo HTTP 403 en WebFetch directo."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

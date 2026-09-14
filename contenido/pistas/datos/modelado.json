@@ -1,0 +1,120 @@
+{
+  "pista": "datos",
+  "familia": "modelado",
+  "preguntas": [
+    {
+      "id": "datos-modelado-01",
+      "version": 1,
+      "pista": "datos",
+      "familia": "modelado",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué es la normalización de bases de datos y cuándo desnormalizarías a propósito?",
+        "en": "What is database normalization, and when would you intentionally denormalize?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que normalizar reparte los datos en varias tablas relacionadas para evitar duplicación",
+          "Sabe que desnormalizar significa duplicar datos o guardar un campo calculado a propósito"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Menciona las formas normales (1NF, 2NF, 3NF) sin necesidad de recitarlas de memoria, solo la idea de eliminar redundancia y anomalías de actualización",
+          "Explica que desnormalizar tiene sentido cuando el patrón de lectura domina sobre el de escritura y el JOIN repetido es el cuello de botella real",
+          "Reconoce el coste que se asume al desnormalizar: mantener la duplicación consistente (triggers, jobs, o aceptar cierta inconsistencia eventual)"
+        ]
+      },
+      "respuestaModelo": "Normalizar es dividir los datos en tablas relacionadas para eliminar redundancia y evitar anomalías de actualización (1NF, 2NF, 3NF son los pasos habituales de ese proceso). Desnormalizar es hacer lo contrario a propósito: duplicar un dato o guardar un campo ya calculado en vez de recalcularlo con un JOIN cada vez. Tiene sentido cuando las lecturas dominan brutalmente sobre las escrituras y el JOIN repetido es el cuello de botella real medido, por ejemplo guardar `total_spent` en la tabla de clientes en vez de sumar `order_items` en cada request. El coste que se asume es mantener esa duplicación consistente, normalmente con un trigger, un job o aceptando una ventana de inconsistencia eventual.",
+      "etiquetas": ["sql", "modelado", "normalizacion"],
+      "fuentes": [
+        {
+          "url": "https://github.com/kansiris/SQL-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Patrón recurrente en bancos de preguntas SQL; pregunta redactada de nuevo."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "datos-modelado-02",
+      "version": 1,
+      "pista": "datos",
+      "familia": "modelado",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué son las migraciones de base de datos y por qué no deberías editar el esquema de producción a mano desde un cliente SQL?",
+        "en": "What are database migrations, and why shouldn't you hand-edit the production schema from a SQL client?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que una migración es un script versionado que lleva el esquema de un estado a otro",
+          "Dice que editar producción a mano no queda registrado en ningún sitio"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que las migraciones viven en git, son auditables y reproducibles en cualquier entorno (local, staging, producción)",
+          "Menciona el drift entre entornos que provoca editar a mano: el esquema real deja de coincidir con lo que el código espera",
+          "Añade que un cambio manual no pasa por revisión de código ni se puede revertir de forma fiable"
+        ]
+      },
+      "respuestaModelo": "Las migraciones son scripts versionados (en git, junto al código) que llevan el esquema de la base de datos de un estado a otro de forma reproducible y auditable en cualquier entorno. Editar el esquema de producción a mano desde un cliente SQL rompe eso de varias formas: crea drift entre entornos (producción deja de coincidir con lo que dicen las migraciones en el repo), el cambio no queda registrado en ningún sitio salvo la memoria de quien lo hizo, no pasa por revisión de código, y no se puede revertir de forma fiable si algo sale mal. Herramientas como Prisma Migrate o Drizzle Kit generan y aplican esos scripts de forma controlada.",
+      "etiquetas": ["sql", "modelado", "migraciones"],
+      "fuentes": [
+        {
+          "url": "https://www.prisma.io/docs/orm/prisma-migrate",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Buena práctica estándar documentada en Prisma Migrate y Drizzle Kit; pregunta redactada de nuevo."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "datos-modelado-03",
+      "version": 1,
+      "pista": "datos",
+      "familia": "modelado",
+      "tipo": "razonamiento",
+      "modos": ["verbal", "diseno"],
+      "nivelMinimo": "senior",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "Necesitas añadir una columna NOT NULL a una tabla de 10 millones de filas en producción sin downtime. ¿Cómo lo harías?",
+        "en": "You need to add a NOT NULL column to a 10-million-row table in production without downtime. How would you do it?"
+      },
+      "rubrica": {
+        "junior": [
+          "Sabe que añadir NOT NULL directamente bloquea la tabla mientras se valida cada fila existente",
+          "Propone añadir la columna como nullable primero"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Describe el proceso completo: columna nullable con valor por defecto, backfill en lotes pequeños para no saturar el WAL, y solo al final el constraint NOT NULL",
+          "Menciona que en versiones recientes de Postgres el NOT NULL final puede validarse sin bloqueo largo si ya existe un CHECK previamente validado",
+          "Explica que el código que escribe en la columna nueva debe desplegarse ANTES del backfill, en pasos separados (expand/contract)"
+        ]
+      },
+      "respuestaModelo": "Añadir `NOT NULL` directamente bloquea la tabla mientras Postgres valida que ninguna fila existente tenga NULL, inviable en una tabla de 10 millones de filas en horario de tráfico. El patrón correcto es expand/contract en varios pasos: primero añadir la columna como nullable con un valor por defecto; después desplegar el código que ya escribe esa columna en las filas nuevas; luego rellenar (backfill) las filas existentes en lotes pequeños para no saturar el WAL ni bloquear escrituras concurrentes; y solo al final, con todas las filas pobladas, añadir el constraint `NOT NULL`. En versiones recientes de Postgres, si antes se añade un `CHECK (columna IS NOT NULL) NOT VALID` y se valida por separado, el `NOT NULL` final se puede aplicar sin el bloqueo largo de una validación completa en el mismo paso.",
+      "etiquetas": ["sql", "migraciones", "postgres", "zero-downtime"],
+      "fuentes": [
+        {
+          "url": "https://www.prisma.io/docs/orm/prisma-migrate",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Práctica consolidada de 'zero-downtime migrations' en Postgres, contrastada con documentación de Prisma Migrate sobre migraciones expansivas/contractivas."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

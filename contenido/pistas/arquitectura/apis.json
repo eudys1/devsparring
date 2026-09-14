@@ -1,0 +1,160 @@
+{
+  "pista": "arquitectura",
+  "familia": "apis",
+  "preguntas": [
+    {
+      "id": "arq-apis-01",
+      "version": 1,
+      "pista": "arquitectura",
+      "familia": "apis",
+      "tipo": "diseno",
+      "modos": ["diseno"],
+      "nivelMinimo": "senior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Diseña el rate limiting de una API pública: ¿qué algoritmo usarías y por qué, y a qué nivel lo aplicarías, usuario, IP o API key?",
+        "en": "Design rate limiting for a public API: what algorithm would you use and why, and at what level (user, IP, API key)?"
+      },
+      "rubrica": {
+        "junior": [
+          "Propone algún tipo de contador con límite y ventana de tiempo",
+          "Menciona devolver un código 429 cuando se supera el límite"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Elige token bucket como default razonable para APIs de cara al usuario (permite ráfagas cortas, O(1) en memoria con un script Lua atómico en Redis)",
+          "Menciona leaky bucket cuando hace falta una tasa de salida constante para proteger un sistema downstream frágil",
+          "Decide limitar por API key o usuario autenticado en vez de solo IP, explicando que varios usuarios detrás de un NAT comparten IP",
+          "Especifica la respuesta: 429 con cabeceras Retry-After y X-RateLimit-Remaining"
+        ]
+      },
+      "respuestaModelo": "Token bucket es el algoritmo por defecto razonable para una API pública: permite ráfagas cortas (el usuario puede gastar varias peticiones de golpe si no las ha usado antes) y se implementa en O(1) por usuario con un script Lua atómico en Redis. Leaky bucket encaja mejor cuando hace falta proteger un sistema downstream frágil con una tasa de salida constante, sin permitir ráfagas. El límite debería aplicarse por API key o usuario autenticado, no solo por IP, porque varios usuarios detrás de un NAT corporativo comparten la misma IP y se penalizarían entre sí injustamente; IP sirve como límite adicional para tráfico no autenticado. Al superar el límite, la API responde 429 con cabeceras `Retry-After` (cuándo puede reintentar) y `X-RateLimit-Remaining` (cuántas peticiones le quedan), para que el cliente pueda comportarse bien.",
+      "etiquetas": ["arquitectura", "rate-limiting", "apis", "redis"],
+      "fuentes": [
+        {
+          "url": "https://intervu.dev/blog/rate-limiter-system-design",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Guías de rate limiting en entrevistas de sistemas, contrastadas con varias fuentes coincidentes; pregunta redactada de nuevo."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "arq-apis-02",
+      "version": 1,
+      "pista": "arquitectura",
+      "familia": "apis",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "senior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué es la idempotencia en el diseño de una API y por qué un endpoint de 'cobrar pago' la necesita aunque use POST?",
+        "en": "What is idempotency in API design, and why does a 'charge payment' endpoint need it even though it uses POST?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que idempotente significa que repetir la operación produce el mismo resultado que hacerla una sola vez",
+          "Sabe que POST no es idempotente por definición HTTP"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica el escenario concreto: el cliente reintenta tras un timeout de red sin saber si el primer intento llegó, y puede duplicar el cobro",
+          "Describe la solución: el cliente genera una Idempotency-Key única por operación, el servidor la guarda con el resultado de la primera ejecución",
+          "Explica que en reintentos con la misma key el servidor devuelve el resultado guardado sin volver a ejecutar la operación"
+        ]
+      },
+      "respuestaModelo": "Idempotencia significa que repetir la misma operación produce el mismo resultado que hacerla una sola vez, sin efectos secundarios adicionales. POST no es idempotente por definición del protocolo HTTP: cada llamada puede crear un nuevo recurso o efecto. El problema real es que si el cliente reintenta un POST tras un timeout de red, sin saber si el primer intento llegó a completarse en el servidor, puede acabar cobrando dos veces por el mismo pedido. La solución es que el cliente genere una `Idempotency-Key` única por operación (un UUID, por ejemplo) y la envíe en la petición; el servidor la guarda junto con el resultado de la primera ejecución, y si llega otra petición con la misma key, devuelve el resultado guardado sin volver a ejecutar el cobro.",
+      "etiquetas": ["arquitectura", "idempotencia", "apis", "pagos"],
+      "fuentes": [
+        {
+          "url": "https://zuplo.com/learning-center/implementing-idempotency-keys-in-rest-apis-a-complete-guide",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Guía de Zuplo sobre idempotencia en APIs REST, contrastada con discusión de trampas de backend en entrevistas; pregunta redactada de nuevo."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "arq-apis-03",
+      "version": 1,
+      "pista": "arquitectura",
+      "familia": "apis",
+      "tipo": "diseno",
+      "modos": ["diseno"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Diseña las rutas, parámetros de query y forma de la respuesta JSON del endpoint GET /api/orders para un panel de administración con potencialmente millones de filas, con paginación, filtro por estado y por rango de fechas, y ordenación.",
+        "en": "Design the routes, query parameters and JSON response shape for the GET /api/orders endpoint of an admin panel with potentially millions of rows, supporting pagination, status filter, date range filter, and sorting."
+      },
+      "rubrica": {
+        "junior": [
+          "Propone parámetros de query claros para filtro y paginación (status, from, to, limit)",
+          "Incluye los datos solicitados en la respuesta JSON"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Usa paginación por cursor/keyset (no page/offset puro) para que sea eficiente a escala",
+          "Valida y rechaza valores de filtro/orden no permitidos en vez de pasarlos crudos a la query",
+          "La respuesta incluye el cursor de la siguiente página, no solo los datos",
+          "Explica por qué NO se ofrece 'saltar a la página 5000' con este esquema, como limitación aceptada y comunicada"
+        ]
+      },
+      "respuestaModelo": "```\nGET /api/orders?status=completed&from=2026-08-01&to=2026-09-01&sort=created_at:desc&limit=50&cursor=eyJjcmVhdGVkQXQiOi4uLn0\n\n200 OK\n{\n  \"data\": [ { \"id\": \"...\", \"status\": \"completed\", \"createdAt\": \"...\", ... } ],\n  \"nextCursor\": \"eyJjcmVhdGVkQXQiOi4uLn0\" | null\n}\n```\n`status` y `sort` se validan contra una lista blanca de valores permitidos (nunca se concatenan crudos en la query SQL). `from`/`to` acotan el rango de fechas. La paginación es por cursor opaco (codificado en base64, con el valor de las columnas de orden), no `page`/`offset`, para que el coste no crezca con la profundidad de la página en una tabla de millones de filas. La respuesta trae `nextCursor` en vez de un número total de páginas; explícitamente no se ofrece 'saltar a la página 5000' porque eso exigiría un `OFFSET` caro, una limitación que se comunica en la documentación de la API en vez de implementarse mal.",
+      "etiquetas": ["arquitectura", "apis", "paginacion", "diseno"],
+      "fuentes": [
+        {
+          "url": "https://www.hellointerview.com/learn/system-design/core-concepts/api-design",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Ejercicio de diseño de API a escala reconstruido combinando el patrón de 'API design' de Hello Interview (contenido de producto comercial, no copiado) con la comparativa keyset vs offset ya citada en la pista de datos."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "arq-apis-04",
+      "version": 1,
+      "pista": "arquitectura",
+      "familia": "apis",
+      "tipo": "diseno",
+      "modos": ["diseno"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Implementa un middleware de rate limiting para el endpoint público POST /api/contact que permita como máximo 5 peticiones por IP cada 10 minutos, usando Redis como almacén compartido entre varias instancias del servidor.",
+        "en": "Implement a rate-limiting middleware for the public endpoint POST /api/contact allowing at most 5 requests per IP every 10 minutes, using Redis as a shared store across multiple server instances."
+      },
+      "rubrica": {
+        "junior": [
+          "El contador vive en Redis, no en memoria del proceso, para que funcione igual con una o varias instancias",
+          "Devuelve 429 cuando se supera el límite"
+        ],
+        "senior": [
+          "Lo anterior",
+          "La operación de incrementar y comprobar el límite es atómica, con INCR + EXPIRE bien secuenciados o un script Lua",
+          "Calcula el Retry-After real a partir del TTL restante de la clave, no un número fijo inventado",
+          "Distingue limitar por IP de limitar por usuario autenticado, y explica por qué limitar solo por IP falla si varios usuarios comparten IP (NAT/oficina)"
+        ]
+      },
+      "respuestaModelo": "```js\nasync function rateLimit(req, res, next) {\n  const key = `rl:contact:${req.ip}`;\n  const count = await redis.incr(key);\n  if (count === 1) await redis.expire(key, 600); // 10 minutos\n\n  if (count > 5) {\n    const ttl = await redis.ttl(key);\n    res.set('Retry-After', String(ttl));\n    return res.status(429).json({ error: 'Too many requests' });\n  }\n  next();\n}\n```\nEl contador vive en Redis (`INCR` + `EXPIRE` en el primer incremento), compartido entre todas las instancias del servidor. `INCR` es atómico en Redis, así que dos peticiones simultáneas no pueden leer el mismo valor y pisarse; el pequeño riesgo de condición de carrera entre el `INCR` y el `EXPIRE` en la primera petición se puede eliminar con un script Lua que haga ambas cosas en una sola operación atómica. `Retry-After` se calcula con el TTL real restante de la clave, no un número fijo. Limitar solo por IP falla cuando varios usuarios comparten la misma IP pública, por ejemplo en una oficina o detrás de un NAT: un solo usuario abusivo puede bloquear a todos sus compañeros; por eso conviene combinar el límite por IP con un límite adicional por usuario autenticado o API key cuando el endpoint lo permite.",
+      "etiquetas": ["arquitectura", "rate-limiting", "redis", "diseno"],
+      "fuentes": [
+        {
+          "url": "https://intervu.dev/blog/rate-limiter-system-design",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Ejercicio reconstruido a partir del patrón de rate limiting con Redis citado en guías de sistemas agregadas; no es copia de ningún ejercicio propietario."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

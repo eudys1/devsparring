@@ -1,0 +1,114 @@
+{
+  "pista": "typescript",
+  "familia": "clases",
+  "preguntas": [
+    {
+      "id": "ts-clases-01",
+      "version": 1,
+      "pista": "typescript",
+      "familia": "clases",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué hacen los modificadores `public`, `private` y `protected` en una clase de TypeScript?",
+        "en": "What do the `public`, `private` and `protected` modifiers do in a TypeScript class?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que `public` es accesible desde cualquier sitio (el valor por defecto si no se especifica)",
+          "Explica que `private` solo es accesible dentro de la propia clase"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que `protected` es accesible dentro de la clase y de sus subclases, pero no desde fuera",
+          "Aclara que estos modificadores son un chequeo de compilación, no una restricción real en tiempo de ejecución (el campo privado con `#` sí lo es)",
+          "Menciona el campo privado nativo de JavaScript (`#campo`) como alternativa con privacidad real en tiempo de ejecución"
+        ]
+      },
+      "respuestaModelo": "`public` es el nivel por defecto: accesible desde cualquier sitio, dentro y fuera de la clase. `private` restringe el acceso a solo dentro de la propia clase, ni siquiera las subclases pueden acceder. `protected` es un punto intermedio: accesible dentro de la clase y de cualquier subclase, pero no desde fuera de la jerarquía. Es importante notar que estos tres son un chequeo del compilador de TypeScript, no una restricción real en tiempo de ejecución: en el JavaScript compilado, un campo `private` sigue siendo accesible si alguien accede a él con un cast o desde JavaScript sin tipos. El campo privado nativo de JavaScript (`#campo`), soportado también por TypeScript, sí impone privacidad real en tiempo de ejecución, no solo en compilación.",
+      "etiquetas": ["clases"],
+      "fuentes": [
+        {
+          "url": "https://github.com/Devinterview-io/typescript-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Licencia no confirmada; usado solo como señal de tema, no se copia texto."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ts-clases-02",
+      "version": 1,
+      "pista": "typescript",
+      "familia": "clases",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Cómo se implementa la herencia en una clase de TypeScript? ¿Qué añade TypeScript sobre las clases de ES6 (por ejemplo, en el constructor)?",
+        "en": "How is inheritance implemented in a TypeScript class? What does TypeScript add over ES6 classes (for example, in the constructor)?"
+      },
+      "rubrica": {
+        "junior": ["Sabe que la herencia se declara con `extends`, igual que en JavaScript"],
+        "senior": [
+          "Lo anterior",
+          "Explica que TypeScript añade tipado a los parámetros del constructor y a los campos de la clase",
+          "Menciona la sintaxis abreviada de parámetros del constructor (`constructor(private nombre: string)`) que declara y asigna el campo en un solo paso",
+          "Explica que `super(...)` debe llamarse antes de acceder a `this` en el constructor de la subclase, igual que en JavaScript puro"
+        ]
+      },
+      "respuestaModelo": "La herencia se declara igual que en JavaScript con `class Perro extends Animal`, TypeScript no cambia el mecanismo, añade tipado encima. Lo que aporta es tipar los parámetros del constructor y los campos de la clase, con comprobación en tiempo de compilación. Una particularidad práctica de TypeScript es la sintaxis abreviada de parámetros del constructor: `constructor(private nombre: string)` declara el campo `nombre` como privado y lo asigna automáticamente, sin tener que escribir `this.nombre = nombre` a mano. Igual que en JavaScript puro, si la subclase define un constructor propio, debe llamar a `super(...)` antes de poder acceder a `this`, o el compilador (y el motor en tiempo de ejecución) lo rechaza.",
+      "etiquetas": ["clases", "poo"],
+      "fuentes": [
+        {
+          "url": "https://github.com/Devinterview-io/typescript-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Licencia no confirmada; usado solo como señal de tema, no se copia texto."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ts-clases-03",
+      "version": 1,
+      "pista": "typescript",
+      "familia": "clases",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "¿Qué es una clase abstracta en TypeScript y para qué sirve frente a una interfaz?",
+        "en": "What is an abstract class in TypeScript, and what is it useful for compared to an interface?"
+      },
+      "rubrica": {
+        "junior": ["Explica que una clase abstracta no se puede instanciar directamente"],
+        "senior": [
+          "Lo anterior",
+          "Explica que puede tener implementación parcial compartida (métodos concretos) junto a métodos abstractos que las subclases deben implementar",
+          "Contrasta con una interfaz, que es un contrato puro sin ninguna implementación",
+          "Da un criterio de cuándo usar cada una: clase abstracta cuando hay comportamiento común que compartir, interfaz cuando solo se necesita el contrato"
+        ]
+      },
+      "respuestaModelo": "Una clase abstracta (`abstract class Forma`) no se puede instanciar directamente con `new`, solo sirve como base para que otras clases la extiendan. A diferencia de una interfaz, puede tener implementación parcial compartida: métodos concretos con cuerpo que todas las subclases heredan tal cual, junto a métodos marcados `abstract` que declara pero no implementa, obligando a cada subclase a definirlos. Una interfaz es un contrato puro sin ninguna implementación, solo describe la forma. El criterio práctico es usar una clase abstracta cuando hay comportamiento común real que compartir entre las subclases (evitando duplicar código), y una interfaz cuando solo hace falta garantizar que varios tipos no relacionados cumplen cierto contrato, sin compartir implementación.",
+      "etiquetas": ["clases", "poo"],
+      "fuentes": [
+        {
+          "url": "https://github.com/Devinterview-io/typescript-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Licencia no confirmada; usado solo como señal de tema, no se copia texto."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

@@ -1,0 +1,113 @@
+{
+  "pista": "nextjs",
+  "familia": "server-components",
+  "preguntas": [
+    {
+      "id": "next-server-components-01",
+      "version": 1,
+      "pista": "nextjs",
+      "familia": "server-components",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué son las Server Actions y qué problema de seguridad hay que vigilar al usarlas?",
+        "en": "What are Server Actions and what security issue must you watch out for when using them?"
+      },
+      "rubrica": {
+        "junior": [
+          "Define una Server Action como una función marcada con `\"use server\"` invocable desde el cliente"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que Next.js genera un endpoint HTTP oculto detrás, así que cualquiera puede llamarla directamente con curl si conoce el id de la acción",
+          "Explica que hay que revalidar auth/autorización y validar el input dentro de la propia Server Action, igual que en cualquier endpoint público"
+        ]
+      },
+      "respuestaModelo": "Una Server Action es una función marcada con la directiva `\"use server\"` que el componente cliente puede invocar como si fuera una función local normal; por debajo, Next.js genera un endpoint HTTP oculto que recibe esa invocación. El riesgo de seguridad más común es tratarla como 'de confianza' solo por vivir en el servidor: como sigue siendo un endpoint HTTP accesible, cualquiera que conozca (o adivine) el identificador de la acción puede invocarla directamente con curl, saltándose por completo la interfaz que la llama normalmente. Por eso dentro de la propia Server Action hay que revalidar autenticación y autorización, y validar el input recibido, exactamente igual que se haría en cualquier endpoint público de una API REST, sin asumir que solo el formulario legítimo puede llegar hasta ahí.",
+      "etiquetas": ["server-components", "server-actions", "seguridad"],
+      "fuentes": [
+        {
+          "url": "https://nextjs.org/blog/next-16",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Contexto de updateTag/refresh en Server Actions, nota de lanzamiento leída completa vía WebFetch."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "next-server-components-02",
+      "version": 1,
+      "pista": "nextjs",
+      "familia": "server-components",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Estás en un componente cliente y necesitas datos que solo existen en el servidor (una clave de API secreta). ¿Cómo lo resuelves sin filtrar el secreto al navegador?",
+        "en": "You're in a client component and need data that only exists on the server (a secret API key). How do you solve this without leaking the secret to the browser?"
+      },
+      "rubrica": {
+        "junior": ["Sabe que las variables sin prefijo `NEXT_PUBLIC_` solo existen en el servidor"],
+        "senior": [
+          "Lo anterior",
+          "Explica que el Client Component debe pedir el dato a un Server Component padre, una Server Action o un Route Handler",
+          "Aclara que nunca debe importar directamente el módulo que usa el secreto"
+        ]
+      },
+      "respuestaModelo": "En Next.js, cualquier variable de entorno sin el prefijo `NEXT_PUBLIC_` solo existe en el servidor y nunca se incluye en el bundle del cliente; el error sería importar directamente, desde un Client Component, un módulo que usa esa variable, porque el bundler intentaría incluirlo en el JavaScript que descarga el navegador. La solución correcta es que el Client Component nunca toque el secreto: pide el dato ya resuelto a un Server Component padre que se lo pasa como prop, o dispara una Server Action, o llama a un Route Handler propio, y es ese código que corre solo en el servidor el que usa la clave de API para hacer la llamada externa y devuelve al cliente únicamente el resultado ya procesado, sin el secreto de por medio.",
+      "etiquetas": ["server-components", "secretos", "variables-de-entorno"],
+      "fuentes": [
+        {
+          "url": "https://nextjs.org/blog/next-16",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Patrón estándar del App Router sobre variables de entorno server-only, documentado en la nota de lanzamiento de Next.js 16."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "next-server-components-server-action-perfil",
+      "version": 1,
+      "pista": "nextjs",
+      "familia": "server-components",
+      "tipo": "razonamiento",
+      "modos": ["verbal", "diseno"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Implementa una Server Action `updateProfileName(formData)` en el App Router que actualice el nombre de un usuario autenticado, revalide la cache para que vea su nombre nuevo de inmediato, y devuelva un error legible si el nombre está vacío o el usuario no está autenticado. Explica cómo la estructurarías.",
+        "en": "Implement a Server Action `updateProfileName(formData)` in the App Router that updates an authenticated user's name, revalidates the cache so they see the new name immediately, and returns a readable error if the name is empty or the user isn't authenticated. Explain how you'd structure it."
+      },
+      "rubrica": {
+        "junior": [
+          "Verifica la sesión/autenticación DENTRO de la Server Action, no confía solo en que la UI que la llama está protegida",
+          "Valida `formData` (nombre no vacío, longitud razonable) antes de tocar la base de datos"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Usa `updateTag()` (o `revalidatePath`/`revalidateTag` según la versión) para que el usuario vea su cambio reflejado de inmediato, sin una versión cacheada vieja",
+          "Devuelve un objeto de error serializable en vez de lanzar una excepción cruda, para que el formulario pueda mostrar el mensaje"
+        ]
+      },
+      "respuestaModelo": "La Server Action empieza comprobando la sesión del usuario autenticado leyendo la cookie de sesión (por ejemplo con una función `getSession()` del lado del servidor); si no hay sesión válida, devuelve de inmediato un objeto `{ error: 'No autenticado' }` en vez de lanzar una excepción, porque una Server Action es invocable directamente y no debe confiar en que solo la UI protegida la llama. Después valida el `formData`: extrae el nombre, comprueba que no esté vacío y que tenga una longitud razonable, devolviendo un error de campo legible si falla. Solo entonces actualiza el registro del usuario en la base de datos. Para que el cambio se vea reflejado al instante sin esperar a que expire una cache antigua, usa `updateTag()` (semántica 'read-your-writes' propia de Server Actions en Next.js 16) o `revalidatePath`/`revalidateTag` según la versión del proyecto. Todo el flujo de error se comunica devolviendo un objeto serializable, nunca lanzando una excepción sin capturar, para que el formulario en el cliente pueda mostrar el mensaje concreto al usuario.",
+      "etiquetas": ["server-components", "server-actions", "cache", "validacion"],
+      "fuentes": [
+        {
+          "url": "https://nextjs.org/blog/next-16",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Ejercicio propio escrito para esta investigación, inspirado en las APIs de cache nuevas descritas en la sección 'Improved Caching APIs' de la nota de lanzamiento."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

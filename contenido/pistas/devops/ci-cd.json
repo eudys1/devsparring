@@ -1,0 +1,156 @@
+{
+  "pista": "devops",
+  "familia": "ci-cd",
+  "preguntas": [
+    {
+      "id": "devops-ci-cd-01",
+      "version": 1,
+      "pista": "devops",
+      "familia": "ci-cd",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Describe un pipeline de CI/CD básico para una app fullstack: ¿qué pasos van en CI y cuáles en CD?",
+        "en": "Describe a basic CI/CD pipeline for a fullstack app: which steps belong in CI and which in CD?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que CI corre en cada push/PR: instalar dependencias, lint, tests, build",
+          "Explica que CD despliega a staging/producción tras pasar CI en la rama principal"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Distingue con precisión el propósito de cada fase: CI detecta problemas antes de mezclar código, CD entrega el cambio ya validado",
+          "Menciona el matiz de aprobación manual opcional en CD antes de producción",
+          "Explica que los tests que tardan mucho no deberían bloquear cada commit sino correr en paralelo o por etapas"
+        ]
+      },
+      "respuestaModelo": "CI (Integración Continua) corre en cada push o pull request: instalar dependencias, lint, ejecutar tests y hacer el build, para detectar problemas antes de mezclar el código a la rama principal. CD (Entrega o Despliegue Continuo) entra después: una vez el código pasa CI en la rama principal, se despliega automáticamente (o con una aprobación manual, según cuánto riesgo asuma el equipo) a staging y luego a producción. Un matiz importante a nivel senior es que los tests que tardan mucho (end-to-end pesados) no deberían bloquear cada commit individual; conviene correrlos en paralelo con el resto del pipeline o en una etapa separada para no ralentizar el feedback rápido que necesita cada desarrollador.",
+      "etiquetas": ["ci-cd", "pipeline"],
+      "fuentes": [
+        {
+          "url": "https://docs.github.com/en/actions",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Patrón estándar de entrevistas DevOps básico para fullstack; conocimiento consolidado sobre prácticas de CI/CD, pregunta redactada de nuevo."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "devops-ci-cd-02",
+      "version": 1,
+      "pista": "devops",
+      "familia": "ci-cd",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué diferencia hay entre los entornos de development, staging y producción, y por qué 'probarlo en producción' es mala práctica salvo excepciones controladas?",
+        "en": "What's the difference between development, staging and production environments, and why is 'testing in production' bad practice except in controlled cases?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que staging replica producción para detectar problemas antes de que los vea el usuario real",
+          "Reconoce que probar directamente en producción arriesga datos y usuarios reales"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Detalla que staging debería tener infraestructura similar y datos parecidos pero no reales/sensibles",
+          "Menciona excepciones controladas razonables: feature flags, canary releases, rollout gradual con métricas vigiladas",
+          "Explica que esas excepciones son 'probar en producción' hecho de forma segura, no lo mismo que desplegar sin red de seguridad"
+        ]
+      },
+      "respuestaModelo": "Development es el entorno local de cada desarrollador. Staging replica producción lo más fielmente posible, misma infraestructura, datos similares pero no reales ni sensibles, para detectar problemas antes de que los vea un usuario real. Producción es el entorno que usan los usuarios reales, con datos reales. Probar directamente en producción sin red de seguridad arriesga datos y usuarios reales si algo sale mal. Las excepciones controladas (feature flags que activan una función solo para un porcentaje de usuarios, canary releases que despliegan a una fracción del tráfico antes de generalizar, rollout gradual vigilando métricas de error) son formas seguras de 'probar en producción' porque limitan el radio de impacto y permiten revertir rápido si algo falla, muy distinto de desplegar sin ningún control.",
+      "etiquetas": ["ci-cd", "entornos", "despliegue"],
+      "fuentes": [
+        {
+          "url": "https://martinfowler.com/bliki/CanaryRelease.html",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Patrón estándar de entrevistas DevOps básico; conocimiento consolidado, pregunta redactada de nuevo."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "devops-ci-cd-03",
+      "version": 1,
+      "pista": "devops",
+      "familia": "ci-cd",
+      "tipo": "razonamiento",
+      "modos": ["verbal", "diseno"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Un despliegue nuevo tumbó producción. ¿Qué estrategia de rollback o mitigación aplicarías primero?",
+        "en": "A new deployment broke production. What rollback or mitigation strategy would you apply first?"
+      },
+      "rubrica": {
+        "junior": [
+          "Prioriza restaurar el servicio antes de investigar la causa",
+          "Propone revertir al despliegue anterior conocido-bueno"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica la alternativa de apagar el feature flag de lo nuevo si el despliegue es flag-guarded, sin necesitar un rollback completo",
+          "Rechaza explícitamente 'arreglarlo hacia adelante' bajo presión como primera opción",
+          "Deja claro que la investigación de causa raíz con logs/métricas viene DESPUÉS, con el sistema ya estable"
+        ]
+      },
+      "respuestaModelo": "Lo primero es restaurar el servicio, no investigar la causa raíz bajo presión. La acción más rápida y segura suele ser revertir al despliegue anterior conocido-bueno, o, si el cambio está detrás de un feature flag, simplemente apagar ese flag sin necesitar un rollback completo del código. Intentar 'arreglarlo hacia adelante' con un hotfix improvisado mientras producción sigue caída añade riesgo en el peor momento posible. Solo con el sistema ya estable y sirviendo tráfico normal se investiga la causa raíz con calma, usando logs y métricas del incidente, y se prepara el fix real para el siguiente despliegue.",
+      "etiquetas": ["ci-cd", "incidentes", "rollback"],
+      "fuentes": [
+        {
+          "url": "https://sre.google/sre-book/table-of-contents/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Patrón habitual de pregunta de incidentes en entrevistas fullstack/DevOps; conocimiento consolidado, pregunta redactada de nuevo."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "devops-ci-cd-04",
+      "version": 1,
+      "pista": "devops",
+      "familia": "ci-cd",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Cuéntame de un incidente en producción que gestionaste, o en el que participaste. ¿Cómo se comunicó el estado mientras se resolvía?",
+        "en": "Tell me about a production incident you managed (or took part in). How was status communicated while it was being resolved?"
+      },
+      "rubrica": {
+        "junior": ["Cuenta un incidente concreto con contexto", "Explica el fix técnico aplicado"],
+        "senior": [
+          "Lo anterior",
+          "Describe el proceso real: quién decidía, cómo se avisó a stakeholders/usuarios, cuándo se declaró resuelto",
+          "No se queda solo en el fix técnico, también cubre la comunicación durante el incidente",
+          "Menciona un post-mortem sin buscar culpables (blameless), centrado en qué falló en el sistema o proceso",
+          "Da al menos una acción concreta de seguimiento que salió del post-mortem"
+        ]
+      },
+      "respuestaModelo": "Una respuesta que aprueba sigue el formato STAR y no se queda solo en el fix técnico: describe el proceso real durante el incidente, quién tomaba las decisiones, cómo y cuándo se avisó a los stakeholders o usuarios afectados (un status page, un canal interno, un mensaje a clientes), y qué criterio se usó para declarar el incidente resuelto (no solo 'ya no da error', sino métricas estables durante un tiempo razonable). Cierra mencionando un post-mortem sin buscar culpables (blameless), centrado en qué falló en el sistema o en el proceso más que en quién lo causó, con al menos una acción de seguimiento concreta (una alerta nueva, un test añadido, un cambio de proceso de despliegue).",
+      "etiquetas": ["ci-cd", "incidentes", "comportamental"],
+      "fuentes": [
+        {
+          "url": "https://www.glassdoor.com/Interview/full-stack-developer-interview-questions-SRCH_KO0,20_SDRD.htm",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Patrón habitual de pregunta comportamental de incidentes en entrevistas fullstack; página resumida por el buscador, no leída en detalle."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

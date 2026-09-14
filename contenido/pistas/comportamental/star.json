@@ -1,0 +1,578 @@
+{
+  "pista": "comportamental",
+  "familia": "star",
+  "preguntas": [
+    {
+      "id": "comp-star-conflicto-01",
+      "version": 1,
+      "pista": "comportamental",
+      "familia": "star",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Cuéntame de un conflicto que tuviste con un compañero de equipo y cómo lo resolviste.",
+        "en": "Tell me about a conflict you had with a teammate and how you resolved it."
+      },
+      "rubrica": {
+        "junior": [
+          "Describe una situación real y específica, no genérica",
+          "Explica la acción propia que tomó, no solo lo que hizo el equipo"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Reconoce el punto de vista del otro sin desacreditarlo",
+          "Da un resultado medible o al menos verificable, incluida si la relación de trabajo mejoró después",
+          "Cierra con un aprendizaje concreto que aplicó después"
+        ]
+      },
+      "respuestaModelo": "Una respuesta que aprueba describe una situación concreta, con contexto suficiente para entender qué estaba en juego, y explica sobre todo la acción que tomó la propia persona candidata: una conversación directa, la búsqueda de datos objetivos que sacaran la discusión del terreno de las opiniones, o escalar solo si de verdad hacía falta. Reconoce el punto de vista del compañero sin desacreditarlo, y cierra con un resultado verificable, si el proyecto avanzó, si la relación de trabajo mejoró después, y con qué aprendió de esa situación para la próxima vez.",
+      "etiquetas": ["star", "conflicto"],
+      "fuentes": [
+        {
+          "url": "https://generalistprogrammer.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "generalistprogrammer.com, según informe interno de Devsparring."
+        },
+        {
+          "url": "https://in.nau.edu/wp-content/uploads/sites/204/2018/06/STAR-Behavioral-Interview-Assignment-Rubric.pdf",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Rúbrica de referencia para puntuar respuestas STAR."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "comp-star-desacuerdo-01",
+      "version": 1,
+      "pista": "comportamental",
+      "familia": "star",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Describe un desacuerdo técnico que tuviste con un compañero o responsable más senior que tú.",
+        "en": "Describe a technical disagreement you had with a more senior colleague or manager."
+      },
+      "rubrica": {
+        "junior": [
+          "Describe una situación técnica concreta y el desacuerdo específico",
+          "Explica cómo defendió su postura"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Muestra que defendió su postura con datos o un prototipo, no solo opinión",
+          "Muestra que escuchó el argumento contrario y que estuvo dispuesto a ceder si la evidencia no lo respaldaba",
+          "El resultado no tiene que ser 'gané yo': puede ser un compromiso razonado"
+        ]
+      },
+      "respuestaModelo": "Una buena respuesta defiende su postura con datos concretos o un prototipo pequeño, no solo con una opinión más convencida que la del otro. Muestra que escuchó de verdad el argumento contrario, no solo esperó su turno para hablar, y que estuvo dispuesto a ceder si la evidencia no respaldaba su posición inicial. El resultado no tiene que ser 'convencí a la otra persona': puede perfectamente ser un compromiso razonado entre las dos posturas, lo que de hecho suele sonar más creíble que ganar siempre la discusión.",
+      "etiquetas": ["star", "desacuerdo-tecnico"],
+      "fuentes": [
+        {
+          "url": "https://www.codesmith.io/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Patrón estándar de preguntas de conflicto/influencia, codesmith.io, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "comp-star-error-grave-01",
+      "version": 1,
+      "pista": "comportamental",
+      "familia": "star",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Cuéntame de un error grave que cometiste en producción y qué pasó después.",
+        "en": "Tell me about a serious mistake you made in production and what happened next."
+      },
+      "rubrica": {
+        "junior": [
+          "Asume responsabilidad sin excusas ni culpar a otros",
+          "Explica el impacto real del error"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica la causa raíz y la corrección inmediata (rollback, hotfix)",
+          "Describe el cambio de proceso posterior (test, alerta, revisión) para que no vuelva a pasar"
+        ]
+      },
+      "respuestaModelo": "La respuesta que aprueba asume responsabilidad sin excusas ni culpar a otros, aunque hubiera factores externos de por medio. Explica el impacto real del fallo con cifras o hechos concretos, no de forma vaga, y describe la causa raíz junto con la corrección inmediata que aplicó, un rollback, un hotfix. Lo que más distingue una buena respuesta es el cambio de proceso posterior: un test nuevo, una alerta, un paso de revisión añadido, algo que demuestre que la organización aprendió del incidente y no solo la persona.",
+      "etiquetas": ["star", "error-grave"],
+      "fuentes": [
+        {
+          "url": "https://www.codesmith.io/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "codesmith.io, failure questions, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "comp-star-plazo-01",
+      "version": 1,
+      "pista": "comportamental",
+      "familia": "star",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Cuéntame de una vez que tuviste que cumplir un plazo que sabías que era poco realista.",
+        "en": "Tell me about a time you had to meet a deadline you knew was unrealistic."
+      },
+      "rubrica": {
+        "junior": ["Describe la situación concreta del plazo y por qué era poco realista"],
+        "senior": [
+          "Lo anterior",
+          "Muestra que comunicó el riesgo pronto, no esperó al final",
+          "Muestra que negoció alcance o recursos en vez de callar y trabajar más horas sin decir nada",
+          "Describe el resultado real, incluso si no fue perfecto"
+        ]
+      },
+      "respuestaModelo": "Una buena respuesta muestra que comunicó el riesgo del plazo pronto, en cuanto lo detectó, en vez de esperar al último momento con la esperanza de que se resolviera solo. Muestra que negoció alcance o recursos activamente, recortar funcionalidad, pedir ayuda, mover la fecha, en vez de callarse y simplemente trabajar más horas sin decir nada a nadie. Y describe el resultado real de forma honesta, que no tiene por qué haber sido perfecto: lo que se valora es el proceso de gestión del riesgo, no que todo saliera exactamente como se planeó.",
+      "etiquetas": ["star", "plazo"],
+      "fuentes": [
+        {
+          "url": "https://www.codesmith.io/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "codesmith.io, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "comp-star-mentoring-01",
+      "version": 1,
+      "pista": "comportamental",
+      "familia": "star",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Cuéntame de una vez que hiciste de mentor o ayudaste a crecer a un compañero junior.",
+        "en": "Tell me about a time you mentored or helped a junior colleague grow."
+      },
+      "rubrica": {
+        "junior": ["Describe una situación concreta, no 'siempre ayudo a todos'"],
+        "senior": [
+          "Lo anterior",
+          "Describe el método usado (pair programming, feedback estructurado)",
+          "Explica cómo dejó espacio para que la otra persona se equivocara y aprendiera",
+          "Mide el progreso de esa persona, no solo su propio esfuerzo"
+        ]
+      },
+      "respuestaModelo": "Una buena respuesta describe una situación concreta con nombre y contexto, no una generalidad tipo 'siempre ayudo a la gente'. Explica el método usado, sesiones de pair programming, feedback estructurado y frecuente, y muestra que dejó espacio para que la otra persona se equivocara y aprendiera por su cuenta en vez de resolverle todo. Lo que distingue una respuesta senior es medir el progreso de esa persona, no solo el esfuerzo propio invertido: qué podía hacer sola al final que no podía hacer al principio.",
+      "etiquetas": ["star", "mentoring"],
+      "fuentes": [
+        {
+          "url": "https://www.codesmith.io/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "codesmith.io / Indeed career advice, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "comp-star-decision-tecnica-01",
+      "version": 1,
+      "pista": "comportamental",
+      "familia": "star",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "senior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Cuéntame de una decisión técnica difícil que tomaste y de la que te haces responsable.",
+        "en": "Tell me about a difficult technical decision you made and own the outcome of."
+      },
+      "rubrica": {
+        "junior": ["Describe la decisión concreta y el contexto en que se tomó"],
+        "senior": [
+          "Lo anterior",
+          "Explica las alternativas consideradas y los criterios usados, no solo 'me parecía mejor'",
+          "Explica el trade-off aceptado conscientemente",
+          "Dice si en retrospectiva la volvería a tomar o qué cambiaría"
+        ]
+      },
+      "respuestaModelo": "Una respuesta senior explica las alternativas que consideró antes de decidir, con los criterios concretos que usó para elegir, no un simple 'me parecía mejor'. Describe el trade-off que aceptó conscientemente al tomar esa decisión, qué se sacrificaba a cambio de qué. Y cierra con una mirada honesta en retrospectiva: si la volvería a tomar igual con lo que sabe ahora, o qué cambiaría, lo cual demuestra que sigue revisando sus propias decisiones en vez de defenderlas ciegamente por orgullo.",
+      "etiquetas": ["star", "decision-tecnica"],
+      "fuentes": [
+        {
+          "url": "https://in.nau.edu/wp-content/uploads/sites/204/2018/06/STAR-Behavioral-Interview-Assignment-Rubric.pdf",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Patrón estándar decisión técnica difícil, síntesis de guías consultadas, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "comp-star-ambiguedad-01",
+      "version": 1,
+      "pista": "comportamental",
+      "familia": "star",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Cuéntame de una vez que tuviste que trabajar con requisitos ambiguos o incompletos.",
+        "en": "Tell me about a time you had to work with ambiguous or incomplete requirements."
+      },
+      "rubrica": {
+        "junior": ["Describe la ambigüedad concreta que encontró"],
+        "senior": [
+          "Lo anterior",
+          "Muestra que buscó clarificación activamente con preguntas concretas al stakeholder, no asumiendo en silencio",
+          "Explica cómo tomó decisiones razonables con la información disponible",
+          "Comunica los supuestos que hizo"
+        ]
+      },
+      "respuestaModelo": "Una buena respuesta muestra que buscó clarificación activamente, con preguntas concretas al stakeholder correspondiente, en vez de asumir en silencio y descubrir el malentendido tarde. Explica cómo tomó decisiones razonables con la información disponible en el momento, sin bloquearse esperando una especificación perfecta que quizá nunca llega. Y comunica explícitamente los supuestos que hizo, por escrito si es posible, para que cualquiera pudiera corregirlos a tiempo si estaban equivocados.",
+      "etiquetas": ["star", "ambiguedad"],
+      "fuentes": [
+        {
+          "url": "https://generalistprogrammer.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "generalistprogrammer.com, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "comp-star-liderazgo-01",
+      "version": 1,
+      "pista": "comportamental",
+      "familia": "star",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "senior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Cuéntame de una vez que lideraste una iniciativa sin tener autoridad formal sobre el equipo.",
+        "en": "Tell me about a time you led an initiative without having formal authority over the team."
+      },
+      "rubrica": {
+        "junior": ["Describe la iniciativa concreta que impulsó"],
+        "senior": [
+          "Lo anterior",
+          "Muestra influencia mediante argumentos técnicos y construcción de consenso, no jerarquía",
+          "Describe cómo consiguió que otros se sumaran voluntariamente",
+          "Da un resultado verificable de la iniciativa"
+        ]
+      },
+      "respuestaModelo": "Una respuesta senior muestra influencia construida con argumentos técnicos y consenso, no con jerarquía que ni siquiera tenía. Describe cómo consiguió que otras personas se sumaran voluntariamente, quizás con una demo pequeña, un dato convincente, o simplemente insistiendo con datos hasta que el resto vio el valor por sí mismo. Y cierra con un resultado verificable de la iniciativa, no solo la sensación subjetiva de haber liderado algo.",
+      "etiquetas": ["star", "liderazgo"],
+      "fuentes": [
+        {
+          "url": "https://generalistprogrammer.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "generalistprogrammer.com, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "comp-star-recibir-critica-01",
+      "version": 1,
+      "pista": "comportamental",
+      "familia": "star",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "junior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Describe una vez que recibiste una crítica dura sobre tu código o tu trabajo. ¿Cómo reaccionaste?",
+        "en": "Describe a time you received harsh criticism about your code or work. How did you react?"
+      },
+      "rubrica": {
+        "junior": ["Describe la situación concreta y la crítica recibida"],
+        "senior": [
+          "Lo anterior",
+          "Separa la crítica del ego, sin ponerse a la defensiva",
+          "Pregunta por ejemplos concretos si la crítica es vaga",
+          "Describe el cambio de comportamiento posterior, no solo 'lo acepté'"
+        ]
+      },
+      "respuestaModelo": "Una buena respuesta muestra que supo separar la crítica del ego, sin ponerse a la defensiva de entrada. Si la crítica era vaga, pidió ejemplos concretos para entender exactamente qué había que mejorar, en vez de quedarse con una sensación de reproche difusa. Y lo más importante: describe un cambio de comportamiento posterior real, algo que hizo distinto después de esa conversación, no solo 'lo acepté y seguí igual'.",
+      "etiquetas": ["star", "feedback"],
+      "fuentes": [
+        {
+          "url": "https://in.nau.edu/wp-content/uploads/sites/204/2018/06/STAR-Behavioral-Interview-Assignment-Rubric.pdf",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Síntesis de patrones estándar de recibir feedback, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "comp-star-decir-no-01",
+      "version": 1,
+      "pista": "comportamental",
+      "familia": "star",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Cuéntame de una vez que tuviste que decir no a un stakeholder o a tu manager.",
+        "en": "Tell me about a time you had to say no to a stakeholder or your manager."
+      },
+      "rubrica": {
+        "junior": ["Describe la petición concreta a la que dijo que no"],
+        "senior": [
+          "Lo anterior",
+          "Explica por qué dijo que no con datos o riesgos concretos, no por comodidad",
+          "Muestra que ofreció una alternativa en vez de solo bloquear"
+        ]
+      },
+      "respuestaModelo": "Una respuesta senior explica por qué dijo que no con datos o riesgos concretos, nunca por simple comodidad o pereza de hacer el trabajo pedido. Y sobre todo, muestra que ofreció una alternativa razonable en vez de limitarse a bloquear la petición sin más: un plazo distinto, un alcance reducido, una solución técnica diferente que sí era viable. Ese matiz, no bloquear sino redirigir, es lo que distingue un 'no' constructivo de uno simplemente obstructivo.",
+      "etiquetas": ["star", "pushback"],
+      "fuentes": [
+        {
+          "url": "https://generalistprogrammer.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Síntesis de patrones estándar de pushback en entrevistas comportamentales, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "comp-star-proyecto-fallido-01",
+      "version": 1,
+      "pista": "comportamental",
+      "familia": "star",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Cuéntame de una vez que un proyecto en el que trabajabas fracasó o se canceló.",
+        "en": "Tell me about a time a project you worked on failed or was cancelled."
+      },
+      "rubrica": {
+        "junior": ["Describe el proyecto y por qué fracasó o se canceló"],
+        "senior": [
+          "Lo anterior",
+          "Analiza causas más allá de lo técnico (comunicación, alcance, prioridades del negocio)",
+          "No se victimiza ni carga toda la culpa a otros",
+          "Explica qué aprendió para el siguiente proyecto"
+        ]
+      },
+      "respuestaModelo": "Una buena respuesta analiza las causas del fracaso más allá de lo puramente técnico: problemas de comunicación, alcance mal definido desde el principio, o un cambio de prioridades del negocio que nadie vio venir a tiempo. No se victimiza ni carga toda la culpa a otros equipos o a decisiones ajenas, aunque hubiera factores fuera de su control. Y cierra explicando qué aprendió concretamente para el siguiente proyecto, una señal de alerta que ahora sabe reconocer antes.",
+      "etiquetas": ["star", "fracaso"],
+      "fuentes": [
+        {
+          "url": "https://in.nau.edu/wp-content/uploads/sites/204/2018/06/STAR-Behavioral-Interview-Assignment-Rubric.pdf",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Síntesis de patrones estándar, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "comp-star-aprendizaje-rapido-01",
+      "version": 1,
+      "pista": "comportamental",
+      "familia": "star",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "junior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Cuéntame de una vez que tuviste que aprender una tecnología nueva muy rápido para un proyecto.",
+        "en": "Tell me about a time you had to learn a new technology quickly for a project."
+      },
+      "rubrica": {
+        "junior": ["Describe la tecnología concreta y el plazo real que tenía"],
+        "senior": [
+          "Lo anterior",
+          "Describe el método de aprendizaje usado, no solo 'leí la documentación'",
+          "Explica cómo validó que lo aprendido era correcto antes de aplicarlo en producción",
+          "Da el resultado final"
+        ]
+      },
+      "respuestaModelo": "Una buena respuesta describe el método de aprendizaje concreto que usó, no un genérico 'leí la documentación': quizás construyó un proyecto de prueba pequeño primero, o buscó a alguien del equipo con experiencia previa para revisar su enfoque. Explica cómo validó que lo que había aprendido era correcto antes de aplicarlo en producción, con una prueba controlada o una revisión de alguien más experimentado. Y cierra con el resultado real del proyecto, sin exagerar la dificultad ni minimizarla.",
+      "etiquetas": ["star", "aprendizaje"],
+      "fuentes": [
+        {
+          "url": "https://in.nau.edu/wp-content/uploads/sites/204/2018/06/STAR-Behavioral-Interview-Assignment-Rubric.pdf",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Síntesis de patrones estándar, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "comp-star-desacuerdo-arquitectura-01",
+      "version": 1,
+      "pista": "comportamental",
+      "familia": "star",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "senior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Cuéntame de una vez que discrepaste del enfoque de arquitectura de tu equipo.",
+        "en": "Tell me about a time you disagreed with your team's architecture approach."
+      },
+      "rubrica": {
+        "junior": ["Describe el desacuerdo de arquitectura concreto"],
+        "senior": [
+          "Lo anterior",
+          "Plantea el desacuerdo con argumentos técnicos y costes/beneficios claros",
+          "Respeta la decisión final del equipo aunque no sea la suya",
+          "Describe cómo se comprometió con la decisión colectiva después (disagree and commit)"
+        ]
+      },
+      "respuestaModelo": "Una respuesta senior plantea el desacuerdo con argumentos técnicos y una comparación clara de costes y beneficios, no solo una preferencia personal. Respeta la decisión final del equipo incluso cuando no es la que propuso, sin sabotear silenciosamente ni quejarse por detrás. Lo que más distingue esta respuesta es describir cómo se comprometió de verdad con la decisión colectiva después, el llamado 'disagree and commit': trabajar con la misma energía en la opción elegida como si hubiera sido la suya desde el principio.",
+      "etiquetas": ["star", "arquitectura"],
+      "fuentes": [
+        {
+          "url": "https://in.nau.edu/wp-content/uploads/sites/204/2018/06/STAR-Behavioral-Interview-Assignment-Rubric.pdf",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Síntesis de patrones de desacuerdo técnico, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "comp-star-malas-noticias-01",
+      "version": 1,
+      "pista": "comportamental",
+      "familia": "star",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Cuéntame de una vez que tuviste que dar malas noticias a un cliente o stakeholder.",
+        "en": "Tell me about a time you had to deliver bad news to a client or stakeholder."
+      },
+      "rubrica": {
+        "junior": ["Describe la mala noticia concreta y a quién afectaba"],
+        "senior": [
+          "Lo anterior",
+          "Muestra que comunicó con transparencia y pronto, no esperó al último momento",
+          "Ofrece opciones o un plan de mitigación junto con la mala noticia"
+        ]
+      },
+      "respuestaModelo": "Una buena respuesta muestra que comunicó la mala noticia con transparencia y lo antes posible, en cuanto tuvo certeza razonable, en vez de esperar al último momento con la esperanza de que se resolviera sola. Y sobre todo, no llegó con las manos vacías: ofreció opciones concretas o un plan de mitigación junto con la mala noticia, para que el interlocutor pudiera tomar una decisión informada en vez de solo recibir el golpe.",
+      "etiquetas": ["star", "comunicacion"],
+      "fuentes": [
+        {
+          "url": "https://in.nau.edu/wp-content/uploads/sites/204/2018/06/STAR-Behavioral-Interview-Assignment-Rubric.pdf",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Síntesis de patrones estándar, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "comp-star-calidad-velocidad-01",
+      "version": 1,
+      "pista": "comportamental",
+      "familia": "star",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Cuéntame de una vez que tuviste que priorizar entre calidad de código y velocidad de entrega.",
+        "en": "Tell me about a time you had to prioritize between code quality and delivery speed."
+      },
+      "rubrica": {
+        "junior": ["Describe la situación concreta y qué eligió"],
+        "senior": [
+          "Lo anterior",
+          "Explica el criterio usado para decidir (riesgo del atajo)",
+          "Menciona el plan para pagar la deuda técnica después",
+          "No se queda en 'elegí rápido' o 'elegí calidad' sin justificación"
+        ]
+      },
+      "respuestaModelo": "Una respuesta senior explica el criterio concreto que usó para decidir, evaluando el riesgo real del atajo antes de tomarlo, no una elección arbitraria entre 'rápido' o 'con calidad'. Si eligió velocidad, describe el plan explícito para pagar esa deuda técnica después, y si ese plan se cumplió o no. Lo que se evalúa no es cuál de las dos opciones eligió, sino que la decisión estuviera justificada con un razonamiento claro sobre el contexto del momento.",
+      "etiquetas": ["star", "trade-offs"],
+      "fuentes": [
+        {
+          "url": "https://in.nau.edu/wp-content/uploads/sites/204/2018/06/STAR-Behavioral-Interview-Assignment-Rubric.pdf",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Síntesis de patrones estándar de trade-offs técnicos, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "comp-star-companero-dificil-01",
+      "version": 1,
+      "pista": "comportamental",
+      "familia": "star",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Cuéntame de una vez que tuviste que trabajar con un compañero difícil o con un estilo de trabajo muy distinto al tuyo.",
+        "en": "Tell me about a time you had to work with a difficult colleague or someone with a very different working style."
+      },
+      "rubrica": {
+        "junior": ["Describe la situación sin quejarse del otro, centrándose en hechos"],
+        "senior": [
+          "Lo anterior",
+          "Se centra en adaptar su propia comunicación, no en culpar al otro",
+          "Muestra empatía y búsqueda activa de terreno común",
+          "Da un resultado concreto de la colaboración"
+        ]
+      },
+      "respuestaModelo": "Una buena respuesta se centra en adaptar la propia comunicación, no en quejarse del otro compañero ni en presentarlo como el problema. Muestra empatía genuina y una búsqueda activa de terreno común, entender por qué la otra persona trabaja como trabaja antes de juzgarlo. Y cierra con un resultado concreto de esa colaboración, idealmente mostrando que encontraron una forma de trabajar juntos que funcionó para ambos, no solo que 'lo toleré hasta que terminó el proyecto'.",
+      "etiquetas": ["star", "colaboracion"],
+      "fuentes": [
+        {
+          "url": "https://in.nau.edu/wp-content/uploads/sites/204/2018/06/STAR-Behavioral-Interview-Assignment-Rubric.pdf",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Síntesis de patrones estándar, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

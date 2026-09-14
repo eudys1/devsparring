@@ -1,0 +1,253 @@
+{
+  "pista": "ia",
+  "familia": "uso-diario-ia",
+  "preguntas": [
+    {
+      "id": "ia-uso-diario-ia-01",
+      "version": 1,
+      "pista": "ia",
+      "familia": "uso-diario-ia",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Cómo usas Copilot, Cursor o Claude Code en tu día a día?",
+        "en": "How do you use Copilot, Cursor, or Claude Code day to day?"
+      },
+      "rubrica": {
+        "junior": [
+          "Describe al menos dos tareas concretas donde delega en la IA (boilerplate, tests, exploración de código)",
+          "Menciona que revisa lo generado antes de aceptarlo"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Distingue tareas donde no delega o delega con mucha supervisión (arquitectura, código con impacto en seguridad o dinero)",
+          "Explica con un ejemplo real cómo verifica lo generado antes de aceptarlo"
+        ]
+      },
+      "respuestaModelo": "Delego sobre todo tareas mecánicas: generar boilerplate, escribir el esqueleto de tests para una función ya definida, o explorar rápido una codebase que no conozco para entender dónde está algo. Ahí gano tiempo real sin asumir mucho riesgo. Donde no delego, o delego con mucha supervisión, es en decisiones de arquitectura o en código que toca datos de clientes o dinero: ahí reviso línea a línea lo que propone antes de aceptar nada, y si no entiendo por qué hizo algo de una forma concreta, se lo pregunto o lo reescribo yo mismo en vez de confiar a ciegas.",
+      "etiquetas": ["uso-diario", "judgment"],
+      "fuentes": [
+        {
+          "url": "https://www.canva.dev/blog/engineering/yes-you-can-use-ai-in-our-interviews/",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Patrón de pregunta observado en las políticas de Canva y en guías de preparación de entrevistas para Amazon (dataford.io, interviewman.com), según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-uso-diario-ia-02",
+      "version": 1,
+      "pista": "ia",
+      "familia": "uso-diario-ia",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Cómo verificas que el código generado por una IA es correcto antes de mergearlo?",
+        "en": "How do you verify that AI-generated code is correct before merging it?"
+      },
+      "rubrica": {
+        "junior": [
+          "Menciona leer y entender el código línea a línea antes de aceptarlo",
+          "Menciona correr o escribir tests que cubran el caso"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que pasa por el mismo proceso de code review y CI que exige el equipo",
+          "Presta atención explícita a manejo de errores, seguridad y edge cases que un modelo suele pasar por alto"
+        ]
+      },
+      "respuestaModelo": "Leo el código línea a línea antes de aceptarlo, no me basta con que compile o pase el primer test que se me ocurra. Corro y, si hace falta, escribo tests adicionales que cubran el caso real, y dejo que pase exactamente el mismo proceso de code review y CI que exigiría a cualquier código escrito por una persona, sin atajos por venir de una IA. Presto atención especial al manejo de errores, a la seguridad y a los edge cases, porque son justo las partes donde un modelo suele quedarse corto: genera el camino feliz con soltura pero olvida validar entradas o gestionar fallos.",
+      "etiquetas": ["uso-diario", "verificacion"],
+      "fuentes": [
+        {
+          "url": "https://dataford.io/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Guía de preparación de entrevista de Amazon SWE (dataford.io / interviewman.com), consistente con los criterios de evaluación de Meta y Canva, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-uso-diario-ia-03",
+      "version": 1,
+      "pista": "ia",
+      "familia": "uso-diario-ia",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué tareas no delegarías nunca a una IA en tu trabajo actual, y por qué?",
+        "en": "What tasks would you never delegate to AI in your current job, and why?"
+      },
+      "rubrica": {
+        "junior": ["Nombra al menos un tipo de tarea que no delegaría"],
+        "senior": [
+          "Lo anterior",
+          "Menciona decisiones de arquitectura con consecuencias difíciles de revertir",
+          "Menciona cambios que tocan datos de clientes o dinero sin revisión exhaustiva",
+          "Deja claro que la responsabilidad final queda en la persona, no en la IA"
+        ]
+      },
+      "respuestaModelo": "No delegaría decisiones de arquitectura con consecuencias difíciles de revertir, porque ahí el coste de equivocarse es alto y necesito entender de verdad el porqué, no solo aceptar una propuesta razonable. Tampoco delegaría, sin una revisión exhaustiva propia, ningún cambio que toque datos de clientes o dinero directamente. Y en general, cualquier cosa donde no pueda verificar personalmente la corrección del resultado en un tiempo razonable la trato con mucha cautela. La IA puede proponer y acelerar, pero la responsabilidad final y el entendimiento de por qué algo funciona como funciona sigue siendo mía.",
+      "etiquetas": ["uso-diario", "judgment"],
+      "fuentes": [
+        {
+          "url": "https://www.canva.dev/blog/engineering/yes-you-can-use-ai-in-our-interviews/",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Patrón de pregunta derivado de la evaluación de judgment en Canva/Meta, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-uso-diario-ia-04",
+      "version": 1,
+      "pista": "ia",
+      "familia": "uso-diario-ia",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Cuéntame de una vez que el código o la respuesta de una IA te dio algo incorrecto y cómo te diste cuenta.",
+        "en": "Tell me about a time AI-generated code or an AI answer gave you something wrong and how you caught it."
+      },
+      "rubrica": {
+        "junior": ["Da una situación concreta, no genérica", "Explica cómo detectó el error"],
+        "senior": [
+          "Lo anterior",
+          "Muestra que la detección vino de un hábito de verificación (test, revisión manual, comportamiento inesperado en staging) y no de suerte",
+          "Explica qué acción tomó después (ajustó el prompt, añadió un test, cambió el proceso de revisión del equipo)"
+        ]
+      },
+      "respuestaModelo": "Describiría una situación concreta y reciente, con la tarea específica que estaba haciendo, no una generalidad tipo 'a veces se equivoca'. Lo importante es que la detección venga de un hábito de verificación real, un test que falló, una revisión manual, un comportamiento raro visto en staging antes de llegar a producción, y no de pura suerte o de que otra persona lo pillara por casualidad. Y terminaría explicando qué cambió después de ese episodio: si ajusté cómo pido las cosas, si añadí un test que cubra ese caso, o si até el proceso de revisión del equipo para que ese tipo de error no vuelva a pasar desapercibido.",
+      "etiquetas": ["uso-diario", "verificacion", "star"],
+      "fuentes": [
+        {
+          "url": "https://in.nau.edu/wp-content/uploads/sites/204/2018/06/STAR-Behavioral-Interview-Assignment-Rubric.pdf",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Patrón de pregunta comportamental adaptado al contexto de IA, coherente con el enfoque de Meta (verification como criterio de evaluación), según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-uso-diario-ia-05",
+      "version": 1,
+      "pista": "ia",
+      "familia": "uso-diario-ia",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Cómo te mantienes al día con herramientas de IA que cambian cada pocos meses sin perder tiempo de desarrollo real?",
+        "en": "How do you stay current with AI tools that change every few months without losing real development time?"
+      },
+      "rubrica": {
+        "junior": [
+          "Menciona una fuente concreta de actualización (changelogs, comunidad, proyectos personales)"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Da un criterio explícito para decidir qué vale la pena adoptar en el trabajo (ahorro medible de tiempo, no solo novedad)"
+        ]
+      },
+      "respuestaModelo": "Sigo un par de fuentes concretas para no perder tiempo navegando sin rumbo, changelogs oficiales de las herramientas que ya uso, y pruebo cosas nuevas primero en proyectos personales antes de plantearme llevarlas al trabajo. El criterio para decidir si algo vale la pena adoptar no es la novedad en sí, sino si me ahorra tiempo de forma medible en una tarea real que hago a menudo; si después de probarlo una semana no veo esa diferencia, lo dejo estar hasta que madure más, en vez de cambiar de herramienta cada mes solo porque salió algo nuevo.",
+      "etiquetas": ["uso-diario", "aprendizaje-continuo"],
+      "fuentes": [
+        {
+          "url": "https://docs.anthropic.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Síntesis propia sobre la pregunta habitual de aprendizaje continuo adaptada a IA, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-uso-diario-ia-06",
+      "version": 1,
+      "pista": "ia",
+      "familia": "uso-diario-ia",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "senior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué espera un hiring manager en 2026 de un desarrollador \"AI-native\" o \"AI-fluent\" más allá de saber usar Copilot?",
+        "en": "What does a hiring manager expect from an \"AI-native\" or \"AI-fluent developer\" in 2026 beyond knowing how to use Copilot?"
+      },
+      "rubrica": {
+        "junior": ["Menciona el criterio para decidir qué delegar y qué no"],
+        "senior": [
+          "Lo anterior",
+          "Menciona la capacidad de verificar y depurar salidas de IA sin repetir todo el trabajo",
+          "Menciona la fluidez para alternar entre código propio y generado sin perder el modelo mental del sistema",
+          "Menciona la conciencia de riesgos (seguridad, coste, alucinaciones) al meter LLMs en un producto real"
+        ]
+      },
+      "respuestaModelo": "Más allá de saber manejar la herramienta, lo que se espera es criterio para decidir qué delegar y qué no en cada situación concreta. También la capacidad de verificar y depurar lo que la IA produce sin tener que repetir todo el trabajo desde cero, y fluidez para moverse entre código escrito a mano y código generado sin perder el modelo mental de cómo funciona el sistema completo. Y por último, conciencia real de los riesgos, seguridad, coste, alucinaciones, al meter LLMs en un producto de verdad, no solo en una demo bonita que nunca ve tráfico real.",
+      "etiquetas": ["uso-diario", "ai-native"],
+      "fuentes": [
+        {
+          "url": "https://www.testgorilla.com/talent-discovery/state-hiring-ai-fluency/",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Síntesis de guías de contratación 2026 (Karat, TestGorilla), según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-uso-diario-ia-07",
+      "version": 1,
+      "pista": "ia",
+      "familia": "uso-diario-ia",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "senior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Si en tu equipo actual se decidiera mañana que \"no se contrata a nadie más hasta demostrar que la IA no puede hacer ese trabajo\" (política real de Shopify), ¿cómo cambiaría tu forma de trabajar?",
+        "en": "If your current team decided tomorrow that \"we don't hire anyone else until we prove AI can't do that work\" (Shopify's real policy), how would that change how you work?"
+      },
+      "rubrica": {
+        "junior": ["Da una respuesta reflexionada, ni puramente entusiasta ni puramente defensiva"],
+        "senior": [
+          "Lo anterior",
+          "Muestra entender la tensión entre productividad individual más alta y necesidad de seguir invirtiendo en juicio humano",
+          "Habla de responsabilidad sobre lo que se automatiza, no solo de eficiencia"
+        ]
+      },
+      "respuestaModelo": "No hay una respuesta única correcta aquí, lo que importa es mostrar que entiendo la tensión real: por un lado, la IA puede hacer que cada persona rinda más, y eso es positivo; por otro, alguien tiene que seguir invirtiendo en juicio humano, revisión y responsabilidad sobre lo que se automatiza, porque delegar tareas no significa delegar la responsabilidad de que salgan bien. En la práctica, probablemente pasaría más tiempo documentando por qué una tarea concreta sí necesita a una persona, y menos dando por hecho que 'siempre se ha hecho así'. Evitaría tanto la respuesta puramente entusiasta, como si la IA resolviera todo sin fricción, como la puramente defensiva, como si fuera una amenaza a ignorar.",
+      "etiquetas": ["uso-diario", "ai-native"],
+      "fuentes": [
+        {
+          "url": "https://techcrunch.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Basada en la política real de Shopify de abril de 2025 (techcrunch.com, forbes.com), según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

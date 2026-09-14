@@ -1,0 +1,76 @@
+{
+  "pista": "javascript",
+  "familia": "memoria",
+  "preguntas": [
+    {
+      "id": "js-memoria-01",
+      "version": 1,
+      "pista": "javascript",
+      "familia": "memoria",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "senior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Da tres causas comunes de fugas de memoria (memory leaks) en una aplicación JavaScript del navegador.",
+        "en": "Give three common causes of memory leaks in a browser JavaScript application."
+      },
+      "rubrica": {
+        "junior": [
+          "Menciona al menos una causa concreta (listeners no removidos, timers sin limpiar, variables globales)"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Menciona al menos tres causas: listeners no removidos, timers (`setInterval`) sin limpiar, y referencias a nodos DOM eliminados guardadas en variables o closures",
+          "Menciona variables globales accidentales como cuarta causa habitual",
+          "Menciona `WeakMap`/`WeakRef` como herramientas para evitar retener referencias innecesarias"
+        ]
+      },
+      "respuestaModelo": "Tres causas comunes: listeners de eventos que se añaden pero nunca se remueven cuando el componente o elemento se destruye; temporizadores (`setInterval`) que siguen corriendo indefinidamente porque nadie llamó a `clearInterval`; y referencias a nodos DOM ya eliminados que se quedan guardadas en una variable global o capturadas por un closure, impidiendo que el recolector de basura los libere aunque ya no estén en la página. Una cuarta causa habitual son variables globales accidentales que acumulan datos sin límite. Para evitar retener referencias sin querer, `WeakMap` y `WeakRef` permiten asociar datos a un objeto sin impedir que el recolector de basura lo libere cuando ya no hay otras referencias fuertes.",
+      "etiquetas": ["memoria"],
+      "fuentes": [
+        {
+          "url": "https://codesignal.com/blog/25-javascript-interview-questions-and-answers-from-basic-to-senior-level/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen"
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "js-memoria-02",
+      "version": 1,
+      "pista": "javascript",
+      "familia": "memoria",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "senior",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "¿Qué es un `WeakMap` y en qué se diferencia de un `Map` normal? ¿Cuándo ayuda a evitar fugas de memoria?",
+        "en": "What is a `WeakMap` and how does it differ from a regular `Map`? When does it help avoid memory leaks?"
+      },
+      "rubrica": {
+        "junior": ["Sabe que las claves de un `WeakMap` deben ser objetos"],
+        "senior": [
+          "Lo anterior",
+          "Explica que las claves de un `WeakMap` no impiden que el recolector de basura libere el objeto si no hay otras referencias",
+          "Contrasta con `Map`, que retiene la clave para siempre mientras el `Map` exista",
+          "Da un caso de uso: metadatos asociados a nodos DOM que se limpian solos al eliminarse el nodo"
+        ]
+      },
+      "respuestaModelo": "Un `WeakMap` es como un `Map` pero sus claves deben ser objetos, y esas claves se mantienen con una referencia débil: si no queda ninguna otra referencia fuerte al objeto usado como clave, el recolector de basura puede liberarlo igualmente, y su entrada desaparece del `WeakMap` sola. Un `Map` normal, en cambio, retiene sus claves para siempre mientras el `Map` exista, aunque nadie más las referencie, lo que puede causar una fuga de memoria si se usa para asociar datos a objetos que van y vienen. El caso de uso típico es guardar metadatos asociados a nodos DOM (por ejemplo, un caché de medidas): al usar `WeakMap`, cuando el nodo se elimina de la página y ya no hay otra referencia, tanto el nodo como su entrada en el `WeakMap` se liberan automáticamente, sin necesidad de limpiar manualmente.",
+      "etiquetas": ["memoria"],
+      "fuentes": [
+        {
+          "url": "https://codesignal.com/blog/25-javascript-interview-questions-and-answers-from-basic-to-senior-level/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen"
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

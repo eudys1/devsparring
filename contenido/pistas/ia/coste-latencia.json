@@ -1,0 +1,217 @@
+{
+  "pista": "ia",
+  "familia": "coste-latencia",
+  "preguntas": [
+    {
+      "id": "ia-coste-latencia-01",
+      "version": 1,
+      "pista": "ia",
+      "familia": "coste-latencia",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Cómo se factura el uso de un LLM vía API?",
+        "en": "How is LLM API usage billed?"
+      },
+      "rubrica": {
+        "junior": ["Explica que se factura por tokens de entrada y de salida"],
+        "senior": [
+          "Lo anterior",
+          "Menciona que la salida suele costar más por token que la entrada",
+          "Menciona que el precio varía según el tamaño o versión del modelo"
+        ]
+      },
+      "respuestaModelo": "Normalmente se factura por tokens de entrada y de salida por separado, con precios distintos entre ambos: la salida suele costar más por token que la entrada, porque generarla requiere más cómputo que solo procesarla. Además el precio varía bastante según el tamaño o la versión del modelo elegido: un modelo más grande y capaz cuesta más por token que uno pequeño pensado para tareas sencillas. Por eso el coste de una función con LLM depende tanto de cuánto contexto se manda como de cuánto texto se le pide generar.",
+      "etiquetas": ["coste", "pricing"],
+      "fuentes": [
+        {
+          "url": "https://www.anthropic.com/pricing",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Páginas de pricing de proveedores de LLM (Anthropic/OpenAI), según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-coste-latencia-02",
+      "version": 1,
+      "pista": "ia",
+      "familia": "coste-latencia",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Por qué la latencia de un LLM importa más en unos productos que en otros, y cómo se mitiga en UX?",
+        "en": "Why does LLM latency matter more in some products than others, and how is it mitigated in UX?"
+      },
+      "rubrica": {
+        "junior": [
+          "Contrasta un chat conversacional (percepción de 'vivo') con un proceso batch en background"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica la mitigación con streaming e indicadores de progreso",
+          "Menciona respuestas parciales o precalculadas como alternativa"
+        ]
+      },
+      "respuestaModelo": "En un chat conversacional la sensación de estar hablando con algo 'vivo' importa mucho, así que cualquier pausa larga se nota de inmediato y afecta a la percepción del producto. En un proceso batch que corre en background, en cambio, importa mucho más el rendimiento total (throughput) que la latencia de una llamada individual, porque nadie está esperando delante de la pantalla. La mitigación habitual en interfaces conversacionales es el streaming, mostrar el texto token a token en vez de esperar la respuesta completa, junto con indicadores de progreso, y en algunos casos mostrar un resultado parcial o precalculado mientras se termina de generar el resto.",
+      "etiquetas": ["latencia", "ux"],
+      "fuentes": [
+        {
+          "url": "https://docs.anthropic.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Síntesis propia sobre UX de productos con IA, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-coste-latencia-03",
+      "version": 1,
+      "pista": "ia",
+      "familia": "coste-latencia",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué es el streaming de respuestas de un LLM y por qué se usa?",
+        "en": "What is LLM response streaming and why is it used?"
+      },
+      "rubrica": {
+        "junior": ["Explica que la API va devolviendo tokens a medida que se generan"],
+        "senior": [
+          "Lo anterior",
+          "Distingue latencia percibida de latencia total",
+          "Menciona la implicación en el frontend (renderizado progresivo)"
+        ]
+      },
+      "respuestaModelo": "El streaming permite que la API vaya devolviendo tokens a medida que se generan, en vez de esperar a que el modelo termine toda la respuesta para enviarla de una vez. Esto reduce la latencia percibida por el usuario, porque empieza a ver texto casi de inmediato aunque la latencia total, el tiempo hasta la última palabra, sea exactamente la misma. En el frontend implica renderizar el texto de forma progresiva a medida que llegan los fragmentos, algo que la mayoría de frameworks de UI modernos soportan sin demasiada complicación.",
+      "etiquetas": ["streaming", "ux"],
+      "fuentes": [
+        {
+          "url": "https://docs.anthropic.com/en/api/streaming",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Documentación estándar de APIs de LLM, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-coste-latencia-04",
+      "version": 1,
+      "pista": "ia",
+      "familia": "coste-latencia",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué es el prompt caching y cuándo ahorra dinero de verdad?",
+        "en": "What is prompt caching and when does it actually save money?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que permite marcar una parte fija del prompt para que se reutilice en vez de reprocesarla"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Da un ejemplo (system prompt largo, documento repetido en varias llamadas)",
+          "Aclara que ahorra cuando el mismo prefijo se reusa muchas veces en poco tiempo, no cuando cada prompt es distinto"
+        ]
+      },
+      "respuestaModelo": "El prompt caching permite marcar una parte fija del prompt, por ejemplo un system prompt largo o un documento que se repite en varias llamadas, para que el proveedor la reutilice en vez de reprocesarla desde cero cada vez, cobrando una fracción del precio normal en esas relecturas. Ahorra de verdad cuando el mismo prefijo de contexto se reusa muchas veces en un periodo corto, como una conversación larga con el mismo system prompt o una app que consulta el mismo documento base repetidamente. No aporta nada si cada prompt es prácticamente distinto al anterior, porque entonces no hay nada que cachear de forma efectiva.",
+      "etiquetas": ["coste", "prompt-caching"],
+      "fuentes": [
+        {
+          "url": "https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Documentación de prompt caching de proveedores (Anthropic), citada vía resumen de búsqueda que referencia la documentación oficial, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-coste-latencia-05",
+      "version": 1,
+      "pista": "ia",
+      "familia": "coste-latencia",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "senior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Un endpoint que llama a un LLM tarda 8 segundos y el producto necesita respuesta en menos de 2. ¿Qué opciones tienes?",
+        "en": "An endpoint calling an LLM takes 8 seconds and the product needs a response under 2 seconds. What are your options?"
+      },
+      "rubrica": {
+        "junior": [
+          "Propone streaming para bajar la latencia percibida",
+          "Propone cambiar a un modelo más pequeño/rápido"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Propone reducir el tamaño del prompt/contexto y cachear respuestas o el prefijo del prompt",
+          "Propone precalcular en background o rediseñar el flujo para no bloquear la interacción del usuario"
+        ]
+      },
+      "respuestaModelo": "Primero probaría con streaming para bajar la latencia percibida, aunque la latencia total no cambie. Si eso no basta, evaluaría cambiar a un modelo más pequeño y rápido para esa tarea concreta, midiendo con un eval si mantiene la calidad mínima aceptable, y reduciría el tamaño del prompt o del contexto enviado. También cachearía respuestas repetidas o el prefijo del prompt con prompt caching si aplica. Si nada de eso llega a los 2 segundos, replantearía el flujo entero: precalcular en background cuando sea posible, o mostrar un resultado parcial de inmediato y completar el resto después, en vez de bloquear toda la interacción del usuario en una única llamada.",
+      "etiquetas": ["latencia", "produccion"],
+      "fuentes": [
+        {
+          "url": "https://docs.anthropic.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Síntesis propia sobre optimización de apps con LLM, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-coste-latencia-06",
+      "version": 1,
+      "pista": "ia",
+      "familia": "coste-latencia",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Cómo elegirías entre usar un modelo grande/caro y uno pequeño/barato para una funcionalidad concreta?",
+        "en": "How would you choose between a large/expensive model and a small/cheap one for a specific feature?"
+      },
+      "rubrica": {
+        "junior": ["Menciona la complejidad de la tarea y el volumen de llamadas como criterios"],
+        "senior": [
+          "Lo anterior",
+          "Menciona la tolerancia a error como criterio",
+          "Propone medir con evals si el modelo barato llega a la calidad mínima antes de pagar el caro por defecto"
+        ]
+      },
+      "respuestaModelo": "Depende de la complejidad real de la tarea, no es lo mismo una clasificación simple que un razonamiento largo con varios pasos, del volumen de llamadas, porque a mayor volumen más pesa el coste por token en la factura total, y de la tolerancia a error que tenga el caso de uso. Una práctica habitual es medir con un eval si el modelo barato llega a la calidad mínima aceptable para esa tarea concreta antes de pagar el modelo caro por defecto sin cuestionarlo; muchas veces un modelo pequeño bien afinado a la tarea rinde casi igual que uno grande, y en volumen alto esa diferencia de coste es enorme.",
+      "etiquetas": ["coste", "seleccion-modelo"],
+      "fuentes": [
+        {
+          "url": "https://docs.anthropic.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Síntesis propia sobre selección de modelo por tarea, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

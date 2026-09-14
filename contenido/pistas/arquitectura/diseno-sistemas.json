@@ -1,0 +1,121 @@
+{
+  "pista": "arquitectura",
+  "familia": "diseno-sistemas",
+  "preguntas": [
+    {
+      "id": "arq-diseno-sistemas-01",
+      "version": 1,
+      "pista": "arquitectura",
+      "familia": "diseno-sistemas",
+      "tipo": "diseno",
+      "modos": ["diseno"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Diseña a nivel fullstack un acortador de URLs tipo bit.ly: esquema de datos, generación del código corto y ruta de redirección.",
+        "en": "Design a URL shortener (like bit.ly) at the fullstack level: data schema, short code generation, and redirect route."
+      },
+      "rubrica": {
+        "junior": [
+          "Propone un esquema mínimo con short_code, long_url y una tabla de redirects",
+          "Describe la ruta de redirección con un SELECT por el código corto y un 301/302"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Define el esquema completo: short_code (PK), long_url, owner_id, created_at, expires_at, contador de clicks",
+          "Genera el código corto con un contador incremental codificado en base62, explicando por qué evita colisiones sin reintentos frente a hashear y truncar",
+          "Menciona cache (Redis) delante de la tabla de redirects porque la lectura domina brutalmente sobre la escritura"
+        ]
+      },
+      "respuestaModelo": "Esquema mínimo: `short_code` (PK), `long_url`, `owner_id`, `created_at`, `expires_at`, y un contador de clicks. El código corto se genera con un contador incremental (autoincrement o una secuencia) codificado en base62, lo que evita colisiones por construcción, a diferencia de hashear la URL larga y truncar el hash, que necesita reintentos cuando choca. La ruta de redirección hace un `SELECT` indexado por `short_code` y devuelve un 301 (permanente, cacheable por el navegador) o 302 (temporal, si se quiere seguir contando clicks con precisión) hacia `long_url`. A escala, la lectura domina brutalmente sobre la escritura (se crea un link una vez, se resuelve miles de veces), así que conviene poner Redis delante de la tabla de redirects como cache de lectura, invalidando o con TTL corto si el link puede cambiar de destino.",
+      "etiquetas": ["arquitectura", "diseno-sistemas", "url-shortener"],
+      "fuentes": [
+        {
+          "url": "https://www.algomaster.io/learn/system-design-interviews/design-url-shortener",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Guías agregadas de diseño de acortador de URLs, contrastadas con varias fuentes coincidentes; pregunta y explicación redactadas de nuevo."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "arq-diseno-sistemas-02",
+      "version": 1,
+      "pista": "arquitectura",
+      "familia": "diseno-sistemas",
+      "tipo": "diseno",
+      "modos": ["diseno"],
+      "nivelMinimo": "senior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Diseña a nivel fullstack un chat 1 a 1 simple: cómo entregas mensajes en tiempo real y qué pasa si el receptor está offline.",
+        "en": "Design a simple 1:1 chat at the fullstack level: how do you deliver messages in real time, and what happens if the receiver is offline?"
+      },
+      "rubrica": {
+        "junior": [
+          "Propone una conexión WebSocket para entregar mensajes al instante a usuarios conectados",
+          "Menciona guardar el mensaje en base de datos si el receptor está offline"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Describe la persistencia: Postgres para metadatos de conversación/usuario, o una tabla optimizada a escritura para los mensajes",
+          "Explica la entrega diferida al reconectar más una notificación push opcional",
+          "Menciona el problema de escalar WebSockets entre varias instancias del servidor (necesita un pub-sub o sticky sessions)"
+        ]
+      },
+      "respuestaModelo": "Para usuarios online, una conexión WebSocket persistente permite que el servidor empuje el mensaje al instante en cuanto llega, sin polling. Todo mensaje se persiste también en la base de datos (Postgres para metadatos de conversación y usuario, con una tabla de mensajes optimizada a escritura e indexada por conversación y fecha) independientemente de si el receptor está conectado. Si el receptor está offline, el mensaje queda persistido y se entrega en cuanto reconecta (el cliente pide 'lo que me perdí desde el último mensaje visto'), más una notificación push opcional para avisar fuera de la app. El problema adicional al escalar a varias instancias del servidor es que dos usuarios pueden acabar conectados a instancias distintas: hace falta un pub-sub (Redis, o un servicio dedicado) para que la instancia que recibe el mensaje lo reenvíe a la instancia donde está conectado el receptor.",
+      "etiquetas": ["arquitectura", "diseno-sistemas", "websockets", "chat"],
+      "fuentes": [
+        {
+          "url": "https://engineeringenablement.substack.com/p/how-i-would-design-a-real-time-chat-application",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Guías agregadas de diseño de chat, contrastadas con varias fuentes coincidentes; pregunta y explicación redactadas de nuevo."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "arq-diseno-sistemas-03",
+      "version": 1,
+      "pista": "arquitectura",
+      "familia": "diseno-sistemas",
+      "tipo": "diseno",
+      "modos": ["diseno"],
+      "nivelMinimo": "senior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Diseña a nivel fullstack un feed tipo timeline: posts de la gente que sigues, ordenados cronológicamente o por relevancia.",
+        "en": "Design a timeline-style feed at the fullstack level (posts from people you follow, ordered chronologically or by relevance)."
+      },
+      "rubrica": {
+        "junior": [
+          "Explica la estrategia 'pull': al pedir el feed, consultar los posts de la gente seguida en ese momento",
+          "Menciona paginación para el scroll del feed"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica la estrategia 'push'/fan-out en escritura: al publicar, insertar el post en el feed pre-computado de cada seguidor",
+          "Compara los trade-offs: pull es barato de escribir pero caro de leer si sigues a muchos; push es lectura instantánea pero caro si el autor tiene millones de seguidores",
+          "Propone un híbrido para cuentas con muchísimos seguidores (celebridades) en vez de fan-out puro",
+          "Usa paginación por cursor, no offset, para el scroll infinito"
+        ]
+      },
+      "respuestaModelo": "Hay dos estrategias clásicas. 'Pull': al pedir el feed, se consultan en el momento los posts de todos los seguidos (barato de escribir, cada post se guarda una vez, pero caro de leer si sigues a mucha gente, porque hay que fusionar y ordenar muchas fuentes en cada request). 'Push' o fan-out en escritura: al publicarse un post, se inserta una referencia en el feed pre-computado de cada seguidor, así que leer el feed es casi instantáneo, pero escribir se vuelve muy caro si el autor tiene millones de seguidores (fan-out masivo). La solución práctica es un híbrido: push para la mayoría de usuarios, y pull (o un límite de fan-out) para cuentas con muchísimos seguidores, mezclando ambas fuentes al leer. El scroll infinito del feed se pagina por cursor (el timestamp o id del último post visto), nunca por offset, para que cargar más no se vuelva más lento cuanto más se desplaza el usuario.",
+      "etiquetas": ["arquitectura", "diseno-sistemas", "feed", "fan-out"],
+      "fuentes": [
+        {
+          "url": "https://www.greatfrontend.com/questions/system-design",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Guías agregadas de diseño de feed/news feed listadas como tema de system design en GreatFrontEnd; pregunta y explicación redactadas de nuevo."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

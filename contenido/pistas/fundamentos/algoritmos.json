@@ -1,0 +1,281 @@
+{
+  "pista": "fundamentos",
+  "familia": "algoritmos",
+  "preguntas": [
+    {
+      "id": "fund-algoritmos-01",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "algoritmos",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué es la notación Big O? Da la complejidad temporal de buscar en un array, en un objeto/Map, y de ordenar con `Array.sort`.",
+        "en": "What is Big O notation? Give the time complexity of searching in an array, in an object/Map, and of sorting with `Array.sort`."
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que Big O describe cómo crece el tiempo o memoria según el tamaño de la entrada",
+          "Da al menos dos de las tres complejidades pedidas correctamente"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Da las tres complejidades correctas: O(n) buscar por valor en array, O(1) amortizado buscar por clave en objeto/Map, O(n log n) en `Array.sort` en el caso general",
+          "Explica la diferencia entre buscar por valor (recorrer) y buscar por clave (acceso directo)",
+          "No solo recita definiciones, las aplica a un caso propio"
+        ]
+      },
+      "respuestaModelo": "Big O describe cómo crece el tiempo (o memoria) de un algoritmo a medida que crece el tamaño de la entrada, ignorando constantes. Buscar un valor en un array recorriéndolo es O(n): en el peor caso hay que mirar todos los elementos. Buscar por clave en un objeto o un `Map` es O(1) amortizado, porque internamente usan una tabla hash con acceso casi directo. Ordenar con `Array.prototype.sort` es O(n log n) en el caso general en motores como V8, que usa una variante de Timsort.",
+      "etiquetas": ["algoritmos", "complejidad"],
+      "fuentes": [
+        {
+          "url": "https://news.ycombinator.com/item?id=14667256",
+          "fecha": "2026-09-14",
+          "tipo": "leida"
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "fund-algoritmos-02",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "algoritmos",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Cuándo usarías un `Map` en vez de un objeto plano `{}` en JavaScript? ¿Y un `Set` en vez de un array?",
+        "en": "When would you use a `Map` instead of a plain object `{}` in JavaScript? And a `Set` instead of an array?"
+      },
+      "rubrica": {
+        "junior": [
+          "Menciona que `Map` preserva el tipo original de las claves",
+          "Menciona que `Set` garantiza unicidad de valores"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que `Map` tiene mejor rendimiento en inserciones/borrados frecuentes y expone `.size`",
+          "Explica que `Set.has()` es O(1) frente a `Array.includes()` que es O(n)",
+          "Da un caso real donde elegiría cada uno (caché con claves objeto, deduplicar ids)"
+        ]
+      },
+      "respuestaModelo": "Un `Map` conviene cuando las claves no son siempre strings (pueden ser objetos), cuando necesito el orden de inserción garantizado, o cuando hay muchas inserciones y borrados frecuentes, porque además expone `.size` directamente sin contar propiedades a mano. Un objeto plano sigue siendo cómodo para estructuras fijas conocidas en tiempo de escritura. Un `Set` conviene cuando necesito garantizar unicidad y comprobar pertenencia muchas veces: `set.has(x)` es O(1) frente a `array.includes(x)` que es O(n), lo que importa mucho al trabajar con colecciones grandes, por ejemplo para deduplicar ids.",
+      "etiquetas": ["algoritmos", "estructuras-de-datos"],
+      "fuentes": [
+        {
+          "url": "https://github.com/sudheerj/javascript-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Sin LICENSE visible; usado solo como señal de tema, no se copia texto."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "fund-algoritmos-03",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "algoritmos",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Tienes un bucle anidado que compara cada elemento de un array de 10.000 elementos contra todos los demás (O(n²)). ¿Cómo lo detectarías como un problema y cómo lo mejorarías?",
+        "en": "You have a nested loop comparing every element of a 10,000-item array against every other (O(n²)). How would you spot it as a problem and how would you improve it?"
+      },
+      "rubrica": {
+        "junior": [
+          "Reconoce que un bucle anidado sobre el mismo array es sospechoso de O(n²)",
+          "Propone usar una estructura auxiliar (Map o Set) en vez de comparar todo contra todo"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Calcula que 10.000² son 100 millones de comparaciones, notablemente lento sin que se lo digan",
+          "Explica que sustituir la comparación anidada por una estructura de búsqueda O(1) baja el algoritmo a O(n)",
+          "Reconoce que esto solo funciona si el criterio de comparación admite una clave (igualdad exacta, no cualquier comparación arbitraria)"
+        ]
+      },
+      "respuestaModelo": "Antes de tocar código, calculo el orden de magnitud: 10.000 al cuadrado son 100 millones de comparaciones, claramente el origen de la lentitud reportada. La señal de alarma es precisamente un bucle `for` dentro de otro `for` sobre el mismo array. Si el criterio de comparación se puede expresar como una clave (por ejemplo un id o una combinación de campos), lo sustituyo por una pasada única que construye un `Map` o `Set` con esa clave, y luego comparo con una búsqueda O(1) en vez de recorrer todo de nuevo, bajando el algoritmo de O(n²) a O(n). Esto solo funciona si la comparación es de igualdad por clave, no para comparaciones arbitrarias entre todos los pares.",
+      "etiquetas": ["algoritmos", "complejidad"],
+      "fuentes": [
+        {
+          "url": "https://news.ycombinator.com/item?id=14667256",
+          "fecha": "2026-09-14",
+          "tipo": "leida"
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "fund-algoritmos-04",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "algoritmos",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Tienes un archivo con 100.000 pedidos y sospechas que hay pedidos duplicados (mismo cliente, mismo producto, mismo importe, en una ventana de minutos). ¿Cómo lo abordarías, hablando en voz alta desde la estrategia de datos hasta la implementación?",
+        "en": "You have a file with 100,000 orders and suspect there are duplicate orders (same customer, same product, same amount, within a few minutes). How would you approach it, thinking out loud from data strategy to implementation?"
+      },
+      "rubrica": {
+        "junior": [
+          "Propone construir una clave compuesta (cliente + producto + importe) para agrupar candidatos",
+          "Evita comparar todos los pedidos contra todos (O(n²))"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Define primero qué cuenta como \"duplicado\" (exact match vs match difuso por ventana temporal) antes de codificar",
+          "Propone una estructura O(n) (Map/Set agrupado por clave, o GROUP BY en SQL) y explica el trade-off memoria vs tiempo",
+          "Menciona cómo validaría falsos positivos (pedidos legítimos idénticos hechos por error del usuario, no del sistema) antes de borrar nada"
+        ]
+      },
+      "respuestaModelo": "Antes de escribir código, definiría qué cuenta exactamente como duplicado: ¿coincidencia exacta de cliente, producto e importe, o también hay que considerar una ventana temporal de unos minutos? Con eso claro, construiría una clave compuesta por esos campos y agruparía los 100.000 pedidos en un `Map` de clave a lista de pedidos en una sola pasada O(n), en vez de comparar cada pedido contra todos los demás. Dentro de cada grupo con más de un pedido, si hace falta ventana temporal, ordenaría por fecha y compararía solo pedidos consecutivos dentro del grupo. Antes de borrar nada, revisaría manualmente una muestra de los grupos detectados, porque dos pedidos idénticos también pueden ser legítimos (el cliente repitió la compra por error suyo, no del sistema), y eso no se debería borrar automáticamente sin confirmación.",
+      "etiquetas": ["algoritmos", "datos"],
+      "fuentes": [
+        {
+          "url": "https://www.geeksforgeeks.org/javascript/javascript-program-to-find-duplicate-elements-in-an-array/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "La redacción exacta de \"100.000 pedidos\" no se localizó en ninguna fuente pública; se trata como hipótesis del estilo descrito por el usuario."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "fund-algoritmos-kata-unicos",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "algoritmos",
+      "tipo": "kata",
+      "modos": ["kata"],
+      "nivelMinimo": "junior",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "Implementa `unicos(arr)` que devuelva los elementos únicos de un array de números, preservando el orden de la primera aparición, sin usar `indexOf`/`includes` dentro de un bucle (para que funcione bien con arrays grandes).",
+        "en": "Implement `unicos(arr)` returning the unique elements of a number array, preserving first-occurrence order, without using `indexOf`/`includes` inside a loop (so it stays efficient on large arrays)."
+      },
+      "rubrica": {
+        "junior": ["Pasa todos los casos de prueba", "Preserva el orden de la primera aparición"],
+        "senior": [
+          "Lo anterior",
+          "Usa un `Set` (o `Map`) en vez de `includes` dentro del bucle, y explica por qué eso importa a partir de cierto tamaño de array",
+          "Explica la complejidad de su solución (O(n)) frente a la ingenua con `includes` (O(n²))",
+          "Comenta cómo extendería la solución a objetos con un campo `id`"
+        ]
+      },
+      "respuestaModelo": "Recorro el array una sola vez llevando un `Set` con los valores ya vistos: si el valor no está en el `Set`, lo añado al resultado y al `Set`; si ya está, lo salto. Cada comprobación `set.has(valor)` es O(1), así que el algoritmo completo es O(n), a diferencia de usar `resultado.includes(valor)` dentro del bucle, que sería O(n²) porque cada `includes` recorre el resultado acumulado hasta ese momento. Con arrays de decenas de miles de elementos esa diferencia es la que separa una función instantánea de una que tarda segundos.",
+      "kata": {
+        "funcion": "unicos",
+        "codigoInicial": "export function unicos(arr: number[]): number[] {\n  // tu código\n}\n",
+        "casos": [
+          {
+            "nombre": "elimina duplicados preservando el orden",
+            "entrada": [[1, 2, 2, 3, 1]],
+            "esperado": [1, 2, 3]
+          },
+          { "nombre": "array vacío devuelve array vacío", "entrada": [[]], "esperado": [] },
+          {
+            "nombre": "sin duplicados devuelve el mismo array",
+            "entrada": [[5, 4, 3]],
+            "esperado": [5, 4, 3]
+          },
+          {
+            "nombre": "todos iguales devuelve un solo elemento",
+            "entrada": [[7, 7, 7, 7]],
+            "esperado": [7]
+          }
+        ],
+        "tiempoMin": 10,
+        "congelarAleatorio": false
+      },
+      "etiquetas": ["algoritmos", "arrays"],
+      "fuentes": [
+        {
+          "url": "https://www.geeksforgeeks.org/javascript/javascript-program-to-find-duplicate-elements-in-an-array/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen"
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "fund-algoritmos-kata-texto-enriquecido",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "algoritmos",
+      "tipo": "kata",
+      "modos": ["kata"],
+      "nivelMinimo": "mid",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "Implementa `renderizarTexto(texto, estilos)`, donde `estilos` es un array de rangos `{ inicio, fin, tipo }` (`tipo` es `\"negrita\"` o `\"cursiva\"`) sobre `texto`. Devuelve el HTML resultante envolviendo cada rango con `<b>`/`<i>`, como en un editor de texto enriquecido simple. Los rangos no se solapan.",
+        "en": "Implement `renderizarTexto(texto, estilos)`, where `estilos` is an array of `{ inicio, fin, tipo }` ranges (`tipo` is `\"negrita\"` or `\"cursiva\"`) over `texto`. Return the resulting HTML wrapping each range with `<b>`/`<i>`, like a simple rich text editor. Ranges do not overlap."
+      },
+      "rubrica": {
+        "junior": [
+          "Pasa todos los casos de prueba con un rango",
+          "Maneja correctamente texto sin ningún estilo aplicado"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Maneja varios rangos no solapados en el mismo texto sin desordenar el resultado",
+          "Explica cómo estructuraría la solución (recorrer los rangos ordenados por `inicio` e ir concatenando trozos de texto plano y trozos envueltos)",
+          "Comenta qué cambiaría si los rangos pudieran solaparse (negrita + cursiva a la vez)"
+        ]
+      },
+      "respuestaModelo": "Ordeno los rangos por `inicio` y recorro el texto una vez, alternando entre copiar el trozo de texto plano anterior al siguiente rango y envolver el trozo del rango con la etiqueta correspondiente (`<b>` para negrita, `<i>` para cursiva) usando `slice`. Al terminar los rangos, copio el resto del texto plano que quede. Si los rangos pudieran solaparse, la estructura de datos tendría que representar estilos por carácter o por segmento (una lista de estilos activos por posición) en vez de rangos independientes, porque envolver etiquetas que se cruzan (`<b><i>...</b></i>`) no es HTML válido.",
+      "kata": {
+        "funcion": "renderizarTexto",
+        "codigoInicial": "type Estilo = { inicio: number; fin: number; tipo: 'negrita' | 'cursiva' };\n\nexport function renderizarTexto(texto: string, estilos: Estilo[]): string {\n  // tu código\n}\n",
+        "casos": [
+          {
+            "nombre": "una palabra en negrita",
+            "entrada": ["hola mundo", [{ "inicio": 0, "fin": 4, "tipo": "negrita" }]],
+            "esperado": "<b>hola</b> mundo"
+          },
+          {
+            "nombre": "sin estilos devuelve el texto plano",
+            "entrada": ["hola mundo", []],
+            "esperado": "hola mundo"
+          },
+          {
+            "nombre": "dos rangos no solapados",
+            "entrada": [
+              "hola mundo feliz",
+              [
+                { "inicio": 0, "fin": 4, "tipo": "negrita" },
+                { "inicio": 11, "fin": 16, "tipo": "cursiva" }
+              ]
+            ],
+            "esperado": "<b>hola</b> mundo <i>feliz</i>"
+          }
+        ],
+        "tiempoMin": 20,
+        "congelarAleatorio": false
+      },
+      "etiquetas": ["algoritmos", "strings"],
+      "fuentes": [
+        {
+          "url": "https://www.glassdoor.com/Interview/frontend-javascript-developer-interview-questions-SRCH_KO0,29.htm",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Bloqueo HTTP 403 en WebFetch directo; citada como challenge práctico de frontend en resumen de búsqueda."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

@@ -1,0 +1,120 @@
+{
+  "pista": "datos",
+  "familia": "nosql-cache",
+  "preguntas": [
+    {
+      "id": "datos-nosql-cache-01",
+      "version": 1,
+      "pista": "datos",
+      "familia": "nosql-cache",
+      "tipo": "razonamiento",
+      "modos": ["verbal", "diseno"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Cuándo elegirías una base de datos NoSQL (documento o clave-valor) en vez de SQL para una feature nueva?",
+        "en": "When would you choose a NoSQL (document/key-value) database over SQL for a new feature?"
+      },
+      "rubrica": {
+        "junior": [
+          "Menciona que NoSQL encaja cuando el esquema es muy variable o anidado",
+          "Sabe que SQL sigue siendo la opción por defecto para datos relacionales con transacciones"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Da un ejemplo concreto donde NoSQL encaja (logs de eventos, catálogos con atributos dinámicos) porque no necesita JOINs complejos ni transacciones multi-tabla estrictas",
+          "Menciona que la escala de escritura/lectura horizontal puede pesar más que la consistencia fuerte inmediata en ese caso",
+          "Rechaza la idea de que 'NoSQL siempre escala mejor' sin matices: Postgres bien indexado aguanta mucho más de lo que la gente cree"
+        ]
+      },
+      "respuestaModelo": "NoSQL (documento o clave-valor) encaja cuando el esquema es muy variable o anidado y no hace falta hacer JOINs complejos ni transacciones estrictas entre varias entidades, por ejemplo logs de eventos o catálogos con atributos dinámicos por producto. También tiene sentido cuando la escala de escritura/lectura horizontal pesa más que la consistencia fuerte inmediata. Pero 'NoSQL escala mejor' no es un axioma: un Postgres bien indexado, con las queries correctas, aguanta mucho más tráfico del que la gente asume por defecto, así que la decisión debería partir de las características reales del dato, no de una moda.",
+      "etiquetas": ["nosql", "modelado", "postgres"],
+      "fuentes": [
+        {
+          "url": "https://github.com/donnemartin/system-design-primer",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Contenido citado como referencia/inspiración de system-design-primer (CC BY-SA 4.0); pregunta y explicación redactadas de nuevo, sin copiar texto del repositorio."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "datos-nosql-cache-02",
+      "version": 1,
+      "pista": "datos",
+      "familia": "nosql-cache",
+      "tipo": "razonamiento",
+      "modos": ["verbal", "diseno"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Para qué usarías Redis en un stack Next.js más Postgres, más allá de 'cache genérica'? Dame 3 casos concretos.",
+        "en": "What would you use Redis for in a Next.js + Postgres stack, beyond 'generic cache'? Give 3 concrete cases."
+      },
+      "rubrica": {
+        "junior": [
+          "Menciona cache de resultados de queries caras como un caso",
+          "Menciona al menos un segundo caso (sesiones o rate limiting)"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica el rate limiting como contador atómico con expiración, por ejemplo con un script Lua tipo token bucket",
+          "Menciona sesiones compartidas entre instancias como caso donde Redis reemplaza el estado en memoria del proceso",
+          "Menciona una cola ligera o pub-sub para notificar eventos entre servicios (BullMQ, WebSocket fan-out)"
+        ]
+      },
+      "respuestaModelo": "Tres casos concretos más allá de cachear resultados de queries caras: (1) rate limiting, con un contador atómico con expiración por usuario o IP, típicamente un token bucket resuelto con un script Lua para que incrementar y comprobar el límite sea una sola operación atómica; (2) sesiones compartidas entre varias instancias del servidor, sacando el estado de sesión del proceso Node para poder escalar horizontalmente; (3) una cola ligera o pub-sub para notificar eventos entre servicios, por ejemplo BullMQ para trabajos en background o un canal de pub-sub para hacer fan-out de mensajes a varias conexiones WebSocket.",
+      "etiquetas": ["redis", "cache", "arquitectura"],
+      "fuentes": [
+        {
+          "url": "https://github.com/goldbergyoni/nodebestpractices",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Patrón habitual de arquitectura backend documentado en nodebestpractices (CC BY-SA 4.0) y en guías de rate limiting con Redis; pregunta redactada de nuevo."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "datos-nosql-cache-03",
+      "version": 1,
+      "pista": "datos",
+      "familia": "nosql-cache",
+      "tipo": "razonamiento",
+      "modos": ["verbal", "diseno"],
+      "nivelMinimo": "mid",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "Un cron job que se ejecuta cada minuto empieza a solaparse consigo mismo cuando el trabajo tarda más de un minuto. ¿Cómo lo evitas a nivel de diseño?",
+        "en": "A cron job that runs every minute starts overlapping with itself when the job takes longer than a minute. How do you prevent this at the design level?"
+      },
+      "rubrica": {
+        "junior": [
+          "Identifica que el problema es que una segunda ejecución arranca mientras la primera sigue viva",
+          "Propone usar algún tipo de bloqueo antes de ejecutar el trabajo"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Describe un lock distribuido con Redis (clave con expiración) que el job adquiere al empezar y libera al terminar",
+          "Explica que si el lock ya existe, la segunda ejecución se salta ese ciclo en vez de esperar o duplicar el trabajo",
+          "Menciona que el lock necesita un TTL de seguridad por si el proceso muere sin liberarlo, para no dejar el sistema bloqueado para siempre"
+        ]
+      },
+      "respuestaModelo": "La solución es un lock distribuido: el job intenta adquirir una clave en Redis (por ejemplo con `SET lock:job-x NX EX 300`) al empezar; si la clave ya existe, significa que la ejecución anterior sigue en marcha y este ciclo se salta sin duplicar trabajo. Al terminar, el job libera la clave. El TTL (`EX`) es la parte crítica: si el proceso muere o se cuelga sin liberar el lock, la clave expira sola pasado ese tiempo, evitando que el sistema quede bloqueado para siempre esperando una liberación que nunca llega. Una tabla en la base de datos con una fila de estado y `SELECT ... FOR UPDATE` cumple el mismo papel si no hay Redis disponible.",
+      "etiquetas": ["redis", "locks", "cron", "distribuido"],
+      "fuentes": [
+        {
+          "url": "https://github.com/goldbergyoni/nodebestpractices",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Patrón habitual de trampa operativa en backend documentado en nodebestpractices (CC BY-SA 4.0), sección de patrones de producción y tareas en background; pregunta redactada de nuevo."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

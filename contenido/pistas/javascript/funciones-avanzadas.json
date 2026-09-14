@@ -1,0 +1,171 @@
+{
+  "pista": "javascript",
+  "familia": "funciones-avanzadas",
+  "preguntas": [
+    {
+      "id": "js-funciones-avanzadas-01",
+      "version": 1,
+      "pista": "javascript",
+      "familia": "funciones-avanzadas",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué es una \"first class function\" y qué es una \"higher order function\"? Da un ejemplo de cada una.",
+        "en": "What is a \"first class function\" and what is a \"higher order function\"? Give an example of each."
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que en JS las funciones se pueden tratar como cualquier otro valor (first class)",
+          "Explica que una higher order function recibe o devuelve otra función"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Da un ejemplo propio de first class (guardar una función en una variable, pasarla como argumento)",
+          "Da un ejemplo propio de higher order (`Array.prototype.map`, un `crearMultiplicador`)",
+          "Explica que toda higher order function depende de que el lenguaje trate las funciones como first class"
+        ]
+      },
+      "respuestaModelo": "Que JavaScript tenga \"first class functions\" significa que las funciones se tratan como cualquier otro valor: se pueden guardar en una variable, pasar como argumento, devolver desde otra función, o meter en un array. Una \"higher order function\" es una función que recibe una o más funciones como argumento, devuelve una función, o ambas cosas; `Array.prototype.map` es el ejemplo más común, porque recibe una función callback como argumento. Un ejemplo propio de higher order que además ilustra devolver una función es `crearMultiplicador(factor)`, que devuelve una nueva función `x => x * factor`. Las higher order functions solo son posibles porque el lenguaje trata las funciones como first class: sin eso no se podrían pasar como argumento en primer lugar.",
+      "etiquetas": ["funciones"],
+      "fuentes": [
+        {
+          "url": "https://github.com/sudheerj/javascript-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Sin LICENSE visible; usado solo como señal de tema, no se copia texto."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "js-funciones-avanzadas-kata-curry",
+      "version": 1,
+      "pista": "javascript",
+      "familia": "funciones-avanzadas",
+      "tipo": "kata",
+      "modos": ["kata"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Implementa `curry(fn)` que convierta una función de N argumentos en una secuencia de llamadas de un argumento cada una, permitiendo también llamarla con varios argumentos a la vez. Pruébala con `probarCurry(gruposDeArgumentos)`, que aplica los grupos de argumentos indicados en orden sobre una función `sumar3(a, b, c)` fija, y devuelve el resultado final.",
+        "en": "Implement `curry(fn)` converting an N-argument function into a sequence of single-argument calls, while still allowing calling it with several arguments at once. Test it via `probarCurry(argumentGroups)`, applying the given argument groups in order to a fixed `sumar3(a, b, c)` function, returning the final result."
+      },
+      "rubrica": {
+        "junior": [
+          "Pasa todos los casos de prueba",
+          "Soporta tanto `fn(1)(2)(3)` como `fn(1,2)(3)` y `fn(1,2,3)`"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica cómo sabe cuándo ya tiene suficientes argumentos para ejecutar la función original (comparando con `fn.length`)",
+          "Explica currying como transformar una función de varios argumentos en una cadena de funciones de un argumento",
+          "Menciona un caso de uso real (pre-configurar parte de los argumentos de una función para reutilizarla, similar a `bind` parcial)"
+        ]
+      },
+      "respuestaModelo": "`curry(fn)` devuelve una función que va acumulando los argumentos recibidos en llamadas sucesivas; en cada llamada compara cuántos argumentos ha acumulado contra `fn.length` (el número de parámetros declarados de la función original). Si ya tiene suficientes, ejecuta `fn` con todos ellos; si no, devuelve una nueva función que sigue acumulando. Esto permite tanto `curried(1)(2)(3)` como `curried(1, 2)(3)` o `curried(1, 2, 3)`, porque cada llamada intermedia solo comprueba si ya se alcanzó el total, sin importar en qué grupos llegaron los argumentos. El caso de uso real es pre-configurar parte de los argumentos de una función para reutilizarla después con el resto, similar a lo que hace `bind` pero de forma genérica para cualquier número de argumentos.",
+      "kata": {
+        "funcion": "probarCurry",
+        "codigoInicial": "function sumar3(a: number, b: number, c: number): number {\n  return a + b + c;\n}\n\nexport function curry(fn: (...args: number[]) => number): (...args: number[]) => unknown {\n  // tu código\n}\n\n// probarCurry la usa el runner: aplica los grupos de argumentos en orden\n// sobre curry(sumar3) hasta obtener el resultado numérico final.\nexport function probarCurry(gruposDeArgumentos: number[][]): number {\n  let actual: unknown = curry(sumar3);\n  for (const grupo of gruposDeArgumentos) {\n    actual = (actual as (...args: number[]) => unknown)(...grupo);\n  }\n  return actual as number;\n}\n",
+        "casos": [
+          { "nombre": "un argumento a la vez", "entrada": [[[1], [2], [3]]], "esperado": 6 },
+          { "nombre": "dos y luego uno", "entrada": [[[1, 2], [3]]], "esperado": 6 },
+          { "nombre": "los tres a la vez", "entrada": [[[1, 2, 3]]], "esperado": 6 },
+          { "nombre": "uno y luego dos", "entrada": [[[5], [1, 2]]], "esperado": 8 }
+        ],
+        "tiempoMin": 20,
+        "congelarAleatorio": false
+      },
+      "etiquetas": ["funciones", "funcional"],
+      "fuentes": [
+        {
+          "url": "https://github.com/h5bp/Front-end-Developer-Interview-Questions/blob/main/src/questions/javascript-questions.md",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Kata adaptada, no copiada literalmente."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    },
+    {
+      "id": "js-funciones-avanzadas-kata-memoize",
+      "version": 1,
+      "pista": "javascript",
+      "familia": "funciones-avanzadas",
+      "tipo": "kata",
+      "modos": ["kata"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Implementa `memoize(fn)` genérico que cachee resultados por los argumentos de entrada. Pruébalo con `probarMemoize(llamadas)`, que hace una llamada por cada grupo de argumentos en `llamadas` sobre una función costosa fija, y devuelve los resultados junto con cuántas veces se ejecutó realmente la función interna.",
+        "en": "Implement a generic `memoize(fn)` caching results by input arguments. Test it via `probarMemoize(calls)`, calling a fixed expensive function once per argument group in `calls`, returning the results plus how many times the inner function actually ran."
+      },
+      "rubrica": {
+        "junior": [
+          "Pasa todos los casos de prueba",
+          "Llamar dos veces con los mismos argumentos primitivos solo ejecuta el cálculo interno una vez"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica cómo construye la clave de caché (serializando los argumentos, por ejemplo con `JSON.stringify`)",
+          "Comenta el trade-off memoria vs velocidad: el caché crece sin límite si no se gestiona",
+          "Discute cómo manejaría argumentos que son objetos, donde la igualdad por referencia falla y `JSON.stringify` puede no ser suficiente (por ejemplo, orden de claves distinto)"
+        ]
+      },
+      "respuestaModelo": "`memoize(fn)` devuelve una función que, en cada llamada, construye una clave a partir de los argumentos (por ejemplo con `JSON.stringify(args)`) y comprueba si ya existe en un `Map` interno: si existe, devuelve el resultado guardado sin ejecutar `fn`; si no, la ejecuta, guarda el resultado bajo esa clave, y lo devuelve. El trade-off es memoria por velocidad: el caché crece con cada combinación distinta de argumentos vista, así que no es apto para funciones llamadas con argumentos casi siempre distintos, ni para funciones con efectos secundarios (memoizar solo tiene sentido si el resultado depende únicamente de los argumentos). Con argumentos que son objetos, `JSON.stringify` puede fallar si dos objetos equivalentes tienen las claves en distinto orden; una solución más robusta ordenaría las claves antes de serializar, o usaría una estructura de caché anidada por cada argumento en vez de una clave string única.",
+      "kata": {
+        "funcion": "probarMemoize",
+        "codigoInicial": "let vecesEjecutado = 0;\n\nfunction costosa(a: number, b: number): number {\n  vecesEjecutado++;\n  return a + b;\n}\n\nexport function memoize<F extends (...args: number[]) => number>(fn: F): F {\n  // tu código\n}\n\n// probarMemoize la usa el runner: llama a memoize(costosa) con cada grupo\n// de argumentos y devuelve los resultados junto con el contador real de ejecuciones.\nexport function probarMemoize(llamadas: number[][]): { resultados: number[]; vecesEjecutado: number } {\n  vecesEjecutado = 0;\n  const memoizada = memoize(costosa);\n  const resultados = llamadas.map((args) => memoizada(...(args as [number, number])));\n  return { resultados, vecesEjecutado };\n}\n",
+        "casos": [
+          {
+            "nombre": "llamar dos veces igual solo ejecuta una vez",
+            "entrada": [
+              [
+                [1, 2],
+                [1, 2]
+              ]
+            ],
+            "esperado": { "resultados": [3, 3], "vecesEjecutado": 1 }
+          },
+          {
+            "nombre": "argumentos distintos ejecutan cada vez",
+            "entrada": [
+              [
+                [1, 2],
+                [3, 4]
+              ]
+            ],
+            "esperado": { "resultados": [3, 7], "vecesEjecutado": 2 }
+          },
+          {
+            "nombre": "tres llamadas con solo dos combinaciones distintas",
+            "entrada": [
+              [
+                [1, 1],
+                [1, 1],
+                [2, 2]
+              ]
+            ],
+            "esperado": { "resultados": [2, 2, 4], "vecesEjecutado": 2 }
+          }
+        ],
+        "tiempoMin": 20,
+        "congelarAleatorio": false
+      },
+      "etiquetas": ["funciones", "rendimiento"],
+      "fuentes": [
+        {
+          "url": "https://github.com/sudheerj/javascript-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Sin LICENSE visible; kata redactada de cero a partir del concepto de memoization."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

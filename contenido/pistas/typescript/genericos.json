@@ -1,0 +1,207 @@
+{
+  "pista": "typescript",
+  "familia": "genericos",
+  "preguntas": [
+    {
+      "id": "ts-genericos-kata-first-of",
+      "version": 1,
+      "pista": "typescript",
+      "familia": "genericos",
+      "tipo": "kata",
+      "modos": ["kata"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué son los genéricos en TypeScript? Escribe una función genérica `firstOf<T>(arr: T[]): T | null` que devuelva el primer elemento o `null` si el array está vacío.",
+        "en": "What are generics in TypeScript? Write a generic function `firstOf<T>(arr: T[]): T | null` returning the first element, or `null` if the array is empty."
+      },
+      "rubrica": {
+        "junior": [
+          "Pasa todos los casos de prueba",
+          "Explica que un genérico es un parámetro de tipo que se resuelve en cada uso"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que sin genéricos la alternativa sería `any`, perdiendo la información de tipo concreto",
+          "Menciona restricciones (`extends`) como forma de acotar qué tipos acepta un genérico",
+          "Explica por qué devuelve `null` en vez de `undefined` para el caso vacío (mejor compatibilidad con JSON y comparaciones explícitas)"
+        ]
+      },
+      "respuestaModelo": "Un genérico es un parámetro de tipo: en vez de fijar de antemano con qué tipo trabaja una función, se deja como variable (`T`) que TypeScript resuelve en cada llamada según el argumento recibido, conservando la información de tipo concreto. Sin genéricos, la alternativa sería tipar el argumento como `any[]`, perdiendo cualquier chequeo sobre qué tipo de elemento contiene el array o qué tipo devuelve la función. `firstOf` usa `T` tanto en el parámetro como en el retorno, así que `firstOf([1,2,3])` se infiere como `number | null` automáticamente, sin anotarlo a mano. Se usa `null` en vez de `undefined` para el caso vacío porque es un valor explícito de \"no hay resultado\", más fácil de comparar y de serializar en JSON que `undefined`.",
+      "kata": {
+        "funcion": "firstOf",
+        "codigoInicial": "export function firstOf<T>(arr: T[]): T | null {\n  // tu código\n}\n",
+        "casos": [
+          {
+            "nombre": "devuelve el primer elemento de números",
+            "entrada": [[1, 2, 3]],
+            "esperado": 1
+          },
+          {
+            "nombre": "devuelve el primer elemento de strings",
+            "entrada": [["a", "b"]],
+            "esperado": "a"
+          },
+          { "nombre": "array vacío devuelve null", "entrada": [[]], "esperado": null }
+        ],
+        "tiempoMin": 10,
+        "congelarAleatorio": false
+      },
+      "etiquetas": ["genericos"],
+      "fuentes": [
+        {
+          "url": "https://github.com/typescript-cheatsheets/react",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Kata adaptada, no copiada literalmente."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ts-genericos-kata-restriccion",
+      "version": 1,
+      "pista": "typescript",
+      "familia": "genericos",
+      "tipo": "kata",
+      "modos": ["kata"],
+      "nivelMinimo": "mid",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "Escribe `obtenerId<T extends { id: string }>(item: T): string` que restrinja el genérico para que solo acepte objetos con una propiedad `id` de tipo string.",
+        "en": "Write `obtenerId<T extends { id: string }>(item: T): string`, constraining the generic to only accept objects with a string `id` property."
+      },
+      "rubrica": {
+        "junior": [
+          "Pasa todos los casos de prueba",
+          "Usa `extends` en la declaración del genérico"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que `extends` aquí es una restricción estructural, no herencia de clases",
+          "Explica qué error de compilación se produciría al llamar la función con un objeto sin `id`",
+          "Da otro ejemplo de restricción genérica útil (por ejemplo `T extends { length: number }` para algo que tenga longitud)"
+        ]
+      },
+      "respuestaModelo": "`T extends { id: string }` restringe qué tipos puede tomar el genérico `T`: solo se aceptan objetos que, además de lo que sea que tengan, incluyan una propiedad `id` de tipo string. Este `extends` no es herencia de clases, es una restricción estructural: cualquier objeto con la forma requerida cumple, sin necesidad de heredar de nada. Si se llamara `obtenerId({nombre: 'x'})` sin `id`, TypeScript lo rechazaría en tiempo de compilación porque el objeto no satisface la restricción. El mismo patrón sirve para otras restricciones útiles, como `T extends { length: number }` para aceptar cualquier cosa con longitud (arrays, strings) sin importar el resto de su forma.",
+      "kata": {
+        "funcion": "obtenerId",
+        "codigoInicial": "export function obtenerId<T extends { id: string }>(item: T): string {\n  // tu código\n}\n",
+        "casos": [
+          {
+            "nombre": "extrae el id de un objeto simple",
+            "entrada": [{ "id": "x1" }],
+            "esperado": "x1"
+          },
+          {
+            "nombre": "extrae el id ignorando otras propiedades",
+            "entrada": [{ "id": "u9", "nombre": "Ana" }],
+            "esperado": "u9"
+          }
+        ],
+        "tiempoMin": 10,
+        "congelarAleatorio": false
+      },
+      "etiquetas": ["genericos"],
+      "fuentes": [
+        {
+          "url": "https://github.com/typescript-cheatsheets/react",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Kata adaptada, no copiada literalmente."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ts-genericos-kata-tipo-condicional",
+      "version": 1,
+      "pista": "typescript",
+      "familia": "genericos",
+      "tipo": "kata",
+      "modos": ["kata"],
+      "nivelMinimo": "senior",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "¿Qué es un tipo condicional en TypeScript (`T extends U ? X : Y`)? Implementa `desenvolver(valor)` que, si recibe un array, devuelva su primer elemento, y si no, devuelva el valor tal cual, usando un tipo condicional para el retorno.",
+        "en": "What is a conditional type in TypeScript (`T extends U ? X : Y`)? Implement `desenvolver(valor)`, which returns the first element if given an array, or the value itself otherwise, using a conditional type for the return."
+      },
+      "rubrica": {
+        "junior": ["Pasa todos los casos de prueba"],
+        "senior": [
+          "Lo anterior",
+          "Explica un tipo condicional como una expresión de tipo que elige entre dos opciones según si `T` cumple `U`",
+          "Da un ejemplo de tipo condicional del propio TypeScript (`ReturnType<T>` internamente usa uno)",
+          "Explica el caso base del array vacío: qué debería devolver y por qué"
+        ]
+      },
+      "respuestaModelo": "Un tipo condicional (`T extends U ? X : Y`) es una expresión a nivel de tipos: si `T` es asignable a `U`, el tipo resultante es `X`, si no, es `Y`; es el equivalente de un `if/else` pero evaluado por el compilador sobre tipos, no sobre valores. Utilidades del propio TypeScript como `ReturnType<T>` se construyen internamente con tipos condicionales. `desenvolver` en tiempo de ejecución comprueba con `Array.isArray` si el valor es un array, y si lo es devuelve `valor[0]` (o `null` si el array está vacío), si no devuelve `valor` tal cual; el tipo condicional en la firma refleja esa misma lógica a nivel de tipos, para que `desenvolver([1,2,3])` se infiera como `number | null` y `desenvolver(5)` como `number`, sin necesitar un cast manual. Se usa `null` en vez de `undefined` para el caso de array vacío por la misma razón que en `firstOf`: es un valor explícito, más fácil de serializar y comparar.",
+      "kata": {
+        "funcion": "desenvolver",
+        "codigoInicial": "type Desenvuelto<T> = T extends (infer U)[] ? U | null : T;\n\nexport function desenvolver<T>(valor: T): Desenvuelto<T> {\n  // tu código: si es array, primer elemento (o null si está vacío); si no, el valor tal cual\n  return undefined as never;\n}\n",
+        "casos": [
+          {
+            "nombre": "array de números devuelve el primero",
+            "entrada": [[1, 2, 3]],
+            "esperado": 1
+          },
+          { "nombre": "valor suelto se devuelve igual", "entrada": [5], "esperado": 5 },
+          { "nombre": "array vacío devuelve null", "entrada": [[]], "esperado": null }
+        ],
+        "tiempoMin": 20,
+        "congelarAleatorio": false
+      },
+      "etiquetas": ["genericos", "tipos-avanzados"],
+      "fuentes": [
+        {
+          "url": "https://github.com/typescript-cheatsheets/react",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Documentado como patrón avanzado de \"reusable type utilities\"; kata redactada de cero."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ts-genericos-01",
+      "version": 1,
+      "pista": "typescript",
+      "familia": "genericos",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Cómo tiparías las props de un componente que recibe `children` opcionales y un callback `onSelect(id: string): void`?",
+        "en": "How would you type the props of a component that receives optional `children` and a callback `onSelect(id: string): void`?"
+      },
+      "rubrica": {
+        "junior": [
+          "Declara una interfaz o type con `onSelect: (id: string) => void`",
+          "Marca `children` como opcional"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Usa un tipo apropiado para `children` (por ejemplo `React.ReactNode` en un contexto de React) en vez de `any`",
+          "Explica por qué tipar el callback con su firma completa (`(id: string) => void`) documenta mejor el contrato que dejarlo como `Function`",
+          "Menciona que exportar el tipo de props permite reutilizarlo en los tests del componente"
+        ]
+      },
+      "respuestaModelo": "Definiría una interfaz con `children?: React.ReactNode` para marcarlo opcional y aceptar cualquier contenido renderizable válido, y `onSelect: (id: string) => void` para documentar exactamente qué argumento recibe el callback y que no devuelve nada útil. Tipar el callback con su firma completa, en vez de dejarlo como `Function` genérico, hace que TypeScript avise si alguien lo llama con el tipo de argumento equivocado, y sirve como documentación del contrato sin tener que leer la implementación. Exportar ese tipo de props (`export interface Props { ... }`) permite reutilizarlo directamente en los tests del componente para construir props válidas sin duplicar la definición.",
+      "etiquetas": ["genericos", "typescript"],
+      "fuentes": [
+        {
+          "url": "https://github.com/typescript-cheatsheets/react",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Pregunta adaptada, no copiada literalmente. Reformulada como fundamento en vez de kata: el ejercicio es de tipado de una interfaz, no de lógica en tiempo de ejecución comprobable con casos."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    }
+  ]
+}

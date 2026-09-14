@@ -1,0 +1,44 @@
+{
+  "pista": "devops",
+  "familia": "cloud",
+  "preguntas": [
+    {
+      "id": "devops-cloud-01",
+      "version": 1,
+      "pista": "devops",
+      "familia": "cloud",
+      "tipo": "razonamiento",
+      "modos": ["verbal", "diseno"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué opciones básicas de despliegue en cloud conoces para una app Next.js más API Node más Postgres (Vercel, un VPS con Docker, un PaaS)? ¿Qué trade-offs tiene cada una?",
+        "en": "What basic cloud deployment options do you know for a Next.js + Node API + Postgres app (Vercel, a VPS with Docker, a PaaS)? What are the trade-offs of each?"
+      },
+      "rubrica": {
+        "junior": [
+          "Describe al menos dos opciones (Vercel, VPS) con una diferencia básica",
+          "Sabe que la base de datos suele desplegarse por separado del compute de la app"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica Vercel (o similar) como opción que minimiza operación para el caso de uso de Next.js, a cambio de menos control y coste que puede crecer con el tráfico",
+          "Explica un VPS con Docker como opción de control total y coste más predecible, a cambio de gestionar parches, escalado y backups",
+          "Sitúa un PaaS (Railway, Render, Fly.io) como punto intermedio entre ambos extremos"
+        ]
+      },
+      "respuestaModelo": "Vercel (o equivalente) minimiza la operación para el caso de uso que Next.js está optimizado a resolver, despliegue automático, edge network, Server Actions e ISR funcionando sin configuración extra, a cambio de menos control sobre la infraestructura y un coste que puede crecer bastante con el tráfico o con features avanzadas. Un VPS con Docker da control total sobre el entorno y un coste más predecible mes a mes, pero el equipo gestiona parches de seguridad, escalado manual o semi-automático, y backups. Un PaaS como Railway, Render o Fly.io queda en un punto intermedio: más control que Vercel, menos operación manual que un VPS puro. En cualquiera de las tres opciones, la base de datos (Postgres o Supabase) suele desplegarse por separado del compute de la aplicación, normalmente como un servicio gestionado dedicado.",
+      "etiquetas": ["cloud", "despliegue", "vercel"],
+      "fuentes": [
+        {
+          "url": "https://vercel.com/docs/deployments",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Conocimiento consolidado sobre opciones de despliegue, contrastado con documentación oficial de despliegue de Next.js en Vercel; pregunta redactada de nuevo."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

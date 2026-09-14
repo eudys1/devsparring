@@ -1,0 +1,114 @@
+{
+  "pista": "fundamentos",
+  "familia": "git",
+  "preguntas": [
+    {
+      "id": "fund-git-01",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "git",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Cuál es la diferencia entre `git merge` y `git rebase`? ¿Cuándo usarías cada uno en un equipo?",
+        "en": "What is the difference between `git merge` and `git rebase`? When would you use each on a team?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que merge crea un commit de fusión con dos padres",
+          "Explica que rebase reescribe el historial para dejarlo lineal"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Añade el criterio de no rebasear ramas públicas o compartidas porque reescribe commits que otros ya tienen",
+          "Explica cuándo prefiere cada uno en su flujo de trabajo real (rebase local antes de un PR, merge para integrar a main)",
+          "Menciona `--force-with-lease` como forma más segura de forzar un push tras un rebase local"
+        ]
+      },
+      "respuestaModelo": "`git merge` combina dos ramas creando un commit de fusión con dos padres, preservando el historial real tal como ocurrió, con las ramas visibles. `git rebase` reescribe los commits de una rama para que parezcan creados a partir del último commit de otra, dejando un historial lineal sin commit de fusión. La regla práctica es no rebasear ramas públicas o compartidas, porque reescribe commits que otras personas ya tienen y les rompe el historial local; sí es seguro rebasear tu propia rama de feature antes de abrir el PR para limpiar el historial, usando `git push --force-with-lease` en vez de `--force` a secas.",
+      "etiquetas": ["git"],
+      "fuentes": [
+        {
+          "url": "https://dev.to/m_midas/12-interview-questions-git-19ai",
+          "fecha": "2026-09-14",
+          "tipo": "resumen"
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "fund-git-02",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "git",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Se produce un conflicto de merge en un archivo compartido por dos personas. Camina al entrevistador por los pasos que seguirías para resolverlo con seguridad.",
+        "en": "A merge conflict happens in a file shared by two people. Walk the interviewer through the steps you'd take to resolve it safely."
+      },
+      "rubrica": {
+        "junior": [
+          "Menciona identificar los marcadores de conflicto (`<<<<<<<`, `=======`, `>>>>>>>`)",
+          "Menciona probar el código después de resolver el conflicto"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que hay que entender ambos cambios antes de decidir cuál queda, no solo elegir uno a ciegas",
+          "Menciona comunicarse con la otra persona si el conflicto es semántico y no solo textual",
+          "Corre los tests o el linter tras resolver, no solo compila mentalmente"
+        ]
+      },
+      "respuestaModelo": "Primero identifico los marcadores `<<<<<<<`, `=======` y `>>>>>>>` para ver exactamente qué cambió cada lado. Antes de elegir una versión leo ambos cambios para entender la intención de cada uno, porque un conflicto textual puede esconder un conflicto semántico donde ambas versiones son sintácticamente válidas pero contradictorias en lógica. Si no tengo claro por qué la otra persona cambió esa línea, hablo con ella antes de decidir. Una vez resuelto, ejecuto los tests y reviso manualmente la zona del conflicto antes de hacer commit, no doy por bueno que compile sin más.",
+      "etiquetas": ["git"],
+      "fuentes": [
+        {
+          "url": "https://dev.to/m_midas/12-interview-questions-git-19ai",
+          "fecha": "2026-09-14",
+          "tipo": "resumen"
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "fund-git-03",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "git",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "mid",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "¿Qué estrategia de ramas (git flow, trunk-based, GitHub flow) usas normalmente y por qué?",
+        "en": "What branching strategy (git flow, trunk-based, GitHub flow) do you normally use and why?"
+      },
+      "rubrica": {
+        "junior": ["Nombra al menos una estrategia de ramas y explica su idea básica"],
+        "senior": [
+          "Lo anterior",
+          "Justifica la elección según el contexto (tamaño de equipo, frecuencia de despliegue, necesidad de mantener varias versiones)",
+          "Reconoce el trade-off de git flow (más ceremonia, útil con releases planificadas) frente a trunk-based/GitHub flow (más simple, pensado para despliegue continuo)",
+          "No presenta una única estrategia como universalmente correcta"
+        ]
+      },
+      "respuestaModelo": "En equipos con despliegue continuo prefiero GitHub flow o trunk-based: ramas de feature cortas que se integran a `main` rápido tras revisión, con `main` siempre desplegable. Git flow, con ramas `develop`, `release` y `hotfix` separadas, aporta más estructura cuando hay que mantener varias versiones en producción a la vez o releases planificadas con antelación, pero añade ceremonia que no compensa en un producto que despliega varias veces al día. La elección depende del contexto del equipo, no hay una estrategia universalmente mejor.",
+      "etiquetas": ["git"],
+      "fuentes": [
+        {
+          "url": "https://dev.to/m_midas/12-interview-questions-git-19ai",
+          "fecha": "2026-09-14",
+          "tipo": "resumen"
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

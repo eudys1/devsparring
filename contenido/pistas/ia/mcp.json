@@ -1,0 +1,189 @@
+{
+  "pista": "ia",
+  "familia": "mcp",
+  "preguntas": [
+    {
+      "id": "ia-mcp-01",
+      "version": 1,
+      "pista": "ia",
+      "familia": "mcp",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué es el Model Context Protocol (MCP) y qué problema resuelve?",
+        "en": "What is the Model Context Protocol (MCP) and what problem does it solve?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que es un estándar abierto para conectar asistentes de IA con datos y herramientas externas",
+          "Menciona que evita construir una integración a medida por cada combinación de modelo y herramienta"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Da un ejemplo concreto de uso (repositorio, base de datos, sistema de tickets)",
+          "Compara con el enfoque anterior de integraciones propietarias por herramienta"
+        ]
+      },
+      "respuestaModelo": "MCP es un estándar abierto, publicado por Anthropic, para conectar asistentes o modelos de IA con fuentes de datos y herramientas externas, como repositorios de código, bases de datos o APIs internas, de forma uniforme. Antes de MCP, cada combinación de modelo y herramienta necesitaba una integración a medida; con MCP se define un protocolo común, así que un mismo servidor MCP puede exponer una fuente de datos a cualquier cliente que hable ese protocolo, sin reescribir la integración por cada asistente de IA distinto que se quiera usar.",
+      "etiquetas": ["mcp", "fundamentos"],
+      "fuentes": [
+        {
+          "url": "https://www.anthropic.com/news/model-context-protocol",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Anuncio oficial de Anthropic, noviembre 2024, citado vía resumen de búsqueda que referencia la página oficial, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-mcp-02",
+      "version": 1,
+      "pista": "ia",
+      "familia": "mcp",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Explica la arquitectura cliente-servidor de MCP.",
+        "en": "Explain MCP's client-server architecture."
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que un MCP server expone datos o funcionalidad siguiendo el protocolo",
+          "Explica que un MCP client se conecta a uno o varios servers para dar acceso al modelo"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Da ejemplos de servers (Git, Slack, una base de datos)",
+          "Explica que la app no tiene que implementar cada integración desde cero"
+        ]
+      },
+      "respuestaModelo": "En MCP, un servidor expone datos o funcionalidad concreta siguiendo el protocolo, por ejemplo acceso a un repositorio Git, a Slack o a una base de datos. Un cliente MCP, integrado dentro de la aplicación de IA (un editor, un agente de terminal), se conecta a uno o varios de esos servidores para darle al modelo acceso a esas capacidades. La ventaja es que la aplicación cliente no tiene que implementar cada integración desde cero: basta con hablar el protocolo MCP y puede conectarse a cualquier servidor existente que ya lo implemente, sea propio o de terceros.",
+      "etiquetas": ["mcp", "arquitectura"],
+      "fuentes": [
+        {
+          "url": "https://www.anthropic.com/news/model-context-protocol",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Anuncio oficial de Anthropic, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-mcp-03",
+      "version": 1,
+      "pista": "ia",
+      "familia": "mcp",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "senior",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "¿Qué son las primitivas tools, resources y prompts en MCP, y quién las controla?",
+        "en": "What are the \"tools\", \"resources\" and \"prompts\" primitives in MCP and who controls them?"
+      },
+      "rubrica": {
+        "junior": ["Nombra las tres primitivas: tools, resources, prompts"],
+        "senior": [
+          "Lo anterior",
+          "Explica que tools las controla el modelo, con aprobación según la app",
+          "Explica que resources las controla la aplicación como contexto",
+          "Explica que prompts son plantillas que el usuario invoca explícitamente",
+          "Justifica por qué separar estas tres cosas ayuda a razonar sobre qué decide el modelo y qué decide el humano"
+        ]
+      },
+      "respuestaModelo": "Tools son acciones que el modelo puede invocar, controladas por el modelo aunque normalmente sujetas a aprobación según las reglas de la aplicación. Resources son datos que la propia aplicación expone como contexto, y esa decisión la controla la app, no el modelo. Prompts son plantillas reutilizables que el usuario puede invocar explícitamente, así que ahí el control lo tiene la persona. Separar estas tres primitivas ayuda a razonar con claridad sobre quién decide qué en el sistema: qué puede iniciar el modelo por su cuenta, qué contexto decide inyectar la aplicación, y qué dispara explícitamente el usuario.",
+      "etiquetas": ["mcp", "primitivas"],
+      "fuentes": [
+        {
+          "url": "https://www.anthropic.com/news/model-context-protocol",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Documentación/anuncio de MCP citado vía resumen de búsqueda que cita la especificación, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-mcp-04",
+      "version": 1,
+      "pista": "ia",
+      "familia": "mcp",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Por qué le importaría MCP a un desarrollador fullstack que no construye modelos de IA?",
+        "en": "Why would MCP matter to a fullstack developer who doesn't build AI models?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que permite exponer APIs/datos internos a un asistente de IA de forma estandarizada"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Da un ejemplo concreto (base de datos interna, sistema de tickets, documentación)",
+          "Explica el ahorro frente a construir una integración propietaria por cada herramienta de IA"
+        ]
+      },
+      "respuestaModelo": "Aunque no construya modelos, un desarrollador fullstack sí construye las APIs y los sistemas internos que un asistente de IA podría necesitar consultar. MCP le permite exponer esos datos o funcionalidad, una base de datos de clientes, un sistema de tickets, la documentación interna, de forma estandarizada, para que un asistente como Claude o Copilot pueda usarlos sin que el equipo tenga que escribir una integración propietaria distinta por cada herramienta de IA que la empresa decida usar. Es la diferencia entre construir un conector una vez o construir uno por cada combinación de asistente y sistema interno.",
+      "etiquetas": ["mcp", "adopcion"],
+      "fuentes": [
+        {
+          "url": "https://www.anthropic.com/news/model-context-protocol",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Síntesis propia sobre adopción práctica de MCP en herramientas de desarrollo, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-mcp-05",
+      "version": 1,
+      "pista": "ia",
+      "familia": "mcp",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "senior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué riesgos de seguridad específicos trae exponer un MCP server con acceso a datos sensibles?",
+        "en": "What specific security risks come from exposing an MCP server with access to sensitive data?"
+      },
+      "rubrica": {
+        "junior": [
+          "Reconoce que un MCP server invocado por el modelo hay que tratarlo como superficie de ataque"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Propone validar y limitar el scope de cada tool expuesta",
+          "Propone no exponer operaciones destructivas sin confirmación",
+          "Menciona el riesgo de contenido devuelto por el server con instrucciones inyectadas"
+        ]
+      },
+      "respuestaModelo": "Si el modelo puede invocar ese servidor, hay que tratarlo como una superficie de ataque más, no como una utilidad neutra. Conviene validar y limitar el scope de cada herramienta expuesta al mínimo necesario, no exponer operaciones destructivas sin una confirmación explícita fuera del propio modelo, y sobre todo tener en cuenta que el contenido que devuelve el servidor, por ejemplo el texto de un ticket escrito por un usuario externo, puede contener instrucciones inyectadas que el modelo interprete como si fueran órdenes legítimas del sistema en vez de datos a procesar.",
+      "etiquetas": ["mcp", "seguridad"],
+      "fuentes": [
+        {
+          "url": "https://owasp.org/www-project-top-10-for-large-language-model-applications/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Síntesis propia, coherente con guías de seguridad de agentes/OWASP LLM Top 10, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

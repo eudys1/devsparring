@@ -1,0 +1,115 @@
+{
+  "pista": "node",
+  "familia": "frameworks",
+  "preguntas": [
+    {
+      "id": "node-frameworks-01",
+      "version": 1,
+      "pista": "node",
+      "familia": "frameworks",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Diferencia entre Express, Fastify y NestJS: ¿cuándo elegirías cada uno para un proyecto fullstack nuevo?",
+        "en": "Difference between Express, Fastify and NestJS: when would you choose each for a new fullstack project?"
+      },
+      "rubrica": {
+        "junior": ["Describe Express como minimalista y de bajo nivel"],
+        "senior": [
+          "Lo anterior",
+          "Explica que Fastify prioriza rendimiento y validación de esquema integrada (JSON Schema) con overhead menor",
+          "Explica que NestJS aporta arquitectura opinada (inyección de dependencias, módulos, decoradores) a costa de más boilerplate y curva de aprendizaje"
+        ]
+      },
+      "respuestaModelo": "Express es minimalista y de bajo nivel: da control total sobre cómo estructurar la app, pero deja al equipo decidir organización de carpetas, validación y manejo de errores desde cero, lo que puede ir bien en proyectos pequeños o cuando el equipo ya tiene sus propias convenciones. Fastify prioriza rendimiento (menor overhead por petición) y trae validación de esquema integrada basada en JSON Schema, útil cuando la app necesita exprimir latencia o quiere validación declarativa sin depender de una librería externa. NestJS aporta una arquitectura opinada al estilo Angular, con inyección de dependencias, módulos y decoradores, lo que da mucha estructura y convención sobre configuración, ideal para equipos grandes que necesitan consistencia entre muchos desarrolladores, a costa de más boilerplate y una curva de aprendizaje más pronunciada que las otras dos opciones.",
+      "etiquetas": ["frameworks", "express", "fastify", "nestjs"],
+      "fuentes": [
+        {
+          "url": "https://github.com/goldbergyoni/nodebestpractices",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "CC-BY-SA-4.0. Contenido citado como referencia, no copiado literalmente; sección de arquitectura y elección de framework."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "node-frameworks-02",
+      "version": 1,
+      "pista": "node",
+      "familia": "frameworks",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué es un middleware en Express/Fastify y cómo se propaga (o se detiene) el manejo de una petición?",
+        "en": "What is a middleware in Express/Fastify and how does request handling propagate (or stop)?"
+      },
+      "rubrica": {
+        "junior": [
+          "Define un middleware como función con acceso a `req`, `res` y `next`",
+          "Sabe que si no llama a `next()` (o no responde), la petición se queda colgada"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que el orden de registro importa (auth antes que la ruta protegida)",
+          "Distingue los middlewares de error (4 argumentos `(err, req, res, next)` en Express)"
+        ]
+      },
+      "respuestaModelo": "Un middleware es una función que recibe `req`, `res` y una función `next`, y se ejecuta antes de que la petición llegue al handler final de la ruta. Si el middleware no llama a `next()` ni responde directamente con `res.send`/`res.json`, la petición se queda colgada indefinidamente, porque nada le indica a Express que debe continuar la cadena. El orden en que se registran los middlewares importa mucho: un middleware de autenticación tiene que registrarse antes que la ruta protegida a la que aplica, porque Express los ejecuta en el orden en que se declaran. Los middlewares de error se distinguen sintácticamente en Express por tener cuatro argumentos, `(err, req, res, next)`, y Express solo los invoca cuando algo llama a `next(err)` con un valor, saltándose todos los middlewares normales intermedios hasta llegar a uno de estos.",
+      "etiquetas": ["frameworks", "middleware", "express"],
+      "fuentes": [
+        {
+          "url": "https://github.com/goldbergyoni/nodebestpractices",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "CC-BY-SA-4.0. Contenido citado como referencia, no copiado literalmente."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "node-frameworks-rate-limiting-contacto",
+      "version": 1,
+      "pista": "node",
+      "familia": "frameworks",
+      "tipo": "razonamiento",
+      "modos": ["verbal", "diseno"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Implementa un middleware Express/Fastify de rate limiting para `POST /api/contact` que permita como máximo 5 peticiones por IP cada 10 minutos, usando Redis para que funcione con varias instancias. Debe devolver 429 con `Retry-After` cuando se supera el límite. Explica cómo lo estructurarías.",
+        "en": "Implement an Express/Fastify rate-limiting middleware for `POST /api/contact` allowing at most 5 requests per IP every 10 minutes, using Redis so it works across instances. It must return 429 with `Retry-After` when the limit is exceeded. Explain how you'd structure it."
+      },
+      "rubrica": {
+        "junior": [
+          "Propone que el contador viva en Redis, no en memoria del proceso",
+          "Devuelve 429 cuando se supera el límite"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que incrementar y comprobar el límite debe ser atómico (script Lua, o `INCR` + `EXPIRE` bien secuenciados) para evitar condición de carrera",
+          "Calcula `Retry-After` en vez de devolver un número fijo inventado",
+          "Distingue limitar por IP de limitar por usuario autenticado, y explica por qué limitar solo por IP falla si varios usuarios comparten IP (NAT/oficina)"
+        ]
+      },
+      "respuestaModelo": "El contador vive en Redis, con una clave por IP (por ejemplo `ratelimit:contact:<ip>`), para que el límite se respete igual con una instancia del servidor o con diez detrás de un balanceador. La operación de incrementar y comprobar el límite tiene que ser atómica: usar `INCR` seguido de `EXPIRE` solo en la primera petición de la ventana (comprobando si el valor devuelto por `INCR` es 1), o directamente un script Lua que haga ambas cosas en una sola operación atómica del lado de Redis, para evitar que dos peticiones casi simultáneas lean el mismo contador antes de que ninguna lo haya incrementado todavía. Cuando el contador supera 5 dentro de la ventana de 10 minutos, el middleware responde 429 con una cabecera `Retry-After` calculada a partir del TTL restante de la clave en Redis, no un número fijo inventado. Limitar únicamente por IP tiene un problema real: varios usuarios detrás del mismo NAT (una oficina, una red compartida) comparten IP pública y se limitarían entre sí injustamente, así que cuando el endpoint tiene usuarios autenticados conviene combinar el límite por IP con un límite adicional por usuario o API key.",
+      "etiquetas": ["frameworks", "rate-limiting", "redis"],
+      "fuentes": [
+        {
+          "url": "https://intervu.dev/blog/rate-limiter-system-design",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Ejercicio propio escrito para esta investigación, inspirado en el patrón de rate limiting con Redis citado en guías de sistemas agregadas."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

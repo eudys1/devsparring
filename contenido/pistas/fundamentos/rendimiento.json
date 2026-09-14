@@ -1,0 +1,189 @@
+{
+  "pista": "fundamentos",
+  "familia": "rendimiento",
+  "preguntas": [
+    {
+      "id": "fund-rendimiento-01",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "rendimiento",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "senior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Los usuarios reportan que una página tarda mucho en cargar. ¿Cómo averiguarías dónde está el cuello de botella y qué harías después?",
+        "en": "Users are reporting that a page takes a long time to load. How would you find out where the time is being spent, and what would you do next?"
+      },
+      "rubrica": {
+        "junior": [
+          "Propone medir antes de actuar (DevTools, Lighthouse)",
+          "Distingue al menos dos posibles causas (red, JS, render)"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Distingue entre tiempo de red, parseo/render y JS bloqueante como categorías separadas de diagnóstico",
+          "Prioriza hipótesis por impacto (payload grande, N+1 de peticiones, render bloqueante) antes de proponer soluciones concretas",
+          "Menciona métricas concretas (Web Vitals: LCP, TTFB, TBT) en vez de \"se siente lento\""
+        ]
+      },
+      "respuestaModelo": "Primero mido antes de actuar: DevTools Performance y Network, Lighthouse, y Web Vitals reales (LCP, TTFB, TBT) para no optimizar a ciegas. Con eso separo el problema en categorías: tiempo de red (payload grande, demasiadas peticiones, sin caché), tiempo de parseo/render (bundle de JS enorme, CSS bloqueante), o JS bloqueante en el hilo principal (cálculos pesados antes del primer render). Priorizo por impacto: si el TTFB es alto el problema es de backend o red, si el LCP tarda pero el TTFB es bueno probablemente sea render o imágenes sin optimizar. Solo después de identificar la causa dominante propongo una solución concreta, en vez de aplicar optimizaciones genéricas sin medir antes y después.",
+      "etiquetas": ["rendimiento", "web"],
+      "fuentes": [
+        {
+          "url": "https://codesignal.com/blog/25-javascript-interview-questions-and-answers-from-basic-to-senior-level/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen"
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "fund-rendimiento-02",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "rendimiento",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "senior",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "Tienes una función que tarda 1 segundo en ejecutarse y necesitas ejecutarla 10 millones de veces. ¿Cómo reducirías el tiempo total de ejecución?",
+        "en": "Say there was a function that took 1 second to execute and you needed to run this function 10 million times, how would you cut down on the execution time?"
+      },
+      "rubrica": {
+        "junior": ["Reconoce que optimizar línea a línea la función no es suficiente a esa escala"],
+        "senior": [
+          "Lo anterior",
+          "Pregunta primero si el resultado se puede cachear/memoizar (si hay inputs repetidos) antes de optimizar a fuerza bruta",
+          "Propone paralelizar (Web Workers, procesos en Node) si el trabajo es independiente entre llamadas",
+          "Calcula que 10 millones por 1 segundo son unos 115 días, y concluye que el enfoque es evitar ejecutar la función completa, no solo acelerarla"
+        ]
+      },
+      "respuestaModelo": "10 millones de ejecuciones a 1 segundo cada una son unos 115 días seguidos, así que optimizar la función línea a línea no va a resolver el problema por sí solo; el enfoque casi seguro es evitar ejecutarla por completo tantas veces. Primero preguntaría si hay inputs repetidos: si es así, memoizar el resultado por argumentos elimina de raíz la mayoría de las ejecuciones. Si el trabajo es genuinamente independiente entre llamadas, lo paralelizaría en varios procesos o Web Workers para usar todos los núcleos disponibles. Y solo después de eso miraría si el algoritmo interno tiene una complejidad mejorable, porque optimizar un algoritmo ineficiente en paralelo sigue siendo ineficiente, solo que más rápido.",
+      "etiquetas": ["rendimiento"],
+      "fuentes": [
+        {
+          "url": "https://www.glassdoor.com/Interview/frontend-javascript-developer-interview-questions-SRCH_KO0,29.htm",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Bloqueo HTTP 403 en WebFetch directo; cita casi textual en resumen de búsqueda."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "fund-rendimiento-03",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "rendimiento",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "senior",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "Un endpoint que normalmente recibe 100 peticiones por minuto de repente recibe 10.000 en un minuto (por ejemplo, una promoción). ¿Qué harías para que no caiga, pensando tanto en frontend como en backend?",
+        "en": "An endpoint that normally gets 100 requests per minute suddenly gets 10,000 in a minute (e.g. a promotion). What would you do to keep it from falling over, thinking about both frontend and backend?"
+      },
+      "rubrica": {
+        "junior": [
+          "Menciona alguna medida de frontend (deshabilitar botón, reintentos) y alguna de backend (rate limiting o caché)"
+        ],
+        "senior": [
+          "Lo anterior",
+          "En cliente: menciona backoff exponencial en reintentos y deshabilitar el botón tras el primer clic",
+          "En servidor: menciona rate limiting, colas, caché y escalado horizontal",
+          "Prioriza las medidas en vez de intentar resolverlo todo a la vez"
+        ]
+      },
+      "respuestaModelo": "En el lado cliente evitaría que el propio frontend agrave el pico: deshabilitar el botón tras el primer clic, y si hay reintentos automáticos, usar backoff exponencial en vez de reintentar inmediatamente y machacar más el servidor. En el lado servidor priorizaría rate limiting para proteger el endpoint de un cliente que reintenta agresivamente, una cola para absorber el pico en vez de procesarlo todo de golpe, caché para las respuestas que no cambian por petición, y escalado horizontal si la infraestructura lo permite. No intentaría aplicar las cinco medidas a la vez bajo presión: priorizaría rate limiting y caché como las de mayor impacto inmediato, y dejaría el escalado horizontal para una segunda fase si el problema persiste.",
+      "etiquetas": ["rendimiento", "escalabilidad"],
+      "fuentes": [
+        {
+          "url": "https://github.com/yangshun/tech-interview-handbook",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Licencia y estructura general leídas de primera mano; contenido específico de esta pregunta es hipótesis basada en el enfoque práctico del repo."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "fund-rendimiento-04",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "rendimiento",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "Tienes un listado de productos que cambia poco (una vez al día) pero se consulta miles de veces por minuto. ¿Dónde y cómo lo cachearías?",
+        "en": "You have a product listing that changes rarely (once a day) but is queried thousands of times per minute. Where and how would you cache it?"
+      },
+      "rubrica": {
+        "junior": [
+          "Propone alguna forma de caché (servidor o CDN) en vez de consultar la fuente de datos en cada petición"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Distingue niveles de caché: CDN/HTTP con `Cache-Control`, caché en memoria del servidor, caché en el cliente",
+          "Explica cómo invalidarla cuando el dato cambia (TTL corto, invalidación manual, versionado de la clave de caché)",
+          "Justifica el nivel elegido según el patrón de acceso descrito, no solo dice \"lo cacheo\""
+        ]
+      },
+      "respuestaModelo": "Dado que cambia una vez al día pero se consulta miles de veces por minuto, cachearía en varios niveles: en el servidor, un caché en memoria (o Redis si hay varias instancias) para no golpear la base de datos en cada petición, con un TTL de unas horas; y en el borde, cabeceras `Cache-Control` para que una CDN sirva la respuesta directamente sin llegar siquiera al servidor la mayoría de las veces. Para invalidar cuando el dato cambia, en vez de esperar solo al TTL, invalidaría manualmente la clave de caché en el momento del cambio (o usaría un esquema de versionado de la clave, tipo `productos:v123`), así el dato nuevo se sirve de inmediato sin esperar a que expire el TTL.",
+      "etiquetas": ["rendimiento", "cache"],
+      "fuentes": [
+        {
+          "url": "https://www.glassdoor.com/Interview/frontend-javascript-developer-interview-questions-SRCH_KO0,29.htm",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Patrón genérico de pregunta práctica de caché; sin cita textual de entrevista específica localizada."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "fund-rendimiento-05",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "rendimiento",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Quieren implementar un sistema que registre cada clic que hace el usuario en el sitio. ¿Cómo lo diseñarías sin degradar el rendimiento?",
+        "en": "The team wants to implement a way of tracking every click the user makes on the site. How would you design it without degrading performance?"
+      },
+      "rubrica": {
+        "junior": [
+          "Propone un único listener en un ancestro común (event delegation) en vez de un listener por elemento"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Propone agrupar/batchear los eventos antes de enviarlos, no un request por clic",
+          "Menciona `navigator.sendBeacon` o una cola con reintentos para no perder eventos al cerrar la pestaña",
+          "Reconoce el trade-off entre capturar todo (más datos, más coste) y muestrear"
+        ]
+      },
+      "respuestaModelo": "Usaría event delegation: un único listener de `click` en un ancestro común (por ejemplo `document`) en vez de un listener por cada elemento, para no pagar el coste de miles de listeners individuales. Los clics capturados no los enviaría uno a uno, sino que los acumularía en un buffer y los enviaría por lotes cada pocos segundos o cuando el buffer alcance cierto tamaño, para no saturar la red con una petición por clic. Para no perder los eventos pendientes cuando el usuario cierra la pestaña, usaría `navigator.sendBeacon` en el evento `visibilitychange` o `pagehide`, que garantiza el envío incluso al navegar fuera de la página.",
+      "etiquetas": ["rendimiento", "eventos"],
+      "fuentes": [
+        {
+          "url": "https://www.glassdoor.com/Interview/frontend-javascript-developer-interview-questions-SRCH_KO0,29.htm",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Bloqueo HTTP 403 en WebFetch directo; cita casi textual en resumen de búsqueda."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

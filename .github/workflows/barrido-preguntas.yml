@@ -1,0 +1,54 @@
+# Barrido de preguntas: cada lunes se comprueba si han pasado 21 días desde el
+# último barrido efectivo; si sí, Claude Code (con el token de suscripción del
+# dueño, no crédito de API) busca temas nuevos y preguntas obsoletas y abre una
+# pull request. Nunca se fusiona sola. El prompt vive en
+# .claude/skills/barrido-preguntas/SKILL.md para revisarlo por PR.
+name: Barrido de preguntas
+on:
+  schedule:
+    - cron: '17 6 * * 1' # lunes, minuto raro para esquivar el pico de la hora en punto
+  workflow_dispatch:
+concurrency:
+  group: barrido-preguntas
+  cancel-in-progress: false
+jobs:
+  barrido:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      id-token: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Puerta de 21 días
+        id: puerta
+        run: |
+          ULTIMO=$(cat .github/last-question-sweep 2>/dev/null || echo 1970-01-01)
+          DIAS=$(( ( $(date -u +%s) - $(date -u -d "$ULTIMO" +%s) ) / 86400 ))
+          echo "Último barrido: $ULTIMO ($DIAS días)"
+          if [ "${{ github.event_name }}" != "workflow_dispatch" ] && [ "$DIAS" -lt 21 ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: pnpm/action-setup@v4
+        if: steps.puerta.outputs.skip != 'true'
+      - uses: actions/setup-node@v4
+        if: steps.puerta.outputs.skip != 'true'
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+        if: steps.puerta.outputs.skip != 'true'
+      - uses: anthropics/claude-code-action@v1
+        if: steps.puerta.outputs.skip != 'true'
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: '/barrido-preguntas'
+          claude_args: |
+            --max-turns 40
+            --model claude-sonnet-5
+            --allowedTools "Bash(node scripts/validar-contenido.mjs),Bash(git *),Bash(gh pr create *),Bash(curl *),Read,Write,Edit,Glob,Grep,WebFetch,WebSearch"

@@ -1,0 +1,80 @@
+{
+  "pista": "web",
+  "familia": "api-rest-graphql",
+  "preguntas": [
+    {
+      "id": "web-api-rest-graphql-01",
+      "version": 1,
+      "pista": "web",
+      "familia": "api-rest-graphql",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "REST vs GraphQL: ¿qué problema real de REST resuelve GraphQL y qué problema nuevo introduce?",
+        "en": "REST vs GraphQL: what real REST problem does GraphQL solve, and what new problem does it introduce?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que GraphQL resuelve over-fetching/under-fetching dejando que el cliente pida exactamente los campos que necesita"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que complica el cacheo HTTP estándar (todo va por POST a un único endpoint)",
+          "Menciona el riesgo de queries costosas/anidadas sin límites y el problema de resolvers N+1"
+        ]
+      },
+      "respuestaModelo": "GraphQL resuelve el over-fetching y el under-fetching típico de REST: el cliente pide exactamente los campos que necesita, incluso de datos anidados relacionados, en una sola petición, en vez de tener que hacer varias llamadas a distintos endpoints o recibir de vuelta campos que nunca usa. También evita tener que versionar el endpoint cada vez que cambia la forma de los datos, porque el cliente decide la forma de la respuesta en la propia query. A cambio introduce problemas nuevos: complica el cacheo HTTP estándar, porque casi todo va por POST a un único endpoint y las respuestas ya no se pueden cachear por URL como con GET en REST; abre el riesgo de queries muy costosas o anidadas sin límite si no se implementa un límite de complejidad de query; y mueve parte de la lógica de agregación al backend, donde resolver una query anidada de forma ingenua puede caer en el mismo problema N+1 que existe en cualquier ORM si no se usa batching (dataloaders).",
+      "etiquetas": ["api-rest-graphql", "rest", "graphql"],
+      "fuentes": [
+        {
+          "url": "https://github.com/yangshun/front-end-interview-handbook",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Pregunta adaptada, no copiada literalmente; tema recurrente también en sudheerj/reactjs-interview-questions."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    },
+    {
+      "id": "web-api-rest-graphql-diseno-listado-pedidos",
+      "version": 1,
+      "pista": "web",
+      "familia": "api-rest-graphql",
+      "tipo": "diseno",
+      "modos": ["diseno"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Diseña (rutas, parámetros de query, forma de la respuesta JSON) el endpoint `GET /api/orders` para un panel de administración con potencialmente millones de filas, que soporte paginación, filtro por estado y por rango de fechas, y ordenación. No hace falta el SQL completo, sí el contrato de la API.",
+        "en": "Design (routes, query params, JSON response shape) the `GET /api/orders` endpoint for an admin panel with potentially millions of rows, supporting pagination, status and date-range filtering, and sorting. No need for the full SQL, but the API contract does matter."
+      },
+      "rubrica": {
+        "junior": [
+          "Propone paginación por cursor/keyset en vez de `page`/`offset` puro",
+          "Expresa filtros y ordenación como parámetros de query claros y validados"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Rechaza valores no permitidos en los filtros en vez de pasarlos crudos a la query",
+          "Incluye el cursor de la siguiente página en la respuesta, no solo los datos",
+          "Explica por qué NO se ofrece 'saltar a la página 5000' con este esquema, como limitación aceptada y comunicada"
+        ]
+      },
+      "respuestaModelo": "El contrato usa paginación por cursor en vez de `page`/`offset`: `GET /api/orders?status=completed&from=2026-01-01&to=2026-01-31&sort=created_at:desc&limit=50&cursor=<opaco>`. Los filtros de estado y de fecha se validan contra una lista de valores permitidos y un formato de fecha estricto, rechazando con 400 cualquier valor que no encaje, en vez de pasarlo crudo hacia la capa de datos. La respuesta incluye los datos junto con un `next_cursor` (codificado, sin exponer detalles internos como el id de fila) para pedir la página siguiente, y opcionalmente un total aproximado en vez de un conteo exacto costoso. Este esquema renuncia deliberadamente a 'saltar a la página 5000' de un salto, porque el cursor solo permite avanzar secuencialmente desde una posición conocida; esa limitación se comunica explícitamente en la documentación de la API en vez de ocultarla, y es el trade-off aceptado a cambio de que cada página cueste lo mismo sin importar cuán profundo se navegue en el listado.",
+      "etiquetas": ["api-rest-graphql", "paginacion", "diseno-de-api"],
+      "fuentes": [
+        {
+          "url": "https://www.hellointerview.com/learn/system-design/core-concepts/api-design",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Ejercicio propio escrito para esta investigación, combinando el patrón de diseño de API de listado a escala con la comparativa keyset vs offset citada en el informe fuente."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

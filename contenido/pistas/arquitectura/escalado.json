@@ -1,0 +1,81 @@
+{
+  "pista": "arquitectura",
+  "familia": "escalado",
+  "preguntas": [
+    {
+      "id": "arq-escalado-01",
+      "version": 1,
+      "pista": "arquitectura",
+      "familia": "escalado",
+      "tipo": "razonamiento",
+      "modos": ["verbal", "diseno"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Cómo escalarías horizontalmente una API que hoy corre en un solo servidor y empieza a saturarse?",
+        "en": "How would you scale horizontally an API that today runs on a single server and is starting to get saturated?"
+      },
+      "rubrica": {
+        "junior": [
+          "Propone añadir más réplicas del servidor detrás de un balanceador de carga",
+          "Menciona sacar la sesión del proceso para que cualquier réplica pueda atender cualquier request"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que primero hay que hacer el servidor 'stateless' (sesión en Redis/DB) antes de poder tener N réplicas",
+          "Prioriza identificar el cuello de botella real (¿es CPU de la app o la base de datos?) antes de simplemente añadir réplicas",
+          "Considera cache (CDN para estáticos, Redis para queries calientes) antes de escalar la base de datos, que suele ser más caro y complejo"
+        ]
+      },
+      "respuestaModelo": "El primer paso es hacer el servidor 'stateless': sacar la sesión y cualquier estado en memoria fuera del proceso (a Redis o a la base de datos) para poder levantar N réplicas idénticas detrás de un balanceador de carga sin que importe a cuál llegue cada request. Antes de simplemente añadir más réplicas conviene identificar el cuello de botella real con métricas: si el problema es CPU de la aplicación, replicar ayuda; si el problema es la base de datos, añadir más instancias del servidor solo traslada la saturación río abajo. Conviene explorar cache primero, un CDN para estáticos y Redis para queries calientes, porque suele ser más barato y rápido de implementar que escalar la base de datos, que es la pieza más cara y compleja de escalar horizontalmente.",
+      "etiquetas": ["arquitectura", "escalado", "stateless"],
+      "fuentes": [
+        {
+          "url": "https://github.com/donnemartin/system-design-primer",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Contenido citado como referencia/inspiración de system-design-primer (CC BY-SA 4.0); pregunta y explicación redactadas de nuevo."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "arq-escalado-02",
+      "version": 1,
+      "pista": "arquitectura",
+      "familia": "escalado",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué es un CDN y qué tipo de contenido NO deberías poner detrás de uno sin pensarlo bien?",
+        "en": "What is a CDN, and what kind of content should you NOT put behind one without thinking it through?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que un CDN sirve contenido cacheado desde nodos cerca geográficamente del usuario",
+          "Menciona que sirve principalmente para contenido estático (JS, CSS, imágenes)"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Identifica que el contenido personalizado por usuario o muy sensible a frescura (saldo de cuenta, datos privados) necesita reglas de cache muy cuidadosas o no cachearse en el CDN",
+          "Explica el riesgo concreto: un error de configuración de la cache key puede servirle a un usuario datos de otro"
+        ]
+      },
+      "respuestaModelo": "Un CDN (Content Delivery Network) sirve contenido cacheado desde nodos geográficamente cerca del usuario, reduciendo la latencia frente a pedirlo siempre al servidor de origen; encaja de forma natural con estáticos (JS, CSS, imágenes) y páginas generadas estáticamente. El contenido personalizado por usuario, o muy sensible a estar siempre actualizado, como el saldo de una cuenta o cualquier dato privado, necesita reglas de cache muy cuidadosas o directamente no debería cachearse en el CDN: un error de configuración en la clave de cache (por ejemplo, no incluir el id de usuario o la cookie de sesión en esa clave) puede acabar sirviéndole a un usuario los datos cacheados de otro, un fallo de seguridad grave y difícil de detectar hasta que ya ha pasado.",
+      "etiquetas": ["arquitectura", "cdn", "cache"],
+      "fuentes": [
+        {
+          "url": "https://github.com/donnemartin/system-design-primer",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Contenido citado como referencia/inspiración de system-design-primer (CC BY-SA 4.0); pregunta y explicación redactadas de nuevo."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

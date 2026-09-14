@@ -1,0 +1,266 @@
+{
+  "pista": "react",
+  "familia": "patrones",
+  "preguntas": [
+    {
+      "id": "react-patrones-01",
+      "version": 1,
+      "pista": "react",
+      "familia": "patrones",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué son `Suspense` y los error boundaries, y por qué son mecanismos complementarios?",
+        "en": "What are `Suspense` and error boundaries, and why are they complementary mechanisms?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que `Suspense` muestra un fallback mientras se resuelve una carga de datos o código",
+          "Explica que los error boundaries capturan errores de renderizado y muestran una UI alternativa"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Menciona que los error boundaries se implementan con `getDerivedStateFromError`/`componentDidCatch` o librerías",
+          "Aclara que ninguno de los dos captura errores en handlers de eventos ni en código asíncrono fuera del render"
+        ]
+      },
+      "respuestaModelo": "`Suspense` captura el hecho de que un componente está esperando algo (una carga de código con `lazy`, o de datos con las APIs que lo soportan) y mientras tanto muestra un fallback en su lugar, sin que el desarrollador tenga que gestionar manualmente un estado de carga. Los error boundaries son componentes (de clase, con `getDerivedStateFromError` y `componentDidCatch`, o envoltorios de librerías como `react-error-boundary`) que capturan errores lanzados durante el renderizado de sus hijos y muestran una UI alternativa en vez de que toda la app se rompa en blanco. Son complementarios porque cubren dos fases distintas: `Suspense` cubre la espera, el error boundary cubre el fallo; y ambos comparten una limitación importante, no capturan errores que ocurren en handlers de eventos (un `onClick` que lanza) ni en código asíncrono fuera del ciclo de render, para eso sigue haciendo falta un `try/catch` normal.",
+      "etiquetas": ["patrones", "suspense", "error-boundaries"],
+      "fuentes": [
+        {
+          "url": "https://github.com/sudheerj/reactjs-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Pregunta adaptada, no copiada literalmente."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    },
+    {
+      "id": "react-patrones-02",
+      "version": 1,
+      "pista": "react",
+      "familia": "patrones",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué diferencia hay entre accesibilidad de un `<div onClick>` y un `<button>`? ¿Por qué importa en una revisión de código?",
+        "en": "What's the accessibility difference between a `<div onClick>` and a `<button>`? Why does it matter in a code review?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que un `<div onClick>` no es focuseable por teclado ni tiene rol semántico",
+          "Sabe que `<button>` trae gratis foco, rol y respuesta a Enter/Espacio"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que un lector de pantalla no anuncia el `<div>` como algo interactivo",
+          "Da la solución cuando de verdad hace falta un `<div>` interactivo: `tabIndex`, `role=\"button\"` y manejo de teclado"
+        ]
+      },
+      "respuestaModelo": "Un `<div onClick>` solo responde al clic del ratón: no es focuseable por teclado por defecto (no aparece en el orden de tabulación), no tiene un rol semántico que indique que es interactivo, y no responde a `Enter` ni `Espacio` como esperaría cualquier usuario que navega con teclado. Un lector de pantalla lo anuncia como texto plano, sin indicar que se puede activar. `<button>` trae todo eso gratis: foco por teclado, rol de botón anunciado por el lector de pantalla, y la activación con `Enter`/`Espacio` ya implementada por el navegador. En una revisión de código este es uno de los hallazgos de accesibilidad más frecuentes y más baratos de arreglar: si el elemento se puede simplemente cambiar a `<button>` (con los estilos adecuados) es la solución preferida; si por alguna razón debe seguir siendo un `<div>`, hay que añadir `tabIndex={0}`, `role=\"button\"` y manejar `onKeyDown` a mano.",
+      "etiquetas": ["patrones", "accesibilidad"],
+      "fuentes": [
+        {
+          "url": "https://developer.mozilla.org/en-US/docs/Web/Accessibility",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Patrón de accesibilidad estándar; el informe fuente lo marca como conocimiento general contrastado con guías de a11y, no lectura de una página específica de MDN."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "react-patrones-03",
+      "version": 1,
+      "pista": "react",
+      "familia": "patrones",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "senior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué son las Server Components de React y en qué se diferencian de SSR tradicional?",
+        "en": "What are React Server Components and how do they differ from traditional SSR?"
+      },
+      "rubrica": {
+        "junior": [
+          "Sabe que los Server Components se ejecutan solo en el servidor y nunca llegan al bundle del cliente"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que SSR tradicional renderiza HTML en el servidor pero luego re-ejecuta e hidrata TODO el componente en el cliente",
+          "Explica que los Server Components pueden acceder a datos directamente (DB, filesystem) sin exponer secretos",
+          "Aclara que solo los Client Components (`\"use client\"`) se hidratan"
+        ]
+      },
+      "respuestaModelo": "El SSR tradicional genera el HTML inicial en el servidor para que la primera pintura sea rápida, pero después el navegador descarga el JavaScript de esos mismos componentes y los vuelve a ejecutar entero para 'hidratarlos' y hacerlos interactivos: el código del componente viaja al cliente igualmente. Los Server Components van más allá: se ejecutan exclusivamente en el servidor, su código nunca se incluye en el bundle que descarga el navegador, y por eso pueden hacer acceso directo a una base de datos o al sistema de archivos sin arriesgarse a filtrar credenciales, porque ese código físicamente no llega al cliente. Solo los Client Components, marcados explícitamente con la directiva `\"use client\"`, se hidratan y ejecutan también en el navegador; el resto del árbol se queda como HTML (y una serialización especial) que no necesita JavaScript para existir.",
+      "etiquetas": ["patrones", "server-components", "ssr"],
+      "fuentes": [
+        {
+          "url": "https://nextjs.org/blog/next-16",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Sección React 19.2 de la nota de lanzamiento de Next.js 16, leída completa vía WebFetch."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "react-patrones-04",
+      "version": 1,
+      "pista": "react",
+      "familia": "patrones",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué es el \"prop drilling\" y qué alternativas hay además de Context?",
+        "en": "What is \"prop drilling\" and what alternatives exist besides Context?"
+      },
+      "rubrica": {
+        "junior": [
+          "Define prop drilling como pasar una prop por niveles intermedios que no la usan, solo la reenvían",
+          "Menciona Context como alternativa"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Menciona la composición (pasar componentes como children) como alternativa antes de recurrir a Context",
+          "Menciona un store externo para estado muy compartido entre partes no relacionadas del árbol"
+        ]
+      },
+      "respuestaModelo": "El prop drilling ocurre cuando un dato necesita llegar de un componente ancestro a uno descendiente lejano, y hay que pasarlo como prop a través de varios componentes intermedios que no lo usan para nada, solo lo reenvían. La primera alternativa, antes incluso de pensar en Context, es la composición: en vez de pasar el dato, se pasa el componente ya construido como `children` o como prop de tipo elemento, evitando que los intermedios necesiten saber que ese dato existe. Context resuelve el caso donde de verdad muchos componentes en distintos niveles necesitan el mismo valor, especialmente si cambia poco (tema, idioma, usuario autenticado). Cuando el estado es compartido por partes del árbol que no tienen relación de ancestro directo y cambia con frecuencia, un store externo como Zustand o Redux suele encajar mejor que forzar Context a ese caso de uso.",
+      "etiquetas": ["patrones", "prop-drilling", "context"],
+      "fuentes": [
+        {
+          "url": "https://github.com/sudheerj/reactjs-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Pregunta adaptada, no copiada literalmente."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    },
+    {
+      "id": "react-patrones-05",
+      "version": 1,
+      "pista": "react",
+      "familia": "patrones",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Cuéntame de una vez que tuviste que decidir entre \"hacerlo rápido\" y \"hacerlo bien\" en un componente React de producción.",
+        "en": "Tell me about a time you had to choose between \"doing it fast\" and \"doing it right\" on a production React component."
+      },
+      "rubrica": {
+        "junior": ["Cuenta un caso concreto con estructura clara (situación, decisión, resultado)"],
+        "senior": [
+          "Lo anterior",
+          "Sigue una estructura tipo STAR completa (situación, tarea, acción, resultado)",
+          "Explica el trade-off técnico concreto (qué deuda técnica se asumió, por qué, y cómo se pagó después)",
+          "Muestra criterio de cuándo cada opción es razonable, no presenta 'ir rápido' como un error automático"
+        ]
+      },
+      "respuestaModelo": "Una respuesta que aprueba no se queda en 'lo hice rápido porque había prisa', sino que reconstruye la situación con estructura STAR: qué presión de negocio o de plazo había (situación y tarea), qué opción concreta se tomó y por qué era razonable en ese momento (acción), y qué pasó después con esa decisión (resultado). Un candidato senior nombra la deuda técnica exacta que se asumió (por ejemplo, un componente sin memoizar, sin tests, o con lógica de negocio mezclada en la UI), explica el criterio que usó para decidir que ir rápido era aceptable en ese caso concreto, y cuenta cómo y cuándo se pagó esa deuda después, en vez de dejarla pudrirse indefinidamente. Lo que se valora es el criterio de ingeniería, no una moraleja genérica de 'siempre hay que hacerlo bien'.",
+      "etiquetas": ["patrones", "comportamental", "deuda-tecnica"],
+      "fuentes": [
+        {
+          "url": "https://www.glassdoor.es/Entrevista/espana-senior-react-developer-preguntas-de-entrevista-SRCH_IL.0,6_KO7,29.htm",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Resumen de búsqueda; la página devolvió 403 al intentar leer el contenido completo según el informe fuente."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "react-patrones-buscador-autocompletado",
+      "version": 1,
+      "pista": "react",
+      "familia": "patrones",
+      "tipo": "razonamiento",
+      "modos": ["verbal", "diseno"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Implementa un componente `<ProductSearch />` con un input que, mientras el usuario escribe, consulte `GET /api/products?q=...` y muestre hasta 10 resultados. Requisitos: no dispares una petición por cada tecla (debounce de 300ms), ignora respuestas que lleguen fuera de orden si el usuario escribe rápido, muestra estados de carga y de \"sin resultados\", y hazlo accesible por teclado (flechas para navegar, Enter para seleccionar). Explica cómo lo estructurarías.",
+        "en": "Implement a `<ProductSearch />` component with a text input that, as the user types, queries `GET /api/products?q=...` and shows up to 10 results. Requirements: don't fire a request per keystroke (300ms debounce), ignore out-of-order responses if the user types fast, show loading and empty states, and make it keyboard accessible (arrow keys to navigate, Enter to select). Explain how you'd structure it."
+      },
+      "rubrica": {
+        "junior": [
+          "Propone debounce real (con `useEffect` + `setTimeout`/`clearTimeout`, o un hook `useDebouncedValue`), no solo lo menciona de palabra",
+          "Maneja los 3 estados de UI (cargando, con resultados, sin resultados)"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Resuelve la condición de carrera con un `AbortController`, un flag de 'petición vigente', o comparando el texto de la respuesta con el texto actual antes de pintar",
+          "Limpia el efecto (cancela timeout/petición) al desmontar o al cambiar el texto, para no dejar timers colgando",
+          "Explica la navegación por teclado y un `aria-live` para anunciar resultados a lectores de pantalla"
+        ]
+      },
+      "respuestaModelo": "La estructura razonable usa un estado para el texto del input y otro para el valor 'debounciado', con un `useEffect` que arma un `setTimeout` de 300ms cada vez que cambia el texto y lo cancela en la limpieza del efecto (o un hook `useDebouncedValue` que encapsule ese patrón). La petición real se dispara cuando cambia el valor debounciado, usando un `AbortController` para cancelar la petición anterior si el usuario sigue escribiendo, o alternativamente comparando el texto que originó la respuesta con el texto actual del input antes de pintar los resultados, para no mostrar una respuesta vieja que llegó tarde. El componente mantiene un estado de tres posiciones (cargando, con resultados, sin resultados) que se actualiza de forma coherente para evitar parpadeos entre ellos. Para accesibilidad, la lista de resultados se comporta como un combobox: las flechas mueven un índice activo, Enter selecciona el resultado resaltado, y un `aria-live=\"polite\"` anuncia cuántos resultados aparecieron para quien usa lector de pantalla.",
+      "etiquetas": ["patrones", "debounce", "accesibilidad", "condicion-de-carrera"],
+      "fuentes": [
+        {
+          "url": "https://www.greatfrontend.com/questions/system-design/autocomplete",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Ejercicio propio escrito para esta investigación, inspirado en el patrón 'autocomplete' citado como pregunta de diseño frontend recurrente; contenido de la página de pago no leído en detalle."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "react-patrones-review-nota-autoguardado",
+      "version": 1,
+      "pista": "react",
+      "familia": "patrones",
+      "tipo": "review",
+      "modos": ["review"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Revisa este componente de nota con auto-guardado. Tiene al menos 3 problemas: una fuga/bug de closures, un fallo de seguridad y un fallo de diseño en el guardado. Encuéntralos.",
+        "en": "Review this auto-saving note component. It has at least 3 problems: a memory-leak/closure bug, a security flaw and a save-flow design flaw. Find them."
+      },
+      "contexto": "```tsx\nfunction AutoSaveNote({ noteId, initialHtml }) {\n  const [html, setHtml] = useState(initialHtml);\n\n  useEffect(() => {\n    const interval = setInterval(() => {\n      fetch(`/api/notes/${noteId}`, {\n        method: 'PUT',\n        body: JSON.stringify({ html }),\n      });\n    }, 5000);\n  }, [noteId]);\n\n  return (\n    <div>\n      <textarea value={html} onChange={e => setHtml(e.target.value)} />\n      <div\n        className=\"preview\"\n        dangerouslySetInnerHTML={{ __html: html }}\n      />\n    </div>\n  );\n}\n```",
+      "rubrica": {
+        "junior": [
+          "Detecta que el `useEffect` no devuelve función de limpieza: el `setInterval` sigue vivo tras desmontar el componente",
+          "Detecta que `dangerouslySetInnerHTML` renderiza HTML del usuario sin sanitizar, abriendo la puerta a XSS"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que la closure del intervalo captura el `html` del momento en que se creó el efecto (solo se recrea si cambia `noteId`), así que guarda siempre texto antiguo, no el actual",
+          "Detecta que el `fetch` de guardado no maneja errores de red ni evita que dos guardados se pisen si uno tarda más que el intervalo",
+          "Propone la solución completa: `clearInterval` en la limpieza, sanitizar con DOMPurify antes de `dangerouslySetInnerHTML`, y manejar el resultado del fetch (o mover el guardado a un patrón de debounce sobre el cambio real, no un intervalo fijo)"
+        ]
+      },
+      "respuestaModelo": "El primer bug es una fuga de memoria: el `useEffect` crea un `setInterval` pero no devuelve ninguna función de limpieza, así que al desmontar el componente el intervalo sigue disparando peticiones indefinidamente. Además la closure del intervalo se crea una sola vez (el efecto solo se recrea si cambia `noteId`) y captura el `html` de ese momento, así que el auto-guardado siempre envía el texto antiguo, no el que el usuario está escribiendo ahora mismo. El segundo problema es de seguridad: `dangerouslySetInnerHTML` renderiza directamente el HTML que el propio usuario escribió o pegó, sin pasar por ningún sanitizador como DOMPurify, así que un `<script>` o un `onerror=` incrustado se ejecutaría al reabrir la nota. Por último, el `fetch` de guardado no comprueba si la petición falló ni evita que dos guardados se solapen si uno tarda más de 5 segundos; si el usuario pierde conexión un instante, el cambio se pierde en silencio sin ningún aviso.",
+      "etiquetas": ["patrones", "hooks", "xss", "review"],
+      "fuentes": [
+        {
+          "url": "https://owasp.org/Top10/2025/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Fragmento propio escrito para esta investigación, inspirado en el patrón de cleanup de useEffect y en la categoría de XSS del OWASP Top 10:2025."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

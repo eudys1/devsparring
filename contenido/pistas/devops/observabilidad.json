@@ -1,0 +1,121 @@
+{
+  "pista": "devops",
+  "familia": "observabilidad",
+  "preguntas": [
+    {
+      "id": "devops-observabilidad-01",
+      "version": 1,
+      "pista": "devops",
+      "familia": "observabilidad",
+      "tipo": "razonamiento",
+      "modos": ["verbal", "diseno"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué observabilidad (logs, métricas, trazas) pondrías desde el día 1 en un backend nuevo, antes de que haga falta depurar un incidente?",
+        "en": "What observability (logs, metrics, traces) would you set up from day 1 in a new backend, before you need to debug an incident?"
+      },
+      "rubrica": {
+        "junior": [
+          "Propone logs estructurados en vez de console.log suelto",
+          "Menciona alguna métrica básica (latencia, tasa de error)"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Especifica logs en JSON con un request id para correlacionar logs del mismo request entre servicios",
+          "Menciona métricas de latencia p50/p95/p99, tasa de error y saturación, expuestas para un dashboard",
+          "Añade trazas distribuidas si hay más de un servicio",
+          "Propone alertar sobre síntomas de usuario (tasa de error, latencia) más que sobre causas internas específicas"
+        ]
+      },
+      "respuestaModelo": "Logs estructurados en JSON, con un request id que permita correlacionar todos los logs de una misma petición aunque pase por varios servicios, en vez de `console.log` suelto y sin formato. Métricas básicas expuestas para un dashboard: latencia en percentiles (p50/p95/p99, no solo la media, que esconde los casos lentos), tasa de error y saturación de recursos. Si hay más de un servicio, trazas distribuidas para seguir una petición a través de todos ellos. Las alertas deberían dispararse sobre síntomas que afectan al usuario, tasa de error elevada, latencia alta, más que sobre causas internas específicas (CPU alta de un proceso concreto), porque los síntomas son lo que realmente importa monitorizar de forma robusta.",
+      "etiquetas": ["observabilidad", "logs", "metricas", "trazas"],
+      "fuentes": [
+        {
+          "url": "https://github.com/goldbergyoni/nodebestpractices",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Sección de producción/monitorización de nodebestpractices (CC BY-SA 4.0); pregunta redactada de nuevo, sin copiar texto del repositorio."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "devops-observabilidad-02",
+      "version": 1,
+      "pista": "devops",
+      "familia": "observabilidad",
+      "tipo": "razonamiento",
+      "modos": ["verbal", "diseno"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué información pondrías en el log de una petición HTTP para que sea útil en una investigación, sin filtrar datos sensibles?",
+        "en": "What information would you put in an HTTP request log to make it useful for investigation, without leaking sensitive data?"
+      },
+      "rubrica": {
+        "junior": [
+          "Incluye método, ruta, código de estado y latencia",
+          "Excluye contraseñas y tokens del log"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Añade un request id/trace id para correlacionar logs del mismo request entre servicios",
+          "Incluye el user id (no email/nombre si no hace falta) para poder investigar por usuario sin exponer PII innecesaria",
+          "Explica por qué excluye explícitamente contraseñas, tokens y tarjetas del log, o los enmascara: los logs suelen tener retención larga y menos control de acceso que la base de datos principal"
+        ]
+      },
+      "respuestaModelo": "Un log de petición HTTP útil incluye un request id o trace id para correlacionar todos los logs del mismo request entre servicios, el método y la ruta, el código de estado de la respuesta, la latencia, y el id del usuario (no su email o nombre si no hace falta para la investigación). Explícitamente se excluyen o se enmascaran contraseñas, tokens de sesión, números de tarjeta y cualquier otro dato sensible, porque los sistemas de logging suelen tener una retención larga y bastante menos control de acceso que la base de datos principal de la aplicación; un log con datos sensibles es una superficie de fuga de datos que dura mucho más de lo necesario.",
+      "etiquetas": ["observabilidad", "logs", "seguridad"],
+      "fuentes": [
+        {
+          "url": "https://github.com/goldbergyoni/nodebestpractices",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Sección de logging de nodebestpractices (CC BY-SA 4.0); pregunta redactada de nuevo."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "devops-observabilidad-03",
+      "version": 1,
+      "pista": "devops",
+      "familia": "observabilidad",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "¿Qué son las health checks y por qué un balanceador de carga o un orquestador las necesita para no enviar tráfico a una instancia rota?",
+        "en": "What are health checks, and why does a load balancer or orchestrator need them to avoid sending traffic to a broken instance?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que es un endpoint que responde si el proceso está vivo",
+          "Sabe que el orquestador o balanceador lo consulta periódicamente"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Distingue liveness (el proceso está vivo) de readiness (está listo para atender tráfico, por ejemplo ya conectó a la DB)",
+          "Explica que el orquestador saca de rotación o reinicia instancias que fallan el check",
+          "Conecta esto con evitar servir errores a usuarios reales cuando una instancia concreta está rota"
+        ]
+      },
+      "respuestaModelo": "Una health check es un endpoint, normalmente `/health` o similar, que responde rápido indicando si el proceso puede atender tráfico. A nivel senior se distingue 'liveness' (el proceso está vivo, no colgado) de 'readiness' (está listo para atender tráfico, por ejemplo ya terminó de conectar a la base de datos al arrancar); un proceso puede estar vivo pero no listo. El balanceador de carga o el orquestador consulta esa ruta periódicamente y saca de rotación, o reinicia, las instancias que fallan el check, evitando enviarles tráfico y que sirvan errores a usuarios reales mientras se recuperan o se reemplazan.",
+      "etiquetas": ["observabilidad", "health-checks", "orquestacion"],
+      "fuentes": [
+        {
+          "url": "https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Conocimiento consolidado sobre prácticas de orquestación de contenedores; pregunta redactada de nuevo."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

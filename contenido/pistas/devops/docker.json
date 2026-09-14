@@ -1,0 +1,82 @@
+{
+  "pista": "devops",
+  "familia": "docker",
+  "preguntas": [
+    {
+      "id": "devops-docker-01",
+      "version": 1,
+      "pista": "devops",
+      "familia": "docker",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué problema resuelve Docker que no resuelve simplemente 'documentar cómo instalar las dependencias'?",
+        "en": "What problem does Docker solve that simply 'documenting how to install dependencies' doesn't?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que Docker empaqueta la app junto con su entorno de ejecución exacto",
+          "Menciona el 'en mi máquina funciona' como problema que resuelve"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que la imagen es reproducible: misma versión de Node, mismas dependencias del sistema, en local, CI y producción",
+          "Distingue imagen (plantilla) de contenedor (instancia en ejecución)",
+          "Reconoce que un documento de instalación se desactualiza y depende de que cada persona lo siga bien; una imagen no"
+        ]
+      },
+      "respuestaModelo": "Documentar cómo instalar las dependencias depende de que cada persona (o cada máquina de CI) siga los pasos exactamente igual, y ese documento se desactualiza con el tiempo. Docker empaqueta la app junto con su entorno de ejecución exacto (versión de Node, dependencias del sistema, variables) en una imagen reproducible: la misma imagen que corre en el portátil de un desarrollador es la que corre en CI y en producción, eliminando el clásico 'en mi máquina funciona'. La imagen es la plantilla inmutable; el contenedor es una instancia en ejecución de esa imagen, y se pueden levantar varios contenedores idénticos a partir de la misma imagen.",
+      "etiquetas": ["docker", "contenedores"],
+      "fuentes": [
+        {
+          "url": "https://github.com/goldbergyoni/nodebestpractices",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Conocimiento consolidado sobre contenedores, contrastado con la sección de Docker de nodebestpractices (CC BY-SA 4.0); pregunta redactada de nuevo."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "devops-docker-02",
+      "version": 1,
+      "pista": "devops",
+      "familia": "docker",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué es una imagen multi-stage de Docker y por qué la usarías para una app Next.js en producción?",
+        "en": "What is a Docker multi-stage image and why would you use one for a Next.js app in production?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que separa la fase de build de la fase final que corre en producción",
+          "Menciona que la imagen final es más pequeña"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Detalla que la fase de build incluye devDependencies, compiladores y todo el código fuente, mientras que la fase final solo copia el resultado compilado y las dependencias de producción",
+          "Explica que reduce la superficie de ataque: sin herramientas de build ni código fuente innecesario en producción",
+          "Menciona el impacto práctico: menos tiempo de despliegue y menos espacio en el registry de imágenes"
+        ]
+      },
+      "respuestaModelo": "Una imagen multi-stage separa el Dockerfile en varias fases: una fase de 'build' que instala todas las dependencias (incluidas las de desarrollo), compila y hace el build de Next.js, y una fase 'final' que parte de una imagen base limpia y solo copia el resultado compilado (`.next`, `node_modules` de producción) desde la fase anterior. Esto reduce drásticamente el tamaño de la imagen final, porque no arrastra compiladores, herramientas de build ni el código fuente completo, y de paso reduce la superficie de ataque en producción: menos software instalado es menos software que un atacante puede explotar si compromete el contenedor.",
+      "etiquetas": ["docker", "nextjs", "produccion"],
+      "fuentes": [
+        {
+          "url": "https://nextjs.org/docs/app/building-your-application/deploying#docker-image",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Práctica estándar documentada en la propia documentación de Next.js sobre despliegue con Docker; pregunta redactada de nuevo."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

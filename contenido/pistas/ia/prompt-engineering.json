@@ -1,0 +1,153 @@
+{
+  "pista": "ia",
+  "familia": "prompt-engineering",
+  "preguntas": [
+    {
+      "id": "ia-prompt-engineering-01",
+      "version": 1,
+      "pista": "ia",
+      "familia": "prompt-engineering",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué es el prompt engineering y por qué no es magia sino una práctica de ingeniería?",
+        "en": "What is prompt engineering and why is it an engineering practice, not magic?"
+      },
+      "rubrica": {
+        "junior": [
+          "Define prompt engineering como el diseño deliberado e iterativo de las instrucciones al modelo",
+          "Menciona que busca salidas más fiables"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que se versiona, se prueba con casos concretos y se mide su efecto",
+          "Contrasta con el mito de ajustar por intuición suelta"
+        ]
+      },
+      "respuestaModelo": "El prompt engineering es el diseño deliberado e iterativo de las instrucciones que se dan a un modelo, su estructura, los ejemplos que incluye, las restricciones que fija, para obtener salidas más fiables. No es magia ni una frase mágica que se descubre por casualidad: se trata como cualquier otra pieza de software, se versiona, se prueba contra casos concretos representativos de la tarea real, y se mide su efecto con algún tipo de evaluación antes y después del cambio. Un equipo serio no cambia un prompt en producción por intuición, sino porque midió una mejora en un set de casos de prueba.",
+      "etiquetas": ["prompting", "fundamentos"],
+      "fuentes": [
+        {
+          "url": "https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Concepto estándar en documentación de proveedores de LLM, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-prompt-engineering-02",
+      "version": 1,
+      "pista": "ia",
+      "familia": "prompt-engineering",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué diferencia hay entre few-shot prompting y zero-shot prompting?",
+        "en": "Difference between few-shot and zero-shot prompting."
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que zero-shot es pedir la tarea directamente sin ejemplos",
+          "Explica que few-shot incluye ejemplos de entrada/salida en el prompt"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que few-shot suele mejorar consistencia de formato en tareas concretas",
+          "Da un ejemplo de cuándo few-shot no compensa el coste de tokens extra"
+        ]
+      },
+      "respuestaModelo": "Zero-shot es pedirle la tarea al modelo directamente, sin ningún ejemplo de cómo debe responder. Few-shot incluye en el propio prompt un puñado de ejemplos de entrada y salida deseada, para que el modelo infiera el patrón y lo replique. Few-shot suele mejorar la consistencia de formato en tareas concretas, por ejemplo cuando se necesita una salida en un formato estructurado muy específico, pero tiene un coste: cada ejemplo consume tokens, así que en tareas simples donde zero-shot ya funciona bien no compensa añadir ejemplos solo por costumbre.",
+      "etiquetas": ["prompting", "few-shot"],
+      "fuentes": [
+        {
+          "url": "https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Documentación estándar de técnicas de prompting, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-prompt-engineering-03",
+      "version": 1,
+      "pista": "ia",
+      "familia": "prompt-engineering",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué es chain-of-thought prompting y cuándo ayuda?",
+        "en": "What is chain-of-thought prompting and when does it help?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que consiste en pedir al modelo que razone paso a paso antes de la respuesta final"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Da un ejemplo de tareas donde ayuda (varios pasos lógicos o aritméticos)",
+          "Menciona que en modelos de razonamiento recientes pedirlo explícitamente aporta menos que antes"
+        ]
+      },
+      "respuestaModelo": "Chain-of-thought consiste en pedir, o inducir, al modelo a razonar paso a paso antes de dar la respuesta final, en vez de saltar directamente a una conclusión. Ayuda especialmente en tareas que requieren varios pasos lógicos o aritméticos encadenados, donde el modelo tiende a cometer menos errores si expone el razonamiento intermedio. En los modelos de razonamiento más recientes, que ya dedican computación interna a pensar antes de responder, pedirlo explícitamente en el prompt aporta bastante menos que con los modelos anteriores, aunque sigue siendo útil para hacer el razonamiento visible y depurable.",
+      "etiquetas": ["prompting", "chain-of-thought"],
+      "fuentes": [
+        {
+          "url": "https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/chain-of-thought",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Literatura estándar de técnicas de prompting, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-prompt-engineering-04",
+      "version": 1,
+      "pista": "ia",
+      "familia": "prompt-engineering",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Cómo estructurarías un system prompt para un asistente de soporte al cliente de tu empresa?",
+        "en": "How would you structure a system prompt for a customer support assistant for your company?"
+      },
+      "rubrica": {
+        "junior": [
+          "Menciona definir rol y objetivo del asistente",
+          "Menciona límites claros de lo que puede y no puede hacer"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Incluye qué hacer si falta información (pedir aclaración en vez de inventar)",
+          "Explica cómo separar las instrucciones del sistema del contenido no confiable del usuario o de documentos externos"
+        ]
+      },
+      "respuestaModelo": "Empezaría definiendo el rol y el objetivo del asistente con claridad, y unos límites explícitos de lo que puede y no puede hacer, por ejemplo no prometer reembolsos sin verificar el caso contra el sistema real. Añadiría el formato de salida esperado y una instrucción explícita de qué hacer cuando falta información: pedir aclaración al usuario en vez de inventar una respuesta plausible. Un punto que muchos pasan por alto es separar claramente las instrucciones del sistema, que son de confianza, del contenido que pueda venir del usuario o de documentos externos, que debe tratarse siempre como dato y nunca como una instrucción nueva a seguir.",
+      "etiquetas": ["prompting", "system-prompt"],
+      "fuentes": [
+        {
+          "url": "https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/system-prompts",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Síntesis propia sobre buenas prácticas de prompting en producción, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

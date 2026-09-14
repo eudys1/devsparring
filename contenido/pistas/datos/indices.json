@@ -1,0 +1,121 @@
+{
+  "pista": "datos",
+  "familia": "indices",
+  "preguntas": [
+    {
+      "id": "datos-indices-01",
+      "version": 1,
+      "pista": "datos",
+      "familia": "indices",
+      "tipo": "razonamiento",
+      "modos": ["verbal", "diseno"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Cómo decides qué columnas indexar, y por qué un índice a veces EMPEORA el rendimiento en vez de mejorarlo?",
+        "en": "How do you decide which columns to index, and why does an index sometimes MAKE performance WORSE?"
+      },
+      "rubrica": {
+        "junior": [
+          "Dice que se indexan columnas usadas en WHERE, JOIN y ORDER BY",
+          "Menciona que un índice también tiene coste, no es gratis"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica la selectividad (cuántos valores distintos tiene la columna) como criterio para decidir si un índice ayuda",
+          "Explica que cada índice ralentiza INSERT/UPDATE/DELETE porque hay que mantenerlo, además de ocupar espacio",
+          "Da un ejemplo de índice inútil (columna booleana de baja cardinalidad) y de una tabla de escritura intensiva donde demasiados índices empeoran el total"
+        ]
+      },
+      "respuestaModelo": "Se indexan las columnas que aparecen en `WHERE`, `JOIN` y `ORDER BY`, sobre todo si tienen alta selectividad (muchos valores distintos, como un email o un `created_at`). Un índice en una columna de baja cardinalidad, como un booleano `is_active`, casi nunca ayuda al planner porque filtra poco. El coste oculto es que cada índice hay que mantenerlo en cada `INSERT`/`UPDATE`/`DELETE`, y ocupa espacio en disco y memoria; en una tabla de escritura muy intensiva, tener demasiados índices puede hacer que las escrituras se vuelvan el cuello de botella real, superando el beneficio en lectura.",
+      "etiquetas": ["sql", "indices", "rendimiento"],
+      "fuentes": [
+        {
+          "url": "https://github.com/sanketrs/sql-interview-preparation-questions-with-answers",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Patrón recurrente en preguntas SQL/Postgres de nivel mid-senior; pregunta redactada de nuevo."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "datos-indices-02",
+      "version": 1,
+      "pista": "datos",
+      "familia": "indices",
+      "tipo": "razonamiento",
+      "modos": ["verbal", "diseno"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Tienes una tabla de 1 millón de pedidos y necesitas paginar el listado de un panel de admin. ¿Por qué OFFSET se vuelve lento y qué harías en su lugar?",
+        "en": "You have a table with 1 million orders and need to paginate an admin listing. Why does OFFSET get slow, and what would you do instead?"
+      },
+      "rubrica": {
+        "junior": [
+          "Sabe que OFFSET obliga a la base de datos a recorrer y descartar filas antes de devolver la página",
+          "Menciona la paginación por cursor/keyset como alternativa"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que el coste de OFFSET crece con el número de página (la página 10.000 es mucho más lenta que la 2)",
+          "Describe la query de keyset: WHERE (created_at, id) < (cursor_fecha, cursor_id) ORDER BY created_at DESC, id DESC LIMIT n",
+          "Menciona un índice compuesto que matchee ese orden para que sea rápido",
+          "Propone un híbrido razonable: OFFSET solo en las primeras páginas, cursor para 'cargar más'"
+        ]
+      },
+      "respuestaModelo": "`OFFSET N` obliga a Postgres a recorrer y descartar las primeras N filas del índice antes de devolver la página, así que el coste crece con el número de página: en la página 10.000 es mucho más lento que en la página 2. La alternativa es paginación por keyset/cursor: en vez de pedir 'la página 500', pides 'lo que viene después de este cursor' con algo como `WHERE (created_at, id) < ($cursor_fecha, $cursor_id) ORDER BY created_at DESC, id DESC LIMIT n`, apoyado en un índice compuesto que siga ese mismo orden. El coste es casi constante por página, independientemente de cuán profundo se navegue. Un híbrido práctico es usar `OFFSET` solo en las primeras páginas visibles y cursor para 'cargar más'.",
+      "etiquetas": ["sql", "paginacion", "indices", "postgres"],
+      "fuentes": [
+        {
+          "url": "https://blog.sequinstream.com/keyset-cursors-not-offsets-for-postgres-pagination/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Comparativa keyset vs offset en Postgres a escala; pregunta y explicación redactadas de nuevo."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "datos-indices-03",
+      "version": 1,
+      "pista": "datos",
+      "familia": "indices",
+      "tipo": "razonamiento",
+      "modos": ["verbal", "diseno"],
+      "nivelMinimo": "senior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Cómo diseñarías el índice para que la paginación por cursor del ejercicio anterior sea realmente rápida?",
+        "en": "How would you design the index so the previous cursor-pagination query is actually fast?"
+      },
+      "rubrica": {
+        "junior": [
+          "Propone un índice sobre las columnas usadas en el ORDER BY",
+          "Sabe que hace falta comprobar el plan de ejecución de la query"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Diseña un índice compuesto que siga exactamente el orden y dirección del ORDER BY, ej. (created_at DESC, id DESC)",
+          "Explica por qué hace falta un desempate único (id) cuando dos filas comparten el mismo created_at",
+          "Menciona EXPLAIN ANALYZE para confirmar que el planner usa un index scan y no un seq scan"
+        ]
+      },
+      "respuestaModelo": "El índice tiene que seguir exactamente el orden y la dirección del `ORDER BY` de la query de paginación, por ejemplo `(created_at DESC, id DESC)`. El `id` funciona como desempate único: si dos pedidos comparten el mismo `created_at` (posible hasta el microsegundo en tablas muy activas), el índice compuesto sigue dando un orden total y determinista, evitando que se salten o repitan filas entre páginas. Antes de dar la query por buena, se confirma con `EXPLAIN ANALYZE` que Postgres usa un index scan (o index-only scan) sobre ese índice y no cae a un seq scan, que anularía la ganancia.",
+      "etiquetas": ["sql", "paginacion", "indices", "postgres"],
+      "fuentes": [
+        {
+          "url": "https://www.stacksync.com/blog/keyset-cursors-postgres-pagination-fast-accurate-scalable",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Guía de keyset pagination en Postgres; pregunta y explicación redactadas de nuevo."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

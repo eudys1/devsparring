@@ -1,0 +1,220 @@
+{
+  "pista": "nextjs",
+  "familia": "app-router",
+  "preguntas": [
+    {
+      "id": "next-app-router-01",
+      "version": 1,
+      "pista": "nextjs",
+      "familia": "app-router",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Cuál es la diferencia real entre un Server Component y un Client Component en el App Router?",
+        "en": "What is the real difference between a Server Component and a Client Component in the App Router?"
+      },
+      "rubrica": {
+        "junior": [
+          "Sabe que por defecto todo en `app/` es Server Component",
+          "Sabe que la directiva `\"use client\"` en la parte superior del archivo convierte el componente en Client"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que un Server Component no puede usar `useState`/`useEffect`/eventos del navegador, pero sí `await` directo a la base de datos",
+          "Explica que la frontera `\"use client\"` mueve TODO el subárbol que importa desde ahí al bundle del cliente, no solo el componente marcado"
+        ]
+      },
+      "respuestaModelo": "Por defecto, todo lo que se define dentro de `app/` es un Server Component: se ejecuta únicamente en el servidor y su código nunca viaja al navegador. Para convertir un componente en Client Component hace falta escribir la directiva `\"use client\"` en la primera línea del archivo; a partir de ahí ese componente se hidrata y puede usar `useState`, `useEffect` o manejar eventos del navegador, cosas que un Server Component no puede hacer, pero a cambio pierde la posibilidad de hacer `await` directo contra la base de datos o el sistema de archivos. El matiz que se suele pasar por alto es que `\"use client\"` no marca solo ese archivo: contamina a todo lo que ese módulo importa, así que todo el subárbol que cuelga de ahí se empaqueta y se envía al cliente, no solo el componente donde se puso la directiva.",
+      "etiquetas": ["app-router", "server-components", "client-components"],
+      "fuentes": [
+        {
+          "url": "https://nextjs.org/blog/next-16",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Nota de lanzamiento de Next.js 16, leída completa vía WebFetch; publicada 2025-10-21."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "next-app-router-02",
+      "version": 1,
+      "pista": "nextjs",
+      "familia": "app-router",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "El middleware clásico se llama ahora distinto en Next.js 16. ¿Qué cambió y por qué?",
+        "en": "Classic middleware is now named differently in Next.js 16. What changed and why?"
+      },
+      "rubrica": {
+        "junior": ["Sabe que `middleware.ts` pasó a llamarse `proxy.ts` en Next.js 16"],
+        "senior": [
+          "Lo anterior",
+          "Explica que el cambio busca dejar claro que es la frontera de red de la app",
+          "Menciona que corre en runtime Node.js y que `middleware.ts` sigue funcionando para Edge pero está deprecado"
+        ]
+      },
+      "respuestaModelo": "En Next.js 16 el fichero `middleware.ts` pasó a llamarse `proxy.ts`, con la función exportada renombrada a `proxy`. El cambio de nombre busca comunicar con más precisión lo que realmente es: la frontera de red de la aplicación, el punto donde se interceptan peticiones antes de que lleguen a una ruta concreta (para redirigir, reescribir o añadir cabeceras), no un middleware genérico en el sentido de Express. La nueva convención corre en runtime Node.js por defecto. `middleware.ts` sigue funcionando para el runtime Edge por compatibilidad, pero queda marcado como deprecado, así que un proyecto nuevo debería empezar directamente con `proxy.ts`.",
+      "etiquetas": ["app-router", "proxy", "middleware"],
+      "fuentes": [
+        {
+          "url": "https://nextjs.org/blog/next-16",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Sección 'proxy.ts (formerly middleware.ts)' de la nota de lanzamiento, leída completa vía WebFetch."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "next-app-router-03",
+      "version": 1,
+      "pista": "nextjs",
+      "familia": "app-router",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Cómo manejas la autenticación y las rutas protegidas en el App Router?",
+        "en": "How do you handle authentication and protected routes in the App Router?"
+      },
+      "rubrica": {
+        "junior": [
+          "Menciona validar la sesión en `proxy.ts`/middleware para redirigir antes de renderizar"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que además hay que revalidar en el propio Server Component/Server Action, como defensa en profundidad, nunca confiando solo en el middleware",
+          "Menciona cookies `httpOnly` para el token de sesión en vez de `localStorage`"
+        ]
+      },
+      "respuestaModelo": "La primera capa es validar la sesión en `proxy.ts` (el middleware/frontera de red) para redirigir a login antes de que la petición llegue a renderizar la ruta protegida, evitando el coste de renderizar una página que de todas formas se va a descartar. Pero esa capa no basta por sí sola: hay que revalidar la sesión también dentro del propio Server Component o Server Action que expone el dato sensible, como defensa en profundidad, porque confiar solo en el middleware deja la puerta abierta si alguien encuentra una forma de invocar esa lógica saltándose la frontera de red. El token o identificador de sesión debe viajar en una cookie `httpOnly`, `Secure` y con `SameSite` adecuado, nunca en `localStorage`, para que JavaScript malicioso no pueda leerlo directamente en caso de XSS.",
+      "etiquetas": ["app-router", "autenticacion", "middleware"],
+      "fuentes": [
+        {
+          "url": "https://medium.com/@aayushpagare21/senior-level-next-js-interview-questions-part-1-571b85306b94",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Resumen de búsqueda, patrón estándar de preguntas Next.js senior sobre App Router."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "next-app-router-04",
+      "version": 1,
+      "pista": "nextjs",
+      "familia": "app-router",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Diferencia entre rutas API (`app/api/.../route.ts`) y Server Actions: ¿cuándo usarías cada una?",
+        "en": "Difference between API routes (`app/api/.../route.ts`) and Server Actions: when would you use each?"
+      },
+      "rubrica": {
+        "junior": [
+          "Sabe que las Server Actions son para mutaciones desde formularios/componentes de la misma app",
+          "Sabe que las rutas API son para consumidores externos"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que Server Actions dan progressive enhancement y menos boilerplate",
+          "Explica que las rutas API dan control fino sobre métodos HTTP/cabeceras, necesario para webhooks o apps móviles"
+        ]
+      },
+      "respuestaModelo": "Las Server Actions son la opción natural para mutaciones disparadas desde dentro de la propia app, típicamente desde un formulario: se pueden invocar como si fueran una función local, dan progressive enhancement (el formulario funciona incluso sin JavaScript cargado) y reducen mucho el boilerplate frente a montar un endpoint y hacer fetch manual. Las rutas API en `app/api/.../route.ts` son necesarias cuando el consumidor no es la propia app: un webhook de un proveedor externo, una app móvil, una integración de terceros, o cualquier caso donde se necesite control fino sobre el método HTTP, las cabeceras de respuesta o el formato exacto del contrato, cosas que una Server Action no expone de la misma manera porque no está pensada como un endpoint público de propósito general.",
+      "etiquetas": ["app-router", "server-actions", "api-routes"],
+      "fuentes": [
+        {
+          "url": "https://www.interviewbit.com/next-js-interview-questions/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Resumen de búsqueda, patrón estándar de preguntas Next.js."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "next-app-router-05",
+      "version": 1,
+      "pista": "nextjs",
+      "familia": "app-router",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué rompe (breaking change) al pasar `params`/`searchParams` a asíncronos, introducido en versiones recientes de Next.js?",
+        "en": "What breaks (breaking change) from making `params`/`searchParams` async, introduced in recent Next.js versions?"
+      },
+      "rubrica": {
+        "junior": [
+          "Sabe que en Next.js 16 hay que hacer `await params`/`searchParams` en vez de leerlos de forma síncrona"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Menciona que `cookies()`/`headers()` también dejaron de ser síncronos",
+          "Sabe que existe un codemod oficial (`@next/codemod`) para migrar código de tutoriales antiguos"
+        ]
+      },
+      "respuestaModelo": "En Next.js 16 ya no se puede leer `params`, `searchParams`, `cookies()` ni `headers()` de forma síncrona dentro de un Server Component: hay que hacer `await params` (o, en un Client Component, usar el hook `use(params)`). Esto rompe directamente cualquier código de tutoriales antiguos que asumía acceso síncrono, un patrón muy extendido en ejemplos previos a esta versión. Para no migrar cada archivo a mano, Next.js ofrece un codemod oficial (`@next/codemod`) que reescribe automáticamente los usos síncronos a la forma asíncrona correcta, y conviene mencionarlo como la vía recomendada en vez de una migración manual archivo por archivo.",
+      "etiquetas": ["app-router", "breaking-changes", "next-16"],
+      "fuentes": [
+        {
+          "url": "https://nextjs.org/blog/next-16",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Tabla 'Removals' (Sync params/searchParams props access), leída completa vía WebFetch."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "next-app-router-06",
+      "version": 1,
+      "pista": "nextjs",
+      "familia": "app-router",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "senior",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "Tienes una página con 50 enlaces a productos que comparten layout. ¿Qué optimización de prefetching aplica Next.js 16 ahí?",
+        "en": "You have a page with 50 product links sharing a layout. What prefetching optimization does Next.js 16 apply there?"
+      },
+      "rubrica": {
+        "junior": ["Sabe que Next.js hace prefetch de los enlaces `<Link>` visibles"],
+        "senior": [
+          "Lo anterior",
+          "Explica 'layout deduplication': el layout compartido se descarga una sola vez en vez de una vez por cada `<Link>`",
+          "Menciona que el prefetch incremental solo trae las partes que faltan en caché y cancela peticiones si el link sale del viewport"
+        ]
+      },
+      "respuestaModelo": "Cuando muchos enlaces `<Link>` apuntan a rutas que comparten el mismo layout, Next.js 16 aplica 'layout deduplication': en vez de descargar ese layout una vez por cada uno de los 50 enlaces al hacer prefetch, lo descarga una única vez y lo reutiliza para todos, reduciendo drásticamente el tráfico de red que antes se desperdiciaba repitiendo el mismo contenido. Además, el prefetch es incremental: solo trae al caché del cliente las partes que todavía no tiene, y cancela la petición de prefetch de un enlace concreto si ese enlace sale del viewport antes de completarse, evitando gastar ancho de banda en rutas que el usuario probablemente no va a visitar.",
+      "etiquetas": ["app-router", "prefetching", "next-16"],
+      "fuentes": [
+        {
+          "url": "https://nextjs.org/blog/next-16",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Sección 'Enhanced Routing and Navigation' (layout deduplication), leída completa vía WebFetch."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

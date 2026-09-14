@@ -1,0 +1,229 @@
+{
+  "pista": "node",
+  "familia": "errores-validacion",
+  "preguntas": [
+    {
+      "id": "node-errores-validacion-01",
+      "version": 1,
+      "pista": "node",
+      "familia": "errores-validacion",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Dónde y cómo validarías el body de una petición POST, y por qué no basta con validar en el frontend?",
+        "en": "Where and how would you validate a POST request body, and why isn't frontend validation enough?"
+      },
+      "rubrica": {
+        "junior": [
+          "Propone validar en el borde de entrada del servidor con una librería de esquemas (Zod, Joi, JSON Schema)"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que valida antes de tocar la base de datos",
+          "Explica que el frontend se puede saltar completamente con curl/Postman, así que solo es UX, nunca la barrera de seguridad real"
+        ]
+      },
+      "respuestaModelo": "La validación tiene que ocurrir en el borde de entrada del servidor, en un middleware o al inicio del propio handler, usando una librería de esquemas como Zod, Joi, o la validación integrada de JSON Schema en Fastify, y siempre antes de que el dato llegue a tocar la base de datos. La validación en el frontend mejora la experiencia de usuario (feedback inmediato, sin esperar a un viaje de red), pero no es una barrera de seguridad: cualquiera puede saltarse por completo el formulario y mandar la petición directamente con curl o Postman con cualquier body que quiera, así que si el servidor no valida por su cuenta, esa validación de frontend no protege nada. La regla práctica es que el frontend valida para UX, el backend valida porque es la única barrera real.",
+      "etiquetas": ["errores-validacion", "validacion-de-input"],
+      "fuentes": [
+        {
+          "url": "https://github.com/goldbergyoni/nodebestpractices",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "CC-BY-SA-4.0. Contenido citado como referencia, no copiado literalmente; sección de validación de input."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "node-errores-validacion-02",
+      "version": 1,
+      "pista": "node",
+      "familia": "errores-validacion",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Cómo diseñarías el manejo de errores centralizado en una API Express, distinguiendo errores esperados (404, validación) de errores inesperados (excepción no controlada)?",
+        "en": "How would you design centralized error handling in an Express API, distinguishing expected errors (404, validation) from unexpected ones (unhandled exceptions)?"
+      },
+      "rubrica": {
+        "junior": [
+          "Propone clases de error propias y un middleware final que las mapea a códigos HTTP"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Distingue errores 'operacionales' (input inválido, recurso no encontrado) de errores de programación (excepción no capturada)",
+          "Explica que los errores de programación se loguean con stack completo y, según el proceso, se deja morir el proceso de forma controlada en vez de intentar 'seguir como si nada'"
+        ]
+      },
+      "respuestaModelo": "Los errores 'operacionales', esperables dentro del funcionamiento normal de la API (un input inválido, un recurso que no existe, un conflicto de negocio), se representan con clases de error propias (por ejemplo `NotFoundError`, `ValidationError`) que un middleware de error final en Express captura y traduce al código HTTP y formato de respuesta correspondiente. Los errores de programación, una excepción que nadie esperaba y que revela un bug real (una referencia nula, un fallo de tipo), se tratan distinto: se loguean con el stack trace completo para poder diagnosticarlos después, y según la arquitectura del proceso, conviene dejar morir ese proceso de forma controlada en vez de intentar 'seguir como si nada hubiera pasado', porque su estado interno puede haber quedado inconsistente; un proceso supervisor u orquestador (PM2, Kubernetes) lo reinicia automáticamente, lo que es más seguro que un proceso que sigue vivo pero en un estado desconocido.",
+      "etiquetas": ["errores-validacion", "manejo-de-errores"],
+      "fuentes": [
+        {
+          "url": "https://github.com/goldbergyoni/nodebestpractices",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "CC-BY-SA-4.0. Contenido citado como referencia, no copiado literalmente; sección Error Handling."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "node-errores-validacion-diseno-crear-pedido",
+      "version": 1,
+      "pista": "node",
+      "familia": "errores-validacion",
+      "tipo": "diseno",
+      "modos": ["diseno"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Diseña el contrato de una API REST para \"crear un pedido\" (`POST /orders`): ¿qué validaciones, códigos de respuesta y estructura de error usarías?",
+        "en": "Design the contract of a REST API for \"create an order\" (`POST /orders`): what validations, response codes and error structure would you use?"
+      },
+      "rubrica": {
+        "junior": [
+          "Valida el body con un esquema antes de tocar la base de datos",
+          "Devuelve 201 + el recurso creado en éxito, 400 con formato de error consistente en fallo de validación"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Incluye el header `Location` del nuevo recurso en la respuesta 201",
+          "Devuelve 409 si hay conflicto (stock insuficiente)",
+          "Menciona idempotencia con una `Idempotency-Key` para evitar pedidos duplicados si el cliente reintenta por timeout de red"
+        ]
+      },
+      "respuestaModelo": "El endpoint valida el body con un esquema (Zod o similar) antes de tocar la base de datos, rechazando con 400 y un error por campo explicable si algo no cumple el formato esperado. En éxito devuelve 201 con el recurso creado en el body y la cabecera `Location` apuntando a `/orders/{id}`, siguiendo la convención REST de indicar dónde vive el nuevo recurso. Si hay un conflicto de negocio, como stock insuficiente para completar el pedido, responde 409 en vez de un 400 genérico, porque el problema no es que el input esté mal formado sino que el estado actual del sistema no permite la operación. Para evitar pedidos duplicados si el cliente reintenta tras un timeout de red sin saber si el primer intento llegó, el endpoint acepta una cabecera `Idempotency-Key` generada por el cliente: guarda el resultado de la primera ejecución asociado a esa key, y en reintentos con la misma key devuelve el mismo resultado sin crear un segundo pedido.",
+      "etiquetas": ["errores-validacion", "diseno-de-api", "idempotencia"],
+      "fuentes": [
+        {
+          "url": "https://www.hellointerview.com/learn/system-design/core-concepts/api-design",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Resumen de búsqueda, patrón estándar de diseño de API en entrevistas fullstack."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "node-errores-validacion-registro-usuario",
+      "version": 1,
+      "pista": "node",
+      "familia": "errores-validacion",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Implementa `POST /api/users` en Express o Fastify que reciba `{ email, password, name }`, valide con una librería de esquemas, hashee la contraseña antes de guardarla, y devuelva 201 con el usuario creado (sin la contraseña) o 400 con un error por campo. Debe rechazar emails duplicados con 409.",
+        "en": "Implement `POST /api/users` in Express or Fastify that receives `{ email, password, name }`, validates it with a schema library, hashes the password before storing it, and returns 201 with the created user (without the password) or 400 with a per-field error. It must reject duplicate emails with 409."
+      },
+      "rubrica": {
+        "junior": [
+          "La validación ocurre en el servidor, no confía en que el frontend ya validó",
+          "La contraseña nunca se guarda en texto plano ni se devuelve en la respuesta"
+        ],
+        "senior": [
+          "Lo anterior",
+          "El error de validación identifica QUÉ campo falló y por qué, no un mensaje genérico",
+          "Maneja el caso de email duplicado con el código HTTP correcto (409, no 500 por una excepción de constraint de base de datos sin capturar)"
+        ]
+      },
+      "respuestaModelo": "El handler empieza validando el body con un esquema (por ejemplo Zod) que comprueba formato de email, longitud mínima de contraseña y presencia del nombre, devolviendo 400 con un objeto de error que identifica campo por campo qué falló, no un mensaje genérico como 'datos inválidos'. Si la validación pasa, hashea la contraseña con bcrypt o argon2 antes de guardarla; en ningún momento se persiste ni se devuelve en texto plano. Al insertar el usuario, si la base de datos rechaza la operación por violar el constraint único de email, el handler captura esa excepción concreta (no un catch genérico que devuelva 500) y responde 409 indicando que el email ya está registrado. En éxito devuelve 201 con el usuario creado, excluyendo explícitamente el campo de contraseña (hasheada o no) del objeto de respuesta.",
+      "etiquetas": ["errores-validacion", "autenticacion", "hashing"],
+      "fuentes": [
+        {
+          "url": "https://github.com/goldbergyoni/nodebestpractices",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "CC-BY-SA-4.0. Ejercicio propio escrito para esta investigación, inspirado en el patrón de diseño de API citado en la sección de validación de input del repositorio."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "node-errores-validacion-review-login",
+      "version": 1,
+      "pista": "node",
+      "familia": "errores-validacion",
+      "tipo": "review",
+      "modos": ["review"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Revisa este endpoint de login. Tiene al menos 4 problemas de seguridad/diseño. Encuéntralos y explica cómo los arreglarías.",
+        "en": "Review this login endpoint. It has at least 4 security/design problems. Find them and explain how you'd fix them."
+      },
+      "contexto": "```js\napp.post('/login', async (req, res) => {\n  const { email, password } = req.body;\n\n  const query = `SELECT * FROM users WHERE email = '${email}'`;\n  const result = await db.query(query);\n  const user = result.rows[0];\n\n  console.log(`Login attempt: ${email} / ${password}`);\n\n  if (!user) {\n    return res.status(404).json({ error: 'User not found' });\n  }\n\n  if (user.password === password) {\n    const token = jwt.sign({ id: user.id, email: user.email }, 'secret123');\n    res.json({ token, user });\n  } else {\n    res.status(401).json({ error: 'Wrong password' });\n  }\n});\n```",
+      "rubrica": {
+        "junior": [
+          "Detecta la inyección SQL: el email se interpola directamente en el string de la query",
+          "Detecta que la contraseña se compara en texto plano, lo que implica que se guarda sin hashear, y que además se loguea en `console.log`"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Detecta el secreto JWT hardcodeado (`'secret123'`) en vez de leído de una variable de entorno",
+          "Detecta la filtración de información: devuelve el `user` completo (con el hash/contraseña) y distingue 404 (usuario no existe) de 401 (contraseña incorrecta), lo que permite enumerar emails registrados"
+        ]
+      },
+      "respuestaModelo": "El primer problema es una inyección SQL: el email se interpola directamente en el string de la query en vez de usar un parámetro (`$1`) o el ORM, así que un valor como `' OR '1'='1` compromete la consulta completa. El segundo es que la comparación `user.password === password` en texto plano implica que la contraseña se guarda sin hashear en la base de datos, y encima se loguea en claro con `console.log`, quedando expuesta en los logs del sistema, que suelen tener menos control de acceso que la propia base de datos. El tercero es el secreto de JWT hardcodeado directamente en el código fuente (`'secret123'`): cualquiera con acceso al repositorio puede firmar tokens válidos para cualquier usuario; debería leerse de una variable de entorno o un gestor de secretos. El cuarto es una filtración de información doble: la respuesta de éxito devuelve el objeto `user` completo (que probablemente incluye el hash de la contraseña), y además distinguir 404 (usuario no existe) de 401 (contraseña incorrecta) permite a un atacante enumerar qué emails están registrados probando uno a uno, algo que se evita devolviendo siempre el mismo mensaje genérico de credenciales inválidas en ambos casos.",
+      "etiquetas": ["errores-validacion", "seguridad", "sql-injection", "review"],
+      "fuentes": [
+        {
+          "url": "https://owasp.org/Top10/2025/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Fragmento propio escrito para esta investigación, inspirado en la categoría de inyección del OWASP Top 10:2025 y en malas prácticas de manejo de secretos documentadas en goldbergyoni/nodebestpractices."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "node-errores-validacion-review-cierre-pedido",
+      "version": 1,
+      "pista": "node",
+      "familia": "errores-validacion",
+      "tipo": "review",
+      "modos": ["review"],
+      "nivelMinimo": "senior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Revisa esta función que cierra un pedido con Prisma. Tiene al menos 4 problemas: rendimiento, falta de transacción, condición de carrera y una promesa sin manejar. Encuéntralos.",
+        "en": "Review this Prisma order-closing function. It has at least 4 problems: performance, missing transaction, a race condition and an unhandled promise. Find them."
+      },
+      "contexto": "```js\nasync function closeOrder(orderId) {\n  const order = await prisma.order.findUnique({ where: { id: orderId } });\n  order.status = 'closed';\n  await prisma.order.update({\n    where: { id: orderId },\n    data: { status: 'closed' },\n  });\n\n  const items = await prisma.orderItem.findMany({ where: { orderId } });\n  for (const item of items) {\n    const product = await prisma.product.findUnique({ where: { id: item.productId } });\n    await prisma.product.update({\n      where: { id: item.productId },\n      data: { stock: product.stock - item.quantity },\n    });\n  }\n\n  sendOrderClosedEmail(order.customerEmail);\n\n  return order;\n}\n```",
+      "rubrica": {
+        "junior": [
+          "Detecta el N+1: un `findUnique` y un `update` por cada item dentro del `for`, en vez de traer todos los productos de una vez",
+          "Detecta que `sendOrderClosedEmail(...)` se llama sin `await` ni `.catch`, generando una promesa sin manejar"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Detecta la falta de transacción: si falla a mitad, el pedido queda 'closed' pero el stock de los productos restantes nunca se descuenta",
+          "Detecta la condición de carrera en el descuento de stock: leer, calcular en la aplicación y escribir de vuelta pierde actualizaciones si dos pedidos del mismo producto se cierran casi a la vez; propone usar `decrement` atómico o un bloqueo"
+        ]
+      },
+      "respuestaModelo": "El primer problema es un N+1 clásico: dentro del `for` se hace un `findUnique` y un `update` por cada item, así que un pedido de 50 items dispara unas 100 queries en vez de agrupar la operación; conviene traer todos los productos de una vez y actualizar en lote. El segundo es la falta de una transacción: actualizar el estado del pedido y descontar el stock de cada producto son operaciones que deberían ser atómicas, y tal como está escrito, si falla a mitad (por ejemplo en el producto 3 de 5), el pedido ya quedó marcado 'closed' pero el stock de los productos restantes nunca se descuenta, dejando datos inconsistentes; debería envolverse todo en `prisma.$transaction`. El tercero es una condición de carrera en el descuento de stock: `product.stock - item.quantity` lee el valor, calcula en la aplicación y escribe de vuelta, así que si dos pedidos del mismo producto se cierran casi al mismo tiempo, ambos pueden leer el mismo stock inicial y la segunda escritura pisa a la primera, perdiendo un descuento; la solución es usar la operación atómica `decrement` de Prisma directamente en la base de datos. El cuarto es que `sendOrderClosedEmail(...)` se llama sin `await` ni `.catch`: si falla, se convierte en un 'unhandled promise rejection' que no se reporta en el flujo normal, y el fallo queda completamente silencioso.",
+      "etiquetas": ["errores-validacion", "prisma", "transacciones", "review"],
+      "fuentes": [
+        {
+          "url": "https://www.prisma.io/docs/orm/prisma-client/queries/advanced/query-optimization-performance",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Fragmento propio escrito para esta investigación, inspirado en el problema N+1 documentado en la documentación oficial de Prisma."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

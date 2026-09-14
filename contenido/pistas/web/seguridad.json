@@ -1,0 +1,216 @@
+{
+  "pista": "web",
+  "familia": "seguridad",
+  "preguntas": [
+    {
+      "id": "web-seguridad-01",
+      "version": 1,
+      "pista": "web",
+      "familia": "seguridad",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué es CORS y por qué un error de CORS en consola NO es un problema de seguridad del navegador de la víctima?",
+        "en": "What is CORS, and why is a CORS error in the console NOT a security problem for the victim's browser?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que CORS es una restricción que aplican los navegadores al código JavaScript que lee la respuesta de otro origen"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que el servidor decide qué orígenes permite con `Access-Control-Allow-Origin`",
+          "Explica que un atacante que no usa navegador (curl, servidor a servidor) no está limitado por CORS, así que CORS no sustituye autenticación/autorización en el backend"
+        ]
+      },
+      "respuestaModelo": "CORS es una restricción que aplican los navegadores, no los servidores: impide que código JavaScript ejecutado en el origen A lea la respuesta de una petición hecha al origen B, salvo que el servidor B lo permita explícitamente devolviendo la cabecera `Access-Control-Allow-Origin` con el origen A autorizado. Un error de CORS en consola indica que el navegador bloqueó la lectura de esa respuesta en el JavaScript de la página, pero no significa que el atacante no pudiera acceder a ese endpoint de otra forma: un atacante que no usa un navegador (con curl, un script, o servidor a servidor) nunca estuvo sujeto a la restricción de CORS, porque esa comprobación la hace el navegador, no el servidor. Por eso CORS nunca debe tratarse como una medida de seguridad real del backend, es solo una política de qué páginas web pueden leer una respuesta desde JavaScript; la autenticación y autorización siguen siendo responsabilidad exclusiva del servidor.",
+      "etiquetas": ["seguridad", "cors"],
+      "fuentes": [
+        {
+          "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Patrón muy común de confusión en entrevistas junior/mid; documentación MDN sobre CORS tratada como conocimiento consolidado en el informe fuente."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "web-seguridad-02",
+      "version": 1,
+      "pista": "web",
+      "familia": "seguridad",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Explica XSS (cross-site scripting) y cómo lo mitigas en una app React/Next.js.",
+        "en": "Explain XSS (cross-site scripting) and how you mitigate it in a React/Next.js app."
+      },
+      "rubrica": {
+        "junior": ["Explica que XSS inyecta script en una página que ve otro usuario"],
+        "senior": [
+          "Lo anterior",
+          "Explica que React escapa por defecto el contenido interpolado en JSX",
+          "Identifica los puntos de riesgo reales: `dangerouslySetInnerHTML`, atributos `href`/`src` con URLs controladas por el usuario, o HTML de un CMS sin sanitizar"
+        ]
+      },
+      "respuestaModelo": "XSS ocurre cuando un atacante consigue que su propio código JavaScript se ejecute en el navegador de otro usuario, normalmente inyectándolo a través de un input que la aplicación acaba mostrando sin sanitizar. React mitiga la mayor parte de este riesgo por defecto: cualquier valor interpolado en JSX (`{texto}`) se escapa automáticamente, así que un `<script>` guardado como texto se muestra como texto plano, no se ejecuta. El riesgo real está en los puntos donde esa protección automática se salta deliberadamente: `dangerouslySetInnerHTML`, que inyecta HTML crudo tal cual; atributos como `href` o `src` con URLs controladas por el usuario, donde un valor tipo `javascript:alert(1)` puede ejecutarse; o renderizar HTML proveniente de un CMS externo sin pasarlo antes por una librería de sanitización como DOMPurify. La mitigación es sanitizar explícitamente cualquier HTML que no haya sido generado por el propio código de la app antes de insertarlo en el DOM.",
+      "etiquetas": ["seguridad", "xss"],
+      "fuentes": [
+        {
+          "url": "https://owasp.org/Top10/2025/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "OWASP Top 10:2025; el informe fuente marca el mapeo exacto de XSS dentro de las categorías de la edición 2025 como no verificado línea por línea."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "web-seguridad-03",
+      "version": 1,
+      "pista": "web",
+      "familia": "seguridad",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Explica CSRF (cross-site request forgery) y por qué las Server Actions/formularios necesitan protección aunque uses cookies `httpOnly`.",
+        "en": "Explain CSRF (cross-site request forgery) and why Server Actions/forms need protection even with `httpOnly` cookies."
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que CSRF hace que el navegador de la víctima dispare una petición autenticada sin que ella lo sepa"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que `httpOnly` evita que JavaScript LEA la cookie, pero el navegador la sigue ENVIANDO automáticamente en peticiones cross-site sin `SameSite` adecuado",
+          "Menciona mitigaciones: `SameSite=Lax/Strict`, tokens CSRF, o verificar el header `Origin`/`Referer`"
+        ]
+      },
+      "respuestaModelo": "CSRF explota que el navegador adjunta automáticamente las cookies de sesión a cualquier petición hacia el dominio que las emitió, sin importar desde qué página se originó esa petición. Un sitio malicioso puede montar un formulario oculto o una petición automática hacia la app legítima, y si la víctima tiene sesión activa, el navegador incluye su cookie de sesión sin que ella se entere, ejecutando una acción autenticada en su nombre. `httpOnly` evita que JavaScript malicioso LEA el contenido de la cookie (protege contra robo vía XSS), pero no evita que el navegador la ENVÍE automáticamente en esa petición cross-site, que es exactamente lo que CSRF explota: son dos ataques distintos con mitigaciones distintas. La protección real contra CSRF pasa por `SameSite=Lax` o `Strict` en la cookie de sesión, tokens CSRF únicos por formulario, o verificar la cabecera `Origin`/`Referer` en el servidor antes de procesar la petición.",
+      "etiquetas": ["seguridad", "csrf", "cookies"],
+      "fuentes": [
+        {
+          "url": "https://owasp.org/Top10/2025/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "CSRF integrado en la categoría de control de acceso roto según los cambios de la edición 2025 del OWASP Top 10."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "web-seguridad-04",
+      "version": 1,
+      "pista": "web",
+      "familia": "seguridad",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué son las inyecciones SQL y por qué un ORM no te protege automáticamente al 100%?",
+        "en": "What are SQL injections, and why doesn't an ORM automatically protect you 100%?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que la inyección ocurre al concatenar input del usuario directamente en una query SQL"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que los ORMs usan queries parametrizadas por defecto, que sí protegen",
+          "Explica que el riesgo reaparece con métodos de SQL crudo con interpolación de strings (`$queryRawUnsafe` u equivalentes)"
+        ]
+      },
+      "respuestaModelo": "Una inyección SQL ocurre cuando el input de un usuario se concatena directamente dentro del texto de una consulta SQL, permitiendo que ese input altere la estructura lógica de la query, por ejemplo cerrando una condición con comillas y añadiendo su propia lógica. ORMs como Prisma o Drizzle protegen de esto por defecto porque construyen las queries con parámetros (placeholders) en vez de concatenar strings, y el driver de la base de datos trata el valor como un dato, nunca como código SQL ejecutable. El riesgo vuelve a aparecer cuando el desarrollador se salta ese mecanismo a propósito: métodos de SQL crudo con interpolación manual de strings, como `$queryRawUnsafe` en Prisma con una plantilla de texto que incluye directamente el input del usuario, reabren exactamente el mismo agujero que el ORM estaba evitando.",
+      "etiquetas": ["seguridad", "sql-injection", "orm"],
+      "fuentes": [
+        {
+          "url": "https://owasp.org/Top10/2025/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Categoría de inyección históricamente en el top de la lista OWASP."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "web-seguridad-05",
+      "version": 1,
+      "pista": "web",
+      "familia": "seguridad",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "senior",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "Nombra 2 categorías nuevas del OWASP Top 10 más reciente y explica una.",
+        "en": "Name 2 new categories from the latest OWASP Top 10 and explain one."
+      },
+      "rubrica": {
+        "junior": ["Nombra al menos una categoría nueva de la edición 2025"],
+        "senior": [
+          "Lo anterior",
+          "Nombra las dos categorías nuevas: 'Software Supply Chain Failures' y 'Mishandling of Exceptional Conditions'",
+          "Explica con un ejemplo concreto al menos una de las dos"
+        ]
+      },
+      "respuestaModelo": "La edición 2025 del OWASP Top 10 incorporó dos categorías nuevas: 'Software Supply Chain Failures', centrada en dependencias o paquetes comprometidos y pipelines de build inseguros, y 'Mishandling of Exceptional Conditions', centrada en errores y excepciones mal gestionados. Sobre esta segunda: un ejemplo típico es un endpoint que, al recibir un input inesperado, lanza una excepción no controlada cuyo stack trace completo se filtra en la respuesta al cliente, revelando rutas internas del servidor o detalles de la base de datos; o un flujo de pago que, al fallar a mitad de una operación, deja el sistema en un estado inconsistente porque nadie consideró explícitamente qué pasa cuando esa excepción concreta ocurre, en vez de tratarla como un caso de diseño más.",
+      "etiquetas": ["seguridad", "owasp"],
+      "fuentes": [
+        {
+          "url": "https://owasp.org/Top10/2025/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Existencia y fecha de publicación (enero 2026) confirmadas vía búsqueda; resumen de cambios contrastado con el blog de Semgrep sobre la edición 2025."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "web-seguridad-06",
+      "version": 1,
+      "pista": "web",
+      "familia": "seguridad",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Cuéntame de un bug de seguridad o de rendimiento que encontraste en producción. ¿Cómo lo detectaste y qué cambiaste en el proceso para que no volviera a pasar?",
+        "en": "Tell me about a security or performance bug you found in production. How did you detect it and what did you change in the process so it wouldn't happen again?"
+      },
+      "rubrica": {
+        "junior": ["Cuenta un caso concreto y verificable, con causa raíz técnica explicada"],
+        "senior": [
+          "Lo anterior",
+          "No se queda en 'lo arreglé': explica el cambio de proceso (test añadido, alerta nueva, checklist de revisión)",
+          "Muestra pensamiento sistémico, no solo el parche puntual"
+        ]
+      },
+      "respuestaModelo": "Una respuesta sólida describe un caso concreto y verificable, con la causa raíz técnica explicada con precisión (no 'había un bug' sino qué exactamente fallaba y por qué), en vez de una anécdota genérica sin detalle. Lo que distingue a un senior es no quedarse en 'lo arreglé y ya', sino explicar qué cambió en el proceso del equipo para que ese tipo de fallo no vuelva a pasar: un test específico que ahora cubre ese caso, una alerta nueva que detecta la condición antes de que llegue a producción, o un ítem añadido a una checklist de revisión de código. Eso demuestra pensamiento sistémico sobre el problema, tratando el bug como una señal de un hueco en el proceso y no solo como algo que se arregla y se olvida.",
+      "etiquetas": ["seguridad", "comportamental", "produccion"],
+      "fuentes": [
+        {
+          "url": "https://www.glassdoor.com/Interview/full-stack-developer-react-nodejs-interview-questions-SRCH_KO0,33.htm",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Resumen de búsqueda; patrón habitual de pregunta comportamental técnica en entrevistas fullstack."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

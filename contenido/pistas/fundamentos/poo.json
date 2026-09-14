@@ -1,0 +1,44 @@
+{
+  "pista": "fundamentos",
+  "familia": "poo",
+  "preguntas": [
+    {
+      "id": "fund-poo-01",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "poo",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Explica los cuatro pilares de la programación orientada a objetos (encapsulamiento, abstracción, herencia, polimorfismo) con un ejemplo.",
+        "en": "Explain the four pillars of object-oriented programming (encapsulation, abstraction, inheritance, polymorphism) with an example."
+      },
+      "rubrica": {
+        "junior": [
+          "Define los cuatro pilares sin confundirlos entre sí",
+          "Da un ejemplo (aunque sea de libro) de al menos dos de ellos"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Da un ejemplo propio, no genérico, para cada pilar",
+          "Explica cuándo la herencia es la herramienta equivocada y preferiría composición",
+          "Relaciona el polimorfismo con interfaces o duck typing en un lenguaje dinámico como JS"
+        ]
+      },
+      "respuestaModelo": "Encapsulamiento es ocultar el estado interno de un objeto y exponer solo lo necesario (por ejemplo, un campo privado `#saldo` con un método `retirar()` que valida antes de tocarlo). Abstracción es modelar solo los detalles relevantes para el problema, ignorando lo demás. Herencia permite que una clase reutilice comportamiento de otra (`Perro extends Animal`). Polimorfismo es que distintos tipos respondan al mismo mensaje de forma distinta, por ejemplo `animal.hacerSonido()` da un resultado distinto según sea Perro o Gato. Un candidato senior añade que en JS/TS muchas veces se prefiere composición e interfaces sobre herencia profunda porque es más flexible y evita jerarquías frágiles.",
+      "etiquetas": ["poo", "diseno"],
+      "fuentes": [
+        {
+          "url": "https://github.com/holasoymalva/Guia-para-Entrevistas-Laborales-de-Programacion",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Pregunta adaptada, no copiada literalmente."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    }
+  ]
+}

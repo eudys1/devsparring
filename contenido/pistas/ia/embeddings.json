@@ -1,0 +1,153 @@
+{
+  "pista": "ia",
+  "familia": "embeddings",
+  "preguntas": [
+    {
+      "id": "ia-embeddings-01",
+      "version": 1,
+      "pista": "ia",
+      "familia": "embeddings",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué es un embedding?",
+        "en": "What is an embedding?"
+      },
+      "rubrica": {
+        "junior": [
+          "Define embedding como una representación numérica (vector) de un texto, imagen u otro dato",
+          "Menciona que elementos semánticamente similares quedan cerca en el espacio vectorial"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que se genera con un modelo de embeddings entrenado específicamente para esa tarea",
+          "Da un ejemplo de por qué dos frases con palabras distintas pueden tener embeddings cercanos"
+        ]
+      },
+      "respuestaModelo": "Un embedding es un vector de números que representa el significado de un texto, una imagen u otro dato, generado por un modelo entrenado para esa tarea. Lo interesante no es el vector en sí, sino la geometría: elementos con significado parecido quedan cerca en ese espacio, aunque usen palabras distintas. Por ejemplo, 'coche' y 'automóvil' tendrían embeddings próximos aunque no compartan ni una letra, porque el modelo aprendió el contexto en el que aparecen. Esa propiedad es la que permite hacer búsqueda semántica en vez de búsqueda por coincidencia exacta de palabras.",
+      "etiquetas": ["embeddings", "fundamentos"],
+      "fuentes": [
+        {
+          "url": "https://www.faceprep.in/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Guía de entrevistas de embeddings/vector DB, faceprep.in, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-embeddings-02",
+      "version": 1,
+      "pista": "ia",
+      "familia": "embeddings",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué métrica se usa habitualmente para comparar embeddings y por qué?",
+        "en": "What metric is typically used to compare embeddings and why?"
+      },
+      "rubrica": {
+        "junior": [
+          "Nombra la similitud coseno como métrica habitual",
+          "Explica que mide el ángulo entre vectores"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Compara con la distancia euclidiana y explica por qué el coseno es más robusto a diferencias de longitud o escala",
+          "Menciona que algunas bases vectoriales normalizan los vectores para que coseno y producto punto coincidan"
+        ]
+      },
+      "respuestaModelo": "La métrica más habitual es la similitud coseno, que mide el ángulo entre dos vectores en vez de la distancia entre sus puntos. Esto la hace más robusta que la distancia euclidiana cuando la magnitud del vector varía con la longitud del texto original: dos textos con el mismo significado pero distinta longitud pueden tener vectores de magnitud diferente pero orientación similar, y el coseno lo captura mejor. Muchas bases vectoriales, de hecho, normalizan los vectores de antemano para que la similitud coseno se pueda calcular como un simple producto punto, más barato de computar a gran escala.",
+      "etiquetas": ["embeddings", "similitud"],
+      "fuentes": [
+        {
+          "url": "https://www.datacamp.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Guías de entrevista RAG/vector DB (DataCamp, igmGuru), según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-embeddings-03",
+      "version": 1,
+      "pista": "ia",
+      "familia": "embeddings",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Da un caso de uso de embeddings que no sea RAG.",
+        "en": "Give a use case for embeddings that is not RAG."
+      },
+      "rubrica": {
+        "junior": [
+          "Da al menos un caso de uso concreto distinto de RAG (búsqueda semántica, clustering, recomendación)"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica brevemente cómo se usaría el embedding en ese caso (comparación de vectores, clustering por distancia)",
+          "Menciona una consideración práctica del caso elegido (por ejemplo, cómo se define un umbral de similitud para detectar duplicados)"
+        ]
+      },
+      "respuestaModelo": "Un caso claro es la detección de tickets de soporte duplicados o muy similares: se genera el embedding de cada ticket nuevo y se compara contra los recientes, marcando como posible duplicado cualquiera que supere un umbral de similitud coseno. Otros casos habituales son la búsqueda semántica de productos en un catálogo, el clustering de opiniones de usuarios para detectar temas recurrentes, o sistemas de recomendación que buscan ítems con embedding cercano al historial del usuario. En todos estos casos no hay generación de texto de por medio, solo comparación y agrupación de vectores.",
+      "etiquetas": ["embeddings", "casos-de-uso"],
+      "fuentes": [
+        {
+          "url": "https://docs.anthropic.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Conocimiento estándar de aplicaciones de embeddings, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-embeddings-04",
+      "version": 1,
+      "pista": "ia",
+      "familia": "embeddings",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "senior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué pasa si mezclas embeddings generados por dos modelos distintos en el mismo índice?",
+        "en": "What happens if you mix embeddings from two different models in the same index?"
+      },
+      "rubrica": {
+        "junior": [
+          "Reconoce que los vectores de modelos distintos no son directamente comparables"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que puede deberse a distinta dimensión, distinto espacio vectorial o distinta distribución",
+          "Da la solución correcta: re-indexar todo con el mismo modelo al cambiar de modelo de embeddings",
+          "Menciona cómo detectaría el problema en producción (resultados de búsqueda sin sentido)"
+        ]
+      },
+      "respuestaModelo": "Los vectores de dos modelos de embeddings distintos no son comparables entre sí, aunque tengan la misma dimensión: cada modelo aprendió su propio espacio vectorial con su propia distribución, así que la distancia entre un vector del modelo A y uno del modelo B no tiene ningún significado. El síntoma en producción es que las búsquedas empiezan a devolver resultados sin relación aparente con la consulta, y suele pasar tras cambiar de modelo de embeddings sin darse cuenta de que el índice antiguo quedó mezclado. La solución es re-indexar todo el contenido con el modelo nuevo antes de servir tráfico, no simplemente añadir los vectores nuevos al índice existente.",
+      "etiquetas": ["embeddings", "produccion"],
+      "fuentes": [
+        {
+          "url": "https://docs.anthropic.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Buena práctica estándar en documentación de proveedores de vector DB, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

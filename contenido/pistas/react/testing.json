@@ -1,0 +1,43 @@
+{
+  "pista": "react",
+  "familia": "testing",
+  "preguntas": [
+    {
+      "id": "react-testing-01",
+      "version": 1,
+      "pista": "react",
+      "familia": "testing",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Cómo testearías un componente que hace fetch de datos, usando Testing Library?",
+        "en": "How would you test a component that fetches data, using Testing Library?"
+      },
+      "rubrica": {
+        "junior": [
+          "Sabe que hay que mockear la red en vez de la implementación interna del componente",
+          "Menciona `render` + consultas de Testing Library para comprobar lo que ve el usuario"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica por qué usa `screen.findBy...` (asíncrono) en vez de `getBy...` para esperar a que el dato llegue",
+          "Explica la filosofía de Testing Library: testear lo que ve el usuario, no detalles internos del componente"
+        ]
+      },
+      "respuestaModelo": "Se renderiza el componente con `render()` y se mockea la petición de red (con MSW o un mock del cliente de fetch) para controlar qué responde la API, en vez de mockear funciones internas del componente. Como la petición es asíncrona, hay que usar las consultas `findBy...` de `screen`, que esperan a que el elemento aparezca, en lugar de `getBy...`, que falla inmediatamente si el dato todavía no llegó; por ejemplo `await screen.findByText('nombre del usuario')`. La filosofía de Testing Library es testear el comportamiento observable por el usuario (qué texto aparece, qué botón se puede pulsar) en vez de detalles de implementación como el nombre de un estado interno, lo que hace que el test siga pasando aunque se refactorice cómo está construido el componente por dentro.",
+      "etiquetas": ["testing", "testing-library", "async"],
+      "fuentes": [
+        {
+          "url": "https://github.com/sudheerj/reactjs-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Pregunta adaptada de la sección Testing, no copiada literalmente."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    }
+  ]
+}

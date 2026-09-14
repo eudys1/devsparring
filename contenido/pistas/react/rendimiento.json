@@ -1,0 +1,116 @@
+{
+  "pista": "react",
+  "familia": "rendimiento",
+  "preguntas": [
+    {
+      "id": "react-rendimiento-01",
+      "version": 1,
+      "pista": "react",
+      "familia": "rendimiento",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué es `React.memo` y por qué a veces empeora el rendimiento en vez de mejorarlo?",
+        "en": "What is `React.memo` and why does it sometimes make performance worse instead of better?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que `memo` evita el re-render si las props no cambiaron",
+          "Sabe que la comparación es superficial por defecto"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que si las props incluyen objetos/funciones nuevas en cada render, la comparación siempre falla y solo añade coste extra",
+          "Recomienda medir con React DevTools Profiler antes de optimizar"
+        ]
+      },
+      "respuestaModelo": "`React.memo` envuelve un componente para que React se salte su re-render si las props recibidas son iguales a las del render anterior, usando por defecto una comparación superficial (shallow equal) propiedad por propiedad. El problema aparece cuando alguna prop es un objeto, array o función creada de nuevo en cada render del padre (por ejemplo un callback inline sin `useCallback`): la comparación superficial siempre los ve como distintos, así que `memo` nunca evita el re-render, y encima paga el coste de comparar las props en cada ocasión, quedando peor que no memoizar nada. La recomendación es no aplicar `memo` de forma preventiva en todo el árbol, sino medir con React DevTools Profiler qué componentes realmente re-renderizan de forma cara e innecesaria antes de envolverlos.",
+      "etiquetas": ["rendimiento", "memo"],
+      "fuentes": [
+        {
+          "url": "https://github.com/sudheerj/reactjs-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Pregunta adaptada, no copiada literalmente."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    },
+    {
+      "id": "react-rendimiento-02",
+      "version": 1,
+      "pista": "react",
+      "familia": "rendimiento",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "senior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Cuándo usarías `useTransition` o `useDeferredValue` en vez de un simple `useState`?",
+        "en": "When would you use `useTransition` or `useDeferredValue` instead of a plain `useState`?"
+      },
+      "rubrica": {
+        "junior": [
+          "Reconoce que sirven para no bloquear la interfaz cuando una actualización dispara un render caro"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Distingue `useTransition` (marca la actualización como no urgente e interrumpible) de `useDeferredValue` (retrasa el uso de un valor para renders no críticos)",
+          "Aclara que ninguno de los dos sustituye al debounce de llamadas de red"
+        ]
+      },
+      "respuestaModelo": "Ambos existen para cuando una actualización de estado dispara un render caro, como filtrar 10.000 filas en pantalla, y ese cálculo bloquearía la interfaz haciendo que escribir en un input se sienta con retraso. `useTransition` marca explícitamente una actualización como 'no urgente': React puede interrumpirla si llega algo más prioritario (como la siguiente pulsación de tecla) y expone un flag `isPending` para mostrar un estado de carga mientras tanto. `useDeferredValue` toma un valor y devuelve una versión que se actualiza con retraso para los renders no críticos, útil cuando no controlas directamente el `setState` (por ejemplo, el valor viene de una prop). Ninguno de los dos sustituye al debounce de peticiones de red: son mecanismos de prioridad de render en el cliente, no de reducción de tráfico hacia el servidor.",
+      "etiquetas": ["rendimiento", "concurrent-react"],
+      "fuentes": [
+        {
+          "url": "https://github.com/sudheerj/reactjs-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Pregunta adaptada de la sección Hooks, no copiada literalmente."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    },
+    {
+      "id": "react-rendimiento-03",
+      "version": 1,
+      "pista": "react",
+      "familia": "rendimiento",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Tienes una lista de 5.000 elementos y el scroll va con tirones. ¿Qué técnicas aplicarías?",
+        "en": "You have a list of 5,000 items and scrolling stutters. What techniques would you apply?"
+      },
+      "rubrica": {
+        "junior": [
+          "Propone windowing/virtualización para renderizar solo las filas visibles",
+          "Propone paginar o cargar bajo demanda en vez de traer todo de golpe"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Menciona memoizar filas con `React.memo`",
+          "Explica el riesgo de recrear funciones/objetos inline como props que rompen esa memoización"
+        ]
+      },
+      "respuestaModelo": "La técnica principal es windowing o virtualización: renderizar en el DOM solo las filas que están dentro (o cerca) del viewport visible, con librerías como `react-window` o `@tanstack/react-virtual`, en vez de montar los 5.000 nodos de golpe. Junto a eso, memoizar cada fila con `React.memo` evita que se vuelvan a renderizar filas que no cambiaron cuando el padre re-renderiza por otro motivo, pero solo funciona si se evita pasarle props inline nuevas cada vez (funciones u objetos creados en cada render rompen la memoización). Si el caso de uso lo permite, paginar o cargar bajo demanda en vez de traer las 5.000 filas de golpe reduce tanto el trabajo del backend como el tamaño inicial de la lista a virtualizar.",
+      "etiquetas": ["rendimiento", "listas", "virtualizacion"],
+      "fuentes": [
+        {
+          "url": "https://github.com/sudheerj/reactjs-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Pregunta adaptada de la sección Performance, no copiada literalmente."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    }
+  ]
+}

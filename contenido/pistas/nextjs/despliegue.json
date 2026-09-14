@@ -1,0 +1,184 @@
+{
+  "pista": "nextjs",
+  "familia": "despliegue",
+  "preguntas": [
+    {
+      "id": "next-despliegue-01",
+      "version": 1,
+      "pista": "nextjs",
+      "familia": "despliegue",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "senior",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "¿Cómo desplegarías una app Next.js en Vercel de forma que las Server Actions no queden expuestas a abuso (rate limiting, CSRF)?",
+        "en": "How would you deploy a Next.js app on Vercel so Server Actions aren't exposed to abuse (rate limiting, CSRF)?"
+      },
+      "rubrica": {
+        "junior": [
+          "Sabe que Next.js valida el origen de la petición para Server Actions por defecto (protección CSRF básica)"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que esa validación de origen no sustituye rate limiting a nivel de edge/proxy ni la validación de input dentro de la acción",
+          "Menciona `serverActions.allowedOrigins` en config para dominios adicionales (previews, subdominios)"
+        ]
+      },
+      "respuestaModelo": "Next.js valida por defecto el origen (`Origin`) de la petición que invoca una Server Action, lo que da una protección CSRF básica sin configuración adicional. Pero esa validación de origen no sustituye un rate limiting real: nada impide que alguien desde el propio origen permitido dispare cientos de invocaciones por segundo, así que conviene añadir límites a nivel de edge o proxy delante de la app (o dentro de la propia Server Action con un store compartido tipo Redis) además de validar el input en cada acción como si fuera un endpoint público cualquiera. Cuando el proyecto tiene varios entornos de despliegue (preview deployments, subdominios de staging), hay que declarar esos orígenes adicionales explícitamente en `serverActions.allowedOrigins` dentro de la configuración, porque de lo contrario la protección de origen por defecto los bloquearía también a ellos.",
+      "etiquetas": ["despliegue", "server-actions", "seguridad"],
+      "fuentes": [
+        {
+          "url": "https://nextjs.org/blog/next-16",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Buenas prácticas agregadas de despliegue Next.js/Vercel, contrastadas con documentación de Server Actions y orígenes permitidos."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "next-despliegue-02",
+      "version": 1,
+      "pista": "nextjs",
+      "familia": "despliegue",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué ventaja de rendimiento trae Turbopack en Next.js 16 y qué se sacrifica al hacerlo el bundler por defecto?",
+        "en": "What performance advantage does Turbopack bring in Next.js 16, and what's traded off by making it the default bundler?"
+      },
+      "rubrica": {
+        "junior": ["Sabe que Turbopack es ahora el bundler por defecto en Next.js 16"],
+        "senior": [
+          "Lo anterior",
+          "Menciona builds 2-5x más rápidos y Fast Refresh hasta 10x más rápido",
+          "Menciona la vía de escape `next dev --webpack`/`next build --webpack` para configuraciones webpack avanzadas no migradas"
+        ]
+      },
+      "respuestaModelo": "Turbopack pasó a ser el bundler por defecto en Next.js 16, con builds entre 2 y 5 veces más rápidos y un Fast Refresh (recarga en caliente durante el desarrollo) hasta 10 veces más rápido que con webpack. El coste de este cambio recae en los proyectos que tienen configuración webpack personalizada avanzada (loaders o plugins muy específicos) que todavía no tiene equivalente completo en Turbopack: para esos casos existe la vía de escape `next dev --webpack` y `next build --webpack`, que permite seguir usando webpack explícitamente mientras se migra esa configuración, en vez de quedar bloqueado por el cambio de bundler por defecto.",
+      "etiquetas": ["despliegue", "turbopack", "next-16"],
+      "fuentes": [
+        {
+          "url": "https://nextjs.org/blog/next-16",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Sección 'Turbopack (stable)' de la nota de lanzamiento, leída completa vía WebFetch."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "next-despliegue-03",
+      "version": 1,
+      "pista": "nextjs",
+      "familia": "despliegue",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Cómo optimizarías imágenes en Next.js y qué cambió por defecto en `next/image` en la versión 16?",
+        "en": "How would you optimize images in Next.js, and what changed by default in `next/image` in version 16?"
+      },
+      "rubrica": {
+        "junior": [
+          "Sabe que `next/image` sirve tamaños/formatos responsivos y hace lazy loading automático"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Menciona que en Next.js 16 el TTL de caché de imágenes subió de 60s a 4 horas por defecto y la calidad por defecto se fijó a `[75]`",
+          "Recomienda `images.remotePatterns` en vez del deprecado `images.domains` por seguridad"
+        ]
+      },
+      "respuestaModelo": "`next/image` genera automáticamente varios tamaños de una misma imagen, sirve el formato más eficiente que soporte el navegador, y aplica lazy loading por defecto para las imágenes fuera del viewport inicial, sin que el desarrollador tenga que implementar nada de eso a mano. En Next.js 16 cambiaron dos valores por defecto: el TTL de caché de imágenes subió de 60 segundos a 4 horas, reduciendo peticiones de optimización repetidas, y la calidad por defecto quedó fijada a `[75]`. Para permitir imágenes remotas conviene usar `images.remotePatterns`, que permite especificar patrones concretos de dominio y ruta, en vez del `images.domains` ya deprecado, que era más permisivo y por tanto un riesgo de seguridad mayor si se configuraba de forma demasiado amplia.",
+      "etiquetas": ["despliegue", "next-image", "rendimiento"],
+      "fuentes": [
+        {
+          "url": "https://nextjs.org/blog/next-16",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Tabla 'Behavior Changes' (images.minimumCacheTTL, images.qualities), leída completa vía WebFetch."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "next-despliegue-04",
+      "version": 1,
+      "pista": "nextjs",
+      "familia": "despliegue",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "senior",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "¿Qué trampa de seguridad reciente corrigió Next.js respecto a `next/image` con rutas locales y query strings?",
+        "en": "What recent security trap did Next.js fix regarding `next/image` with local paths and query strings?"
+      },
+      "rubrica": {
+        "junior": [
+          "Sabe que permitir `src` locales con query strings sin restricción era un riesgo"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica el riesgo concreto: enumeración de archivos locales",
+          "Menciona que desde Next.js 16 hace falta configurar `images.localPatterns` explícitamente para permitir ese caso"
+        ]
+      },
+      "respuestaModelo": "Antes de este cambio, `next/image` permitía usar rutas `src` locales combinadas con query strings sin ninguna restricción adicional, lo que abría la puerta a un ataque de enumeración de archivos locales: alguien podía manipular la query string para intentar acceder o listar ficheros del servidor a través del propio endpoint de optimización de imágenes. Desde Next.js 16 ese comportamiento ya no está permitido por defecto; hace falta configurar explícitamente `images.localPatterns` para autorizar ese caso concreto, cerrando el hueco de seguridad que existía cuando el comportamiento permisivo venía activado sin que el desarrollador lo hubiera pedido.",
+      "etiquetas": ["despliegue", "next-image", "seguridad"],
+      "fuentes": [
+        {
+          "url": "https://nextjs.org/blog/next-16",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Tabla 'Removals' (next/image local src with query strings), leída completa vía WebFetch."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "next-despliegue-05",
+      "version": 1,
+      "pista": "nextjs",
+      "familia": "despliegue",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Cuéntame de una migración de Pages Router a App Router (o de una versión antigua de Next.js) que hayas hecho o estudiado: ¿qué se rompió primero?",
+        "en": "Tell me about a Pages Router to App Router migration (or an old Next.js version upgrade) you did or studied: what broke first?"
+      },
+      "rubrica": {
+        "junior": [
+          "Cuenta un caso concreto (real o bien razonado como hipotético) con un problema técnico específico"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Da un ejemplo técnico concreto (ej. data fetching que cambia de `getServerSideProps` a `fetch` directo en Server Component)",
+          "Demuestra que conoce herramientas de migración automatizada (`npx @next/codemod@canary upgrade latest`) en vez de migrar todo a mano"
+        ]
+      },
+      "respuestaModelo": "Una respuesta sólida da un caso técnico concreto en vez de una descripción vaga: por ejemplo, cómo el data fetching que antes vivía en `getServerSideProps` tuvo que reescribirse como `await` directo dentro de un Server Component, o cómo rutas que dependían de comportamiento síncrono de `params` dejaron de funcionar al pasar a versiones donde son asíncronos. Lo que distingue a un senior es mencionar que existen herramientas de migración automatizada, como `npx @next/codemod@canary upgrade latest`, que resuelven buena parte de los cambios mecánicos de forma programática, en vez de plantear la migración como reescribir archivo por archivo a mano; y explica qué parte sí necesitó intervención manual porque el codemod no podía inferir la intención original del código.",
+      "etiquetas": ["despliegue", "migraciones", "comportamental"],
+      "fuentes": [
+        {
+          "url": "https://medium.com/@aayushpagare21/senior-level-next-js-interview-questions-part-1-571b85306b94",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Resumen de búsqueda, patrón de pregunta habitual en entrevistas senior Next.js."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

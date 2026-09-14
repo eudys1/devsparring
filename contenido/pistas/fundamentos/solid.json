@@ -1,0 +1,190 @@
+{
+  "pista": "fundamentos",
+  "familia": "solid",
+  "preguntas": [
+    {
+      "id": "fund-solid-01",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "solid",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué es el Principio de Responsabilidad Única (SRP) y cómo identificas cuándo una clase lo viola?",
+        "en": "What is the Single Responsibility Principle and how do you identify when a class violates it?"
+      },
+      "rubrica": {
+        "junior": [
+          "Define SRP como \"una clase debe tener una sola razón para cambiar\"",
+          "Reconoce una clase que mezcla dos responsabilidades cuando se le muestra un ejemplo"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Aporta un ejemplo propio de una clase que mezcla lógica de negocio con persistencia o formato de salida",
+          "Explica cómo separarla en dos clases sin caer en sobre-ingeniería",
+          "Menciona que \"razón para cambiar\" se refiere a quién pide el cambio (negocio vs infraestructura), no a número de métodos"
+        ]
+      },
+      "respuestaModelo": "SRP dice que una clase debería tener una sola razón para cambiar, es decir, responder ante un solo actor o motivo de negocio. Una señal típica de violación es una clase `ReportGenerator` que calcula totales, los formatea a HTML y además los guarda en disco: si cambia el formato de salida, si cambia el cálculo o si cambia el almacenamiento, la misma clase se ve afectada por tres razones distintas. La solución habitual es separar en `CalculadorDeTotales`, `FormateadorHTML` y `RepositorioDeReportes`, cada una con un único motivo de cambio, sin fragmentar en exceso solo por principio.",
+      "etiquetas": ["solid", "diseno"],
+      "fuentes": [
+        {
+          "url": "https://www.adaface.com/blog/solid-principles-interview-questions/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen"
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "fund-solid-02",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "solid",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué significa que una clase esté \"abierta a extensión pero cerrada a modificación\"? Da un ejemplo con y sin el principio aplicado.",
+        "en": "What does it mean for a class to be \"open for extension but closed for modification\"? Give an example with and without the principle applied."
+      },
+      "rubrica": {
+        "junior": [
+          "Explica la idea de extender sin tocar el código existente",
+          "Reconoce un `if/switch` que crece con cada caso nuevo como señal de violación"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Propone una solución vía polimorfismo, interfaces o el patrón Strategy",
+          "Explica el riesgo de romper código ya probado al modificar una clase existente",
+          "Reconoce cuándo NO vale la pena aplicar OCP de entrada (sobre-generalizar antes de tiempo)"
+        ]
+      },
+      "respuestaModelo": "Sin OCP, calcular el descuento de un pedido suele empezar como un `switch (tipoCliente)` dentro de una función que crece con cada tipo de cliente nuevo, arriesgando romper los casos existentes cada vez que se toca. Aplicando OCP, se define una interfaz `EstrategiaDeDescuento` con una implementación por tipo de cliente, y añadir un cliente nuevo significa crear una clase nueva sin tocar las existentes. La señal de alarma es precisamente ese condicional que crece sin parar; la solución típica es polimorfismo o el patrón Strategy, no añadir otro `else if`.",
+      "etiquetas": ["solid", "diseno"],
+      "fuentes": [
+        {
+          "url": "https://www.wecreateproblems.com/interview-questions/solid-principles-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "resumen"
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "fund-solid-03",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "solid",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué es el Principio de Sustitución de Liskov? Pon un ejemplo clásico de violación (por ejemplo Cuadrado/Rectángulo).",
+        "en": "What is the Liskov Substitution Principle? Give a classic example of a violation (e.g. Square/Rectangle)."
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que una subclase debe poder sustituir a su clase base sin romper el comportamiento esperado",
+          "Describe el ejemplo Cuadrado/Rectángulo o uno equivalente"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Detecta que forzar invariantes distintas (Cuadrado ignora el segundo lado) rompe el contrato de la clase base",
+          "Propone una alternativa de diseño (no heredar, usar una interfaz común más simple)",
+          "Relaciona LSP con contratos y precondiciones/postcondiciones, no solo con \"que compile\""
+        ]
+      },
+      "respuestaModelo": "LSP dice que si `B` hereda de `A`, cualquier código que funcione con un `A` debe seguir funcionando si se le pasa un `B`, sin sorpresas. El ejemplo clásico es `Cuadrado extends Rectangulo`: si `Rectangulo` tiene `setAncho` y `setAlto` independientes, un `Cuadrado` que fuerza ambos lados iguales rompe el comportamiento esperado por cualquier código que asuma que cambiar el ancho no afecta al alto. La solución no es forzar la herencia a encajar, sino replantear el modelo: quizá ninguno debería heredar del otro, o ambos deberían implementar una interfaz `Forma` más simple con solo `area()`.",
+      "etiquetas": ["solid", "diseno"],
+      "fuentes": [
+        {
+          "url": "https://in.indeed.com/career-advice/interviewing/solid-principles-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "resumen"
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "fund-solid-04",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "solid",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué problema resuelve el Principio de Segregación de Interfaces? ¿Cómo se aplica en TypeScript?",
+        "en": "What problem does the Interface Segregation Principle solve? How would you apply it in TypeScript?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que es mejor tener varias interfaces pequeñas que una interfaz grande",
+          "Da un ejemplo simple de un método que no todos los implementadores necesitan"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Da un ejemplo concreto con `interface` de TypeScript dividida en dos",
+          "Explica el coste de una interfaz \"gorda\": implementaciones que lanzan `not implemented` en métodos que no usan",
+          "Relaciona ISP con SRP (una interfaz también debería tener una sola razón para cambiar)"
+        ]
+      },
+      "respuestaModelo": "ISP dice que nadie debería depender de métodos que no usa. Una interfaz `Trabajador` con `trabajar()` e `comer()` obliga a un `Robot` a implementar `comer()` sin sentido. En TypeScript se resuelve dividiendo en `interface Trabajador { trabajar(): void }` e `interface SerVivo { comer(): void }`, y una clase implementa solo las que necesita (`class Humano implements Trabajador, SerVivo`). El problema real que evita es una clase que implementa una interfaz grande a medias, con métodos vacíos o que lanzan error, señal de que la interfaz debería partirse.",
+      "etiquetas": ["solid", "typescript"],
+      "fuentes": [
+        {
+          "url": "https://climbtheladder.com/solid-design-principles-interview-questions/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen"
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "fund-solid-05",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "solid",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "senior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué es la Inversión de Dependencias y en qué se diferencia de la Inyección de Dependencias?",
+        "en": "What is Dependency Inversion and how does it differ from Dependency Injection?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que depender de abstracciones es mejor que depender de implementaciones concretas"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Distingue que Inversión de Dependencias es el principio y la Inyección de Dependencias es una técnica para lograrlo",
+          "Da un ejemplo de un servicio que recibe una interfaz de repositorio en vez de instanciar una clase concreta",
+          "Menciona un contenedor de inyección de dependencias como forma automatizada de aplicar la técnica"
+        ]
+      },
+      "respuestaModelo": "La Inversión de Dependencias es el principio: los módulos de alto nivel no deberían depender de módulos de bajo nivel, ambos deberían depender de abstracciones. La Inyección de Dependencias es una de las técnicas para conseguirlo: en vez de que un `ServicioDePedidos` haga `new RepositorioSQL()` dentro de sí mismo, recibe una interfaz `RepositorioDePedidos` por el constructor, y quien lo instancia decide qué implementación concreta pasarle. Esto permite sustituir la implementación real por una en memoria en los tests sin tocar el servicio. Un contenedor de DI (como los de NestJS) automatiza ese cableado, pero el principio se puede aplicar a mano perfectamente.",
+      "etiquetas": ["solid", "diseno", "testing"],
+      "fuentes": [
+        {
+          "url": "https://www.adaface.com/blog/solid-principles-interview-questions/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen"
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

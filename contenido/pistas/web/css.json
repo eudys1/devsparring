@@ -1,0 +1,153 @@
+{
+  "pista": "web",
+  "familia": "css",
+  "preguntas": [
+    {
+      "id": "web-css-01",
+      "version": 1,
+      "pista": "web",
+      "familia": "css",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Explica el modelo de caja CSS (`box-sizing: content-box` vs `border-box`).",
+        "en": "Explain the CSS box model (`box-sizing: content-box` vs `border-box`)."
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que con `content-box` (por defecto) width/height solo miden el contenido",
+          "Explica que con `border-box` width/height incluyen padding y border"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica por qué muchos resets globales usan `* { box-sizing: border-box; }` para que el layout sea predecible"
+        ]
+      },
+      "respuestaModelo": "Con `content-box`, que es el valor por defecto del navegador, las propiedades `width` y `height` miden solo el área de contenido: el padding y el border se suman por encima, así que una caja con `width: 200px` y `padding: 20px` ocupa en realidad 240px de ancho total. Con `border-box`, `width` y `height` incluyen el padding y el border dentro de esa medida, así que la caja con `width: 200px` sigue midiendo 200px de ancho total, y el padding le resta espacio al contenido en vez de sumarse por fuera. Por eso muchos resets globales aplican `* { box-sizing: border-box; }` al principio del proyecto: hace que el tamaño declarado sea el tamaño real en pantalla, evitando el cálculo mental constante de sumar padding y border cada vez que se ajusta un layout.",
+      "etiquetas": ["css", "box-model"],
+      "fuentes": [
+        {
+          "url": "https://github.com/yangshun/front-end-interview-handbook",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Pregunta adaptada, no copiada literalmente."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    },
+    {
+      "id": "web-css-02",
+      "version": 1,
+      "pista": "web",
+      "familia": "css",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Cuándo usarías Flexbox y cuándo Grid? Da un ejemplo de layout donde uno encaja claramente mejor.",
+        "en": "When would you use Flexbox vs Grid? Give an example layout where one clearly fits better."
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que Flexbox es unidimensional (una fila o columna)",
+          "Explica que Grid es bidimensional (filas y columnas a la vez)"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Da un ejemplo concreto de cada uno (navbar/lista de tags para Flex, dashboard con áreas nombradas para Grid)",
+          "Menciona que se pueden combinar (Grid para el layout general, Flex dentro de cada celda)"
+        ]
+      },
+      "respuestaModelo": "Flexbox está pensado para layouts unidimensionales: distribuir elementos en una sola fila o una sola columna, como una barra de navegación con varios enlaces o una lista de etiquetas que se ajustan según el espacio disponible. Grid está pensado para layouts bidimensionales: controlar filas y columnas a la vez, como el esqueleto completo de una página con cabecera, menú lateral, contenido y pie, o un dashboard con áreas nombradas que ocupan distinto número de columnas y filas. En la práctica ambos se combinan sin problema: Grid define la estructura general de la página, y dentro de cada celda de esa estructura, Flexbox organiza el contenido interno en una dirección.",
+      "etiquetas": ["css", "flexbox", "grid"],
+      "fuentes": [
+        {
+          "url": "https://github.com/yangshun/front-end-interview-handbook",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Pregunta adaptada, no copiada literalmente."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    },
+    {
+      "id": "web-css-03",
+      "version": 1,
+      "pista": "web",
+      "familia": "css",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Cómo se calcula la especificidad en CSS y qué problema causa el abuso de `!important`?",
+        "en": "How is CSS specificity calculated, and what problem does overusing `!important` cause?"
+      },
+      "rubrica": {
+        "junior": [
+          "Da el orden de peso: inline > id > clase/atributo/pseudoclase > elemento",
+          "Sabe que la especificidad se suma por cada selector en la regla"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que `!important` rompe esa jerarquía",
+          "Explica que obliga a usar más `!important` en cascada para sobreescribirlo, haciendo el CSS imposible de mantener con el tiempo"
+        ]
+      },
+      "respuestaModelo": "La especificidad se calcula por capas de peso, de mayor a menor: un estilo inline en el propio elemento gana siempre, después los selectores por id, después clases, atributos y pseudoclases, y por último elementos y pseudoelementos; dentro de una misma regla, ese peso se suma por cada selector que aparece. `!important` rompe deliberadamente esa jerarquía: una declaración marcada así gana sin importar la especificidad normal del selector que la contiene. El problema es que, una vez que un equipo empieza a usarlo para 'ganar' una guerra de especificidad puntual, la única forma de sobreescribir esa regla más adelante es con otro `!important` todavía más específico, y ese patrón se repite en cascada hasta que el CSS se vuelve imposible de razonar o mantener sin buscar en todo el proyecto quién puso el último `!important`.",
+      "etiquetas": ["css", "especificidad"],
+      "fuentes": [
+        {
+          "url": "https://github.com/yangshun/front-end-interview-handbook",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Pregunta adaptada, no copiada literalmente."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    },
+    {
+      "id": "web-css-04",
+      "version": 1,
+      "pista": "web",
+      "familia": "css",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Diseña un layout responsive con mobile-first: ¿qué diferencia hay respecto a partir de desktop y usar media queries \"max-width\"?",
+        "en": "Design a mobile-first responsive layout: how does it differ from starting from desktop and using \"max-width\" media queries?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que mobile-first define los estilos base para pantallas pequeñas",
+          "Explica que usa `min-width` para ir añadiendo complejidad en pantallas grandes"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que suele producir menos CSS efectivo en móvil",
+          "Explica que móvil no descarga (ni aplica) reglas pensadas para desktop que luego tendría que sobreescribir"
+        ]
+      },
+      "respuestaModelo": "Mobile-first define primero los estilos base pensados para la pantalla más pequeña, sin ninguna media query, y va añadiendo complejidad progresivamente con media queries `min-width` a medida que el viewport crece: cada breakpoint añade lo que hace falta, no sobreescribe lo anterior. El enfoque contrario, partir de desktop y usar `max-width`, define primero el layout completo para pantallas grandes y luego usa media queries para ir quitando o simplificando cosas en pantallas pequeñas, lo que en la práctica suele producir más reglas CSS totales porque el móvil tiene que cargar y luego sobreescribir estilos pensados para un layout que nunca va a usar tal cual. El resultado práctico de mobile-first suele ser mejor rendimiento en móvil, precisamente porque no hay que anular reglas de escritorio innecesarias en el dispositivo con menos recursos.",
+      "etiquetas": ["css", "responsive", "mobile-first"],
+      "fuentes": [
+        {
+          "url": "https://github.com/yangshun/front-end-interview-handbook",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Pregunta adaptada, no copiada literalmente."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    }
+  ]
+}

@@ -1,0 +1,148 @@
+{
+  "pista": "fundamentos",
+  "familia": "funcional",
+  "preguntas": [
+    {
+      "id": "fund-funcional-01",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "funcional",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué es una función pura? ¿Por qué son más fáciles de testear?",
+        "en": "What is a pure function? Why are they easier to test?"
+      },
+      "rubrica": {
+        "junior": [
+          "Define función pura: mismo resultado para los mismos argumentos, sin efectos secundarios",
+          "Da un ejemplo de función pura y uno de función impura"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que al no depender de estado externo, un test no necesita preparar ni limpiar contexto",
+          "Menciona que las funciones puras son más fáciles de paralelizar y de memoizar",
+          "Reconoce que un programa real no puede ser 100% puro (necesita I/O en algún punto) y explica cómo aislarlo"
+        ]
+      },
+      "respuestaModelo": "Una función pura devuelve siempre el mismo resultado para los mismos argumentos y no produce efectos secundarios (no modifica variables externas, no hace I/O). Por ejemplo, `sumar(a, b)` es pura; una función que además incrementa un contador global o hace una petición de red no lo es. Son más fáciles de testear porque no hace falta preparar ni limpiar ningún estado externo: se llama con unos argumentos y se compara el resultado, sin mocks ni orden de ejecución que importe. En un programa real no todo puede ser puro (hay que leer de una base de datos o de la red en algún punto), pero aislar esa parte impura en los bordes del sistema deja el grueso de la lógica de negocio pura y fácil de probar.",
+      "etiquetas": ["funcional"],
+      "fuentes": [
+        {
+          "url": "https://github.com/sudheerj/javascript-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Sin LICENSE visible; usado solo como señal de tema, no se copia texto."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "fund-funcional-02",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "funcional",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué significa inmutabilidad en JavaScript? ¿Es `Object.freeze` suficiente para garantizarla?",
+        "en": "What does immutability mean in JavaScript? Is `Object.freeze` enough to guarantee it?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que inmutabilidad significa no modificar un valor existente sino crear uno nuevo",
+          "Sabe que `Object.freeze` impide reasignar propiedades de primer nivel"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Aclara que `Object.freeze` es superficial (shallow) y no congela objetos anidados",
+          "Menciona alternativas prácticas: copias con spread, `structuredClone`, o librerías como Immer",
+          "Explica por qué la inmutabilidad facilita detectar cambios (comparación por referencia) en UIs reactivas"
+        ]
+      },
+      "respuestaModelo": "Trabajar de forma inmutable significa que, en vez de modificar un objeto existente, se crea uno nuevo con los cambios aplicados, dejando el original intacto. `Object.freeze` impide reasignar o borrar propiedades de primer nivel de un objeto, pero es superficial: si una propiedad es a su vez un objeto anidado, ese objeto interno sigue siendo mutable. Para trabajar de forma inmutable en la práctica se suelen usar copias con spread (`{...obj, campo: nuevo}`) o `structuredClone` para clones profundos, y en estructuras más complejas librerías como Immer. La inmutabilidad importa especialmente en UIs reactivas porque permite detectar cambios comparando referencias en vez de recorrer todo el objeto.",
+      "etiquetas": ["funcional", "inmutabilidad"],
+      "fuentes": [
+        {
+          "url": "https://github.com/h5bp/Front-end-Developer-Interview-Questions/blob/main/src/questions/javascript-questions.md",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Pregunta adaptada, no copiada literalmente."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    },
+    {
+      "id": "fund-funcional-kata-compose",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "funcional",
+      "tipo": "kata",
+      "modos": ["kata"],
+      "nivelMinimo": "mid",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "Implementa `compose(...fns)` que combine varias funciones de un solo argumento, aplicándolas de derecha a izquierda (`compose(f, g)(x)` equivale a `f(g(x))`). Para probarla usa `probarCompose(nombres, valorInicial)`, que compone las funciones indicadas por nombre (`\"duplicar\"`, `\"incrementar\"`, `\"cuadrado\"`) en ese orden.",
+        "en": "Implement `compose(...fns)` combining several single-argument functions, applied right to left (`compose(f, g)(x)` equals `f(g(x))`). Test it via `probarCompose(names, initialValue)`, which composes the named functions (`\"duplicar\"`, `\"incrementar\"`, `\"cuadrado\"`) in that order."
+      },
+      "rubrica": {
+        "junior": [
+          "Pasa todos los casos de prueba",
+          "Aplica las funciones de derecha a izquierda correctamente"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica composición de funciones como construir una nueva función a partir de otras más pequeñas",
+          "Comenta la diferencia entre `compose` (derecha a izquierda) y `pipe` (izquierda a derecha)",
+          "Reconoce el caso trivial: `compose()` sin argumentos debería devolver la identidad"
+        ]
+      },
+      "respuestaModelo": "`compose(...fns)` devuelve una nueva función que, al recibir un valor, aplica las funciones de `fns` de derecha a izquierda: primero la última, y el resultado se lo pasa a la anterior, y así hasta la primera. Se puede implementar con `reduceRight` sobre el array de funciones, o construyendo el encadenado manualmente. `pipe` es el mismo concepto pero aplicando de izquierda a derecha, que suele ser más intuitivo de leer para pipelines de datos. Con cero funciones, `compose()` debería devolver la función identidad (`x => x`) para que componer con nada no rompa el pipeline.",
+      "kata": {
+        "funcion": "probarCompose",
+        "codigoInicial": "type NombreFuncion = 'duplicar' | 'incrementar' | 'cuadrado';\n\nconst funcionesDisponibles: Record<NombreFuncion, (x: number) => number> = {\n  duplicar: (x) => x * 2,\n  incrementar: (x) => x + 1,\n  cuadrado: (x) => x * x,\n};\n\nexport function compose(...fns: Array<(x: number) => number>): (x: number) => number {\n  // tu código: aplica fns de derecha a izquierda\n}\n\n// probarCompose la usa el runner: compone por nombre y aplica al valor inicial.\nexport function probarCompose(nombres: NombreFuncion[], valorInicial: number): number {\n  const fns = nombres.map((n) => funcionesDisponibles[n]);\n  return compose(...fns)(valorInicial);\n}\n",
+        "casos": [
+          {
+            "nombre": "duplicar(incrementar(3)) = 8",
+            "entrada": [["duplicar", "incrementar"], 3],
+            "esperado": 8
+          },
+          {
+            "nombre": "incrementar(duplicar(3)) = 7",
+            "entrada": [["incrementar", "duplicar"], 3],
+            "esperado": 7
+          },
+          {
+            "nombre": "una sola función se aplica igual",
+            "entrada": [["cuadrado"], 4],
+            "esperado": 16
+          },
+          {
+            "nombre": "sin funciones devuelve el valor original",
+            "entrada": [[], 9],
+            "esperado": 9
+          }
+        ],
+        "tiempoMin": 15,
+        "congelarAleatorio": false
+      },
+      "etiquetas": ["funcional"],
+      "fuentes": [
+        {
+          "url": "https://github.com/sudheerj/javascript-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Sin LICENSE visible; extensión natural del bloque de programación funcional, kata redactada de cero."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

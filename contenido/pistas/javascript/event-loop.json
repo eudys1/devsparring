@@ -1,0 +1,81 @@
+{
+  "pista": "javascript",
+  "familia": "event-loop",
+  "preguntas": [
+    {
+      "id": "js-event-loop-01",
+      "version": 1,
+      "pista": "javascript",
+      "familia": "event-loop",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Explica el event loop de JavaScript: call stack, cola de tareas (macrotasks) y cola de microtasks.",
+        "en": "Explain the JavaScript event loop: call stack, task queue (macrotasks), and microtask queue."
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que el call stack ejecuta código síncrono",
+          "Sabe que `setTimeout` y las promesas no se ejecutan de inmediato"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que al vaciarse el call stack se procesan TODAS las microtasks pendientes antes de tomar la siguiente macrotask",
+          "Distingue microtasks (promesas, `queueMicrotask`) de macrotasks (timers, I/O, eventos)",
+          "Predice correctamente el orden de salida de un ejemplo con `setTimeout` vs `Promise.resolve().then()`"
+        ]
+      },
+      "respuestaModelo": "El call stack ejecuta el código síncrono, una llamada tras otra. Cuando una operación asíncrona termina (un timer, una promesa resuelta, una petición de red), su callback no se ejecuta de inmediato: se coloca en una cola. Hay dos colas con distinta prioridad: la cola de microtasks (promesas, `queueMicrotask`) y la cola de macrotasks (`setTimeout`, eventos del DOM, I/O). El event loop solo mira estas colas cuando el call stack está vacío, y en ese momento procesa TODAS las microtasks pendientes antes de sacar una única macrotask de su cola. Por eso, dado `console.log('a'); setTimeout(() => console.log('b'), 0); Promise.resolve().then(() => console.log('c')); console.log('d')`, el orden es `a, d, c, b`: el código síncrono primero, luego la microtask, y al final la macrotask del timeout.",
+      "etiquetas": ["event-loop", "asincronia"],
+      "fuentes": [
+        {
+          "url": "https://github.com/h5bp/Front-end-Developer-Interview-Questions/blob/main/src/questions/javascript-questions.md",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Pregunta adaptada, no copiada literalmente."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    },
+    {
+      "id": "js-event-loop-02",
+      "version": 1,
+      "pista": "javascript",
+      "familia": "event-loop",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Dado un fragmento con `console.log`, `setTimeout(fn, 0)` y `Promise.resolve().then(fn)`, ¿en qué orden se imprime? Explica por qué, no solo el resultado.",
+        "en": "Given a snippet with `console.log`, `setTimeout(fn, 0)` and `Promise.resolve().then(fn)`, in what order does it print? Explain why, not just the result."
+      },
+      "rubrica": {
+        "junior": [
+          "Predice el orden correcto: código síncrono, luego la promesa, luego el timeout"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica el porqué: el call stack se vacía antes de mirar cualquier cola",
+          "Explica que todas las microtasks pendientes se vacían antes de tomar una sola macrotask",
+          "Generaliza el razonamiento a un ejemplo con varias promesas encadenadas y varios `setTimeout`"
+        ]
+      },
+      "respuestaModelo": "El código síncrono (los `console.log` que no están dentro de un callback asíncrono) se ejecuta primero, en orden, porque el call stack lo procesa de inmediato sin esperar a nada. Cuando el call stack queda vacío, el event loop vacía por completo la cola de microtasks, así que el callback de `Promise.resolve().then(fn)` se ejecuta antes que cualquier timeout, incluso si el timeout es `setTimeout(fn, 0)`. Solo después de que la cola de microtasks queda vacía, el event loop saca una macrotask de su cola (el callback del `setTimeout`) y la ejecuta. Si hubiera varias promesas encadenadas, todas se resolverían antes que el primer `setTimeout`, por bajo que sea su delay.",
+      "etiquetas": ["event-loop", "asincronia"],
+      "fuentes": [
+        {
+          "url": "https://github.com/lydiahallie/javascript-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Pregunta adaptada, no copiada literalmente."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    }
+  ]
+}

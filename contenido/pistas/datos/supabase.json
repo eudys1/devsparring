@@ -1,0 +1,44 @@
+{
+  "pista": "datos",
+  "familia": "supabase",
+  "preguntas": [
+    {
+      "id": "datos-supabase-01",
+      "version": 1,
+      "pista": "datos",
+      "familia": "supabase",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué es Row Level Security (RLS) en Supabase o Postgres, y cuál es el error más peligroso al configurarla?",
+        "en": "What is Row Level Security (RLS) in Supabase/Postgres, and what's the most dangerous mistake when configuring it?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que RLS son políticas a nivel de fila que Postgres aplica según el usuario autenticado",
+          "Sabe que sin RLS activada, cualquier fila es accesible vía la API pública de Supabase"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que las políticas usan auth.uid() para decidir qué filas puede ver o modificar cada usuario",
+          "Identifica el error más peligroso: crear la tabla y olvidar activar RLS, dejándola abierta por defecto vía la API pública",
+          "Menciona que el SQL Editor del dashboard de Supabase IGNORA RLS, así que 'funciona en el editor' no prueba nada; hay que probar desde el SDK cliente con el usuario real"
+        ]
+      },
+      "respuestaModelo": "RLS son políticas a nivel de fila que Postgres aplica automáticamente según el usuario autenticado, normalmente comparando `auth.uid()` con una columna como `owner_id`; están pensadas para que el cliente (navegador, app móvil) pueda hablar directo con la base de datos de forma segura sin pasar por un backend intermedio. El error más peligroso es crear la tabla y olvidar activar RLS: por defecto, sin RLS, cualquier fila es accesible vía la API pública de Supabase para cualquiera con la clave anónima. El segundo error típico es activarla pero no probarla desde el SDK cliente real, porque el SQL Editor del dashboard se ejecuta con permisos de administrador e IGNORA las políticas de RLS, así que 'funciona en el editor' no demuestra que las políticas sean correctas.",
+      "etiquetas": ["supabase", "postgres", "rls", "seguridad"],
+      "fuentes": [
+        {
+          "url": "https://securifyai.co/blog/supabase-row-level-security-rls-common-misconfigurations-and-security-risks",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Guía de errores comunes de RLS en Supabase, contrastada con varias fuentes coincidentes; pregunta redactada de nuevo."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

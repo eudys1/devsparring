@@ -1,0 +1,398 @@
+{
+  "pista": "javascript",
+  "familia": "arrays-objetos",
+  "preguntas": [
+    {
+      "id": "js-arrays-objetos-kata-map-filter",
+      "version": 1,
+      "pista": "javascript",
+      "familia": "arrays-objetos",
+      "tipo": "kata",
+      "modos": ["kata"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Implementa `miMap(arr, fn)` y `miFiltro(arr, fn)` usando `Array.prototype.reduce` internamente, sin usar `map`/`filter` nativos. Para probarlos, usa `probarMapFiltro(arr)`, que aplica `miMap` (duplicar cada número) y `miFiltro` (quedarse con los pares) sobre el mismo array.",
+        "en": "Implement `miMap(arr, fn)` and `miFiltro(arr, fn)` using `Array.prototype.reduce` internally, without native `map`/`filter`. Test them via `probarMapFiltro(arr)`, which applies `miMap` (double each number) and `miFiltro` (keep even numbers) on the same array."
+      },
+      "rubrica": {
+        "junior": [
+          "Pasa todos los casos de prueba",
+          "No usa `Array.prototype.map`/`filter` nativos dentro de la implementación"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que `map`, `filter` y `reduce` son casos particulares de \"fold\", y `reduce` es el más general de los tres",
+          "Explica cómo expresaría también un `groupBy` con `reduce`",
+          "Comenta la diferencia de legibilidad entre usar `reduce` para todo y usar el método específico cuando existe"
+        ]
+      },
+      "respuestaModelo": "`miMap` usa `reduce` acumulando un array nuevo, empujando `fn(elemento)` en cada paso; `miFiltro` hace lo mismo pero solo empuja el elemento original cuando `fn(elemento)` es verdadero. Esto funciona porque `reduce` es la operación más general de las tres: puede expresar cualquier transformación que recorra el array acumulando un resultado, incluidos `map`, `filter`, o algo más complejo como `groupBy` (acumulando un objeto en vez de un array). En código de producción se prefiere `map`/`filter` cuando existen porque comunican mejor la intención; `reduce` se reserva para transformaciones que de verdad no encajan en ningún método específico.",
+      "kata": {
+        "funcion": "probarMapFiltro",
+        "codigoInicial": "export function miMap<T, R>(arr: T[], fn: (item: T) => R): R[] {\n  // tu código: usa reduce, no map\n}\n\nexport function miFiltro<T>(arr: T[], fn: (item: T) => boolean): T[] {\n  // tu código: usa reduce, no filter\n}\n\n// probarMapFiltro la usa el runner: aplica ambas funciones sobre el mismo array.\nexport function probarMapFiltro(arr: number[]): { mapeado: number[]; filtrado: number[] } {\n  return {\n    mapeado: miMap(arr, (x) => x * 2),\n    filtrado: miFiltro(arr, (x) => x % 2 === 0),\n  };\n}\n",
+        "casos": [
+          {
+            "nombre": "duplica y filtra pares",
+            "entrada": [[1, 2, 3, 4]],
+            "esperado": { "mapeado": [2, 4, 6, 8], "filtrado": [2, 4] }
+          },
+          {
+            "nombre": "array vacío da resultados vacíos",
+            "entrada": [[]],
+            "esperado": { "mapeado": [], "filtrado": [] }
+          },
+          {
+            "nombre": "sin pares el filtrado queda vacío",
+            "entrada": [[1, 3, 5]],
+            "esperado": { "mapeado": [2, 6, 10], "filtrado": [] }
+          }
+        ],
+        "tiempoMin": 15,
+        "congelarAleatorio": false
+      },
+      "etiquetas": ["arrays", "funcional"],
+      "fuentes": [
+        {
+          "url": "https://github.com/sudheerj/javascript-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Sin LICENSE visible; kata redactada de cero, patrón clásico de programación funcional."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "js-arrays-objetos-01",
+      "version": 1,
+      "pista": "javascript",
+      "familia": "arrays-objetos",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué es JSON y cuáles son sus operaciones comunes en JavaScript (`JSON.parse`, `JSON.stringify`)? ¿Qué limitaciones tiene `JSON.stringify` con fechas o funciones?",
+        "en": "What is JSON and what are its common operations in JavaScript (`JSON.parse`, `JSON.stringify`)? What limitations does `JSON.stringify` have with dates or functions?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que `JSON.parse` convierte texto a un valor de JS y `JSON.stringify` al revés",
+          "Sabe que JSON solo soporta un subconjunto de tipos (no funciones, no `undefined`)"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que `JSON.stringify` omite propiedades con valor `undefined` o funciones, en vez de lanzar error",
+          "Explica que un `Date` se serializa como string ISO, pero al hacer `JSON.parse` no vuelve a ser un `Date` automáticamente",
+          "Menciona que `JSON.stringify` lanza error ante referencias circulares"
+        ]
+      },
+      "respuestaModelo": "JSON es un formato de texto para representar datos estructurados. `JSON.stringify(valor)` convierte un valor de JavaScript a su representación en texto JSON, y `JSON.parse(texto)` hace lo contrario. JSON solo soporta un subconjunto de tipos: objetos, arrays, strings, números, booleanos y `null`. Por eso `JSON.stringify` omite silenciosamente las propiedades cuyo valor es una función o `undefined`, en vez de lanzar error. Un `Date` se convierte a un string en formato ISO al serializar, pero `JSON.parse` no lo reconstruye como `Date` automáticamente: queda como string y hay que convertirlo a mano de vuelta. Y si el objeto tiene una referencia circular (un objeto que se referencia a sí mismo), `JSON.stringify` lanza un `TypeError`.",
+      "etiquetas": ["arrays-objetos", "json"],
+      "fuentes": [
+        {
+          "url": "https://github.com/sudheerj/javascript-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Sin LICENSE visible; usado solo como señal de tema, no se copia texto."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "js-arrays-objetos-02",
+      "version": 1,
+      "pista": "javascript",
+      "familia": "arrays-objetos",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Cuál es la diferencia entre `Array.prototype.slice` y `Array.prototype.splice`?",
+        "en": "What is the difference between `Array.prototype.slice` and `Array.prototype.splice`?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que `slice` no modifica el array original y devuelve una copia parcial",
+          "Explica que `splice` sí modifica el array original"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que `splice` puede insertar y eliminar elementos a la vez, no solo eliminar",
+          "Da la firma de cada uno (`slice(inicio, fin)` vs `splice(inicio, cantidadABorrar, ...nuevos)`)",
+          "Menciona el riesgo de mutar un array que otra parte del código no esperaba que cambiara al usar `splice`"
+        ]
+      },
+      "respuestaModelo": "`slice(inicio, fin)` no modifica el array original: devuelve una copia superficial de la porción indicada, sin incluir el índice `fin`. `splice(inicio, cantidadABorrar, ...nuevos)` sí modifica el array original en el sitio: elimina `cantidadABorrar` elementos desde `inicio` y opcionalmente inserta nuevos elementos ahí mismo, devolviendo los elementos eliminados. La confusión típica es usar `splice` esperando el comportamiento no destructivo de `slice`: como `splice` muta el array original, si ese array se comparte con otra parte del código (por ejemplo, viene de props o de un estado compartido), se puede introducir un bug sutil por mutación inesperada.",
+      "etiquetas": ["arrays"],
+      "fuentes": [
+        {
+          "url": "https://github.com/sudheerj/javascript-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Sin LICENSE visible; usado solo como señal de tema, no se copia texto."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "js-arrays-objetos-kata-deep-clone",
+      "version": 1,
+      "pista": "javascript",
+      "familia": "arrays-objetos",
+      "tipo": "kata",
+      "modos": ["kata"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Implementa `deepClone(obj)` sin usar `structuredClone` ni librerías externas, que maneje objetos y arrays anidados de forma recursiva (no hace falta manejar fechas, funciones ni referencias circulares).",
+        "en": "Implement `deepClone(obj)` without `structuredClone` or external libraries, handling nested objects and arrays recursively (dates, functions and circular references are out of scope)."
+      },
+      "rubrica": {
+        "junior": [
+          "Pasa todos los casos de prueba",
+          "Clona objetos y arrays anidados, no solo el primer nivel"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica por qué el spread (`{...obj}`) o `Object.assign` solo hacen copia superficial",
+          "Discute qué pasaría con fechas, funciones o referencias circulares, y por qué esta implementación no las cubre",
+          "Menciona `structuredClone` (nativo desde 2022) como alternativa de producción para la mayoría de estos casos"
+        ]
+      },
+      "respuestaModelo": "`deepClone` recorre recursivamente el valor: si es un array, crea un array nuevo clonando cada elemento; si es un objeto, crea un objeto nuevo clonando cada propiedad; si es un primitivo, lo devuelve tal cual porque los primitivos ya son inmutables. El spread (`{...obj}`) o `Object.assign` solo copian el primer nivel: si una propiedad es a su vez un objeto, ambas copias siguen compartiendo la misma referencia interna, así que mutar el objeto anidado en la copia también afecta al original. Esta implementación no cubre fechas (se clonarían como objeto plano, perdiendo su prototipo `Date`), funciones (no son serializables ni clonables de forma genérica) ni referencias circulares (entraría en recursión infinita). Para esos casos, `structuredClone`, nativo desde 2022, resuelve la mayoría sin depender de una librería como lodash `cloneDeep`.",
+      "kata": {
+        "funcion": "deepClone",
+        "codigoInicial": "export function deepClone<T>(obj: T): T {\n  // tu código\n}\n",
+        "casos": [
+          {
+            "nombre": "clona un objeto anidado",
+            "entrada": [{ "a": { "b": 1 } }],
+            "esperado": { "a": { "b": 1 } }
+          },
+          {
+            "nombre": "clona un array anidado dentro de un objeto",
+            "entrada": [{ "lista": [1, 2, { "x": 3 }] }],
+            "esperado": { "lista": [1, 2, { "x": 3 }] }
+          },
+          {
+            "nombre": "clona un objeto dentro de un array",
+            "entrada": [[{ "a": 1 }, { "a": 2 }]],
+            "esperado": [{ "a": 1 }, { "a": 2 }]
+          },
+          { "nombre": "primitivo se devuelve igual", "entrada": [42], "esperado": 42 }
+        ],
+        "tiempoMin": 15,
+        "congelarAleatorio": false
+      },
+      "etiquetas": ["arrays-objetos", "inmutabilidad"],
+      "fuentes": [
+        {
+          "url": "https://www.webreactiva.com/blog/15-preguntas-entrevistas-javascript",
+          "fecha": "2026-09-14",
+          "tipo": "leida"
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "js-arrays-objetos-03",
+      "version": 1,
+      "pista": "javascript",
+      "familia": "arrays-objetos",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "senior",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "¿Cuáles son los pros y contras de extender objetos nativos de JavaScript (por ejemplo `Array.prototype`)?",
+        "en": "What are the pros and cons of extending built-in JavaScript objects (e.g. `Array.prototype`)?"
+      },
+      "rubrica": {
+        "junior": [
+          "Reconoce que se puede hacer técnicamente (`Array.prototype.miMetodo = ...`)",
+          "Menciona algún riesgo general de tocar código que no es propio"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Advierte del riesgo de colisiones futuras con nuevas features del lenguaje (por ejemplo, un `flat` casero antes de que existiera el nativo, con comportamiento distinto)",
+          "Advierte del riesgo de romper código de terceros que itera sobre el objeto extendido con `for...in`",
+          "Reconoce que puede ser aceptable en un polyfill controlado y bien documentado"
+        ]
+      },
+      "respuestaModelo": "Técnicamente se puede añadir un método a `Array.prototype` y estará disponible en todos los arrays, pero trae riesgos serios: si una futura versión del lenguaje añade un método nativo con el mismo nombre pero comportamiento distinto (como pasó con implementaciones caseras de `flat` antes de que existiera el nativo), el código propio puede romperse silenciosamente al actualizar el motor. También puede romper código de terceros que recorre objetos con `for...in` esperando solo sus propias propiedades, si el método añadido es enumerable. La excepción razonable es un polyfill bien documentado y acotado a rellenar exactamente el comportamiento de una feature estándar que aún no existe en el entorno objetivo, no una extensión de conveniencia propia.",
+      "etiquetas": ["arrays-objetos"],
+      "fuentes": [
+        {
+          "url": "https://github.com/h5bp/Front-end-Developer-Interview-Questions/blob/main/src/questions/javascript-questions.md",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Pregunta adaptada, no copiada literalmente."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    },
+    {
+      "id": "js-arrays-objetos-kata-dedupe-por-id",
+      "version": 1,
+      "pista": "javascript",
+      "familia": "arrays-objetos",
+      "tipo": "kata",
+      "modos": ["kata"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Dado un array de objetos con un campo `id`, escribe `removerDuplicadosPorId(arr)` que elimine los duplicados quedándose con la primera ocurrencia.",
+        "en": "Given an array of objects with an `id` field, write `removerDuplicadosPorId(arr)` that removes duplicates, keeping the first occurrence."
+      },
+      "rubrica": {
+        "junior": [
+          "Pasa todos los casos de prueba",
+          "Preserva el orden de la primera aparición de cada id"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Usa un `Set`/`Map` para trackear ids vistos en O(n), no `find`/`some` dentro de un bucle (O(n²))",
+          "Explica cómo extendería la solución a una clave compuesta por varios campos, no solo `id`",
+          "Comenta el caso de objetos con el mismo `id` pero otros campos distintos: ¿cuál se queda? (la primera aparición)"
+        ]
+      },
+      "respuestaModelo": "Recorro el array una sola vez llevando un `Set` con los ids ya vistos: si el id no está en el `Set`, añado el objeto al resultado y el id al `Set`; si ya está, lo salto. Esto es O(n) porque `set.has(id)` es O(1), frente a usar `resultado.some(o => o.id === item.id)` dentro del bucle, que sería O(n²). Si dos objetos comparten el mismo `id` pero tienen otros campos distintos, se queda el primero que aparece, porque es el que ya está en el resultado cuando llega el segundo. Para deduplicar por una clave compuesta (varios campos), bastaría con construir esa clave como string antes de comprobarla en el `Set`.",
+      "kata": {
+        "funcion": "removerDuplicadosPorId",
+        "codigoInicial": "type ConId = { id: number; [clave: string]: unknown };\n\nexport function removerDuplicadosPorId(arr: ConId[]): ConId[] {\n  // tu código\n}\n",
+        "casos": [
+          {
+            "nombre": "elimina duplicados por id preservando el primero",
+            "entrada": [[{ "id": 1 }, { "id": 2 }, { "id": 1 }]],
+            "esperado": [{ "id": 1 }, { "id": 2 }]
+          },
+          { "nombre": "array vacío devuelve array vacío", "entrada": [[]], "esperado": [] },
+          {
+            "nombre": "se queda con el primer objeto cuando hay campos distintos con el mismo id",
+            "entrada": [
+              [
+                { "id": 1, "nombre": "Ana" },
+                { "id": 1, "nombre": "Beatriz" }
+              ]
+            ],
+            "esperado": [{ "id": 1, "nombre": "Ana" }]
+          }
+        ],
+        "tiempoMin": 10,
+        "congelarAleatorio": false
+      },
+      "etiquetas": ["arrays", "algoritmos"],
+      "fuentes": [
+        {
+          "url": "https://www.geeksforgeeks.org/javascript/javascript-program-to-find-duplicate-elements-in-an-array/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen"
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "js-arrays-objetos-kata-flat-map",
+      "version": 1,
+      "pista": "javascript",
+      "familia": "arrays-objetos",
+      "tipo": "kata",
+      "modos": ["kata"],
+      "nivelMinimo": "mid",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "Implementa `dividirEnPalabras(frases)` que reciba un array de frases y devuelva un único array plano con todas las palabras (sin strings vacíos), usando `Array.prototype.flatMap` en vez de `map` seguido de `flat` por separado.",
+        "en": "Implement `dividirEnPalabras(frases)`, taking an array of phrases and returning a single flat array of all words (no empty strings), using `Array.prototype.flatMap` instead of `map` followed by a separate `flat`."
+      },
+      "rubrica": {
+        "junior": [
+          "Pasa todos los casos de prueba",
+          "Usa `flatMap` en vez de `map(...).flat()` por separado"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que `flat()` aplana un nivel de anidamiento de arrays, y acepta un argumento de profundidad",
+          "Explica que `flatMap` ahorra crear un array intermedio de arrays antes de aplanarlo",
+          "Maneja frases con espacios múltiples sin generar strings vacíos en el resultado"
+        ]
+      },
+      "respuestaModelo": "`Array.prototype.flat()` aplana un nivel de arrays anidados (o más, si se le pasa un número de profundidad). `flatMap(fn)` aplica `fn` a cada elemento, que debe devolver un array, y aplana el resultado en un solo paso, ahorrando crear el array intermedio de arrays que se generaría con `map(fn).flat()`. Para dividir frases en palabras, cada frase se separa con `.split(' ')` y se filtran los strings vacíos que puedan quedar por espacios múltiples, todo dentro del callback de `flatMap`, que ya aplana el resultado en un único array de palabras.",
+      "kata": {
+        "funcion": "dividirEnPalabras",
+        "codigoInicial": "export function dividirEnPalabras(frases: string[]): string[] {\n  // tu código: usa flatMap\n}\n",
+        "casos": [
+          {
+            "nombre": "divide varias frases en palabras",
+            "entrada": [["hola mundo", "chao amigos"]],
+            "esperado": ["hola", "mundo", "chao", "amigos"]
+          },
+          {
+            "nombre": "ignora espacios múltiples sin generar vacíos",
+            "entrada": [["hola   mundo"]],
+            "esperado": ["hola", "mundo"]
+          },
+          { "nombre": "array vacío devuelve array vacío", "entrada": [[]], "esperado": [] }
+        ],
+        "tiempoMin": 15,
+        "congelarAleatorio": false
+      },
+      "etiquetas": ["arrays"],
+      "fuentes": [
+        {
+          "url": "https://github.com/sudheerj/javascript-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Sin LICENSE visible; extensión del bloque de métodos de array, kata redactada de cero."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "js-arrays-objetos-04",
+      "version": 1,
+      "pista": "javascript",
+      "familia": "arrays-objetos",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Puedes explicar la diferencia principal entre el bucle `Array.forEach()` y el método `Array.map()`?",
+        "en": "Can you describe the main difference between the `Array.forEach()` loop and the `Array.map()` method?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que `forEach` no devuelve nada útil (siempre `undefined`)",
+          "Explica que `map` devuelve un nuevo array transformado"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que `forEach` se usa por efectos secundarios (loguear, mutar algo externo) y `map` para transformar datos",
+          "Menciona el antipatrón de usar `map` solo para iterar sin usar el array resultante",
+          "Menciona que ninguno de los dos se puede interrumpir con `break` (a diferencia de un `for` clásico)"
+        ]
+      },
+      "respuestaModelo": "`forEach` recorre el array ejecutando una función por cada elemento pero siempre devuelve `undefined`; se usa por sus efectos secundarios, como loguear o acumular algo en una variable externa. `map` recorre el array y devuelve un array nuevo con el resultado de aplicar la función a cada elemento, sin mutar el original; se usa para transformar datos, no para efectos secundarios. Un antipatrón común es usar `map` solo para iterar sin usar el array resultante, cuando `forEach` (o un `for...of`) comunica mejor la intención de no producir un resultado nuevo. Ninguno de los dos se puede cortar a mitad de camino con `break` como un `for` clásico; para eso haría falta `for...of` con `break`, o `some`/`every` si la condición de parada encaja con su semántica.",
+      "etiquetas": ["arrays"],
+      "fuentes": [
+        {
+          "url": "https://github.com/h5bp/Front-end-Developer-Interview-Questions/blob/main/src/questions/javascript-questions.md",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Pregunta adaptada, no copiada literalmente."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    }
+  ]
+}

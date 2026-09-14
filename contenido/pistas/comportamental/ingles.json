@@ -1,0 +1,405 @@
+{
+  "pista": "comportamental",
+  "familia": "ingles",
+  "preguntas": [
+    {
+      "id": "comp-ingles-sobre-ti-01",
+      "version": 1,
+      "pista": "comportamental",
+      "familia": "ingles",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Háblame de ti.",
+        "en": "Tell me about yourself."
+      },
+      "rubrica": {
+        "junior": ["Da un resumen conciso de trayectoria profesional conectado con el puesto"],
+        "senior": [
+          "Lo anterior",
+          "Incluye logros clave y hacia dónde se dirige profesionalmente",
+          "No se convierte en un resumen de vida personal"
+        ]
+      },
+      "respuestaModelo": "A model answer gives a concise summary of professional background, key achievements, and where the person is heading next, all connected to the role being interviewed for. It stays away from turning into a personal life story: the goal is to give the interviewer a clear, relevant narrative in under two minutes, not a full biography.",
+      "etiquetas": ["ingles", "screening"],
+      "fuentes": [
+        {
+          "url": "https://spain-internship.com/blog/job-interview-questions-spain-internships/",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Spain Internship, The 10 Most Common Job Interview Questions in Spain, 2025-11-24."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "comp-ingles-por-que-espana-01",
+      "version": 1,
+      "pista": "comportamental",
+      "familia": "ingles",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "junior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Por qué quieres trabajar en una empresa con sede en España, o mudarte a España?",
+        "en": "Why do you want to work for a company based in Spain / relocate to Spain?"
+      },
+      "rubrica": {
+        "junior": ["Da razones específicas y creíbles, no una respuesta genérica"],
+        "senior": [
+          "Lo anterior",
+          "Conecta las razones con el proyecto o equipo concreto, no solo con España en general"
+        ]
+      },
+      "respuestaModelo": "A good answer gives specific and credible reasons, the project itself, the team, the quality of life, an interest in the language and culture, rather than a generic answer that could apply to any country. Connecting those reasons to the specific project or team, not just to Spain in the abstract, makes the answer sound genuine instead of rehearsed.",
+      "etiquetas": ["ingles", "screening"],
+      "fuentes": [
+        {
+          "url": "https://spain-internship.com/blog/job-interview-questions-spain-internships/",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Adaptada de why an internship in Spain, Spain Internship."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "comp-ingles-nivel-ingles-01",
+      "version": 1,
+      "pista": "comportamental",
+      "familia": "ingles",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Cómo valorarías tu nivel de inglés, y podemos continuar esta entrevista en inglés?",
+        "en": "How would you rate your English level, and can we continue this interview in English?"
+      },
+      "rubrica": {
+        "junior": ["Responde con honestidad sobre el nivel real"],
+        "senior": [
+          "Lo anterior",
+          "Demuestra el nivel con fluidez natural en vez de frases memorizadas",
+          "No sobreestima su nivel, porque se nota rápido en la ronda técnica"
+        ]
+      },
+      "respuestaModelo": "The safest answer is an honest one about the actual level, since overestimating it shows up quickly once the technical round continues in English. What convinces an interviewer is natural fluency in the moment, actually switching languages smoothly, rather than a memorized sentence prepared in advance that falls apart as soon as a follow-up question comes.",
+      "etiquetas": ["ingles", "screening"],
+      "fuentes": [
+        {
+          "url": "https://spain-internship.com/blog/job-interview-questions-spain-internships/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Práctica conocida del sector en multinacionales/scale-ups en España; frecuencia exacta no confirmada, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "comp-ingles-empresa-producto-01",
+      "version": 1,
+      "pista": "comportamental",
+      "familia": "ingles",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "junior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué sabes de nuestra empresa y de nuestro producto?",
+        "en": "What do you know about our company and our product?"
+      },
+      "rubrica": {
+        "junior": [
+          "Muestra que ha usado o investigado el producto, no solo leído la página 'sobre nosotros'"
+        ],
+        "senior": ["Lo anterior", "Conecta ese conocimiento con por qué le interesa el puesto"]
+      },
+      "respuestaModelo": "A strong answer shows the candidate actually used or researched the product itself, not just skimmed the company's about page. Connecting that hands-on knowledge to why the role is interesting, a specific feature, a technical challenge the product clearly has, makes the answer far more convincing than reciting facts copied from the website.",
+      "etiquetas": ["ingles", "screening"],
+      "fuentes": [
+        {
+          "url": "https://spain-internship.com/blog/job-interview-questions-spain-internships/",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Adaptada de Spain Internship, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "comp-ingles-explicar-tecnico-01",
+      "version": 1,
+      "pista": "comportamental",
+      "familia": "ingles",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Describe una vez que tuviste que explicar un concepto técnico a alguien no técnico.",
+        "en": "Describe a time you had to communicate a technical concept to a non-technical stakeholder."
+      },
+      "rubrica": {
+        "junior": ["Describe la situación concreta y a quién se lo explicó"],
+        "senior": [
+          "Lo anterior",
+          "Adapta el nivel de detalle a la audiencia sin sonar condescendiente",
+          "Usa analogías y confirma que el mensaje se entendió pidiendo feedback"
+        ]
+      },
+      "respuestaModelo": "A senior-level answer adapts the level of detail to the audience without sounding condescending, using analogies that map the technical concept to something familiar to the listener. It also closes the loop by checking that the message actually landed, asking a follow-up question or asking the stakeholder to summarize back, instead of assuming understanding just because nobody objected.",
+      "etiquetas": ["ingles", "comunicacion"],
+      "fuentes": [
+        {
+          "url": "https://spain-internship.com/blog/job-interview-questions-spain-internships/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Pregunta estándar en entrevistas internacionales para roles fullstack/senior, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "comp-ingles-por-que-contratarte-01",
+      "version": 1,
+      "pista": "comportamental",
+      "familia": "ingles",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "junior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Por qué deberíamos contratarte a ti?",
+        "en": "Why should we hire you over other candidates?"
+      },
+      "rubrica": {
+        "junior": [
+          "Conecta su experiencia con las necesidades específicas del puesto, en inglés fluido"
+        ],
+        "senior": [
+          "Lo anterior",
+          "La fluidez en inglés en sí misma demuestra parte de lo necesario para el rol si la empresa opera en ese idioma"
+        ]
+      },
+      "respuestaModelo": "The same logic as the Spanish version of this question applies, connect real experience to the specific needs of the role with a concrete example, but here the answer also demonstrates something extra: the fluency itself shows part of what the role requires if the company operates in English day to day, so stumbling through this answer undermines the argument being made.",
+      "etiquetas": ["ingles", "screening"],
+      "fuentes": [
+        {
+          "url": "https://spain-internship.com/blog/job-interview-questions-spain-internships/",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Spain Internship, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "comp-ingles-salario-01",
+      "version": 1,
+      "pista": "comportamental",
+      "familia": "ingles",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "junior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Cuáles son tus expectativas salariales para este puesto?",
+        "en": "What are your salary expectations for this role?"
+      },
+      "rubrica": {
+        "junior": ["Da una banda realista respaldada por investigación de mercado, en inglés"],
+        "senior": [
+          "Lo anterior",
+          "Aclara si la cifra dada es en bruto (gross) o neto",
+          "Menciona flexibilidad según el paquete completo"
+        ]
+      },
+      "respuestaModelo": "The same criteria as the Spanish version apply, a realistic band backed by market research rather than a single closed number. In international companies it is worth explicitly clarifying whether the figure given is gross or net, since that distinction is not always obvious across countries and can cause a misunderstanding later in the process if left unstated.",
+      "etiquetas": ["ingles", "salario"],
+      "fuentes": [
+        {
+          "url": "https://www.coverflex.com/es/blog/expectativas-salariales",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Spain Internship / Coverflex, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "comp-ingles-cinco-anos-01",
+      "version": 1,
+      "pista": "comportamental",
+      "familia": "ingles",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "junior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Dónde te ves en 5 años?",
+        "en": "Where do you see yourself in 5 years?"
+      },
+      "rubrica": {
+        "junior": ["Da un plan de crecimiento coherente con el puesto, en inglés"],
+        "senior": [
+          "Lo anterior",
+          "Es coherente con la trayectoria real, sin sonar ni sobreprometido ni indiferente"
+        ]
+      },
+      "respuestaModelo": "Same principle as the Spanish version: a growth plan that is coherent both with the role on offer and with the candidate's real trajectory, avoiding a promise that will not actually be kept just to sound ambitious. Sounding indifferent about the future is just as damaging as sounding overly rehearsed, so a genuine, specific answer works best here.",
+      "etiquetas": ["ingles", "screening"],
+      "fuentes": [
+        {
+          "url": "https://spain-internship.com/blog/job-interview-questions-spain-internships/",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Spain Internship, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "comp-ingles-motivacion-01",
+      "version": 1,
+      "pista": "comportamental",
+      "familia": "ingles",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "junior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué te motiva en el trabajo?",
+        "en": "What motivates you at work?"
+      },
+      "rubrica": {
+        "junior": ["Da motivadores específicos y creíbles, en inglés"],
+        "senior": ["Lo anterior", "Conecta el motivador con un ejemplo real reciente"]
+      },
+      "respuestaModelo": "Same as the Spanish version, specific and credible motivators, solving concrete problems, seeing visible impact, continuous learning, connected to a real recent example rather than a textbook answer that could belong to anyone. Answering in English here also gives the interviewer a natural read on fluency in a low-pressure, personal topic.",
+      "etiquetas": ["ingles", "screening"],
+      "fuentes": [
+        {
+          "url": "https://spain-internship.com/blog/job-interview-questions-spain-internships/",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Spain Internship, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "comp-ingles-preguntas-para-nosotros-01",
+      "version": 1,
+      "pista": "comportamental",
+      "familia": "ingles",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "junior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Tienes preguntas para nosotros?",
+        "en": "Do you have any questions for us?"
+      },
+      "rubrica": {
+        "junior": ["Prepara preguntas específicas sobre el equipo o los retos actuales, en inglés"],
+        "senior": [
+          "Lo anterior",
+          "Aprovecha el momento como señal indirecta de su nivel de inglés en conversación no guionizada"
+        ]
+      },
+      "respuestaModelo": "The same rule applies as in Spanish, two or three specific questions about the team or current challenges rather than nothing at all. In an English-language round this moment also works as an indirect signal of English level in unscripted conversation, since asking a genuine follow-up question on the spot is harder to fake than a prepared opening statement.",
+      "etiquetas": ["ingles", "screening"],
+      "fuentes": [
+        {
+          "url": "https://spain-internship.com/blog/job-interview-questions-spain-internships/",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Spain Internship, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "comp-ingles-desacuerdo-direccion-01",
+      "version": 1,
+      "pista": "comportamental",
+      "familia": "ingles",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "senior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Cuéntame de una vez que discrepaste de una decisión tomada por la dirección.",
+        "en": "Tell me about a time you disagreed with a decision made by leadership."
+      },
+      "rubrica": {
+        "junior": ["Describe la decisión concreta y su desacuerdo"],
+        "senior": [
+          "Lo anterior",
+          "Plantea el desacuerdo con respeto y datos",
+          "Muestra que puede comprometerse con la decisión final aunque no sea la que propuso (disagree and commit)"
+        ]
+      },
+      "respuestaModelo": "A senior answer raises the disagreement respectfully and backed by data, not just personal preference, and shows genuine commitment to the final decision even when it was not the one proposed, the classic disagree and commit approach. Doing this well in English also demonstrates the diplomatic register needed to disagree upward in a professional, international setting without sounding either passive or confrontational.",
+      "etiquetas": ["ingles", "liderazgo"],
+      "fuentes": [
+        {
+          "url": "https://spain-internship.com/blog/job-interview-questions-spain-internships/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Pregunta estándar en entrevistas internacionales para roles senior, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "comp-ingles-modalidad-trabajo-01",
+      "version": 1,
+      "pista": "comportamental",
+      "familia": "ingles",
+      "tipo": "comportamental",
+      "modos": ["star"],
+      "nivelMinimo": "junior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Cómo prefieres trabajar: híbrido, remoto o en oficina, y por qué?",
+        "en": "How do you prefer to work: hybrid, remote, or in the office, and why?"
+      },
+      "rubrica": {
+        "junior": ["Da una preferencia honesta con una razón concreta"],
+        "senior": [
+          "Lo anterior",
+          "Muestra flexibilidad si la política de la empresa no coincide exactamente con la preferencia"
+        ]
+      },
+      "respuestaModelo": "An honest preference with a concrete reason, productivity, collaboration, work-life balance, lands better than guessing what the interviewer wants to hear. Showing flexibility when the company's actual policy does not match that preference exactly, rather than treating it as a dealbreaker on the spot, signals that the candidate can adapt without resentment.",
+      "etiquetas": ["ingles", "screening"],
+      "fuentes": [
+        {
+          "url": "https://spain-internship.com/blog/job-interview-questions-spain-internships/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Contexto general de ofertas híbridas/remotas en España, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

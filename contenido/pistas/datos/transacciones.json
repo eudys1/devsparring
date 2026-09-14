@@ -1,0 +1,121 @@
+{
+  "pista": "datos",
+  "familia": "transacciones",
+  "preguntas": [
+    {
+      "id": "datos-transacciones-01",
+      "version": 1,
+      "pista": "datos",
+      "familia": "transacciones",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué son las transacciones y las propiedades ACID? Dame un ejemplo de negocio donde una transacción es obligatoria.",
+        "en": "What are transactions and the ACID properties? Give a business example where a transaction is mandatory."
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que una transacción agrupa varias operaciones para que se apliquen todas o ninguna",
+          "Nombra al menos dos de las cuatro propiedades ACID"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica las cuatro propiedades: atomicidad, consistencia, aislamiento y durabilidad, con una frase por cada una",
+          "Da un ejemplo de negocio real donde falte una transacción y describe qué se rompe (dinero que desaparece, stock inconsistente)",
+          "Menciona los niveles de aislamiento (read committed, repeatable read, serializable) y el trade-off entre consistencia y concurrencia"
+        ]
+      },
+      "respuestaModelo": "ACID son las cuatro garantías de una transacción: Atomicidad (todo el bloque de operaciones se aplica o no se aplica nada), Consistencia (las reglas y constraints de la base de datos se respetan siempre, antes y después), Aislamiento (transacciones concurrentes no se pisan de forma incoherente entre sí) y Durabilidad (una vez confirmada, la transacción sobrevive a un crash del servidor). El ejemplo clásico es transferir dinero entre dos cuentas: debitar de una y acreditar en otra tienen que ser atómicas, porque si el proceso falla a mitad sin transacción, el dinero puede desaparecer o duplicarse.",
+      "etiquetas": ["sql", "transacciones", "acid"],
+      "fuentes": [
+        {
+          "url": "https://github.com/kansiris/SQL-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Patrón muy recurrente en bancos de preguntas SQL sobre ACID; pregunta redactada de nuevo."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "datos-transacciones-02",
+      "version": 1,
+      "pista": "datos",
+      "familia": "transacciones",
+      "tipo": "razonamiento",
+      "modos": ["verbal", "diseno"],
+      "nivelMinimo": "senior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Diseña cómo evitarías que dos usuarios reserven el mismo asiento de un evento al mismo tiempo, es decir, una condición de carrera.",
+        "en": "Design how you'd prevent two users from booking the same event seat at the same time, i.e. a race condition."
+      },
+      "rubrica": {
+        "junior": [
+          "Identifica que dos lecturas simultáneas del mismo asiento pueden llevar a una doble reserva",
+          "Propone usar una transacción de base de datos al confirmar la reserva"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica el bloqueo pesimista (SELECT ... FOR UPDATE) y el optimista (columna de versión) como dos estrategias válidas",
+          "Compara el trade-off: pesimista es más simple de razonar pero reduce concurrencia; optimista escala mejor pero exige manejar el conflicto y reintentar",
+          "Menciona un TTL de reserva temporal (hold) mientras el usuario completa el pago, para no bloquear el asiento indefinidamente si abandona"
+        ]
+      },
+      "respuestaModelo": "La confirmación de la reserva tiene que ir dentro de una transacción con bloqueo sobre la fila del asiento. Con bloqueo pesimista, `SELECT ... FOR UPDATE` bloquea la fila hasta que la transacción termina, así que la segunda petición espera y luego ve el asiento ya ocupado; es simple de razonar pero reduce la concurrencia. Con bloqueo optimista, se añade una columna de versión y el `UPDATE` incluye `WHERE version = X`; si otra transacción ganó la carrera, la actualización afecta 0 filas y hay que reintentar o avisar al usuario; escala mejor pero exige manejar el conflicto explícitamente. En cualquiera de los dos casos conviene un TTL de 'reserva temporal' (hold de unos minutos) mientras el usuario paga, para liberar el asiento si abandona el checkout.",
+      "etiquetas": ["sql", "transacciones", "concurrencia", "locks"],
+      "fuentes": [
+        {
+          "url": "https://www.hellointerview.com/community/questions?type=SYSTEM_DESIGN",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Patrón recurrente en preguntas de sistemas con inventario limitado, contenido enviado por usuarios en un producto comercial; pregunta redactada de nuevo, sin copiar el enunciado original."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "datos-transacciones-03",
+      "version": 1,
+      "pista": "datos",
+      "familia": "transacciones",
+      "tipo": "review",
+      "modos": ["review"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Revisa esta función que cierra un pedido, descuenta stock y avisa al cliente. ¿Qué problemas encuentras?",
+        "en": "Review this function that closes an order, decrements stock and notifies the customer. What problems do you find?"
+      },
+      "contexto": "```js\nasync function closeOrder(orderId) {\n  const order = await prisma.order.findUnique({ where: { id: orderId } });\n  order.status = 'closed';\n  await prisma.order.update({\n    where: { id: orderId },\n    data: { status: 'closed' },\n  });\n\n  const items = await prisma.orderItem.findMany({ where: { orderId } });\n  for (const item of items) {\n    const product = await prisma.product.findUnique({ where: { id: item.productId } });\n    await prisma.product.update({\n      where: { id: item.productId },\n      data: { stock: product.stock - item.quantity },\n    });\n  }\n\n  sendOrderClosedEmail(order.customerEmail);\n\n  return order;\n}\n```",
+      "rubrica": {
+        "junior": [
+          "Detecta el problema N+1: un findUnique y un update por cada item dentro del for",
+          "Detecta que sendOrderClosedEmail se llama sin await ni catch"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que cerrar el pedido y descontar stock deberían ser atómicos: si falla a mitad, el pedido queda 'closed' pero el stock de los últimos productos nunca se descuenta",
+          "Detecta la condición de carrera en el descuento de stock: leer product.stock, restar en la aplicación y escribir de vuelta pierde actualizaciones si dos pedidos del mismo producto se cierran a la vez",
+          "Propone la solución concreta: prisma.$transaction para agrupar las operaciones, y un decrement atómico (data: { stock: { decrement: item.quantity } }) en vez de leer-restar-escribir"
+        ]
+      },
+      "respuestaModelo": "Cuatro problemas: (1) **N+1**: dentro del `for` hay un `findUnique` y un `update` por cada item; con 50 items son ~100 queries en vez de 2-3, mejor traer todos los productos de una vez. (2) **Falta de transacción**: actualizar el pedido y descontar stock deberían ser atómicos dentro de `prisma.$transaction`; si falla a mitad, el pedido queda 'closed' pero el stock no se terminó de descontar, dejando datos inconsistentes. (3) **Condición de carrera**: `product.stock - item.quantity` lee, calcula en la aplicación y escribe; si dos cierres del mismo producto ocurren casi a la vez, la segunda escritura pisa a la primera y se pierde un descuento. La solución es una operación atómica de base de datos, `data: { stock: { decrement: item.quantity } }`. (4) **Promesa sin manejar**: `sendOrderClosedEmail(...)` se llama sin `await` ni `.catch`, así que un fallo se convierte en un unhandled rejection silencioso; conviene separarlo (cola, o al menos loguear el error) sin bloquear el cierre del pedido por un email.",
+      "etiquetas": ["prisma", "transacciones", "n+1", "concurrencia", "review"],
+      "fuentes": [
+        {
+          "url": "https://www.prisma.io/docs/orm/prisma-client/queries/advanced/query-optimization-performance",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Fragmento escrito para esta investigación con problemas típicos documentados en la documentación de Prisma y en patrones de ACID de bancos SQL; no es copia de ningún ejercicio propietario."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

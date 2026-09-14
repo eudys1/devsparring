@@ -1,0 +1,212 @@
+@import 'tailwindcss';
+
+/*
+  Identidad: la hoja de puntuación del entrevistador (scorecard). Neutros de
+  grafito con una pizca fría; un solo acento, brasa (#D9481F), que se gasta en
+  lo que arde: el temporizador, el veredicto, la acción principal. Los colores
+  semánticos (ok / aviso / mal) no cuentan como acento. Dos temas con el mismo
+  cuidado; el toggle del usuario manda sobre prefers-color-scheme.
+*/
+:root {
+  --fondo: #eceef1;
+  --papel: #f8f9fa;
+  --papel-2: #ffffff;
+  --tinta: #171b21;
+  --tinta-2: #4b535d;
+  --tinta-3: #7c858f;
+  --linea: #d3d8de;
+  --linea-fuerte: #aeb6bf;
+  --brasa: #d9481f;
+  --brasa-tinta: #ffffff;
+  --brasa-suave: #f9e3db;
+  --ok: #2b7a4b;
+  --ok-suave: #dcefe3;
+  --aviso: #a86a12;
+  --aviso-suave: #f6e9d0;
+  --mal: #b02a2a;
+  --mal-suave: #f5dede;
+  --codigo-fondo: #1c2128;
+  --codigo-tinta: #d6dde5;
+  --junior: #8a6a1f;
+  --senior: #4f4a9c;
+  --radio: 4px;
+  --sombra: 0 1px 2px rgb(23 27 33 / 0.06), 0 8px 24px -16px rgb(23 27 33 / 0.25);
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --fondo: #101418;
+    --papel: #171c22;
+    --papel-2: #1e242b;
+    --tinta: #e7ebef;
+    --tinta-2: #b3bcc6;
+    --tinta-3: #7f8a95;
+    --linea: #2a323b;
+    --linea-fuerte: #3d4751;
+    --brasa: #f0653a;
+    --brasa-tinta: #16100d;
+    --brasa-suave: #3a2018;
+    --ok: #5cc287;
+    --ok-suave: #16301f;
+    --aviso: #e0a94a;
+    --aviso-suave: #3a2d14;
+    --mal: #ef6b6b;
+    --mal-suave: #3d1c1c;
+    --codigo-fondo: #0c1014;
+    --codigo-tinta: #d6dde5;
+    --junior: #d9b25a;
+    --senior: #a9a3ec;
+    --sombra: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px -16px rgb(0 0 0 / 0.6);
+    color-scheme: dark;
+  }
+}
+:root[data-theme='dark'] {
+  --fondo: #101418;
+  --papel: #171c22;
+  --papel-2: #1e242b;
+  --tinta: #e7ebef;
+  --tinta-2: #b3bcc6;
+  --tinta-3: #7f8a95;
+  --linea: #2a323b;
+  --linea-fuerte: #3d4751;
+  --brasa: #f0653a;
+  --brasa-tinta: #16100d;
+  --brasa-suave: #3a2018;
+  --ok: #5cc287;
+  --ok-suave: #16301f;
+  --aviso: #e0a94a;
+  --aviso-suave: #3a2d14;
+  --mal: #ef6b6b;
+  --mal-suave: #3d1c1c;
+  --codigo-fondo: #0c1014;
+  --codigo-tinta: #d6dde5;
+  --junior: #d9b25a;
+  --senior: #a9a3ec;
+  --sombra: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px -16px rgb(0 0 0 / 0.6);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-fondo: var(--fondo);
+  --color-papel: var(--papel);
+  --color-papel-2: var(--papel-2);
+  --color-tinta: var(--tinta);
+  --color-tinta-2: var(--tinta-2);
+  --color-tinta-3: var(--tinta-3);
+  --color-linea: var(--linea);
+  --color-linea-fuerte: var(--linea-fuerte);
+  --color-brasa: var(--brasa);
+  --color-brasa-tinta: var(--brasa-tinta);
+  --color-brasa-suave: var(--brasa-suave);
+  --color-ok: var(--ok);
+  --color-ok-suave: var(--ok-suave);
+  --color-aviso: var(--aviso);
+  --color-aviso-suave: var(--aviso-suave);
+  --color-mal: var(--mal);
+  --color-mal-suave: var(--mal-suave);
+  --color-junior: var(--junior);
+  --color-senior: var(--senior);
+  --font-display: var(--font-archivo), system-ui, sans-serif;
+  --font-sans: var(--font-plex-sans), system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+  --radius-r: var(--radio);
+  --shadow-panel: var(--sombra);
+  --ease-salida: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+html {
+  background: var(--fondo);
+}
+body {
+  background: var(--fondo);
+  color: var(--tinta);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  text-wrap: balance;
+  letter-spacing: -0.01em;
+}
+
+.prosa {
+  max-width: 68ch;
+}
+.prosa p + p {
+  margin-top: 0.75rem;
+}
+.prosa code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  background: var(--papel-2);
+  border: 1px solid var(--linea);
+  padding: 0 0.3em;
+  border-radius: 3px;
+}
+.prosa pre {
+  background: var(--codigo-fondo);
+  color: var(--codigo-tinta);
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  padding: 0.875rem 1rem;
+  border-radius: var(--radio);
+  overflow-x: auto;
+  margin: 0.75rem 0;
+}
+.prosa pre code {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-size: inherit;
+}
+.prosa ul,
+.prosa ol {
+  padding-left: 1.25rem;
+  margin: 0.5rem 0;
+}
+.prosa li + li {
+  margin-top: 0.25rem;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+:focus-visible {
+  outline: 2px solid var(--brasa);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Entrada orquestada de la pantalla de práctica: una sola vez, sin rebote. */
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.aparece {
+  animation: aparecer 420ms var(--ease-salida) both;
+}
+.aparece-2 {
+  animation: aparecer 420ms var(--ease-salida) 80ms both;
+}

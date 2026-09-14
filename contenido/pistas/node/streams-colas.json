@@ -1,0 +1,184 @@
+{
+  "pista": "node",
+  "familia": "streams-colas",
+  "preguntas": [
+    {
+      "id": "node-streams-colas-01",
+      "version": 1,
+      "pista": "node",
+      "familia": "streams-colas",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué son los streams en Node.js y por qué usarías uno para servir un fichero de 2GB en vez de leerlo entero en memoria?",
+        "en": "What are streams in Node.js, and why would you use one to serve a 2GB file instead of reading it entirely into memory?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que un stream procesa datos en trozos (chunks) sin cargar el fichero completo en memoria"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica el backpressure: si el consumidor va más lento, el productor se pausa",
+          "Explica que `fs.createReadStream().pipe(res)` mantiene el uso de memoria constante frente a `fs.readFile`"
+        ]
+      },
+      "respuestaModelo": "Un stream procesa datos en trozos pequeños (chunks) a medida que van llegando o saliendo, sin necesidad de tener el contenido completo cargado en memoria en ningún momento. Leer un fichero de 2GB con `fs.readFile` intentaría cargarlo entero en memoria de golpe, lo que puede reventar el límite de memoria del proceso o al menos dispararlo innecesariamente. Con `fs.createReadStream(ruta).pipe(res)`, el fichero se lee y se envía en pequeños trozos de forma continua, manteniendo el uso de memoria prácticamente constante sin importar el tamaño del fichero. Los streams además incorporan backpressure: si quien consume los datos (por ejemplo, una conexión de red lenta) no puede procesarlos tan rápido como se producen, el propio mecanismo pausa automáticamente la lectura del origen hasta que el consumidor esté listo para más, evitando acumular todo en un buffer intermedio sin control.",
+      "etiquetas": ["streams-colas", "streams", "backpressure"],
+      "fuentes": [
+        {
+          "url": "https://github.com/learning-zone/nodejs-basics",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Sin licencia declarada; solo se cita y enlaza, no se copia texto literal."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "node-streams-colas-02",
+      "version": 1,
+      "pista": "node",
+      "familia": "streams-colas",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Cuándo usarías una cola de mensajes (RabbitMQ, SQS, BullMQ sobre Redis) en vez de procesar todo síncronamente en el request?",
+        "en": "When would you use a message queue (RabbitMQ, SQS, BullMQ over Redis) instead of processing everything synchronously in the request?"
+      },
+      "rubrica": {
+        "junior": [
+          "Propone encolar cuando la tarea es lenta o no crítica para la respuesta inmediata (enviar email, generar un PDF)"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que encolar desacopla al productor del consumidor y permite reintentos automáticos y absorbe picos de carga",
+          "Menciona el trade-off: complejidad operativa extra y diseño para 'eventualmente consistente' en vez de respuesta inmediata"
+        ]
+      },
+      "respuestaModelo": "Una cola tiene sentido cuando la tarea es lenta o no es crítica para devolver la respuesta inmediata al usuario: enviar un email de confirmación, generar un PDF, procesar una imagen subida. En vez de hacer que el request espere a que termine ese trabajo, se publica un mensaje en la cola y se responde de inmediato al usuario. Encolar desacopla al productor (quien genera el trabajo) del consumidor (quien lo procesa), lo que permite reintentos automáticos si el consumidor falla, y absorbe picos de carga porque los mensajes se acumulan en la cola en vez de tumbar el sistema con peticiones simultáneas. El trade-off es complejidad operativa adicional (un componente más que monitorizar y mantener) y que el diseño pasa a ser 'eventualmente consistente': el usuario ya no ve el resultado de esa tarea al instante, sino más tarde, lo que hay que comunicar bien en la interfaz.",
+      "etiquetas": ["streams-colas", "colas-de-mensajes", "arquitectura"],
+      "fuentes": [
+        {
+          "url": "https://github.com/goldbergyoni/nodebestpractices",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "CC-BY-SA-4.0. Contenido citado como referencia, no copiado literalmente; sección de patrones de producción."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "node-streams-colas-03",
+      "version": 1,
+      "pista": "node",
+      "familia": "streams-colas",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "senior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Cómo mantienes sincronizados varios servidores Node con WebSockets abiertos (por ejemplo, un chat) cuando escalas horizontalmente?",
+        "en": "How do you keep multiple Node servers with open WebSockets in sync (e.g. a chat app) when you scale horizontally?"
+      },
+      "rubrica": {
+        "junior": ["Sabe que un socket abierto vive en la memoria de un único proceso"],
+        "senior": [
+          "Lo anterior",
+          "Explica que hace falta un bus compartido (Redis Pub/Sub, un broker) para que un mensaje publicado en una instancia llegue a otra",
+          "Menciona sticky sessions o un balanceador consciente de WebSockets"
+        ]
+      },
+      "respuestaModelo": "Un socket WebSocket abierto vive en la memoria del proceso concreto que lo aceptó; si el usuario A está conectado a la instancia 1 y el usuario B a la instancia 2, un mensaje que llega a la instancia 1 no tiene forma directa de llegar al socket de B, porque viven en procesos completamente separados. La solución es un bus compartido entre instancias, típicamente Redis Pub/Sub (con el adaptador `socket.io-redis` si se usa Socket.IO) o un broker de mensajes: cuando un mensaje se publica en la instancia 1, se retransmite también al canal compartido, y la instancia 2 (suscrita a ese mismo canal) lo recibe y lo reenvía por su propio socket al usuario B. Además conviene configurar sticky sessions en el balanceador (para que las reconexiones del mismo cliente vuelvan a la misma instancia cuando haga falta mantener estado local) o directamente usar un balanceador consciente de WebSockets que gestione esto de forma nativa.",
+      "etiquetas": ["streams-colas", "websockets", "escalado-horizontal"],
+      "fuentes": [
+        {
+          "url": "https://www.designgurus.io/blog/design-chat-application",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Resumen de búsqueda, patrón recurrente en diseños de sistemas de chat."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "node-streams-colas-04",
+      "version": 1,
+      "pista": "node",
+      "familia": "streams-colas",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué diferencia hay entre autenticación con sesión en memoria del proceso Node y sesión en Redis, en un entorno con varios contenedores?",
+        "en": "What's the difference between authentication with an in-process Node session and a Redis-backed session, in a multi-container environment?"
+      },
+      "rubrica": {
+        "junior": [
+          "Sabe que guardar la sesión en memoria ata al usuario a ese contenedor concreto"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que rompe con balanceo round-robin o al reiniciar el pod",
+          "Explica que Redis (u otro store compartido) permite que cualquier instancia lea la sesión, requisito básico para escalar sin sticky sessions"
+        ]
+      },
+      "respuestaModelo": "Guardar la sesión en la memoria del propio proceso Node ata al usuario a ese contenedor concreto: si la siguiente petición del mismo usuario la atiende otro contenedor (algo habitual con un balanceador round-robin, o simplemente porque el primer contenedor se reinició o escaló hacia abajo), ese segundo contenedor no tiene ni idea de que esa sesión existe y el usuario aparece como no autenticado aunque acabe de hacer login. Guardar la sesión en Redis (o cualquier store compartido entre instancias) resuelve esto porque cualquier contenedor puede leer y escribir la misma sesión consultando ese almacén central, sin importar cuál de las instancias atendió el login originalmente. Esto es un requisito básico para escalar horizontalmente de forma limpia sin depender de sticky sessions, que además complican el balanceo de carga al forzar que un mismo usuario siempre vuelva al mismo contenedor.",
+      "etiquetas": ["streams-colas", "sesiones", "redis", "escalado-horizontal"],
+      "fuentes": [
+        {
+          "url": "https://github.com/goldbergyoni/nodebestpractices",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "CC-BY-SA-4.0. Contenido citado como referencia, no copiado literalmente; sección de estado y escalabilidad."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "node-streams-colas-05",
+      "version": 1,
+      "pista": "node",
+      "familia": "streams-colas",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "senior",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "¿Qué patrón usarías para no bloquear el event loop al procesar una imagen o un CSV grande subido por el usuario?",
+        "en": "What pattern would you use to avoid blocking the event loop when processing an uploaded image or large CSV?"
+      },
+      "rubrica": {
+        "junior": [
+          "Propone mover el trabajo CPU-intensivo fuera del hilo principal (worker thread, proceso hijo, cola externa)"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Propone procesar en streaming/chunks en vez de cargar todo el fichero",
+          "Explica por qué nunca debe hacerse el parseo/transformación pesada de forma síncrona en el hilo principal que atiende peticiones"
+        ]
+      },
+      "respuestaModelo": "El patrón correcto es mover el trabajo intensivo de CPU fuera del hilo principal que atiende peticiones HTTP: un `worker_thread`, un proceso hijo dedicado, o directamente encolar el trabajo en una cola externa para que lo procese un worker aparte, de forma completamente asíncrona respecto al request original. Además, siempre que sea posible conviene procesar el fichero en streaming, por chunks, en vez de cargarlo entero en memoria antes de empezar a transformarlo, sobre todo con un CSV grande donde se puede parsear fila a fila sin esperar a tener el archivo completo. Lo que nunca hay que hacer es ejecutar ese parseo o transformación pesada de forma síncrona directamente en el hilo principal que atiende otras peticiones concurrentes, porque mientras dura ese trabajo, el event loop queda bloqueado y ninguna otra petición se procesa, sin importar cuántas conexiones simultáneas tenga el servidor abiertas.",
+      "etiquetas": ["streams-colas", "worker-threads", "rendimiento"],
+      "fuentes": [
+        {
+          "url": "https://github.com/learning-zone/nodejs-basics",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Sin licencia declarada; solo se cita y enlaza, no se copia texto literal; sección de rendimiento."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

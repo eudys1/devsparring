@@ -1,0 +1,113 @@
+{
+  "pista": "web",
+  "familia": "rendimiento",
+  "preguntas": [
+    {
+      "id": "web-rendimiento-01",
+      "version": 1,
+      "pista": "web",
+      "familia": "rendimiento",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué son los Core Web Vitals actuales (LCP, INP, CLS) y qué significa cada uno?",
+        "en": "What are the current Core Web Vitals (LCP, INP, CLS) and what does each one mean?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica LCP como velocidad de carga percibida",
+          "Explica CLS como saltos visuales inesperados"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica INP (Interaction to Next Paint) como latencia de cualquier interacción durante toda la visita, no solo la primera, y que sustituyó a FID",
+          "Menciona que se evalúan en el percentil 75 de usuarios reales (CrUX), no en un solo test de laboratorio"
+        ]
+      },
+      "respuestaModelo": "LCP (Largest Contentful Paint) mide cuánto tarda en pintarse el elemento más grande visible en pantalla, como proxy de la velocidad de carga percibida; se considera bueno por debajo de 2.5 segundos. INP (Interaction to Next Paint) mide la latencia de cualquier interacción del usuario durante toda la visita a la página, no solo la primera como hacía la métrica FID a la que sustituyó, y se considera bueno por debajo de 200ms. CLS (Cumulative Layout Shift) mide cuánto se mueve visualmente el contenido de forma inesperada mientras la página carga o el usuario interactúa, con un buen valor por debajo de 0.1. Las tres se evalúan en el percentil 75 de usuarios reales recogido por CrUX (Chrome User Experience Report), no en un único test de laboratorio, porque lo que importa es la experiencia real agregada, no un caso aislado favorable.",
+      "etiquetas": ["rendimiento", "core-web-vitals"],
+      "fuentes": [
+        {
+          "url": "https://www.corewebvitals.io/core-web-vitals",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Resumen de búsqueda; la sustitución de FID por INP como métrica oficial se trata como conocimiento previo no re-verificado con fuente primaria de Google en esta pasada."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "web-rendimiento-02",
+      "version": 1,
+      "pista": "web",
+      "familia": "rendimiento",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Menciona 3 causas típicas de un CLS alto y cómo las arreglarías.",
+        "en": "Name 3 typical causes of a high CLS and how you'd fix them."
+      },
+      "rubrica": {
+        "junior": ["Menciona imágenes/vídeos sin dimensiones reservadas como causa"],
+        "senior": [
+          "Lo anterior",
+          "Menciona fuentes web sin `font-display` que causan reflow",
+          "Menciona contenido inyectado dinámicamente (banners, anuncios) sin espacio reservado"
+        ]
+      },
+      "respuestaModelo": "La causa más común es cargar imágenes o vídeos sin declarar `width`/`height` (o `aspect-ratio`), de forma que el navegador no reserva espacio para ellos y el contenido de alrededor salta en cuanto el recurso termina de cargar; se arregla declarando siempre esas dimensiones aunque el tamaño final se ajuste por CSS. La segunda causa habitual son las fuentes web sin `font-display` configurado, que provocan un reflow visible cuando la fuente personalizada sustituye a la fuente de respaldo con métricas distintas (FOUT); se mitiga con `font-display: swap` u optando por fuentes de respaldo con métricas similares. La tercera causa es contenido inyectado dinámicamente por encima del pliegue, como banners o anuncios que se cargan después del render inicial y empujan todo lo demás hacia abajo; se arregla reservando de antemano el espacio que ese contenido va a ocupar, aunque todavía no haya llegado.",
+      "etiquetas": ["rendimiento", "cls", "core-web-vitals"],
+      "fuentes": [
+        {
+          "url": "https://www.w3era.com/blog/seo/core-web-vitals-guide/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Resumen de búsqueda, guía agregada de Core Web Vitals 2026."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "web-rendimiento-03",
+      "version": 1,
+      "pista": "web",
+      "familia": "rendimiento",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Tu API tarda 3 segundos en responder una lista simple. ¿Qué pasos seguirías para diagnosticar antes de \"optimizar a ciegas\"?",
+        "en": "Your API takes 3 seconds to respond with a simple list. What steps would you follow to diagnose before \"optimizing blindly\"?"
+      },
+      "rubrica": {
+        "junior": [
+          "Propone medir antes de tocar código (logs con tiempos, herramientas de profiling)"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Propone separar si el cuello de botella es red, base de datos (falta de índice, N+1), serialización o el propio cliente",
+          "Explica que se prueban hipótesis una a una en vez de reescribir todo de golpe"
+        ]
+      },
+      "respuestaModelo": "El primer paso es medir antes de tocar nada: revisar logs con tiempos por etapa, usar `EXPLAIN ANALYZE` en la query si se sospecha de la base de datos, o levantar una traza con una herramienta de APM que desglose dónde se va el tiempo real dentro de esos 3 segundos. Con esos datos se separa el cuello de botella por categoría: ¿es red (latencia entre servicios), es base de datos (falta un índice, hay un N+1 escondido), es serialización (convertir un objeto enorme a JSON), o es el propio cliente esperando algo que no depende del servidor? Cada hipótesis se prueba y se descarta de forma individual con evidencia concreta, en vez de reescribir la query, cambiar el ORM y añadir cache todo a la vez, porque así no se sabe cuál de los cambios fue el que realmente arregló el problema ni si alguno lo empeoró.",
+      "etiquetas": ["rendimiento", "diagnostico", "backend"],
+      "fuentes": [
+        {
+          "url": "https://www.glassdoor.com/Interview/full-stack-developer-interview-questions-SRCH_KO0,20_SDRD.htm",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Resumen de búsqueda; página no accesible sin cuenta según el informe fuente."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

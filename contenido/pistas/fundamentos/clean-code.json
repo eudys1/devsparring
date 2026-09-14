@@ -1,0 +1,190 @@
+{
+  "pista": "fundamentos",
+  "familia": "clean-code",
+  "preguntas": [
+    {
+      "id": "fund-clean-code-01",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "clean-code",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué hace que una función esté \"limpia\"? Da 3 reglas prácticas que sigues al nombrar variables y funciones.",
+        "en": "What makes a function \"clean\"? Give 3 practical rules you follow when naming variables and functions."
+      },
+      "rubrica": {
+        "junior": [
+          "Menciona al menos dos reglas concretas (nombres descriptivos, funciones cortas, un solo nivel de abstracción)",
+          "Da un ejemplo de un nombre malo vs uno bueno"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica por qué una función que hace \"una cosa\" es más fácil de testear y reutilizar",
+          "Reconoce el coste de nombres demasiado largos o demasiado genéricos por igual",
+          "Menciona que el nombre debe reflejar la intención, no la implementación"
+        ]
+      },
+      "respuestaModelo": "Una función limpia hace una sola cosa, su nombre lo dice sin necesidad de leer el cuerpo, y opera a un solo nivel de abstracción (no mezcla validar, calcular y loguear en la misma función). Tres reglas prácticas: usar verbos para funciones (`calcularTotal`, no `total`), evitar abreviaturas ambiguas (`usr` en vez de `usuario`), y que el nombre refleje qué hace, no cómo lo hace por dentro (`obtenerUsuarioActivo`, no `filtrarArrayPorFlag`). Esto importa porque una función con un nombre preciso y una sola responsabilidad es mucho más fácil de testear y de reutilizar en otro contexto.",
+      "etiquetas": ["clean-code"],
+      "fuentes": [
+        {
+          "url": "https://coderslink.com/talento/blog/preguntas-esenciales-en-una-entrevista-de-programador/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen"
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "fund-clean-code-02",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "clean-code",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué significan DRY, KISS e YAGNI? ¿Puedes dar un ejemplo de cuando aplicar DRY demasiado pronto es contraproducente?",
+        "en": "What do DRY, KISS and YAGNI mean? Can you give an example of when applying DRY too early backfires?"
+      },
+      "rubrica": {
+        "junior": ["Explica correctamente qué es DRY, KISS e YAGNI"],
+        "senior": [
+          "Lo anterior",
+          "Menciona el riesgo de abstracción prematura al aplicar DRY antes de tener casos reales",
+          "Cita una heurística tipo \"regla de tres\" (esperar a la tercera repetición para abstraer)",
+          "Da un ejemplo concreto de una abstracción compartida que terminó siendo más difícil de mantener que la duplicación original"
+        ]
+      },
+      "respuestaModelo": "DRY (Don't Repeat Yourself) evita duplicar la misma lógica en varios sitios; KISS (Keep It Simple) prefiere la solución más simple que funcione; YAGNI (You Aren't Gonna Need It) evita construir flexibilidad para casos hipotéticos. Aplicar DRY demasiado pronto es contraproducente cuando dos piezas de código se parecen hoy por casualidad pero representan conceptos distintos: unificarlas crea una abstracción con parámetros y condicionales para cubrir ambos casos, y cuando uno cambia por su cuenta, esa abstracción compartida se vuelve más frágil que tener las dos copias separadas. La heurística práctica es esperar a la tercera repetición real antes de extraer una abstracción común.",
+      "etiquetas": ["clean-code"],
+      "fuentes": [
+        {
+          "url": "https://coderslink.com/talento/blog/preguntas-esenciales-en-una-entrevista-de-programador/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen"
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "fund-clean-code-03",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "clean-code",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué es el acoplamiento y la cohesión en el diseño de software? ¿Cómo los medirías o detectarías en una revisión de código?",
+        "en": "What are coupling and cohesion in software design? How would you measure or spot them in a code review?"
+      },
+      "rubrica": {
+        "junior": [
+          "Define bajo acoplamiento y alta cohesión como objetivos deseables",
+          "Da un ejemplo simple de cada uno"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Da una señal de alarma concreta: cambiar un módulo obliga a tocar muchos otros (alto acoplamiento)",
+          "Da una señal de alarma para baja cohesión: una clase con métodos que no comparten datos ni propósito",
+          "Relaciona ambos conceptos con SRP y con la facilidad de testear en aislamiento"
+        ]
+      },
+      "respuestaModelo": "Bajo acoplamiento significa que los módulos dependen poco entre sí, así que cambiar uno no obliga a tocar muchos otros. Alta cohesión significa que un módulo agrupa responsabilidades relacionadas entre sí, no una mezcla arbitraria. Una señal de alto acoplamiento en revisión de código es que un cambio pequeño en un módulo dispara cambios en cascada en varios archivos no relacionados directamente. Una señal de baja cohesión es una clase \"utilidades\" con métodos que no comparten ni datos ni propósito. Ambos se relacionan directamente con SRP: una clase con alta cohesión suele tener una sola razón para cambiar.",
+      "etiquetas": ["clean-code", "diseno"],
+      "fuentes": [
+        {
+          "url": "https://www.adaface.com/blog/solid-principles-interview-questions/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen"
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "fund-clean-code-04",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "clean-code",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "¿Cuándo un comentario en el código es una señal de que el código debería reescribirse en vez de comentarse?",
+        "en": "When is a code comment a sign that the code should be rewritten instead of commented?"
+      },
+      "rubrica": {
+        "junior": [
+          "Reconoce que un comentario que explica \"qué hace\" el código suele ser innecesario si el código se nombra bien",
+          "Distingue comentarios útiles (por qué se hizo algo así) de comentarios redundantes"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Da un ejemplo de reemplazar un comentario por un nombre de función más claro",
+          "Reconoce cuándo un comentario SÍ aporta valor (decisión no obvia, workaround temporal con enlace a un ticket)",
+          "Menciona el riesgo de comentarios que quedan desactualizados y mienten sobre lo que hace el código"
+        ]
+      },
+      "respuestaModelo": "Un comentario que explica *qué* hace un bloque de código (\"suma el IVA al total\") suele ser una señal de que ese bloque debería extraerse a una función con un nombre que lo diga (`sumarIVA(total)`), en vez de comentarse. Los comentarios útiles explican el *por qué* de una decisión no obvia (por ejemplo, un workaround necesario por un bug de una librería, con un enlace al issue), no el qué. El riesgo de los comentarios explicativos del qué es que el código cambia y el comentario se queda desactualizado, mintiendo sobre lo que realmente hace el código.",
+      "etiquetas": ["clean-code"],
+      "fuentes": [
+        {
+          "url": "https://github.com/holasoymalva/Guia-para-Entrevistas-Laborales-de-Programacion",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Leído parcialmente; no se encontró cita textual de esta pregunta específica, redactada a partir de literatura general de clean code."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "fund-clean-code-05",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "clean-code",
+      "tipo": "review",
+      "modos": ["review"],
+      "nivelMinimo": "mid",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "Te llega un Pull Request de 400 líneas. ¿En qué te fijas primero al revisarlo?",
+        "en": "You receive a 400-line Pull Request. What do you look at first when reviewing it?"
+      },
+      "rubrica": {
+        "junior": [
+          "Menciona revisar que el cambio tenga tests",
+          "Menciona leer la descripción del PR antes que el diff línea a línea"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Prioriza corrección y riesgo (¿rompe algo en producción?) sobre el estilo",
+          "Sugiere partir PRs grandes en más pequeños como buena práctica cuando sea posible",
+          "Distingue comentarios bloqueantes de sugerencias opcionales, y lo comunica así al autor"
+        ]
+      },
+      "respuestaModelo": "Primero leo la descripción del PR para entender la intención antes de mirar el código línea a línea. Luego priorizo corrección y riesgo: ¿esto puede romper algo en producción?, ¿tiene tests que cubran el caso nuevo y los casos límite? El estilo y las preferencias personales van después, y las marco como sugerencia opcional, no como bloqueo. Si el PR es difícil de revisar por su tamaño, lo comento directamente: pido dividirlo en cambios más pequeños y revisables cuando es posible, en vez de aprobar a ciegas por cansancio.",
+      "etiquetas": ["clean-code", "code-review"],
+      "fuentes": [
+        {
+          "url": "https://news.ycombinator.com/item?id=7827048",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Hilo no accesible por error HTTP 429 al hacer WebFetch; pregunta basada en patrones de entrevista senior documentados de forma general."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

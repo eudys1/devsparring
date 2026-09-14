@@ -1,0 +1,184 @@
+{
+  "pista": "ia",
+  "familia": "vector-stores",
+  "preguntas": [
+    {
+      "id": "ia-vector-stores-01",
+      "version": 1,
+      "pista": "ia",
+      "familia": "vector-stores",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué es una base de datos vectorial y en qué se diferencia de una relacional?",
+        "en": "What is a vector database and how does it differ from a relational one?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que almacena vectores de alta dimensión",
+          "Explica que está optimizada para búsqueda por similitud en vez de búsqueda exacta"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Contrasta el índice de vecinos más cercanos aproximados con un índice por clave de una BD relacional",
+          "Da un ejemplo de cuándo conviene combinar ambas (metadatos en relacional, vectores en vector store)"
+        ]
+      },
+      "respuestaModelo": "Una base de datos vectorial almacena vectores de alta dimensión y está optimizada para búsqueda por similitud, es decir, encontrar los vectores más cercanos a uno dado, en vez de la búsqueda exacta por clave o índice que hace una base de datos relacional. Mientras una BD relacional responde bien a '¿qué fila tiene este id?', una vector store responde a '¿qué elementos se parecen más a este?'. En muchos sistemas reales conviene combinarlas: los metadatos estructurados y transaccionales viven en la base relacional habitual, y solo los embeddings para búsqueda semántica viven en la vector store.",
+      "etiquetas": ["vector-store", "fundamentos"],
+      "fuentes": [
+        {
+          "url": "https://www.faceprep.in/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Guía de entrevista embeddings/vector DB, faceprep.in, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-vector-stores-02",
+      "version": 1,
+      "pista": "ia",
+      "familia": "vector-stores",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Nombra herramientas de vector store que conozcas y cuándo elegirías cada una.",
+        "en": "Name vector store tools you know and when you would pick each."
+      },
+      "rubrica": {
+        "junior": ["Nombra al menos dos herramientas (FAISS, Pinecone, Weaviate, pgvector)"],
+        "senior": [
+          "Lo anterior",
+          "Justifica cuándo elegiría cada una según ops, volumen y stack existente",
+          "Menciona pgvector como opción cuando ya se tiene Postgres y no se quiere añadir otra pieza de infraestructura"
+        ]
+      },
+      "respuestaModelo": "FAISS es una librería local que sirve bien para prototipos donde no hace falta un servicio gestionado. Pinecone es gestionado en la nube, con poco esfuerzo operativo, pensado para producción sin querer mantener infraestructura propia. Weaviate es open source, soporta búsqueda híbrida y filtrado avanzado por metadatos si se necesita ese control. Y pgvector es una extensión de Postgres, útil cuando ya se tiene esa base de datos en el stack y el volumen es moderado, porque evita añadir una pieza más de infraestructura solo para los embeddings.",
+      "etiquetas": ["vector-store", "herramientas"],
+      "fuentes": [
+        {
+          "url": "https://topgenaijobs.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Guías de entrevista RAG (topgenaijobs.com), según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-vector-stores-03",
+      "version": 1,
+      "pista": "ia",
+      "familia": "vector-stores",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué es ANN (approximate nearest neighbors) y por qué se usa en vez de búsqueda exacta?",
+        "en": "What is ANN (approximate nearest neighbors) and why is it used instead of exact search?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que buscar el vecino más cercano exacto en millones de vectores es costoso",
+          "Menciona que ANN sacrifica algo de precisión a cambio de velocidad"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Nombra algún algoritmo concreto (HNSW, IVF)",
+          "Explica por qué en búsqueda semántica no hace falta el resultado matemáticamente óptimo"
+        ]
+      },
+      "respuestaModelo": "Buscar el vecino más cercano exacto entre millones de vectores de alta dimensión es computacionalmente muy costoso si se compara uno a uno. Los algoritmos ANN, como HNSW o IVF, construyen estructuras que permiten encontrar candidatos muy buenos, aunque no siempre el óptimo matemático, a una fracción del coste. Esto es aceptable en búsqueda semántica porque no se necesita el resultado perfecto, sino uno suficientemente relevante para el usuario o para el LLM que lo va a usar como contexto, y la diferencia de calidad entre el resultado exacto y el aproximado suele ser imperceptible en la práctica.",
+      "etiquetas": ["vector-store", "ann"],
+      "fuentes": [
+        {
+          "url": "https://docs.anthropic.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Documentación técnica estándar de vector DBs, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-vector-stores-04",
+      "version": 1,
+      "pista": "ia",
+      "familia": "vector-stores",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Cómo decidirías el número de resultados (k) a recuperar en una búsqueda vectorial para RAG?",
+        "en": "How would you decide the number of results (k) to retrieve in a vector search for RAG?"
+      },
+      "rubrica": {
+        "junior": ["Reconoce el trade-off entre recall (más k) y ruido/coste (más k)"],
+        "senior": [
+          "Lo anterior",
+          "Explica que se ajusta empíricamente midiendo calidad de respuesta, no por intuición",
+          "Menciona combinarlo con reranking: pedir más candidatos iniciales y quedarse con menos tras reordenar"
+        ]
+      },
+      "respuestaModelo": "Hay un trade-off directo: pedir más resultados (k alto) aumenta la probabilidad de incluir el fragmento correcto entre los recuperados, pero también añade más tokens de contexto y más ruido que puede confundir al modelo con información irrelevante. No hay un número mágico, se ajusta empíricamente midiendo la calidad de la respuesta final con distintos valores de k sobre un set de preguntas de referencia. Una estrategia habitual es pedir un k inicial más alto de lo necesario y aplicar un reranker después, quedándose solo con los mejores candidatos tras reordenar, en vez de confiar en que la búsqueda vectorial sola acierte con pocos resultados.",
+      "etiquetas": ["vector-store", "rag"],
+      "fuentes": [
+        {
+          "url": "https://docs.anthropic.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Síntesis propia sobre prácticas de RAG, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "ia-vector-stores-05",
+      "version": 1,
+      "pista": "ia",
+      "familia": "vector-stores",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "senior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Qué pasa con el filtrado por metadatos en una búsqueda vectorial, por ejemplo para servir solo documentos del tenant del usuario?",
+        "en": "What about metadata filtering in a vector search (e.g. only documents for the user's tenant)?"
+      },
+      "rubrica": {
+        "junior": [
+          "Reconoce que sin filtrar por metadatos se puede filtrar información entre clientes o usuarios"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que la mayoría de vector stores soportan filtros pre o post búsqueda y que hay que saber cuál usa la herramienta elegida",
+          "Relaciona la elección de filtro con el impacto en rendimiento y en corrección de seguridad"
+        ]
+      },
+      "respuestaModelo": "En una aplicación multi-tenant o con permisos por usuario, filtrar por metadatos como el tenant_id o los permisos no es opcional: sin ese filtro aplicado en la propia búsqueda vectorial, se puede acabar devolviendo información de un cliente a otro, un fallo de seguridad grave. La mayoría de vector stores soportan filtrado pre búsqueda, que reduce el espacio de candidatos antes de buscar, o post búsqueda, que filtra después de traer los resultados; hay que verificar cuál usa la herramienta concreta porque afecta tanto al rendimiento como a la corrección: un filtro post búsqueda mal implementado puede devolver menos de k resultados válidos sin que nadie se dé cuenta.",
+      "etiquetas": ["vector-store", "seguridad", "multi-tenant"],
+      "fuentes": [
+        {
+          "url": "https://docs.anthropic.com/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Síntesis propia, relevante para seguridad multi-tenant, según informe interno de Devsparring."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

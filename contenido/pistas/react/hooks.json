@@ -1,0 +1,237 @@
+{
+  "pista": "react",
+  "familia": "hooks",
+  "preguntas": [
+    {
+      "id": "react-hooks-01",
+      "version": 1,
+      "pista": "react",
+      "familia": "hooks",
+      "tipo": "definicion",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Qué problema resuelve `useEffect` y cuándo se ejecuta respecto al render?",
+        "en": "What problem does `useEffect` solve and when does it run relative to render?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que `useEffect` sirve para sincronizar el componente con algo externo (fetch, suscripción, timer, DOM manual)",
+          "Sabe que se ejecuta después de que React pinta el DOM, no durante el render"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Distingue el momento de `useEffect` (tras el commit y el paint) del de `useLayoutEffect` (tras el commit, antes del paint)",
+          "Explica que el array de dependencias controla cuándo se repite el efecto",
+          "Menciona la función de limpieza para cancelar suscripciones o temporizadores"
+        ]
+      },
+      "respuestaModelo": "`useEffect` sirve para sincronizar un componente con algo que vive fuera de React: una petición de red, una suscripción, el título del documento, un temporizador. React lo ejecuta después de pintar el DOM en pantalla, nunca durante el render, así que no bloquea la pintura inicial. El array de dependencias decide cuándo se repite: sin array corre en cada render, con array vacío solo al montar, con valores corre cuando alguno cambia. Si el efecto crea algo que hay que deshacer, debe devolver una función de limpieza que React llama antes de repetir el efecto o al desmontar. `useLayoutEffect` es la variante que corre antes del paint, útil solo cuando hay que medir o mutar el DOM sin parpadeo visual.",
+      "etiquetas": ["hooks", "useEffect", "ciclo-de-vida"],
+      "fuentes": [
+        {
+          "url": "https://github.com/sudheerj/reactjs-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Pregunta adaptada de la sección Hooks, no copiada literalmente."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    },
+    {
+      "id": "react-hooks-02",
+      "version": 1,
+      "pista": "react",
+      "familia": "hooks",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Cómo funciona el array de dependencias de `useEffect` y qué falla comete la gente al omitir dependencias?",
+        "en": "How does the `useEffect` dependency array work, and what mistake do people make by omitting dependencies?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que el efecto se repite solo cuando cambia algún valor del array",
+          "Identifica que omitir una dependencia usada dentro del efecto produce un bug"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica el concepto de stale closure: el efecto captura los valores del render en que se creó si faltan en el array",
+          "Menciona `eslint-plugin-react-hooks` como red de seguridad para detectar dependencias faltantes",
+          "Sabe cuándo usar `useEffectEvent` para sacar lógica no reactiva del efecto sin añadirla como dependencia"
+        ]
+      },
+      "respuestaModelo": "El array es la lista de valores que React compara entre renders; si ninguno cambió, se salta el efecto, y si alguno cambió lo vuelve a ejecutar. El error típico es usar dentro del efecto una variable (una prop, un estado) que no está en el array: el efecto queda con una closure que sigue viendo el valor del render en que se creó, aunque ese valor haya cambiado después, lo que se conoce como stale closure. `eslint-plugin-react-hooks` avisa de estos casos automáticamente y conviene tratarlo como error, no como sugerencia. Cuando el efecto necesita leer un valor sin que ese valor dispare una repetición, `useEffectEvent` permite sacar esa parte no reactiva fuera del array de dependencias sin caer en el bug de closures viejas.",
+      "etiquetas": ["hooks", "useEffect", "stale-closure"],
+      "fuentes": [
+        {
+          "url": "https://github.com/sudheerj/reactjs-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Pregunta adaptada de la sección Hooks, no copiada literalmente."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    },
+    {
+      "id": "react-hooks-03",
+      "version": 1,
+      "pista": "react",
+      "familia": "hooks",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Cuál es la diferencia entre `useMemo` y `useCallback`, y cuándo NO merece la pena usarlos?",
+        "en": "What's the difference between `useMemo` and `useCallback`, and when is it NOT worth using them?"
+      },
+      "rubrica": {
+        "junior": [
+          "Distingue que `useCallback` memoriza una función y `useMemo` memoriza un valor calculado",
+          "Sabe que ambos reciben un array de dependencias igual que `useEffect`"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que ambos tienen coste (comparar dependencias, memoria) y solo compensan si el hijo está memoizado con `React.memo` o el cálculo es costoso",
+          "Menciona que React Compiler puede automatizar esta memoización y reducir la necesidad de escribirla a mano",
+          "Da un ejemplo concreto donde memoizar es innecesario"
+        ]
+      },
+      "respuestaModelo": "`useCallback(fn, deps)` memoriza la referencia de una función para que no cambie entre renders si sus dependencias no cambian; `useMemo(fn, deps)` memoriza el valor que devuelve esa función. Ambos comparan el array de dependencias igual que `useEffect`. El coste real es que comparar dependencias y guardar el valor en memoria no es gratis: si el resultado no se pasa a un componente memoizado con `React.memo`, o el cálculo es barato, memoizar añade complejidad sin beneficio medible. React Compiler puede aplicar esta memoización automáticamente analizando el código, lo que reduce la necesidad de escribir estos hooks a mano en proyectos que ya lo usan. La recomendación práctica es medir con el Profiler antes de añadir memoización preventiva.",
+      "etiquetas": ["hooks", "rendimiento", "memoizacion"],
+      "fuentes": [
+        {
+          "url": "https://github.com/sudheerj/reactjs-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Pregunta adaptada, no copiada literalmente."
+        },
+        {
+          "url": "https://nextjs.org/blog/next-16",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Mención de React Compiler estable en Next.js 16."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    },
+    {
+      "id": "react-hooks-04",
+      "version": 1,
+      "pista": "react",
+      "familia": "hooks",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "¿Cómo compartirías lógica de estado entre dos componentes sin duplicar código? Explica los custom hooks.",
+        "en": "How would you share stateful logic between two components without duplicating code? Explain custom hooks."
+      },
+      "rubrica": {
+        "junior": [
+          "Define un custom hook como una función que empieza por `use` y puede llamar a otros hooks",
+          "Da un ejemplo real (`useDebounce`, `useFetch`, `useLocalStorage`)"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que cada componente que usa el hook obtiene su propia instancia de estado, no un estado compartido",
+          "Distingue compartir lógica (custom hook) de compartir estado (Context o un store externo)"
+        ]
+      },
+      "respuestaModelo": "Un custom hook es simplemente una función normal de JavaScript que empieza por `use` y por dentro llama a otros hooks (`useState`, `useEffect`, etc.), extrayendo así lógica repetida a un solo lugar. Un ejemplo típico es `useDebounce(valor, delay)` para retrasar una búsqueda, o `useFetch(url)` para encapsular carga, error y estado de una petición. Lo importante es que cada componente que llama al hook obtiene su propia instancia de estado: si dos componentes usan `useFetch`, cada uno gestiona su propia petición, no comparten datos entre sí. Cuando lo que hace falta es compartir el mismo estado (no solo la lógica) entre componentes, la herramienta correcta ya no es un custom hook sino Context o un store externo como Zustand.",
+      "etiquetas": ["hooks", "reutilizacion"],
+      "fuentes": [
+        {
+          "url": "https://github.com/sudheerj/reactjs-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Pregunta adaptada de la sección Custom React Hooks, no copiada literalmente."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    },
+    {
+      "id": "react-hooks-05",
+      "version": 1,
+      "pista": "react",
+      "familia": "hooks",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "¿Para qué sirve `useRef` más allá de acceder al DOM? Pon un ejemplo de valor mutable que sobrevive a los renders.",
+        "en": "What is `useRef` used for beyond accessing the DOM? Give an example of a mutable value that survives renders."
+      },
+      "rubrica": {
+        "junior": [
+          "Sabe que `useRef` guarda un valor mutable que sobrevive entre renders",
+          "Da un ejemplo (id de un `setInterval`, valor anterior de una prop, bandera de 'ya se hizo fetch')"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que cambiar `.current` no dispara un re-render, a diferencia de `useState`",
+          "Distingue cuándo usar `useRef` (dato que no afecta a lo que se pinta) de `useState` (dato que sí)"
+        ]
+      },
+      "respuestaModelo": "`useRef` crea un objeto `{ current: valor }` que persiste entre renders sin provocar uno nuevo cuando cambia. Además de guardar referencias al DOM, sirve para cualquier valor mutable que el componente necesita recordar pero que no forma parte de lo que se pinta: el id devuelto por `setInterval` para poder cancelarlo después, el valor anterior de una prop para compararlo, o una bandera booleana de 'esta petición ya se disparó' para evitar duplicados. La diferencia clave con `useState` es que mutar `.current` no re-renderiza el componente, así que solo se usa para datos que la UI no necesita reflejar en pantalla.",
+      "etiquetas": ["hooks", "useRef"],
+      "fuentes": [
+        {
+          "url": "https://github.com/sudheerj/reactjs-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Pregunta adaptada, no copiada literalmente."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    },
+    {
+      "id": "react-hooks-06",
+      "version": 1,
+      "pista": "react",
+      "familia": "hooks",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Explica el ciclo de vida efectivo de un componente funcional: montaje, actualización y desmontaje, usando hooks.",
+        "en": "Explain the effective lifecycle of a function component: mount, update and unmount, using hooks."
+      },
+      "rubrica": {
+        "junior": [
+          "Describe montaje (primer render + efectos con array vacío) y desmontaje (limpieza de efectos)",
+          "Describe actualización como re-render al cambiar estado/props/contexto usado"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que en cada actualización solo se repiten los efectos cuyas dependencias cambiaron",
+          "Detalla que React llama a la función de limpieza de cada efecto antes de desmontar o antes de repetir ese efecto"
+        ]
+      },
+      "respuestaModelo": "El montaje es el primer render del componente, tras el cual React ejecuta todos los efectos cuyo array de dependencias se cumple, incluyendo los que tienen array vacío (corren una sola vez). La actualización ocurre cada vez que cambia el estado, una prop o un valor de contexto que el componente usa: React vuelve a renderizar y, tras pintar, solo repite los efectos cuyas dependencias cambiaron respecto al render anterior. El desmontaje sucede cuando el componente sale del árbol; antes de quitarlo, React llama a la función de limpieza devuelta por cada efecto activo (para cancelar suscripciones, temporizadores o listeners), y esa misma limpieza también se dispara justo antes de repetir un efecto en una actualización, no solo al desmontar.",
+      "etiquetas": ["hooks", "ciclo-de-vida"],
+      "fuentes": [
+        {
+          "url": "https://github.com/sudheerj/reactjs-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Pregunta adaptada, no copiada literalmente."
+        }
+      ],
+      "origen": "curada",
+      "estado": "publicada"
+    }
+  ]
+}
