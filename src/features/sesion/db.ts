@@ -3,6 +3,7 @@
 import 'server-only';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Modo, Nivel, Pista } from '../preguntas/esquema';
+import { registrarErrorDb } from '@/lib/supabase/errores';
 
 export type Sesion = {
   id: string;
@@ -46,7 +47,10 @@ export async function crearSesion(
     })
     .select('id')
     .single();
-  if (error || !data) return { ok: false, code: 'db' };
+  if (error || !data) {
+    registrarErrorDb('crearSesion', error);
+    return { ok: false, code: 'db' };
+  }
   return { ok: true, id: data.id as string };
 }
 
@@ -81,7 +85,10 @@ export async function guardarRespuesta(
     })
     .select('id')
     .single();
-  if (error || !data) return { ok: false, code: 'db' };
+  if (error || !data) {
+    registrarErrorDb('guardarRespuesta', error);
+    return { ok: false, code: 'db' };
+  }
   return { ok: true, id: data.id as string };
 }
 

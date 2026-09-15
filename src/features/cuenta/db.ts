@@ -1,6 +1,7 @@
 import 'server-only';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Nivel } from '../preguntas/esquema';
+import { registrarErrorDb } from '@/lib/supabase/errores';
 
 export type Perfil = {
   user_id: string;
@@ -31,5 +32,6 @@ export async function actualizarPerfil(
   const { error } = await db
     .from('perfiles')
     .upsert({ user_id: userId, ...cambios, actualizado_en: new Date().toISOString() });
+  if (error) registrarErrorDb('actualizarPerfil', error);
   return { ok: !error };
 }

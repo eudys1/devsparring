@@ -3,6 +3,7 @@ import 'server-only';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Card, RecordLogItem } from 'ts-fsrs';
 import { State } from 'ts-fsrs';
+import { registrarErrorDb } from '@/lib/supabase/errores';
 
 export type FilaTarjeta = {
   pregunta_id: string;
@@ -106,5 +107,7 @@ export async function guardarRepaso(
     state: resultado.log.state,
     repasada_en: resultado.log.review.toISOString(),
   });
+  if (e1) registrarErrorDb('guardarRepaso.tarjetas', e1);
+  if (e2) registrarErrorDb('guardarRepaso.repasos', e2);
   return { ok: !e1 && !e2 };
 }

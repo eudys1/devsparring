@@ -1,6 +1,7 @@
 import 'server-only';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { z } from 'zod';
+import { registrarErrorDb } from '@/lib/supabase/errores';
 
 export const NuevaEntrevista = z.object({
   empresa: z.string().trim().min(1).max(120),
@@ -31,6 +32,7 @@ export async function crearEntrevista(
   e: NuevaEntrevista,
 ): Promise<{ ok: boolean }> {
   const { error } = await db.from('entrevistas').insert({ user_id: userId, ...e });
+  if (error) registrarErrorDb('crearEntrevista', error);
   return { ok: !error };
 }
 
