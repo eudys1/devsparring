@@ -54,7 +54,8 @@ export async function POST(request: Request) {
   const p = cuerpo.data;
 
   const cfg = config();
-  const esDueno = cfg.DEVSPARRING_OWNER_USER_ID !== undefined && usuario.id === cfg.DEVSPARRING_OWNER_USER_ID;
+  const esDueno =
+    cfg.DEVSPARRING_OWNER_USER_ID !== undefined && usuario.id === cfg.DEVSPARRING_OWNER_USER_ID;
   const clave = p.apiKey?.trim() || (esDueno ? cfg.DEVSPARRING_OWNER_ANTHROPIC_KEY : undefined);
   if (!clave) return NextResponse.json({ ok: false, codigo: 'sin_clave' }, { status: 400 });
   if (!formatoClaveValido(clave))

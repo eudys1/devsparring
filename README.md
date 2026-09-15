@@ -26,13 +26,16 @@ Requisitos: Node 22+, pnpm, un proyecto de Supabase.
 ```bash
 pnpm install
 cp .env.example .env.local   # rellena las claves de Supabase
-pnpm db:migrar               # aplica supabase/migrations al proyecto remoto
 pnpm dev
 ```
 
+Las migraciones de `supabase/migrations/` las aplica la integración de GitHub de
+Supabase en cada push a `main` (el proyecto está conectado al repositorio). Para
+aplicarlas a mano: `npx supabase link` y `npx supabase db push`.
+
 En Supabase, en Authentication, desactiva "Confirm email" si quieres entrar sin
 verificar el correo durante el desarrollo, y añade `http://localhost:3000/auth/confirmar`
-a las URL de redirección.
+a las URL de redirección. Esos valores están también en `supabase/config.toml`.
 
 ## Verificar
 

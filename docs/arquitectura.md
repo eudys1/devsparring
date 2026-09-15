@@ -141,9 +141,13 @@ tablas con `user_id = auth.uid()`.
 La clave de API **no** tiene tabla en el MVP. Opción futura: Supabase Vault
 como opt-in explícito (nunca pgsodium; Supabase lo deprecará).
 
-Migraciones con nombre `AAAAMMDDHHMMSS_asunto.sql`, aplicadas con
-`scripts/migrar.mjs` (node + pg, lee la URL de `.env.local`). No hay Docker ni
-Supabase CLI local en la máquina, así que se trabaja contra el proyecto remoto.
+Migraciones con nombre `AAAAMMDDHHMMSS_asunto.sql` en `supabase/migrations/`,
+aplicadas por la integración de GitHub de Supabase en cada push a `main`
+(decisión de Eudys del 15-09-2026: "push y aplicado"). A mano: `npx supabase
+link` y `npx supabase db push`. `supabase/config.toml` guarda la configuración
+como código. Un SQL roto en `main` rompe producción sin pasar por nadie: las
+migraciones se prueban antes en una rama y se revisan en la PR. No hay Docker
+en la máquina, así que no hay Supabase local.
 
 ## Editor y ejecución de código
 

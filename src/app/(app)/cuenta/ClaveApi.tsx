@@ -23,9 +23,9 @@ export function ClaveApi({ esDueno }: { esDueno: boolean }) {
     <section className="rounded-r border border-linea bg-papel p-4">
       <h2 className="font-semibold">Corrección con IA</h2>
       <p className="mt-1 text-[0.875rem] text-tinta-2">
-        Devsparring corrige con la API de Claude usando <strong>tu</strong> clave. Se guarda solo en este
-        navegador: Devsparring no la almacena en sus servidores y la usa solo para pedir la corrección.
-        Si cambias de dispositivo tendrás que volver a pegarla.
+        Devsparring corrige con la API de Claude usando <strong>tu</strong> clave. Se guarda solo en
+        este navegador: Devsparring no la almacena en sus servidores y la usa solo para pedir la
+        corrección. Si cambias de dispositivo tendrás que volver a pegarla.
       </p>
       {esDueno ? (
         <p className="mt-2 rounded-r border border-ok/40 bg-ok-suave px-3 py-2 text-[0.875rem] text-ok">

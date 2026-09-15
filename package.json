@@ -20,8 +20,7 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "verify": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build",
-    "contenido:validar": "node scripts/validar-contenido.mjs",
-    "db:migrar": "node scripts/migrar.mjs"
+    "contenido:validar": "node scripts/validar-contenido.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "latest",
@@ -49,7 +48,6 @@
     "eslint-config-next": "16.3.5",
     "jsdom": "latest",
     "monaco-editor": "^0.56.0",
-    "pg": "latest",
     "prettier": "latest",
     "tailwindcss": "^4",
     "typescript": "^5",

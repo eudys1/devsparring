@@ -1,0 +1,5 @@
+# Finales de línea LF en todo el repo, también en Windows: Prettier y CI los exigen.
+* text=auto eol=lf
+*.png binary
+*.ico binary
+*.woff2 binary

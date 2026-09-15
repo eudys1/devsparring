@@ -17,8 +17,10 @@ Diseñada genérica para otros perfiles tech.
 - `contenido/`: el banco de preguntas en JSON, fuente de verdad, revisado por PR.
 - `src/app/`: solo enrutado. `src/features/*`: el código por funcionalidad.
   `src/lib/`: clientes (Supabase, Anthropic, config). Sin ficheros índice.
-- `supabase/migrations/`: SQL con nombre `AAAAMMDDHHMMSS_asunto.sql`.
-- `scripts/`: migrar, validar contenido, capturas. Cabecera con el porqué.
+- `supabase/migrations/`: SQL con nombre `AAAAMMDDHHMMSS_asunto.sql`. Las aplica la
+  integración de GitHub de Supabase en cada push a `main`; a mano, `npx supabase db push`.
+  `supabase/config.toml` es la configuración como código (auth, redirecciones).
+- `scripts/`: validar contenido, capturas. Cabecera con el porqué.
 
 ## Comandos
 
@@ -27,7 +29,6 @@ pnpm dev                 # desarrollo (Turbopack)
 pnpm verify              # format:check + lint + typecheck + test + build, en orden
 pnpm test:e2e            # Playwright, Chromium, contra el build de producción
 pnpm contenido:validar   # valida contenido/ contra el esquema zod
-pnpm db:migrar           # aplica migraciones al Supabase remoto (URL en .env.local)
 ```
 
 Nada está terminado hasta que `pnpm verify` está en verde, y se dice tal cual si
