@@ -1,11 +1,12 @@
 'use client';
 
-import { Monitor, Moon, Sun } from 'lucide-react';
+import { Moon, Sun } from 'lucide-react';
 import { useSyncExternalStore } from 'react';
 
-// El toggle del usuario manda sobre prefers-color-scheme. 'sistema' es un
-// estado de verdad, no la ausencia de elección: por eso son tres opciones.
-type Tema = 'claro' | 'oscuro' | 'sistema';
+// Dos temas y un interruptor. Sin opción "sistema": la primera vez se arranca
+// con lo que prefiera el sistema y, en cuanto el usuario toca el interruptor,
+// manda él. La preferencia se guarda en el navegador.
+type Tema = 'claro' | 'oscuro';
 const LLAVE = 'devsparring.tema';
 
 // Se ejecuta antes de pintar para que no haya un destello del tema contrario.
@@ -14,61 +15,63 @@ export const GUION_TEMA = `(function(){try{var t=localStorage.getItem('${LLAVE}'
 const oyentes = new Set<() => void>();
 function suscribir(o: () => void) {
   oyentes.add(o);
-  return () => oyentes.delete(o);
+  const mq = window.matchMedia('(prefers-color-scheme: dark)');
+  mq.addEventListener('change', o);
+  return () => {
+    oyentes.delete(o);
+    mq.removeEventListener('change', o);
+  };
 }
 function leer(): Tema {
   try {
     const v = localStorage.getItem(LLAVE);
-    return v === 'claro' || v === 'oscuro' ? v : 'sistema';
+    if (v === 'claro' || v === 'oscuro') return v;
   } catch {
-    return 'sistema';
+    /* navegación privada */
   }
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'oscuro' : 'claro';
 }
 function aplicar(t: Tema) {
-  const raiz = document.documentElement;
-  if (t === 'sistema') delete raiz.dataset.theme;
-  else raiz.dataset.theme = t === 'claro' ? 'light' : 'dark';
+  document.documentElement.dataset.theme = t === 'claro' ? 'light' : 'dark';
   try {
-    if (t === 'sistema') localStorage.removeItem(LLAVE);
-    else localStorage.setItem(LLAVE, t);
+    localStorage.setItem(LLAVE, t);
   } catch {
     /* navegación privada: el tema dura lo que la pestaña */
   }
   for (const o of oyentes) o();
 }
 
-const OPCIONES: { valor: Tema; icono: typeof Sun; nombre: string }[] = [
-  { valor: 'claro', icono: Sun, nombre: 'Claro' },
-  { valor: 'oscuro', icono: Moon, nombre: 'Oscuro' },
-  { valor: 'sistema', icono: Monitor, nombre: 'Sistema' },
-];
-
-export function Tema({ className = '' }: { className?: string }) {
-  const actual = useSyncExternalStore(suscribir, leer, () => 'sistema' as Tema);
+/**
+ * Botón de tema. `icono` es un botón cuadrado con el icono del tema al que
+ * cambiarías (para carriles y cabeceras); `texto` lleva además la palabra.
+ */
+export function Tema({
+  className = '',
+  variante = 'icono',
+}: {
+  className?: string;
+  variante?: 'icono' | 'texto';
+}) {
+  // En el servidor no se sabe el tema: se pinta "claro" y se corrige al hidratar
+  // sin destello porque el guion de arriba ya ha puesto el atributo.
+  const actual = useSyncExternalStore(suscribir, leer, () => 'claro' as Tema);
+  const oscuro = actual === 'oscuro';
+  const Icono = oscuro ? Sun : Moon;
+  const etiqueta = oscuro ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro';
   return (
-    <div
-      className={`inline-flex rounded-r border border-linea p-0.5 ${className}`}
-      role="group"
-      aria-label="Tema"
+    <button
+      type="button"
+      role="switch"
+      aria-checked={oscuro}
+      aria-label={etiqueta}
+      title={etiqueta}
+      onClick={() => aplicar(oscuro ? 'claro' : 'oscuro')}
+      className={`inline-flex min-h-9 items-center justify-center gap-2 rounded-r border border-linea-fuerte bg-papel-2 text-[0.8125rem] text-tinta-2 transition-[background-color,border-color,color,transform] duration-[160ms] ease-salida hover:border-tinta-3 hover:text-tinta active:scale-[0.96] ${
+        variante === 'icono' ? 'w-9' : 'px-3'
+      } ${className}`}
     >
-      {OPCIONES.map(({ valor, icono: Icono, nombre }) => {
-        const activo = actual === valor;
-        return (
-          <button
-            key={valor}
-            type="button"
-            onClick={() => aplicar(valor)}
-            aria-pressed={activo}
-            title={nombre}
-            className={`grid h-7 w-8 place-items-center rounded-[2px] transition-[transform,background-color,color] duration-[140ms] ease-salida active:scale-[0.94] ${
-              activo ? 'bg-esquina text-esquina-tinta' : 'text-tinta-3 hover:text-tinta'
-            }`}
-          >
-            <Icono className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden />
-            <span className="sr-only">{nombre}</span>
-          </button>
-        );
-      })}
-    </div>
+      <Icono className="h-4 w-4" strokeWidth={1.75} aria-hidden />
+      {variante === 'texto' ? (oscuro ? 'Tema claro' : 'Tema oscuro') : null}
+    </button>
   );
 }

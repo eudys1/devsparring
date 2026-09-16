@@ -100,7 +100,8 @@ export function Scorecard({ c, modelo }: { c: Correccion; modelo?: string }) {
 
         {modelo ? (
           <p className="border-t border-linea px-4 py-2 font-mono text-[0.6875rem] text-tinta-3">
-            Corregido por {modelo}. Orienta; el criterio final es tuyo.
+            Corregido por {modelo}. La IA puede equivocarse: orienta, pero el criterio final es
+            tuyo.
           </p>
         ) : null}
       </div>

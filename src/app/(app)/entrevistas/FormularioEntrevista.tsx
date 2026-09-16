@@ -2,7 +2,7 @@
 
 import { useRef, useState } from 'react';
 import { Boton } from '@/components/ui/Boton';
-import { AreaTexto, Entrada, Rotulo, Selector } from '@/components/ui/Campo';
+import { AreaTexto, Entrada, NotaObligatorio, Rotulo, Selector } from '@/components/ui/Campo';
 import { registrarEntrevista } from './acciones';
 
 export function FormularioEntrevista() {
@@ -22,11 +22,13 @@ export function FormularioEntrevista() {
       }}
     >
       <h2 className="text-[1.0625rem] font-semibold text-tinta">Apuntar una entrevista</h2>
-      <p className="mt-0.5 text-[0.8125rem] text-tinta-3">Lo único obligatorio es la empresa.</p>
+      <p className="mt-0.5 text-[0.8125rem] text-tinta-3">Con la empresa y la fecha basta.</p>
 
       <div className="mt-4 space-y-3.5">
         <div>
-          <Rotulo htmlFor="empresa">Empresa</Rotulo>
+          <Rotulo htmlFor="empresa" obligatorio>
+            Empresa
+          </Rotulo>
           <Entrada id="empresa" name="empresa" required maxLength={120} autoComplete="off" />
         </div>
         <div className="grid grid-cols-2 gap-3">
@@ -46,7 +48,9 @@ export function FormularioEntrevista() {
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <Rotulo htmlFor="fecha">Fecha</Rotulo>
+            <Rotulo htmlFor="fecha" obligatorio>
+              Fecha
+            </Rotulo>
             <Entrada id="fecha" name="fecha" type="date" defaultValue={hoy} required />
           </div>
           <div>
@@ -86,10 +90,11 @@ export function FormularioEntrevista() {
         </div>
       </div>
 
-      <div className="mt-4 flex items-center gap-3">
+      <div className="mt-4 flex flex-wrap items-center gap-3">
         <Boton type="submit" variante="esquina" disabled={estado === 'enviando'}>
           {estado === 'enviando' ? 'Guardando…' : 'Guardar'}
         </Boton>
+        <NotaObligatorio />
         <span aria-live="polite" className="text-[0.875rem]">
           {estado === 'ok' ? <span className="text-ok">Guardada.</span> : null}
           {estado === 'error' ? (

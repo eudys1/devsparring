@@ -55,3 +55,37 @@ respuesta (no verificado que estén libres para comprar).
 | Móvil                    | Los modos de texto funcionan; el modo kata avisa de que va mejor en escritorio                                                         | Monaco es mediocre en pantalla pequeña                                                   |
 | Límites legales de la IA | Solo clave propia del usuario o la del dueño para su cuenta; jamás "entra con tu cuenta de Claude"                                     | Términos de Anthropic leídos el 14-09-2026 (ver arquitectura)                            |
 | Gamificación             | Sin ligas, vidas ni notificaciones de culpa; sí sesiones cortas, repaso espaciado y progreso visible                                   | Público adulto y ya ansioso (research de competencia)                                    |
+
+## 2026-09-17 · Segunda ronda de pruebas de Eudys
+
+| Tema                       | Decisión                                                                                                                                                                                                                                                                                                         | Porqué                                                                                                                                                          |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Flash y Explicar           | El modo verbal pasa a llamarse Explicar y se escribe, como antes: respuesta desarrollada a preguntas de razonamiento, y al terminar se enseña la repregunta que haría un senior. La autoevaluación sin IA es de seleccionar: marcas qué criterios de la rúbrica has cubierto y la nota de repaso se propone sola | Eudys probó un modo de hablar sin escribir y lo rechazó: para hablar solo no hace falta la app; quería contestar escribiendo o seleccionando                    |
+| Katas                      | Se corrige solo el código; el prompt lo dice y la pantalla también, con aviso de que la IA puede equivocarse                                                                                                                                                                                                     | En una entrevista con editor no se pide prosa                                                                                                                   |
+| Salir y continuar          | Enlace "Salir y seguir luego" en cada sesión; Hoy ofrece continuar la última sesión abierta de las últimas 24 h                                                                                                                                                                                                  | Cada asalto ya se guardaba; faltaba decirlo y poder volver                                                                                                      |
+| Tema                       | Interruptor claro/oscuro; la opción "sistema" desaparece (arranca con el sistema y luego manda el usuario)                                                                                                                                                                                                       | Tres opciones para una preferencia binaria sobraban                                                                                                             |
+| Catálogo                   | Cada pregunta de una pista se abre y enseña la respuesta que aprueba y las rúbricas junior y senior; Hoy enlaza a la pregunta desde los últimos asaltos                                                                                                                                                          | Estudiar antes de practicar (ejemplo resuelto) y poder consultar tras fallar                                                                                    |
+| Racha                      | Días seguidos con práctica, visible en Hoy; sin vidas, ligas ni notificaciones                                                                                                                                                                                                                                   | Motivación barata y honesta; la de Duolingo sin su culpa                                                                                                        |
+| Opciones frente a escribir | No se implementa (todavía). Elegir entre opciones entrena reconocimiento; la entrevista exige recuerdo libre. Posible calentamiento futuro: "¿cuál de estas cuatro respuestas aprueba?" antes de escribir                                                                                                        | Testing effect: el recuerdo libre retiene más que el reconocimiento (Roediger y Karpicke, 2006; Dunlosky et al., 2013, de memoria, sin verificar hoy en la web) |
+
+### Qué técnicas de estudio ya usa la app y qué falta
+
+Lo que la investigación en aprendizaje da por más eficaz (Dunlosky et al.,
+2013, "Improving Students' Learning With Effective Learning Techniques";
+Roediger y Karpicke, 2006, sobre el efecto de la evocación; Bjork sobre las
+"dificultades deseables"; citados de memoria el 17-09-2026, sin verificar hoy)
+son dos cosas: **practicar recordando** (no releer) y **espaciar** las
+repeticiones. Devsparring ya está construida sobre las dos: cada asalto es
+recuerdo libre y FSRS decide cuándo vuelve cada pregunta. Lo que se añade o
+se refuerza a partir de esta ronda:
+
+- **Feedback inmediato y concreto**: la respuesta que aprueba y "lo que faltó"
+  se ven al momento; ahora también la repregunta en voz alta.
+- **Ejemplo resuelto antes de practicar**: el catálogo abre cada pregunta con
+  su respuesta y rúbricas. Leer primero y practicar después sin mirar.
+- **Intercalado**: las sesiones mezclan pistas salvo que se elija una; se
+  mantiene.
+- **Hábito**: racha de días en Hoy, sin castigos.
+- **Descartado por ahora**: tarjetas de completar huecos y test de opciones
+  (entrenan reconocimiento, no recuerdo); notificaciones (público adulto, ya
+  ansioso; ver decisión de gamificación del 14-09-2026).

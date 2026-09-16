@@ -1,19 +1,12 @@
 // Concha de la app: el carril es un bloque de azul tinta en escritorio y una
-// barra inferior en móvil. Es la masa de color que separa la navegación de la
-// sesión en curso, con la entrada activa recortada en el color del papel.
-import { BookOpen, ClipboardList, Flame, Route, UserRound } from 'lucide-react';
+// barra inferior en móvil. Arriba la marca, en medio las secciones en dos
+// grupos (entrenar y lo tuyo), abajo la ficha de quien está dentro con el tema
+// y la salida. La entrada activa la marca NavEnlaces con la ruta actual.
 import Link from 'next/link';
 import { CerrarSesion } from './CerrarSesion';
 import { Marca } from './Marca';
+import { NavEnlaces } from './NavEnlaces';
 import { Tema } from './Tema';
-
-const ENTRADAS = [
-  { href: '/hoy', texto: 'Hoy', Icono: Flame },
-  { href: '/practicar', texto: 'Practicar', Icono: BookOpen },
-  { href: '/pistas', texto: 'Pistas', Icono: Route },
-  { href: '/entrevistas', texto: 'Entrevistas', Icono: ClipboardList },
-  { href: '/cuenta', texto: 'Cuenta', Icono: UserRound },
-];
 
 export function Concha({
   children,
@@ -24,37 +17,42 @@ export function Concha({
   email?: string;
   porRepasar?: number;
 }) {
+  const inicial = (email ?? '?').slice(0, 1).toUpperCase();
   return (
-    <div className="min-h-dvh md:grid md:grid-cols-[232px_1fr]">
+    <div className="min-h-dvh md:grid md:grid-cols-[248px_1fr]">
       <aside className="bloque hidden md:sticky md:top-0 md:flex md:h-dvh md:flex-col">
-        <Link href="/hoy" className="px-5 pb-6 pt-6">
+        <Link href="/hoy" className="mx-5 border-b border-[var(--bloque-linea)] py-5">
           <Marca />
         </Link>
 
-        <nav className="flex flex-col gap-0.5 px-3" aria-label="Principal">
-          {ENTRADAS.map(({ href, texto, Icono }) => (
-            <Link
-              key={href}
-              href={href}
-              className="flex min-h-10 items-center gap-2.5 rounded-r px-2.5 text-[0.9375rem] text-[var(--bloque-tinta-2)] transition-[background-color,color] duration-[160ms] ease-salida hover:bg-white/10 hover:text-white"
-            >
-              <Icono className="h-4 w-4" strokeWidth={1.75} aria-hidden />
-              {texto}
-              {href === '/practicar' && porRepasar > 0 ? (
-                <span className="tabular ml-auto rounded-full bg-white px-1.5 py-px font-mono text-[0.6875rem] text-[var(--bloque)]">
-                  {porRepasar}
-                </span>
-              ) : null}
-            </Link>
-          ))}
+        <nav className="flex flex-col gap-5 px-3 pt-5" aria-label="Principal">
+          <NavEnlaces porRepasar={porRepasar} variante="carril" />
         </nav>
 
-        <div className="mt-auto border-t border-[var(--bloque-linea)] px-5 py-4">
-          <Tema className="mb-3" />
-          <p className="truncate text-[0.8125rem] text-[var(--bloque-tinta-2)]" title={email}>
-            {email}
-          </p>
-          <CerrarSesion />
+        <div className="mt-auto p-3">
+          <div className="rounded-r2 bg-black/25 p-3 shadow-[inset_0_1px_0_rgb(255_255_255/0.08)]">
+            <div className="flex items-center gap-2.5">
+              <span
+                className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-white/15 font-mono text-[0.8125rem] font-medium text-white"
+                aria-hidden
+              >
+                {inicial}
+              </span>
+              <span className="min-w-0">
+                <span className="rotulo block">Tu cuenta</span>
+                <span
+                  className="block truncate text-[0.8125rem] text-[var(--bloque-tinta)]"
+                  title={email}
+                >
+                  {email}
+                </span>
+              </span>
+            </div>
+            <div className="mt-3 flex items-center gap-2">
+              <Tema />
+              <CerrarSesion className="flex-1" />
+            </div>
+          </div>
         </div>
       </aside>
 
@@ -63,7 +61,16 @@ export function Concha({
           <Link href="/hoy">
             <Marca />
           </Link>
-          <Tema />
+          <div className="flex items-center gap-2">
+            <Tema />
+            <Link
+              href="/cuenta"
+              aria-label="Tu cuenta"
+              className="grid h-9 w-9 place-items-center rounded-full bg-white/15 font-mono text-[0.8125rem] font-medium text-white"
+            >
+              {inicial}
+            </Link>
+          </div>
         </header>
         <main id="contenido" className="px-4 py-6 md:px-10 md:py-10">
           {children}
@@ -74,21 +81,7 @@ export function Concha({
         className="bloque fixed inset-x-0 bottom-0 z-20 grid grid-cols-5 border-t border-[var(--bloque-linea)] pb-[env(safe-area-inset-bottom)] md:hidden"
         aria-label="Principal"
       >
-        {ENTRADAS.map(({ href, texto, Icono }) => (
-          <Link
-            key={href}
-            href={href}
-            className="flex min-h-[3.5rem] flex-col items-center justify-center gap-1 text-[0.6875rem] text-[var(--bloque-tinta-2)] active:bg-white/10"
-          >
-            <span className="relative">
-              <Icono className="h-5 w-5" strokeWidth={1.75} aria-hidden />
-              {href === '/practicar' && porRepasar > 0 ? (
-                <span className="absolute -right-1.5 -top-1 h-2 w-2 rounded-full bg-white" />
-              ) : null}
-            </span>
-            {texto}
-          </Link>
-        ))}
+        <NavEnlaces porRepasar={porRepasar} variante="barra" />
       </nav>
     </div>
   );

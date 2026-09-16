@@ -42,7 +42,8 @@ a las URL de redirección. Esos valores están también en `supabase/config.toml
 ```bash
 pnpm revisar     # el bucle completo: verificación, build, detector y capturas
 pnpm verify      # format:check + lint + typecheck + test + build
-pnpm test:e2e    # Playwright en Chromium contra el build de producción
+pnpm test:e2e    # Playwright contra el build; con E2E_EMAIL y E2E_PASSWORD en
+                 # .env.local prueba también las pantallas con sesión
 ```
 
 `pnpm revisar` deja las capturas en `capturas/` (fuera de git) para mirarlas

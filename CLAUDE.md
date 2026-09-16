@@ -29,7 +29,8 @@ Diseñada genérica para otros perfiles tech.
 ```bash
 pnpm dev                 # desarrollo (Turbopack)
 pnpm verify              # format:check + lint + typecheck + test + build, en orden
-pnpm test:e2e            # Playwright, Chromium, contra el build de producción
+pnpm test:e2e            # Playwright contra el build; con E2E_EMAIL/E2E_PASSWORD en .env.local
+                         # prueba también las pantallas con sesión (cuenta de pruebas)
 pnpm contenido:validar   # valida contenido/ contra el esquema zod
 pnpm revisar             # el bucle entero: checks + build + detector + capturas
 pnpm detector            # anti-patrones de diseño contra el listón de dev

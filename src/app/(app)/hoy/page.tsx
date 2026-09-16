@@ -6,8 +6,14 @@ import { cargarBanco } from '@/features/preguntas/cargar';
 import { PISTAS, type Pista } from '@/features/preguntas/esquema';
 import { publicadas } from '@/features/preguntas/filtrar';
 import { NOMBRE_MODO, NOMBRE_PISTA } from '@/features/preguntas/nombres';
-import { contarRespuestas, ultimasRespuestas } from '@/features/sesion/db';
+import {
+  contarRespuestas,
+  diasConRespuesta,
+  sesionAbierta,
+  ultimasRespuestas,
+} from '@/features/sesion/db';
 import { idsVencidas, obtenerTarjetas } from '@/features/srs/db';
+import { racha } from '@/features/srs/racha';
 import { State } from '@/features/srs/scheduler';
 import { ahora } from '@/lib/reloj';
 import { supabaseServidor, usuarioActual } from '@/lib/supabase/server';
@@ -17,17 +23,20 @@ export const metadata = { title: 'Hoy' };
 export default async function Hoy() {
   const usuario = (await usuarioActual())!;
   const db = await supabaseServidor();
-  const [banco, perfil, vencidas, tarjetas, ultimas, total] = await Promise.all([
+  const [banco, perfil, vencidas, tarjetas, ultimas, total, abierta, dias] = await Promise.all([
     cargarBanco(),
     obtenerPerfil(db, usuario.id),
     idsVencidas(db, usuario.id),
     obtenerTarjetas(db, usuario.id),
     ultimasRespuestas(db, usuario.id),
     contarRespuestas(db, usuario.id),
+    sesionAbierta(db, usuario.id),
+    diasConRespuesta(db, usuario.id),
   ]);
   const lista = publicadas(banco);
   const porId = new Map(lista.map((p) => [p.id, p]));
   const hoy = ahora();
+  const diasSeguidos = racha(dias, hoy);
 
   const pistas = PISTAS.map((pista) => {
     const preguntas = lista.filter((p) => p.pista === pista);
@@ -55,6 +64,24 @@ export default async function Hoy() {
         {perfil.nombre ? `, ${perfil.nombre}` : ''}
       </h1>
 
+      {/* La sesión que dejaste a medias: lo respondido ya está guardado */}
+      {abierta ? (
+        <section className="tarjeta mt-6 grid grid-cols-[3px_1fr] overflow-hidden">
+          <span className="bg-esquina" aria-hidden />
+          <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
+            <p className="text-[0.9375rem] text-tinta">
+              <span className="rotulo mr-2">Sesión en curso</span>
+              {NOMBRE_MODO[abierta.modo].nombre} · {abierta.nivel}
+              {abierta.pista ? ` · ${NOMBRE_PISTA[abierta.pista]}` : ''}. Lo respondido está
+              guardado.
+            </p>
+            <Link href={`/practicar/${abierta.id}`} className={estilosBoton('normal')}>
+              Continuar
+            </Link>
+          </div>
+        </section>
+      ) : null}
+
       {/* La esquina: qué toca ahora, con una sola acción. Es el bloque de la
           app: la cifra que manda tiene geometría, no solo dígito. */}
       <section className="bloque bloque-luna mt-6 rounded-r2 px-5 py-5 sm:px-7 sm:py-6">
@@ -62,11 +89,12 @@ export default async function Hoy() {
           <div className="min-w-0 flex-1">
             <p className="rotulo">{vencidas.length ? 'Toca repasar' : 'Sin repasos pendientes'}</p>
             {vencidas.length ? (
-              <p className="tabular cartel mt-1 text-[clamp(3.5rem,9vw,6rem)] leading-[0.85] text-white">
-                {vencidas.length}
-                <span className="ml-3 text-[1rem] font-normal normal-case tracking-normal text-[var(--bloque-tinta-2)]">
-                  {vencidas.length === 1 ? 'pregunta ha vuelto' : 'preguntas han vuelto'} a tocar
+              <p className="mt-1 text-[1.125rem] leading-snug">
+                <span className="tabular cartel mr-2 text-[2.75rem] leading-none text-white">
+                  {vencidas.length}
                 </span>
+                {vencidas.length === 1 ? 'pregunta ha vuelto' : 'preguntas han vuelto'} a tocar.
+                Entran primero en la próxima sesión.
               </p>
             ) : (
               <p className="mt-1 max-w-[40ch] text-[1.125rem] leading-snug">
@@ -91,8 +119,17 @@ export default async function Hoy() {
         </div>
       </section>
 
-      <section className="mt-8 grid grid-cols-3 gap-4 border-y border-linea py-4">
+      <section className="mt-8 grid grid-cols-2 gap-4 border-y border-linea py-4 sm:grid-cols-4">
         {[
+          {
+            n: diasSeguidos,
+            t:
+              diasSeguidos === 1
+                ? 'día seguido practicando'
+                : diasSeguidos === 0
+                  ? 'días seguidos: hoy se empieza'
+                  : 'días seguidos practicando',
+          },
           { n: total, t: 'respuestas corregidas' },
           { n: tarjetas.size, t: `preguntas vistas de ${lista.length}` },
           { n: dominadasTotal, t: 'dominadas (vuelven en 3 semanas o más)' },
@@ -115,7 +152,7 @@ export default async function Hoy() {
               <li key={pista}>
                 <Link
                   href={`/pistas/${pista}`}
-                  className="grid grid-cols-[8rem_1fr_3.5rem] items-center gap-3 py-2.5 pr-2 transition-[background-color] duration-[160ms] ease-salida hover:bg-papel-2"
+                  className="grid grid-cols-[7rem_1fr_3.5rem] items-center gap-3 py-2.5 pr-2 transition-[background-color] duration-[160ms] ease-salida hover:bg-papel-2 sm:grid-cols-[8rem_1fr_3.5rem]"
                 >
                   <span className="truncate text-[0.9375rem] text-tinta">
                     {NOMBRE_PISTA[pista as Pista]}
@@ -154,9 +191,18 @@ export default async function Hoy() {
                 <li key={r.id} className="grid grid-cols-[3px_1fr_auto] items-center gap-3 py-2.5">
                   <span className={`h-8 w-[3px] rounded-[1px] ${canto}`} aria-hidden />
                   <span className="min-w-0">
-                    <span className="block truncate text-[0.9375rem] text-tinta">
-                      {p?.texto.es ?? r.pregunta_id}
-                    </span>
+                    {p ? (
+                      <Link
+                        href={`/pistas/${p.pista}#${p.id}`}
+                        className="block truncate text-[0.9375rem] text-tinta underline decoration-linea-fuerte underline-offset-2 hover:decoration-tinta-3"
+                      >
+                        {p.texto.es}
+                      </Link>
+                    ) : (
+                      <span className="block truncate text-[0.9375rem] text-tinta">
+                        {r.pregunta_id}
+                      </span>
+                    )}
                     <span className="block text-[0.75rem] text-tinta-3">
                       {NOMBRE_MODO[r.modo].nombre} ·{' '}
                       {new Date(r.creada_en).toLocaleDateString('es-ES')}

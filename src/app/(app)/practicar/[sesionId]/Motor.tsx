@@ -66,12 +66,16 @@ export function Motor({
   const [nota, setNota] = useState<Nota | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [copiado, setCopiado] = useState(false);
+  // Autoevaluación sin IA: marcar qué criterios de la rúbrica has cubierto.
+  const [cubiertos, setCubiertos] = useState<number[]>([]);
   const [segundos, setSegundos] = useState(0);
   const inicio = useRef(0);
   const hechas = yaRespondidas.length + indice;
   const total = preguntas.length;
   const pregunta = pendientes[indice];
   const esKata = sesion.modo === 'kata';
+  // Explicar: respuesta desarrollada; al terminar se enseña además la repregunta.
+  const esVerbal = sesion.modo === 'verbal';
 
   useEffect(() => {
     inicio.current = Date.now();
@@ -171,6 +175,7 @@ export function Motor({
     setCorreccion(null);
     setTests(null);
     setNota(null);
+    setCubiertos([]);
     setError(null);
     setSegundos(0);
     setFase('respondiendo');
@@ -223,9 +228,25 @@ export function Motor({
   }
 
   const rubrica = rubricaParaNivel(pregunta, sesion.nivel);
+  // Al marcar criterios, la nota de repaso se propone sola: nada, fallé; menos
+  // de la mitad, a medias; casi todo, bien; todo, fácil. Se puede cambiar.
+  const marcar = (i: number) => {
+    const nuevos = cubiertos.includes(i) ? cubiertos.filter((x) => x !== i) : [...cubiertos, i];
+    setCubiertos(nuevos);
+    const r = nuevos.length / rubrica.length;
+    setNota(nuevos.length === 0 ? 'again' : r < 0.5 ? 'hard' : r < 1 ? 'good' : 'easy');
+  };
+  // La repregunta del modo en voz alta: lo primero que solo se le exige al
+  // senior, que es justo donde un entrevistador aprieta cuando bordeas la respuesta.
+  const repregunta = esVerbal
+    ? rubricaParaNivel(pregunta, 'senior').find(
+        (c) => !rubricaParaNivel(pregunta, 'junior').includes(c),
+      )
+    : undefined;
   const tiempoLimite = pregunta.kata ? pregunta.kata.tiempoMin * 60 : null;
   const restante = tiempoLimite !== null ? tiempoLimite - segundos : null;
   const evaluando = fase === 'evaluando' || fase === 'guardando';
+  const autoevaluacion = evaluando && !correccion;
 
   return (
     <div className="mx-auto max-w-6xl">
@@ -282,6 +303,17 @@ export function Motor({
           })}
         </ol>
       </header>
+      <p className="mt-2 flex items-center justify-between gap-3 text-[0.8125rem] text-tinta-3">
+        <span>
+          {demo ? 'Demo: no se guarda nada.' : 'Cada asalto se guarda al pasar al siguiente.'}
+        </span>
+        <Link
+          href={demo ? '/' : '/hoy'}
+          className="underline decoration-linea-fuerte underline-offset-2 hover:text-tinta"
+        >
+          {demo ? 'Salir de la demo' : 'Salir y seguir luego'}
+        </Link>
+      </p>
 
       <div
         className={`mt-6 grid gap-6 ${esKata ? 'xl:grid-cols-[1.3fr_0.7fr]' : 'lg:grid-cols-[1.1fr_0.9fr]'}`}
@@ -326,14 +358,14 @@ export function Motor({
             ) : (
               <>
                 <label htmlFor="respuesta" className="rotulo mb-1.5 block">
-                  {sesion.modo === 'verbal' ? 'Lo que has dicho' : 'Tu respuesta'}
+                  {esVerbal ? 'Tu explicación' : 'Tu respuesta'}
                 </label>
                 <AreaTexto
                   id="respuesta"
-                  className="min-h-44"
+                  className={esVerbal ? 'min-h-56' : 'min-h-44'}
                   placeholder={
-                    sesion.modo === 'verbal'
-                      ? 'Dilo en voz alta de verdad, como en la entrevista, y escribe aquí lo esencial.'
+                    esVerbal
+                      ? 'Desarróllala como se la contarías al entrevistador: qué, por qué y qué pasaría si…'
                       : 'Escribe tu respuesta…'
                   }
                   value={respuesta}
@@ -343,6 +375,12 @@ export function Motor({
                 />
               </>
             )}
+            {esKata ? (
+              <p className="mt-2 text-[0.8125rem] text-tinta-3">
+                Se corrige solo el código: nombres, casos borde, complejidad. No hace falta explicar
+                nada. La corrección con IA orienta y puede equivocarse.
+              </p>
+            ) : null}
           </div>
 
           {tests ? (
@@ -369,6 +407,19 @@ export function Motor({
                   texto={pregunta.respuestaModelo}
                   className="mt-2 text-[0.9375rem] text-tinta-2"
                 />
+                {repregunta ? (
+                  <div className="mt-4 border-t border-linea pt-3">
+                    <h2 className="rotulo text-esquina">Te repreguntarían</h2>
+                    <p
+                      className="prosa mt-1.5 text-[0.9375rem] text-tinta"
+                      dangerouslySetInnerHTML={{ __html: enLinea(repregunta) }}
+                    />
+                    <p className="mt-1 text-[0.8125rem] text-tinta-3">
+                      Es lo que te preguntaría un entrevistador senior a continuación. Piénsala
+                      antes de puntuarte.
+                    </p>
+                  </div>
+                ) : null}
               </div>
             </section>
           ) : null}
@@ -408,19 +459,47 @@ export function Motor({
         </div>
 
         <aside className="space-y-4">
-          <section className="tarjeta px-4 py-3.5">
-            <h2 className="rotulo">Qué te van a exigir de {sesion.nivel}</h2>
+          <section className={`tarjeta px-4 py-3.5 ${autoevaluacion ? 'border-esquina/40' : ''}`}>
+            <h2 className="rotulo">
+              {autoevaluacion
+                ? 'Marca lo que has cubierto'
+                : `Qué te van a exigir de ${sesion.nivel}`}
+            </h2>
+            {autoevaluacion ? (
+              <p className="mt-0.5 text-[0.8125rem] text-tinta-3">
+                Compara con la respuesta que aprueba y sé honesto: de esto sale la nota de repaso.
+              </p>
+            ) : null}
             <ol className="mt-2.5 space-y-2">
-              {rubrica.map((c, i) => (
-                <li
-                  key={i}
-                  className="grid grid-cols-[1.25rem_1fr] gap-1 text-[0.875rem] leading-snug text-tinta-2"
-                >
-                  <span className="tabular font-mono text-[0.75rem] text-tinta-3">{i + 1}.</span>
-                  <span className="prosa" dangerouslySetInnerHTML={{ __html: enLinea(c) }} />
-                </li>
-              ))}
+              {rubrica.map((c, i) =>
+                autoevaluacion ? (
+                  <li key={i}>
+                    <label className="grid cursor-pointer grid-cols-[1.25rem_1fr] items-start gap-2 text-[0.875rem] leading-snug text-tinta-2 has-[:checked]:text-tinta">
+                      <input
+                        type="checkbox"
+                        className="mt-0.5 h-4 w-4 accent-[var(--esquina)]"
+                        checked={cubiertos.includes(i)}
+                        onChange={() => marcar(i)}
+                      />
+                      <span className="prosa" dangerouslySetInnerHTML={{ __html: enLinea(c) }} />
+                    </label>
+                  </li>
+                ) : (
+                  <li
+                    key={i}
+                    className="grid grid-cols-[1.25rem_1fr] gap-1 text-[0.875rem] leading-snug text-tinta-2"
+                  >
+                    <span className="tabular font-mono text-[0.75rem] text-tinta-3">{i + 1}.</span>
+                    <span className="prosa" dangerouslySetInnerHTML={{ __html: enLinea(c) }} />
+                  </li>
+                ),
+              )}
             </ol>
+            {autoevaluacion ? (
+              <p className="tabular mt-2.5 border-t border-linea pt-2 font-mono text-[0.75rem] text-tinta-3">
+                {cubiertos.length} de {rubrica.length} criterios
+              </p>
+            ) : null}
           </section>
 
           {evaluando ? (
@@ -434,7 +513,9 @@ export function Motor({
                 <p className="mt-0.5 text-[0.8125rem] text-tinta-3">
                   {correccion
                     ? `La IA propone "${NOTAS.find((n) => n.nota === nota)?.texto.toLowerCase()}". Cámbialo si no estás de acuerdo.`
-                    : 'Sé honesto: de esto depende cuándo te la vuelve a preguntar.'}
+                    : cubiertos.length
+                      ? `Con ${cubiertos.length} de ${rubrica.length} criterios, propongo "${NOTAS.find((n) => n.nota === nota)?.texto.toLowerCase()}". Cámbialo si no estás de acuerdo.`
+                      : 'Marca arriba los criterios que has cubierto, o elige directamente.'}
                 </p>
                 <div className="mt-2.5 grid grid-cols-2 gap-1.5 sm:grid-cols-4">
                   {NOTAS.map((n) => (

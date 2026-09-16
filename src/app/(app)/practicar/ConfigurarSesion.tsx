@@ -4,6 +4,7 @@
 // nunca deja elegir una combinación vacía: la cuenta se recalcula al vuelo y lo
 // que no tiene preguntas se deshabilita con su motivo, en vez de dejarte
 // empezar una sesión de cero preguntas.
+import { Check } from 'lucide-react';
 import { useState } from 'react';
 import { Boton } from '@/components/ui/Boton';
 import { Peso } from '@/components/ui/Dato';
@@ -26,13 +27,13 @@ export function ConfigurarSesion({
   accion,
 }: {
   disponibilidad: Disponibilidad;
-  inicial: { modo: Modo; nivel: Nivel; idioma: 'es' | 'en' };
+  inicial: { modo: Modo; nivel: Nivel; idioma: 'es' | 'en'; pista?: Pista };
   vencidasPorPista: Partial<Record<Pista, number>>;
   accion: (form: FormData) => void;
 }) {
   const [modo, setModo] = useState<Modo>(inicial.modo);
   const [nivel, setNivel] = useState<Nivel>(inicial.nivel);
-  const [pista, setPista] = useState<Pista | ''>('');
+  const [pista, setPista] = useState<Pista | ''>(inicial.pista ?? '');
 
   const delNivel = disponibilidad[modo][nivel];
   const disponibles = pista ? (delNivel.pistas[pista] ?? 0) : delNivel.total;
@@ -60,7 +61,9 @@ export function ConfigurarSesion({
                   onClick={() => setModo(m)}
                   disabled={vacio}
                   aria-pressed={activo}
-                  className="grid w-full grid-cols-[3px_1fr_auto] items-center gap-3 py-3 pr-3 text-left transition-[background-color] duration-[160ms] ease-salida hover:bg-papel-2 active:bg-linea/40 disabled:pointer-events-none disabled:opacity-40"
+                  className={`grid w-full grid-cols-[3px_1fr_auto] items-center gap-3 rounded-r py-3 pr-3 text-left transition-[background-color] duration-[160ms] ease-salida active:bg-linea/40 disabled:pointer-events-none disabled:opacity-40 ${
+                    activo ? 'bg-esquina-suave' : 'hover:bg-papel-2'
+                  }`}
                 >
                   <span
                     className={`h-full min-h-10 w-[3px] rounded-[1px] ${activo ? 'bg-esquina' : 'bg-transparent'}`}
@@ -76,10 +79,20 @@ export function ConfigurarSesion({
                       {NOMBRE_MODO[m].frase}
                     </span>
                   </span>
-                  <span className="tabular whitespace-nowrap text-right font-mono text-[0.75rem] text-tinta-3">
-                    {NOMBRE_MODO[m].minutos}
-                    <br />
-                    {vacio ? 'sin preguntas' : `${n} preg.`}
+                  <span className="flex items-center gap-3">
+                    <span className="tabular whitespace-nowrap text-right font-mono text-[0.75rem] text-tinta-3">
+                      {NOMBRE_MODO[m].minutos}
+                      <br />
+                      {vacio ? 'sin preguntas' : `${n} preg.`}
+                    </span>
+                    <span
+                      className={`grid h-6 w-6 place-items-center rounded-full ${
+                        activo ? 'bg-esquina text-esquina-tinta' : 'border border-linea-fuerte'
+                      }`}
+                      aria-hidden
+                    >
+                      {activo ? <Check className="h-3.5 w-3.5" strokeWidth={2.5} /> : null}
+                    </span>
                   </span>
                 </button>
               </li>

@@ -2,9 +2,10 @@
 
 // La mitad derecha del héroe: un bloque de azul tinta con una ronda que se
 // juega sola. La pregunta se escribe, aparece una respuesta de ejemplo, el juez
-// marca la tarjeta y cae el veredicto. El número grande es el asalto en curso
-// de verdad (R1, R2, R3), no un adorno. La pregunta y las dimensiones son las
-// reales del banco; la respuesta va rotulada como simulación.
+// marca la tarjeta y cae el veredicto. La pregunta y las dimensiones son las
+// reales del banco; la respuesta va rotulada como simulación. La tarjeta
+// reserva sitio para el texto antes de que se escriba: nada de la página se
+// mueve mientras la ronda avanza.
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import { Casillas } from '@/components/ui/Dato';
 import { ConmutadorVara, useVara } from './Vara';
@@ -44,15 +45,16 @@ export function RondaViva({ guiones }: { guiones: Guion[] }) {
   const g = guiones[n]!;
 
   return (
-    <div className="bloque bloque-luna flex flex-col rounded-r2 px-5 pb-6 pt-5 sm:px-8 sm:pb-8 sm:pt-7">
-      <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-3">
-        <div>
+    <div className="bloque bloque-luna flex flex-col rounded-r2 px-5 pb-5 pt-5 sm:px-7 sm:pb-6 sm:pt-6">
+      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
+        <div className="min-w-0">
           <p className="rotulo">Simulación · pregunta real de {g.pista}</p>
-          <p
-            className="cartel mt-1 text-[clamp(5rem,14vw,10rem)] leading-[0.8] text-white [text-shadow:0_0_60px_rgb(255_255_255/0.25)]"
-            aria-label={`Asalto ${n + 1} de ${guiones.length}`}
-          >
-            R{n + 1}
+          <p className="mt-1.5 flex items-center gap-2 font-mono text-[0.75rem] text-[var(--bloque-tinta-2)]">
+            <span className="relative flex h-2 w-2" aria-hidden>
+              <span className="absolute inset-0 animate-ping rounded-full bg-white/60" />
+              <span className="relative h-2 w-2 rounded-full bg-white" />
+            </span>
+            En directo · asalto {n + 1} de {guiones.length}
           </p>
         </div>
         <ConmutadorVara />
@@ -112,8 +114,9 @@ function Asalto({ g, quieto, onFin }: { g: Guion; quieto: boolean; onFin: () => 
   const tono = puntuacion >= 7 ? 'ok' : puntuacion >= 4 ? 'aviso' : 'mal';
 
   return (
-    <div className="noche panel mt-5 min-h-[19rem] px-4 py-4 sm:px-5" aria-hidden>
-      <p className="text-[1.0625rem] font-medium leading-snug text-[var(--noche-tinta)]">
+    <div className="noche panel mt-5 px-4 py-4 sm:px-5" aria-hidden>
+      {/* Tres líneas reservadas: la pregunta se escribe sin empujar nada */}
+      <p className="line-clamp-3 min-h-[3.3em] text-[1.0625rem] font-medium leading-[1.1] text-[var(--noche-tinta)]">
         {g.pregunta.slice(0, letras)}
         {fase === 'escribiendo' ? <span className="cursor" /> : null}
       </p>
@@ -124,7 +127,7 @@ function Asalto({ g, quieto, onFin }: { g: Guion; quieto: boolean; onFin: () => 
         }`}
       >
         <span className="rotulo">Tu respuesta</span>
-        <p className="mt-1 text-[0.875rem] leading-snug text-[var(--noche-tinta-2)]">
+        <p className="line-clamp-2 mt-1 min-h-[2.6em] text-[0.875rem] leading-[1.3] text-[var(--noche-tinta-2)]">
           {fase === 'escribiendo' ? 'Escribiendo…' : g.respuesta}
         </p>
       </div>
@@ -155,7 +158,7 @@ function Asalto({ g, quieto, onFin }: { g: Guion; quieto: boolean; onFin: () => 
           fase === 'veredicto' ? 'opacity-100' : 'opacity-25'
         }`}
       >
-        <p className="max-w-[30ch] text-[0.8125rem] leading-snug text-[var(--noche-tinta-2)]">
+        <p className="line-clamp-3 min-h-[3.6em] max-w-[30ch] text-[0.8125rem] leading-[1.2] text-[var(--noche-tinta-2)]">
           <span className="font-semibold text-mal">Lo que faltó. </span>
           {g.fallo}
         </p>

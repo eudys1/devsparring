@@ -32,7 +32,12 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" className={`${display.variable} ${texto.variable} ${mono.variable}`}>
+    <html
+      lang="es"
+      className={`${display.variable} ${texto.variable} ${mono.variable}`}
+      // El guion del tema escribe data-theme antes de que React hidrate.
+      suppressHydrationWarning
+    >
       <head>
         {/* Antes de pintar, para que no haya destello del tema contrario */}
         <script dangerouslySetInnerHTML={{ __html: GUION_TEMA }} />

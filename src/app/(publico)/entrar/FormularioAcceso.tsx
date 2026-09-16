@@ -65,7 +65,9 @@ export function FormularioAcceso({ registro, volver }: { registro: boolean; volv
 
       <div className="mt-5 space-y-4">
         <div>
-          <Rotulo htmlFor="email">Correo</Rotulo>
+          <Rotulo htmlFor="email" obligatorio>
+            Correo
+          </Rotulo>
           <Entrada
             id="email"
             type="email"
@@ -76,7 +78,11 @@ export function FormularioAcceso({ registro, volver }: { registro: boolean; volv
           />
         </div>
         <div>
-          <Rotulo htmlFor="clave" pista={modo === 'registro' ? 'mínimo 8 caracteres' : undefined}>
+          <Rotulo
+            htmlFor="clave"
+            obligatorio
+            pista={modo === 'registro' ? 'mínimo 8 caracteres' : undefined}
+          >
             Contraseña
           </Rotulo>
           <Entrada

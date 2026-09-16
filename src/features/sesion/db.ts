@@ -137,3 +137,38 @@ export async function contarRespuestas(db: SupabaseClient, userId: string): Prom
     .eq('user_id', userId);
   return count ?? 0;
 }
+
+// La última sesión sin terminar, para retomarla desde Hoy. Solo cuenta si tiene
+// menos de un día: una sesión abandonada hace una semana no es "en curso".
+export async function sesionAbierta(db: SupabaseClient, userId: string): Promise<Sesion | null> {
+  const hace = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+  const { data } = await db
+    .from('sesiones')
+    .select('*')
+    .eq('user_id', userId)
+    .is('terminada_en', null)
+    .gte('iniciada_en', hace)
+    .order('iniciada_en', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  return (data as Sesion | null) ?? null;
+}
+
+// Días (AAAA-MM-DD, hora local del servidor) con al menos una respuesta en las
+// últimas semanas: con eso se calcula la racha.
+export async function diasConRespuesta(
+  db: SupabaseClient,
+  userId: string,
+  semanas = 8,
+): Promise<string[]> {
+  const desde = new Date(Date.now() - semanas * 7 * 24 * 60 * 60 * 1000).toISOString();
+  const { data } = await db
+    .from('respuestas')
+    .select('creada_en')
+    .eq('user_id', userId)
+    .gte('creada_en', desde);
+  const dias = new Set(
+    ((data ?? []) as { creada_en: string }[]).map((x) => x.creada_en.slice(0, 10)),
+  );
+  return [...dias].sort();
+}

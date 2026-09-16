@@ -1,6 +1,6 @@
 import { obtenerPerfil } from '@/features/cuenta/db';
 import { cargarBanco } from '@/features/preguntas/cargar';
-import { MODOS, type Modo, type Pista } from '@/features/preguntas/esquema';
+import { MODOS, PISTAS, type Modo, type Pista } from '@/features/preguntas/esquema';
 import { disponibilidad } from '@/features/preguntas/filtrar';
 import { idsVencidas } from '@/features/srs/db';
 import { supabaseServidor, usuarioActual } from '@/lib/supabase/server';
@@ -12,9 +12,9 @@ export const metadata = { title: 'Practicar' };
 export default async function Practicar({
   searchParams,
 }: {
-  searchParams: Promise<{ modo?: string; error?: string }>;
+  searchParams: Promise<{ modo?: string; pista?: string; error?: string }>;
 }) {
-  const { modo: modoPedido, error } = await searchParams;
+  const { modo: modoPedido, pista: pistaPedida, error } = await searchParams;
   const usuario = (await usuarioActual())!;
   const db = await supabaseServidor();
   const [banco, perfil, vencidas] = await Promise.all([
@@ -34,6 +34,9 @@ export default async function Practicar({
   const modoInicial = (MODOS as readonly string[]).includes(modoPedido ?? '')
     ? (modoPedido as Modo)
     : 'flash';
+  const pistaInicial = (PISTAS as readonly string[]).includes(pistaPedida ?? '')
+    ? (pistaPedida as Pista)
+    : undefined;
 
   return (
     <div className="mx-auto max-w-3xl">
@@ -56,7 +59,12 @@ export default async function Practicar({
 
       <ConfigurarSesion
         disponibilidad={matriz}
-        inicial={{ modo: modoInicial, nivel: perfil.nivel_por_defecto, idioma: perfil.idioma }}
+        inicial={{
+          modo: modoInicial,
+          nivel: perfil.nivel_por_defecto,
+          idioma: perfil.idioma,
+          pista: pistaInicial,
+        }}
         vencidasPorPista={vencidasPorPista}
         accion={empezarSesion}
       />

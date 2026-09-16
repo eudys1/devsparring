@@ -19,8 +19,8 @@ export const NOMBRE_PISTA: Record<Pista, string> = {
 export const NOMBRE_MODO: Record<Modo, { nombre: string; frase: string; minutos: string }> = {
   flash: { nombre: 'Flash', frase: 'Teoría rápida, respuesta corta', minutos: '5 min' },
   verbal: {
-    nombre: 'En voz alta',
-    frase: 'Explica como en la entrevista, te repreguntan',
+    nombre: 'Explicar',
+    frase: 'Razonamiento con respuesta desarrollada, y te repreguntan',
     minutos: '10 min',
   },
   kata: { nombre: 'Kata', frase: 'Código con reloj y tests', minutos: '20 a 45 min' },

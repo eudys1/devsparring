@@ -53,7 +53,8 @@ export function Modos({ conteo }: { conteo: Record<Modo, number> }) {
     {
       modo: 'verbal',
       ancho: '',
-      explica: 'Explicas en voz alta y te repreguntan donde bordeas la respuesta.',
+      explica:
+        'Razonamiento con respuesta desarrollada, y la repregunta donde bordeas la respuesta.',
       cuerpo: (
         <div className="space-y-1.5 font-mono text-[0.75rem]">
           <Linea tono="apagado">Tú: «uso índices para que vaya más rápido»</Linea>

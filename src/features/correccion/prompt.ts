@@ -25,8 +25,8 @@ const NOMBRE_NIVEL: Record<Nivel, string> = {
 
 const NOMBRE_MODO: Record<EntradaCorreccion['modo'], string> = {
   flash: 'respuesta corta de teoría',
-  verbal: 'explicación hablada (transcrita o resumida por el candidato)',
-  kata: 'ejercicio de código',
+  verbal: 'pregunta de razonamiento con respuesta desarrollada',
+  kata: 'ejercicio de código (se entrega solo el código del editor, sin explicación en prosa)',
   review: 'revisión de código ajeno',
   diseno: 'diseño de sistemas',
   star: 'pregunta comportamental (formato STAR)',
@@ -40,6 +40,7 @@ export function promptSistema(): string {
     'Puntúas de 0 a 10 según cuántos criterios de la rúbrica cumple la respuesta y con qué calidad.',
     'Las tres dimensiones (0 a 5): corrección técnica, complejidad y trade-offs, comunicación y estructura.',
     'Si hay resultado de tests automáticos, manda sobre cualquier impresión: una solución que no pasa los tests no supera 6.',
+    'En ejercicios de código se corrige lo que dice el código: nombres, estructura, casos borde, complejidad. No se penaliza que no haya explicación en prosa; la dimensión de comunicación se juzga por la legibilidad del código.',
     'El campo respuestaQueAprueba contiene lo que diría, en dos o tres frases, un candidato de ese nivel que aprueba; no repitas la respuesta modelo literalmente.',
     'Responde siempre en el idioma indicado. Términos técnicos en inglés tal como se usan en la industria.',
   ].join('\n');

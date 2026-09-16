@@ -9,16 +9,42 @@ export function Rotulo({
   children,
   htmlFor,
   pista,
+  obligatorio = false,
 }: {
   children: React.ReactNode;
   htmlFor: string;
   pista?: string;
+  // El asterisco es la convención que todo el mundo lee; el texto oculto es
+  // para el lector de pantalla, que no lee asteriscos.
+  obligatorio?: boolean;
 }) {
   return (
     <label htmlFor={htmlFor} className="mb-1.5 block">
-      <span className="text-[0.8125rem] font-medium text-tinta">{children}</span>
+      <span className="text-[0.8125rem] font-medium text-tinta">
+        {children}
+        {obligatorio ? (
+          <>
+            <span className="ml-0.5 text-mal" aria-hidden>
+              *
+            </span>
+            <span className="sr-only"> (obligatorio)</span>
+          </>
+        ) : null}
+      </span>
       {pista ? <span className="ml-2 text-[0.75rem] text-tinta-3">{pista}</span> : null}
     </label>
+  );
+}
+
+/** Nota de pie de formulario: qué significa el asterisco. */
+export function NotaObligatorio() {
+  return (
+    <p className="text-[0.75rem] text-tinta-3">
+      <span className="text-mal" aria-hidden>
+        *
+      </span>{' '}
+      obligatorio
+    </p>
   );
 }
 

@@ -213,8 +213,14 @@ Nunca APIs de voz de pago.
 Cadena obligatoria, en orden: `pnpm format && pnpm lint && pnpm typecheck &&
 pnpm test && pnpm build`, más `pnpm test:e2e` antes de dar por cerrada una
 pantalla. Vitest con dos proyectos (node y jsdom). Playwright solo Chromium,
-contra `next build` + `next start`, con la API de corrección interceptada por
-`page.route`. No se testean Server Components async con Vitest.
+contra `next build` + `next start`. Tres proyectos de Playwright: `chromium` (las
+pantallas públicas), `sesion` (un paso que entra una vez con la cuenta de pruebas
+`E2E_EMAIL` / `E2E_PASSWORD` de `.env.local`, la crea si no existe y guarda las
+cookies) y `app` (Hoy, Temario, una sesión entera, Cuenta y Entrevistas con esas
+cookies, dejando capturas en `capturas/app-*.png`). Sin esas variables los tests
+con sesión se saltan, que es lo que pasa en CI. Lección del 17-09-2026: cinco tests
+entrando a la vez disparan el límite de intentos de Supabase; por eso se entra una
+sola vez. No se testean Server Components async con Vitest.
 
 ## Skills de diseño (decisión, 14-09-2026)
 

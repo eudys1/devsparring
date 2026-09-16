@@ -9,7 +9,7 @@ import { State } from '@/features/srs/scheduler';
 import { ahora } from '@/lib/reloj';
 import { supabaseServidor, usuarioActual } from '@/lib/supabase/server';
 
-export const metadata = { title: 'Pistas' };
+export const metadata = { title: 'Temario' };
 
 const DESCRIPCION: Record<Pista, string> = {
   fundamentos: 'POO, SOLID, patrones, testing, git, complejidad',
@@ -35,11 +35,11 @@ export default async function Pistas() {
 
   return (
     <div className="mx-auto max-w-4xl">
-      <p className="rotulo">Catálogo</p>
-      <h1 className="display mt-1 text-[2.5rem] text-tinta">Pistas</h1>
+      <p className="rotulo">Todo el banco, por temas</p>
+      <h1 className="display mt-1 text-[2.5rem] text-tinta">Temario</h1>
       <p className="prosa mt-2 text-tinta-2">
-        Cada pista es un tema del que te van a preguntar. Entra para ver sus preguntas y en qué
-        estado está cada una.
+        Doce pistas, una por tema. Entra en una para leer sus preguntas con la respuesta que aprueba
+        y ver en qué estado tienes cada una.
       </p>
 
       <ul className="mt-7 divide-y divide-linea border-y border-linea">

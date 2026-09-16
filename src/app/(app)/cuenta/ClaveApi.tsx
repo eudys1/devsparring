@@ -94,9 +94,11 @@ export function ClaveApi({ esDueno }: { esDueno: boolean }) {
           value={modelo}
           onChange={(e) => guardarModeloYAvisar(e.target.value as ModeloPreferido)}
         >
-          <option value="estandar">Estándar: rápido y barato</option>
+          <option value="estandar">
+            Claude Sonnet 5: rápido, cerca de un céntimo por corrección
+          </option>
           <option value="exhaustivo">
-            Exhaustivo: para diseño de sistemas, 2,5 veces más caro
+            Claude Opus 5: más fino en diseño de sistemas, unas 2,5 veces más caro
           </option>
         </Selector>
       </div>
