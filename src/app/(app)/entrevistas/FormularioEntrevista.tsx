@@ -13,7 +13,7 @@ export function FormularioEntrevista() {
   return (
     <form
       ref={ref}
-      className="rounded-r border border-linea bg-papel p-4"
+      className="h-max tarjeta px-4 py-4"
       action={async (form) => {
         setEstado('enviando');
         const r = await registrarEntrevista(form);
@@ -21,11 +21,13 @@ export function FormularioEntrevista() {
         if (r.ok) ref.current?.reset();
       }}
     >
-      <h2 className="font-semibold">Apuntar una entrevista</h2>
-      <div className="mt-4 space-y-3">
+      <h2 className="text-[1.0625rem] font-semibold text-tinta">Apuntar una entrevista</h2>
+      <p className="mt-0.5 text-[0.8125rem] text-tinta-3">Lo único obligatorio es la empresa.</p>
+
+      <div className="mt-4 space-y-3.5">
         <div>
           <Rotulo htmlFor="empresa">Empresa</Rotulo>
-          <Entrada id="empresa" name="empresa" required maxLength={120} />
+          <Entrada id="empresa" name="empresa" required maxLength={120} autoComplete="off" />
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div>
@@ -49,21 +51,18 @@ export function FormularioEntrevista() {
           </div>
           <div>
             <Rotulo htmlFor="formato">Formato</Rotulo>
-            <Entrada
-              id="formato"
-              name="formato"
-              placeholder="Live coding + teoría, 1 h"
-              maxLength={200}
-            />
+            <Entrada id="formato" name="formato" placeholder="Live coding, 1 h" maxLength={200} />
           </div>
         </div>
         <div>
-          <Rotulo htmlFor="preguntas">Qué te preguntaron (una por línea)</Rotulo>
+          <Rotulo htmlFor="preguntas" pista="una por línea">
+            Qué te preguntaron
+          </Rotulo>
           <AreaTexto
             id="preguntas"
             name="preguntas"
             className="min-h-28"
-            placeholder={'¿Qué es un índice?\nDiseña un acortador de URLs'}
+            placeholder={'¿Qué es un índice y cuándo empeora?\nDiseña un acortador de URLs'}
           />
         </div>
         <div>
@@ -81,21 +80,22 @@ export function FormularioEntrevista() {
           <Entrada
             id="resultado"
             name="resultado"
-            placeholder="Pasé a la siguiente fase / No / Pendiente"
+            placeholder="Pasé a la siguiente / No / Pendiente"
             maxLength={120}
           />
         </div>
       </div>
+
       <div className="mt-4 flex items-center gap-3">
-        <Boton type="submit" variante="brasa" disabled={estado === 'enviando'}>
+        <Boton type="submit" variante="esquina" disabled={estado === 'enviando'}>
           {estado === 'enviando' ? 'Guardando…' : 'Guardar'}
         </Boton>
-        {estado === 'ok' ? <span className="text-[0.875rem] text-ok">Guardada.</span> : null}
-        {estado === 'error' ? (
-          <span className="text-[0.875rem] text-mal">
-            No se pudo guardar. Revisa la empresa y la fecha.
-          </span>
-        ) : null}
+        <span aria-live="polite" className="text-[0.875rem]">
+          {estado === 'ok' ? <span className="text-ok">Guardada.</span> : null}
+          {estado === 'error' ? (
+            <span className="text-mal">No se pudo guardar. Revisa la empresa y la fecha.</span>
+          ) : null}
+        </span>
       </div>
     </form>
   );

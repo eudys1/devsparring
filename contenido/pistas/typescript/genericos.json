@@ -98,6 +98,11 @@
             "nombre": "extrae el id ignorando otras propiedades",
             "entrada": [{ "id": "u9", "nombre": "Ana" }],
             "esperado": "u9"
+          },
+          {
+            "nombre": "funciona con un id largo tipo uuid",
+            "entrada": [{ "id": "550e8400-e29b-41d4-a716-446655440000", "activo": true }],
+            "esperado": "550e8400-e29b-41d4-a716-446655440000"
           }
         ],
         "tiempoMin": 10,

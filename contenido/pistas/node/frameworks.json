@@ -110,6 +110,43 @@
       ],
       "origen": "generada-revisada",
       "estado": "publicada"
+    },
+    {
+      "id": "node-frameworks-diseno-estructura-carpetas",
+      "version": 1,
+      "pista": "node",
+      "familia": "frameworks",
+      "tipo": "razonamiento",
+      "modos": ["verbal", "diseno"],
+      "nivelMinimo": "junior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Vas a estructurar una API pequeña en Express con rutas para usuarios y pedidos. ¿Cómo organizarías las carpetas y separarías responsabilidades?",
+        "en": "You're structuring a small Express API with routes for users and orders. How would you organize the folders and separate responsibilities?"
+      },
+      "rubrica": {
+        "junior": [
+          "Separa rutas, controladores y acceso a datos en carpetas o ficheros distintos, no todo en un único archivo",
+          "Agrupa por recurso (usuarios, pedidos) en vez de mezclar todo en una carpeta genérica"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica por qué no meter lógica de negocio directamente en el handler de la ruta facilita testear esa lógica sin levantar un servidor HTTP",
+          "Menciona dónde pondría la validación de entrada (como middleware, antes de llegar al controlador) para no repetirla en cada ruta"
+        ]
+      },
+      "respuestaModelo": "Una estructura razonable separa por capa y por recurso: `routes/usuarios.js` y `routes/pedidos.js` solo declaran las rutas y qué controlador llaman; `controllers/usuarios.js` y `controllers/pedidos.js` reciben la petición ya validada y coordinan la respuesta; y `services/` o `repos/` concentra el acceso a la base de datos, sin mezclar SQL o llamadas a Prisma directamente en el controlador. Si la lógica de negocio (calcular un total, decidir si un pedido se puede cancelar) vive en una función aparte del handler de Express, se puede testear llamándola directamente con datos de prueba, sin tener que levantar un servidor HTTP ni simular `req`/`res`. La validación de los datos de entrada (que el body tenga los campos esperados, con el tipo correcto) conviene ponerla como middleware que se ejecuta antes del controlador, para no repetir la misma comprobación en cada ruta que reciba un body parecido.",
+      "etiquetas": ["frameworks", "estructura", "express"],
+      "fuentes": [
+        {
+          "url": "https://github.com/goldbergyoni/nodebestpractices",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "CC-BY-SA-4.0. Ejercicio propio escrito para esta investigación, inspirado en las recomendaciones de estructura por capas del repositorio."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
     }
   ]
 }

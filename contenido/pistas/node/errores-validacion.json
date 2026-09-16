@@ -224,6 +224,45 @@
       ],
       "origen": "generada-revisada",
       "estado": "publicada"
+    },
+    {
+      "id": "node-errores-validacion-review-crear-usuario",
+      "version": 1,
+      "pista": "node",
+      "familia": "errores-validacion",
+      "tipo": "review",
+      "modos": ["review"],
+      "nivelMinimo": "junior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Revisa este endpoint que crea un usuario. ¿Qué validación falta antes de guardar en la base de datos?",
+        "en": "Review this endpoint that creates a user. What validation is missing before saving to the database?"
+      },
+      "contexto": "```js\napp.post('/usuarios', async (req, res) => {\n  const { nombre, email } = req.body;\n  const usuario = await db.usuarios.crear({ nombre, email });\n  res.status(201).json(usuario);\n});\n```",
+      "rubrica": {
+        "junior": [
+          "Señala que no se comprueba que `nombre` y `email` existan antes de intentar guardarlos",
+          "Reconoce que, si faltan, el endpoint intenta guardar `undefined` en la base de datos en vez de devolver un error claro al cliente"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Propone devolver un 400 con un mensaje claro cuando falten campos, antes de tocar la base de datos",
+          "Señala la falta de un `try/catch`: un error de base de datos (por ejemplo, un email duplicado con restricción `UNIQUE`) tumbaría el proceso o devolvería un 500 genérico sin manejarlo",
+          "Menciona validar el formato del email, no solo su presencia"
+        ]
+      },
+      "respuestaModelo": "El endpoint confía ciegamente en `req.body` sin comprobar que `nombre` y `email` lleguen realmente: si el cliente los omite, la función intenta guardar `undefined` en la base de datos en vez de rechazar la petición con un mensaje útil. Antes de llamar a `db.usuarios.crear`, hace falta comprobar que ambos campos existen (y que el email tiene un formato razonable) y devolver un `400` con un mensaje claro si no es así. Además, la llamada a la base de datos no está protegida con `try/catch`: si `email` tiene una restricción `UNIQUE` y ya existe, Prisma u otro ORM lanzaría una excepción que aquí no se captura, y el cliente recibiría un error 500 genérico (o el proceso se caería) en vez de un 409 o 400 explicando que ese email ya está en uso.",
+      "etiquetas": ["errores-validacion", "validacion-entrada"],
+      "fuentes": [
+        {
+          "url": "https://github.com/goldbergyoni/nodebestpractices",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "CC-BY-SA-4.0. Ejercicio propio escrito para esta investigación, inspirado en la sección de validación de input del repositorio."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
     }
   ]
 }

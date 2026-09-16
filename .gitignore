@@ -46,3 +46,6 @@ next-env.d.ts
 /playwright-report
 /graphify-out
 !.env.example
+
+# generado por los tests (coherencia del banco), se regenera en cada pasada
+/contenido/COBERTURA.md

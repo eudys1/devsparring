@@ -20,7 +20,10 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "verify": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build",
-    "contenido:validar": "node scripts/validar-contenido.mjs"
+    "contenido:validar": "node scripts/validar-contenido.mjs",
+    "detector": "node scripts/detector-diseno.mjs",
+    "capturas": "node scripts/capturas.mjs",
+    "revisar": "node scripts/revisar.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "latest",

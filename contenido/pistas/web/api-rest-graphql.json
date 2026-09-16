@@ -75,6 +75,43 @@
       ],
       "origen": "generada-revisada",
       "estado": "publicada"
+    },
+    {
+      "id": "web-api-rest-graphql-diseno-paginacion-simple",
+      "version": 1,
+      "pista": "web",
+      "familia": "api-rest-graphql",
+      "tipo": "razonamiento",
+      "modos": ["verbal", "diseno"],
+      "nivelMinimo": "junior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Diseña el endpoint `GET /productos`, que debe soportar paginación simple (`page` y `limit`) y filtrar por categoría. ¿Qué parámetros de query y forma de respuesta usarías?",
+        "en": "Design the `GET /products` endpoint, which must support simple pagination (`page` and `limit`) and filtering by category. What query params and response shape would you use?"
+      },
+      "rubrica": {
+        "junior": [
+          "Propone parámetros de query como `page`, `limit` y `category`",
+          "Incluye en la respuesta el total de resultados o si hay más páginas, no solo el array de productos"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Menciona un límite máximo para `limit`, para que el cliente no pueda pedir miles de filas de golpe",
+          "Valida que `page` y `limit` sean números positivos y devuelve 400 si no lo son"
+        ]
+      },
+      "respuestaModelo": "El contrato sería `GET /productos?category=zapatos&page=2&limit=20`, con `category` opcional. La respuesta no debe ser solo el array de productos: conviene envolverlo en un objeto con metadatos, por ejemplo `{ datos: [...], pagina: 2, porPagina: 20, total: 134 }`, para que el cliente sepa cuántas páginas hay sin tener que adivinarlo contando elementos. `limit` debe tener un máximo razonable en el servidor (por ejemplo 100), ignorando o rechazando valores mayores, para que nadie pueda pedir la tabla entera de un golpe. `page` y `limit` deben validarse como números enteros positivos antes de usarlos en la query; si llega algo como `page=-1` o `limit=abc`, el endpoint debería devolver un 400 en vez de intentar ejecutar una consulta con esos valores.",
+      "etiquetas": ["api-rest-graphql", "paginacion"],
+      "fuentes": [
+        {
+          "url": "https://www.hellointerview.com/learn/system-design/core-concepts/api-design",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Ejercicio propio, versión simplificada para nivel junior del patrón de diseño de API de listado ya citado en este mismo fichero para el ejercicio de paginación por cursor."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
     }
   ]
 }

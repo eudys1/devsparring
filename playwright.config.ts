@@ -9,7 +9,10 @@ export default defineConfig({
   fullyParallel: true,
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI ? 'github' : 'list',
+  // Los ganchos de prueba son data-prueba: el texto de los botones cambia con
+  // el diseño, los ganchos no.
   use: {
+    testIdAttribute: 'data-prueba',
     baseURL: `http://localhost:${puerto}`,
     trace: 'on-first-retry',
   },

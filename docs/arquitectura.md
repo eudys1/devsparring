@@ -59,7 +59,7 @@ devsparring/
       (publico)/             # landing, login
       (app)/                 # todo lo autenticado
         hoy/                 # la sesión del día
-        practicar/[modo]/    # flash, verbal, kata, review, diseno, star
+        practicar/           # configurar sesión; [sesionId]/ es el motor (6 modos)
         pistas/              # catálogo y progreso por pista
         entrevistas/         # registro de entrevistas reales
         cuenta/              # perfil, clave de API, idioma
@@ -72,12 +72,12 @@ devsparring/
       srs/                   # scheduler.ts puro (ts-fsrs) + tests
       cuenta/                # clave de API en navegador, preferencias
       entrevistas/           # registro de entrevistas reales
-    components/ui/           # primitivas compartidas (botón, campo, panel)
+    components/              # Concha, Marca, Tema, Revelar; ui/: botón, campo, dato, markdown
     lib/                     # supabase/server.ts, supabase/client.ts, anthropic.ts, config.ts
     testing/                 # fixtures y mocks
   supabase/
     migrations/AAAAMMDDHHMMSS_asunto.sql
-  scripts/                   # migrar.mjs, validar-contenido.mjs, capturas.mjs
+  scripts/                   # validar-contenido, revisar, detector-diseno, capturas
   e2e/                       # Playwright
   .github/workflows/         # ci.yml, barrido-preguntas.yml
   .claude/skills/barrido-preguntas/SKILL.md
@@ -274,3 +274,39 @@ auto-merge. Excluidos LinkedIn y Glassdoor por sus condiciones.
 9. El modo kata usa el worker de Monaco para transpilar; si Monaco no carga
    (sin red al CDN), el modo kata no funciona. Servirlo en local es una línea de
    configuración del loader.
+
+## Diseño y bucle de revisión (15-09-2026)
+
+La dirección de diseño vive en `docs/diseno.md` (metáfora de la tarjeta del
+juez, un acento, tipografía, movimiento y accesibilidad). Se sostiene con dos
+piezas automáticas, no con buena voluntad:
+
+- `scripts/detector-diseno.mjs` comprueba mecánicamente el listón de
+  `C:\dev\CLAUDE.md`: fuentes vetadas, colores fuera de los tokens,
+  `transition: all`, eases con rebote, botones sin estado de pulsación, `100vh`,
+  emojis como iconos, titulares con degradado, `outline: none` sin foco visible,
+  oyentes de scroll y más. Sale con error si hay P0 o P1.
+- `scripts/revisar.mjs` encadena formato, lint, tipos, tests, validación del
+  contenido, build, detector y capturas, y resume en una tabla qué pasó y qué no.
+
+Las capturas se toman con Playwright en escritorio y móvil, en claro y oscuro,
+con el reloj fijado. El panel del navegador integrado no sirve para capturar
+tras hacer scroll.
+
+Los ganchos de prueba son `data-prueba` (configurado en `playwright.config.ts` y
+en el script de capturas). El texto de los botones cambia con el diseño; los
+ganchos no.
+
+### Coherencia del banco
+
+`src/features/preguntas/coherencia.test.ts` protege el contenido: ids y
+prefijos, español distinto del inglés, sin guion largo, rúbricas bien formadas,
+katas ejecutables (función exportada, casos serializables y con la misma
+aridad), fuentes con fecha no futura, casi duplicados y, sobre todo, cobertura:
+cada combinación de modo y nivel que la interfaz ofrece tiene preguntas. El
+informe de cobertura se regenera en `contenido/COBERTURA.md` en cada pasada (fuera
+de git: es un artefacto, no fuente).
+
+La pantalla de nueva sesión usa `disponibilidad()` para no ofrecer nunca una
+combinación vacía: antes se podía elegir un modo y una pista sin preguntas en
+común y empezar una sesión de cero asaltos.

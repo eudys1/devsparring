@@ -1,5 +1,5 @@
 // Reglas puras de selección sobre el banco. Sin I/O: reciben la lista y devuelven listas.
-import type { Modo, Nivel, Pista, Pregunta } from './esquema';
+import { MODOS, NIVELES, type Modo, type Nivel, type Pista, type Pregunta } from './esquema';
 
 const ORDEN_NIVEL: Record<Nivel, number> = { junior: 0, mid: 1, senior: 2 };
 
@@ -62,4 +62,30 @@ export function seleccionar(preguntas: Pregunta[], c: CriteriosSesion): Pregunta
     c.semilla,
   );
   return [...primero, ...resto].slice(0, c.cantidad);
+}
+
+/**
+ * Cuántas preguntas hay para cada combinación de modo, nivel y pista. La
+ * pantalla de nueva sesión la usa para no ofrecer combinaciones vacías: elegir
+ * "kata" y una pista sin katas daba una sesión de cero preguntas.
+ */
+export type Disponibilidad = Record<
+  Modo,
+  Record<Nivel, { total: number; pistas: Partial<Record<Pista, number>> }>
+>;
+
+export function disponibilidad(preguntas: Pregunta[]): Disponibilidad {
+  const publicadasLista = publicadas(preguntas);
+  const salida = {} as Disponibilidad;
+  for (const modo of MODOS) {
+    const delModo = paraModo(publicadasLista, modo);
+    salida[modo] = {} as Disponibilidad[Modo];
+    for (const nivel of NIVELES) {
+      const delNivel = paraNivel(delModo, nivel);
+      const pistas: Partial<Record<Pista, number>> = {};
+      for (const p of delNivel) pistas[p.pista] = (pistas[p.pista] ?? 0) + 1;
+      salida[modo][nivel] = { total: delNivel.length, pistas };
+    }
+  }
+  return salida;
 }

@@ -115,14 +115,14 @@ export function EditorKata({
   }, [casos, congelarAleatorio, ejecutando, funcion, onResultado]);
 
   return (
-    <div className="overflow-hidden rounded-r border border-linea-fuerte">
+    <div className="overflow-hidden rounded-r border border-linea-fuerte shadow-[inset_0_2px_12px_rgb(0_0_0/0.35)]">
       <div className="flex items-center justify-between border-b border-linea bg-papel px-3 py-1.5 font-mono text-[0.75rem] text-tinta-3">
         <span>solucion.ts · TypeScript</span>
         <button
           type="button"
           onClick={() => void ejecutar()}
           disabled={ejecutando || deshabilitado}
-          className="rounded-[3px] border border-brasa/50 px-2 py-0.5 text-brasa hover:bg-brasa-suave disabled:opacity-50"
+          className="inline-flex min-h-8 items-center gap-1.5 rounded-[3px] border border-esquina/50 px-2.5 text-esquina transition-[transform,background-color] duration-[140ms] ease-salida hover:bg-esquina-suave active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50"
         >
           {ejecutando ? 'Ejecutando…' : 'Ejecutar tests'} <kbd className="opacity-70">Ctrl+↵</kbd>
         </button>
@@ -138,7 +138,7 @@ export function EditorKata({
         options={{
           minimap: { enabled: false },
           fontSize: 14,
-          fontFamily: 'var(--font-plex-mono), ui-monospace, monospace',
+          fontFamily: 'var(--fuente-mono), ui-monospace, monospace',
           lineNumbersMinChars: 3,
           scrollBeyondLastLine: false,
           tabSize: 2,
@@ -154,34 +154,38 @@ export function ResultadoTests({ r }: { r: ResultadoEjecucion }) {
   const pasados = r.casos.filter((c) => c.ok).length;
   return (
     <section
-      className="rounded-r border border-linea bg-papel p-3.5 font-mono text-[0.8125rem]"
+      className="grid grid-cols-[3px_1fr] overflow-hidden tarjeta"
       aria-label="Resultado de los tests"
+      aria-live="polite"
     >
-      <p className={`font-medium ${r.ok ? 'text-ok' : 'text-mal'}`}>
-        {r.error ? `Error: ${r.error}` : `${pasados}/${r.casos.length} tests pasan`}
-      </p>
-      <ul className="mt-2 space-y-1">
-        {r.casos.map((c) => (
-          <li key={c.nombre} className="grid grid-cols-[14px_1fr] gap-2">
-            <span className={c.ok ? 'text-ok' : 'text-mal'} aria-hidden>
-              {c.ok ? '✓' : '✗'}
-            </span>
-            <span>
-              <span className={c.ok ? 'text-tinta-2' : 'text-tinta'}>{c.nombre}</span>
-              {!c.ok ? (
-                <span className="block text-tinta-3">
-                  esperado {c.esperado} · recibido {c.recibido}
-                </span>
-              ) : null}
-            </span>
-          </li>
-        ))}
-      </ul>
-      {r.consola.length ? (
-        <pre className="mt-2 max-h-40 overflow-auto rounded-[3px] bg-papel-2 p-2 text-tinta-2">
-          {r.consola.join('\n')}
-        </pre>
-      ) : null}
+      <span className={r.ok ? 'bg-ok' : 'bg-mal'} aria-hidden />
+      <div className="p-3.5 font-mono text-[0.8125rem]">
+        <p className={`font-medium ${r.ok ? 'text-ok' : 'text-mal'}`}>
+          {r.error ? `Error: ${r.error}` : `${pasados}/${r.casos.length} tests pasan`}
+        </p>
+        <ul className="mt-2 space-y-1">
+          {r.casos.map((c) => (
+            <li key={c.nombre} className="grid grid-cols-[14px_1fr] gap-2">
+              <span className={c.ok ? 'text-ok' : 'text-mal'} aria-hidden>
+                {c.ok ? '✓' : '✗'}
+              </span>
+              <span>
+                <span className={c.ok ? 'text-tinta-2' : 'text-tinta'}>{c.nombre}</span>
+                {!c.ok ? (
+                  <span className="block text-tinta-3">
+                    esperado {c.esperado} · recibido {c.recibido}
+                  </span>
+                ) : null}
+              </span>
+            </li>
+          ))}
+        </ul>
+        {r.consola.length ? (
+          <pre className="scroll-fino mt-2 max-h-40 overflow-auto rounded-[3px] bg-codigo-fondo p-2 text-codigo-tinta">
+            {r.consola.join('\n')}
+          </pre>
+        ) : null}
+      </div>
     </section>
   );
 }

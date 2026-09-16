@@ -18,9 +18,9 @@ export default async function Cuenta() {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <h1 className="text-2xl font-semibold">Cuenta</h1>
-      <p className="mt-1 text-[0.875rem] text-tinta-3">{usuario.email}</p>
-      <div className="mt-6 grid gap-6 md:grid-cols-2">
+      <p className="rotulo">{usuario.email}</p>
+      <h1 className="display mt-1 text-[2.5rem] text-tinta">Cuenta</h1>
+      <div className="mt-7 grid gap-6 md:grid-cols-2">
         <FormularioPerfil perfil={perfil} />
         <ClaveApi esDueno={esDueno} />
       </div>

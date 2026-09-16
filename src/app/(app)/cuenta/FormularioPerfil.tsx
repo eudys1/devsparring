@@ -10,15 +10,19 @@ export function FormularioPerfil({ perfil }: { perfil: Perfil }) {
   const [estado, setEstado] = useState<'quieto' | 'enviando' | 'ok' | 'error'>('quieto');
   return (
     <form
-      className="rounded-r border border-linea bg-papel p-4"
+      className="h-max tarjeta px-4 py-4"
       action={async (form) => {
         setEstado('enviando');
         const r = await guardarPerfil(form);
         setEstado(r.ok ? 'ok' : 'error');
       }}
     >
-      <h2 className="font-semibold">Perfil</h2>
-      <div className="mt-4 space-y-3">
+      <h2 className="text-[1.0625rem] font-semibold text-tinta">Perfil</h2>
+      <p className="mt-0.5 text-[0.8125rem] text-tinta-3">
+        Solo sirve para arrancar cada sesión con lo que sueles elegir.
+      </p>
+
+      <div className="mt-4 space-y-3.5">
         <div>
           <Rotulo htmlFor="nombre">Nombre</Rotulo>
           <Entrada id="nombre" name="nombre" defaultValue={perfil.nombre ?? ''} maxLength={80} />
@@ -54,14 +58,15 @@ export function FormularioPerfil({ perfil }: { perfil: Perfil }) {
           </div>
         </div>
       </div>
+
       <div className="mt-4 flex items-center gap-3">
-        <Boton type="submit" variante="brasa" disabled={estado === 'enviando'}>
-          Guardar
+        <Boton type="submit" variante="esquina" disabled={estado === 'enviando'}>
+          {estado === 'enviando' ? 'Guardando…' : 'Guardar'}
         </Boton>
-        {estado === 'ok' ? <span className="text-[0.875rem] text-ok">Guardado.</span> : null}
-        {estado === 'error' ? (
-          <span className="text-[0.875rem] text-mal">No se pudo guardar.</span>
-        ) : null}
+        <span aria-live="polite" className="text-[0.875rem]">
+          {estado === 'ok' ? <span className="text-ok">Guardado.</span> : null}
+          {estado === 'error' ? <span className="text-mal">No se pudo guardar.</span> : null}
+        </span>
       </div>
     </form>
   );

@@ -8,7 +8,7 @@ export function CerrarSesion() {
   return (
     <button
       type="button"
-      className="mt-1 text-tinta-2 underline-offset-2 hover:text-tinta hover:underline"
+      className="mt-1 inline-block text-[0.8125rem] text-tinta-2 underline decoration-current/40 underline-offset-4 transition-transform duration-[140ms] ease-salida hover:text-tinta active:scale-[0.97]"
       onClick={async () => {
         await supabaseNavegador().auth.signOut();
         router.push('/');

@@ -1,14 +1,11 @@
-import { Boton } from '@/components/ui/Boton';
-import { Rotulo, Selector } from '@/components/ui/Campo';
 import { obtenerPerfil } from '@/features/cuenta/db';
 import { cargarBanco } from '@/features/preguntas/cargar';
-import { MODOS, NIVELES, PISTAS, type Modo } from '@/features/preguntas/esquema';
-import { paraModo, publicadas } from '@/features/preguntas/filtrar';
-import { NOMBRE_MODO, NOMBRE_NIVEL, NOMBRE_PISTA } from '@/features/preguntas/nombres';
+import { MODOS, type Modo, type Pista } from '@/features/preguntas/esquema';
+import { disponibilidad } from '@/features/preguntas/filtrar';
 import { idsVencidas } from '@/features/srs/db';
 import { supabaseServidor, usuarioActual } from '@/lib/supabase/server';
 import { empezarSesion } from './acciones';
-import { SelectorModo } from './SelectorModo';
+import { ConfigurarSesion } from './ConfigurarSesion';
 
 export const metadata = { title: 'Practicar' };
 
@@ -17,7 +14,7 @@ export default async function Practicar({
 }: {
   searchParams: Promise<{ modo?: string; error?: string }>;
 }) {
-  const { modo: modoInicial, error } = await searchParams;
+  const { modo: modoPedido, error } = await searchParams;
   const usuario = (await usuarioActual())!;
   const db = await supabaseServidor();
   const [banco, perfil, vencidas] = await Promise.all([
@@ -25,75 +22,44 @@ export default async function Practicar({
     obtenerPerfil(db, usuario.id),
     idsVencidas(db, usuario.id),
   ]);
-  const lista = publicadas(banco);
-  const conteo = Object.fromEntries(MODOS.map((m) => [m, paraModo(lista, m).length])) as Record<
-    Modo,
-    number
-  >;
-  const pistasConContenido = PISTAS.filter((p) => lista.some((q) => q.pista === p));
+
+  const matriz = disponibilidad(banco);
+  const porId = new Map(banco.map((p) => [p.id, p]));
+  const vencidasPorPista: Partial<Record<Pista, number>> = {};
+  for (const id of vencidas) {
+    const p = porId.get(id);
+    if (p) vencidasPorPista[p.pista] = (vencidasPorPista[p.pista] ?? 0) + 1;
+  }
+
+  const modoInicial = (MODOS as readonly string[]).includes(modoPedido ?? '')
+    ? (modoPedido as Modo)
+    : 'flash';
 
   return (
     <div className="mx-auto max-w-3xl">
-      <h1 className="text-2xl font-semibold">Nueva sesión</h1>
-      <p className="mt-1 text-tinta-2">
-        Elige un modo. Lo que tengas pendiente de repaso
-        {vencidas.length ? ` (${vencidas.length} preguntas)` : ''} va primero.
+      <p className="rotulo">Nueva sesión</p>
+      <h1 className="display mt-1 text-[2.5rem] text-tinta">A qué te enfrentas hoy</h1>
+      <p className="prosa mt-2 text-tinta-2">
+        Elige el modo y la vara con la que quieres que te corrijan. Lo que tengas pendiente de
+        repaso entra primero en la sesión.
       </p>
+
       {error === 'db' ? (
         <p
           role="alert"
-          className="mt-4 rounded-r border border-mal/40 bg-mal-suave px-3 py-2 text-mal"
+          className="mt-5 rounded-r border border-mal/40 bg-mal-suave px-3 py-2.5 text-[0.9375rem] text-mal"
         >
-          No se pudo crear la sesión. Prueba otra vez.
+          No se pudo crear la sesión. Vuelve a intentarlo; si sigue fallando, revisa que la base de
+          datos esté disponible.
         </p>
       ) : null}
 
-      <form action={empezarSesion} className="mt-6 space-y-6">
-        <SelectorModo
-          conteo={conteo}
-          nombres={NOMBRE_MODO}
-          inicial={
-            (MODOS as readonly string[]).includes(modoInicial ?? '')
-              ? (modoInicial as Modo)
-              : 'flash'
-          }
-        />
-
-        <div className="grid gap-4 sm:grid-cols-3">
-          <div>
-            <Rotulo htmlFor="nivel">Nivel al que aplicas</Rotulo>
-            <Selector id="nivel" name="nivel" defaultValue={perfil.nivel_por_defecto}>
-              {NIVELES.map((n) => (
-                <option key={n} value={n}>
-                  {NOMBRE_NIVEL[n]}
-                </option>
-              ))}
-            </Selector>
-          </div>
-          <div>
-            <Rotulo htmlFor="pista">Pista</Rotulo>
-            <Selector id="pista" name="pista" defaultValue="">
-              <option value="">Todas</option>
-              {pistasConContenido.map((p) => (
-                <option key={p} value={p}>
-                  {NOMBRE_PISTA[p]}
-                </option>
-              ))}
-            </Selector>
-          </div>
-          <div>
-            <Rotulo htmlFor="idioma">Idioma de la entrevista</Rotulo>
-            <Selector id="idioma" name="idioma" defaultValue={perfil.idioma}>
-              <option value="es">Español</option>
-              <option value="en">Inglés</option>
-            </Selector>
-          </div>
-        </div>
-
-        <Boton type="submit" variante="brasa">
-          Empezar
-        </Boton>
-      </form>
+      <ConfigurarSesion
+        disponibilidad={matriz}
+        inicial={{ modo: modoInicial, nivel: perfil.nivel_por_defecto, idioma: perfil.idioma }}
+        vencidasPorPista={vencidasPorPista}
+        accion={empezarSesion}
+      />
     </div>
   );
 }

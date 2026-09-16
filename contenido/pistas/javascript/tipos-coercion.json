@@ -211,6 +211,45 @@
       ],
       "origen": "curada",
       "estado": "publicada"
+    },
+    {
+      "id": "js-tipos-coercion-review-comparacion-nan",
+      "version": 1,
+      "pista": "javascript",
+      "familia": "tipos-coercion",
+      "tipo": "review",
+      "modos": ["review"],
+      "nivelMinimo": "junior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Revisa esta función, que debería validar que una cantidad de pedido es un número válido. ¿Qué falla en la comparación?",
+        "en": "Review this function, which should validate that an order quantity is a valid number. What's wrong with the comparison?"
+      },
+      "contexto": "```js\nfunction esCantidadValida(cantidad) {\n  return cantidad !== NaN;\n}\n```",
+      "rubrica": {
+        "junior": [
+          "Identifica que comparar con `NaN` mediante `!==` (o `===`) nunca funciona como se espera",
+          "Reconoce que la función devuelve `true` siempre, incluso cuando `cantidad` es `NaN`"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica por qué pasa: `NaN` es el único valor de JavaScript que no es igual a sí mismo, así que ninguna comparación con `==`/`===` lo detecta",
+          "Propone `Number.isNaN(cantidad) === false` (o `!Number.isNaN(cantidad)`) como alternativa correcta",
+          "Menciona que el `isNaN()` global tiene una trampa adicional: convierte su argumento a número antes de comparar, así que `isNaN('hola')` también da `true`, mientras que `Number.isNaN` no convierte nada"
+        ]
+      },
+      "respuestaModelo": "`NaN` es el único valor del lenguaje que no es igual a sí mismo: `NaN === NaN` da `false`, y por lo tanto `cantidad !== NaN` da `true` sin importar qué sea `cantidad`, incluido el propio `NaN`. La función, tal como está, no valida nada: siempre devuelve `true`. La forma correcta de comprobarlo es `!Number.isNaN(cantidad)`, la única función pensada específicamente para detectar `NaN`. Conviene usar `Number.isNaN` y no el `isNaN()` global, porque este último convierte su argumento a número antes de comparar (coerción), así que `isNaN('hola')` también devuelve `true` aunque `'hola'` nunca fue `NaN`, solo no se pudo convertir a número.",
+      "etiquetas": ["coercion", "nan", "code-review"],
+      "fuentes": [
+        {
+          "url": "https://github.com/lydiahallie/javascript-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "MIT. Ejercicio de revisión redactado de cero a partir de la trampa clásica de NaN documentada en el repositorio."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
     }
   ]
 }

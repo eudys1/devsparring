@@ -176,6 +176,11 @@
             "nombre": "funciona con otro nombre y cero puntos",
             "entrada": ["Luis", 0],
             "esperado": "Hola **Luis**, tienes **0** puntos"
+          },
+          {
+            "nombre": "funciona con puntuaciones de varias cifras",
+            "entrada": ["Marta", 250],
+            "esperado": "Hola **Marta**, tienes **250** puntos"
           }
         ],
         "tiempoMin": 15,
@@ -221,13 +226,18 @@
         "codigoInicial": "export function tipoDeResto(...args: unknown[]): string {\n  // tu código\n}\n",
         "casos": [
           {
-            "nombre": "el rest parameter es de tipo object",
+            "nombre": "el rest parameter es de tipo object con números",
             "entrada": [1, 2, 3],
             "esperado": "object"
           },
           {
-            "nombre": "sin argumentos también es object (array vacío)",
-            "entrada": [],
+            "nombre": "también es object con strings",
+            "entrada": ["a", "b", "c"],
+            "esperado": "object"
+          },
+          {
+            "nombre": "también es object con valores mixtos",
+            "entrada": [true, "x", 9],
             "esperado": "object"
           }
         ],

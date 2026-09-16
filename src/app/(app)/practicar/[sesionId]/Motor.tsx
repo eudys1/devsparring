@@ -1,14 +1,16 @@
 'use client';
 
-// El motor de una sesión: una pregunta cada vez, reloj, respuesta, corrección
-// (con clave propia o copiando el prompt), nota de repaso y siguiente. Diseñado
-// como racha: al guardar salta solo a la siguiente pendiente; atajos de teclado.
+// El motor de una sesión: un asalto por pregunta, con reloj, respuesta,
+// corrección y nota de repaso. Diseñado como racha: al guardar salta solo al
+// siguiente y todo se puede hacer con el teclado. Por eso el cambio de pregunta
+// NO se anima: es una acción de teclado que se repite decenas de veces y
+// animarla haría la app lenta (docs/diseno.md).
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Boton } from '@/components/ui/Boton';
+import { Atajo, Boton, estilosBoton } from '@/components/ui/Boton';
 import { AreaTexto } from '@/components/ui/Campo';
-import { Etiqueta } from '@/components/ui/Etiqueta';
+import { Ficha, Peso } from '@/components/ui/Dato';
 import { enLinea, Markdown } from '@/components/ui/Markdown';
 import { pedirCorreccion } from '@/features/correccion/cliente';
 import type { Correccion } from '@/features/correccion/esquema-salida';
@@ -18,7 +20,7 @@ import { leerClave, leerModelo } from '@/features/cuenta/clave';
 import { EditorKata, ResultadoTests, textoResultado } from '@/features/editor/EditorKata';
 import type { ResultadoEjecucion } from '@/features/editor/runner/casos';
 import type { Modo, Nivel, Pregunta } from '@/features/preguntas/esquema';
-import { NOMBRE_MODO, NOMBRE_NIVEL, NOMBRE_PISTA, NOMBRE_TIPO } from '@/features/preguntas/nombres';
+import { NOMBRE_MODO, NOMBRE_PISTA, NOMBRE_TIPO } from '@/features/preguntas/nombres';
 import { rubricaParaNivel } from '@/features/preguntas/rubrica';
 import { notaDesdePuntuacion, type Nota } from '@/features/srs/scheduler';
 import { cerrarSesion, guardarYRepasar } from './acciones';
@@ -188,9 +190,11 @@ export function Motor({
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      const destino = e.target as HTMLElement | null;
       const enCampo =
-        (e.target as HTMLElement)?.tagName === 'TEXTAREA' ||
-        (e.target as HTMLElement)?.closest('.monaco-editor');
+        destino?.tagName === 'TEXTAREA' ||
+        destino?.tagName === 'INPUT' ||
+        !!destino?.closest('.monaco-editor');
       if (e.key === 'Enter' && (e.ctrlKey || e.metaKey) && fase === 'respondiendo' && !esKata) {
         e.preventDefault();
         void (puedeCorregir ? corregir() : autoevaluar());
@@ -207,11 +211,12 @@ export function Motor({
 
   if (!pregunta) {
     return (
-      <div className="mx-auto max-w-xl text-center">
-        <h1 className="text-2xl font-semibold">Sesión completada</h1>
-        <p className="mt-2 text-tinta-2">No quedan preguntas pendientes en esta sesión.</p>
-        <Link href="/hoy" className="mt-4 inline-block">
-          <Boton variante="brasa">Volver a Hoy</Boton>
+      <div className="mx-auto max-w-xl py-16 text-center">
+        <p className="rotulo">Fin de la sesión</p>
+        <h1 className="display mt-2 text-[2.5rem] text-tinta">No quedan asaltos</h1>
+        <p className="mt-2 text-tinta-2">Has respondido todas las preguntas de esta sesión.</p>
+        <Link href="/hoy" className={`${estilosBoton('esquina')} mt-5`}>
+          Volver a Hoy
         </Link>
       </div>
     );
@@ -220,47 +225,81 @@ export function Motor({
   const rubrica = rubricaParaNivel(pregunta, sesion.nivel);
   const tiempoLimite = pregunta.kata ? pregunta.kata.tiempoMin * 60 : null;
   const restante = tiempoLimite !== null ? tiempoLimite - segundos : null;
+  const evaluando = fase === 'evaluando' || fase === 'guardando';
 
   return (
     <div className="mx-auto max-w-6xl">
-      <header className="flex flex-wrap items-center justify-between gap-3 border-b border-linea pb-3">
-        <div className="flex items-center gap-2">
-          <Etiqueta tono="brasa">{NOMBRE_MODO[sesion.modo].nombre}</Etiqueta>
-          <Etiqueta
-            tono={
-              sesion.nivel === 'junior' ? 'junior' : sesion.nivel === 'senior' ? 'senior' : 'neutro'
-            }
+      {/*
+        Marcador de la velada: el asalto y el reloj mandan, como en la pantalla
+        de una retransmisión. Es la única pieza de noche dentro de la app, y por
+        eso separa "estoy en una sesión" de "estoy mirando la app".
+      */}
+      <header className="noche panel overflow-hidden">
+        <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 px-4 py-3.5 md:px-5">
+          <div className="flex items-baseline gap-4">
+            <span className="tabular cartel text-[2.25rem] leading-none text-[var(--noche-tinta)]">
+              R{hechas + 1}
+              <span className="text-[1.125rem] text-[var(--noche-tinta-2)]">/{total}</span>
+            </span>
+            <span className="flex items-center gap-3">
+              <span className="text-[0.9375rem] text-[var(--noche-tinta-2)]">
+                {NOMBRE_MODO[sesion.modo].nombre}
+              </span>
+              <Peso nivel={sesion.nivel} />
+            </span>
+          </div>
+          <span
+            className={`tabular font-mono text-[1.75rem] leading-none ${
+              restante !== null && restante < 0
+                ? 'text-mal'
+                : restante !== null && restante < 120
+                  ? 'text-aviso'
+                  : 'text-[var(--noche-tinta)]'
+            }`}
           >
-            {NOMBRE_NIVEL[sesion.nivel]}
-          </Etiqueta>
-          <Etiqueta>{NOMBRE_PISTA[pregunta.pista]}</Etiqueta>
-          <span className="ml-2 font-mono text-[0.75rem] text-tinta-3">
-            {hechas + 1} de {total}
+            {restante !== null ? formatear(restante) : formatear(segundos)}
           </span>
         </div>
-        <div
-          className={`tabular font-mono text-[0.9375rem] ${restante !== null && restante < 0 ? 'text-mal' : restante !== null && restante < 120 ? 'text-brasa' : 'text-tinta-2'}`}
-          aria-live="off"
+        {/* Cada asalto de la sesión: hecho, en curso o pendiente */}
+        <ol
+          className="flex gap-0.5 px-4 pb-3 md:px-5"
+          aria-label={`Asalto ${hechas + 1} de ${total}`}
         >
-          {restante !== null ? formatear(restante) : formatear(segundos)}
-        </div>
+          {Array.from({ length: total }, (_, i) => {
+            const estado = i < hechas ? 'hecho' : i === hechas ? 'actual' : 'pendiente';
+            return (
+              <li
+                key={i}
+                className={`h-1.5 flex-1 ${
+                  estado === 'actual'
+                    ? 'bg-esquina'
+                    : estado === 'hecho'
+                      ? 'bg-[var(--noche-tinta-2)]'
+                      : 'bg-[var(--noche-linea)]'
+                }`}
+              />
+            );
+          })}
+        </ol>
       </header>
 
       <div
-        className={`mt-6 grid gap-6 ${esKata ? 'lg:grid-cols-[1.25fr_0.75fr]' : 'lg:grid-cols-[1.1fr_0.9fr]'}`}
+        className={`mt-6 grid gap-6 ${esKata ? 'xl:grid-cols-[1.3fr_0.7fr]' : 'lg:grid-cols-[1.1fr_0.9fr]'}`}
       >
-        <div className="aparece">
-          <p className="font-mono text-[0.6875rem] uppercase tracking-[0.08em] text-tinta-3">
-            {NOMBRE_TIPO[pregunta.tipo]}
-          </p>
+        <div>
+          <div className="flex flex-wrap items-center gap-2">
+            <Ficha>{NOMBRE_PISTA[pregunta.pista]}</Ficha>
+            <Ficha>{NOMBRE_TIPO[pregunta.tipo]}</Ficha>
+            {pregunta.frecuencia === 'alta' ? <Ficha tono="esquina">Cae mucho</Ficha> : null}
+          </div>
           <h1
-            className="prosa mt-1 text-xl font-semibold leading-snug md:text-2xl"
+            className="prosa mt-3 text-[1.375rem] font-semibold leading-snug text-tinta md:text-[1.625rem]"
             dangerouslySetInnerHTML={{
               __html: enLinea(sesion.idioma === 'en' ? pregunta.texto.en : pregunta.texto.es),
             }}
           />
           <p
-            className="prosa mt-1 text-[0.875rem] text-tinta-3"
+            className="prosa mt-1.5 text-[0.875rem] text-tinta-3"
             dangerouslySetInnerHTML={{
               __html: enLinea(
                 sesion.idioma === 'en'
@@ -285,19 +324,24 @@ export function Motor({
                 deshabilitado={fase !== 'respondiendo'}
               />
             ) : (
-              <AreaTexto
-                id="respuesta"
-                aria-label="Tu respuesta"
-                placeholder={
-                  sesion.modo === 'verbal'
-                    ? 'Explícalo en voz alta de verdad y escribe aquí lo esencial de lo que has dicho.'
-                    : 'Tu respuesta…'
-                }
-                value={respuesta}
-                onChange={(e) => setRespuesta(e.target.value)}
-                disabled={fase !== 'respondiendo'}
-                autoFocus
-              />
+              <>
+                <label htmlFor="respuesta" className="rotulo mb-1.5 block">
+                  {sesion.modo === 'verbal' ? 'Lo que has dicho' : 'Tu respuesta'}
+                </label>
+                <AreaTexto
+                  id="respuesta"
+                  className="min-h-44"
+                  placeholder={
+                    sesion.modo === 'verbal'
+                      ? 'Dilo en voz alta de verdad, como en la entrevista, y escribe aquí lo esencial.'
+                      : 'Escribe tu respuesta…'
+                  }
+                  value={respuesta}
+                  onChange={(e) => setRespuesta(e.target.value)}
+                  disabled={fase !== 'respondiendo'}
+                  autoFocus
+                />
+              </>
             )}
           </div>
 
@@ -316,11 +360,25 @@ export function Motor({
             </p>
           ) : null}
 
-          {fase === 'respondiendo' || fase === 'corrigiendo' ? (
+          {evaluando ? (
+            <section className="mt-5 grid grid-cols-[3px_1fr] overflow-hidden tarjeta">
+              <span className="bg-esquina" aria-hidden />
+              <div className="px-4 py-3.5">
+                <h2 className="rotulo">La respuesta que aprueba</h2>
+                <Markdown
+                  texto={pregunta.respuestaModelo}
+                  className="mt-2 text-[0.9375rem] text-tinta-2"
+                />
+              </div>
+            </section>
+          ) : null}
+
+          {!evaluando ? (
             <div className="mt-4 flex flex-wrap items-center gap-2">
               {puedeCorregir ? (
                 <Boton
-                  variante="brasa"
+                  variante="esquina"
+                  data-prueba="corregir"
                   onClick={() => void corregir()}
                   disabled={fase === 'corrigiendo'}
                   atajo={esKata ? undefined : 'Ctrl+↵'}
@@ -328,83 +386,99 @@ export function Motor({
                   {fase === 'corrigiendo' ? 'Corrigiendo…' : 'Corregir con IA'}
                 </Boton>
               ) : (
-                <Boton variante="brasa" onClick={autoevaluar} atajo={esKata ? undefined : 'Ctrl+↵'}>
-                  Ver respuesta modelo y autoevaluar
+                <Boton
+                  variante="esquina"
+                  data-prueba="autoevaluar"
+                  onClick={autoevaluar}
+                  atajo={esKata ? undefined : 'Ctrl+↵'}
+                >
+                  Ver la respuesta que aprueba
                 </Boton>
               )}
-              <Boton variante="normal" onClick={() => void copiarPrompt()}>
+              <Boton variante="normal" data-prueba="copiar" onClick={() => void copiarPrompt()}>
                 {copiado ? 'Copiado' : 'Copiar para corregir fuera'}
               </Boton>
               {puedeCorregir ? (
                 <Boton variante="sutil" onClick={autoevaluar}>
-                  Sin IA: autoevaluar
+                  Sin IA
                 </Boton>
               ) : null}
             </div>
           ) : null}
         </div>
 
-        <aside className="aparece-2 space-y-4">
-          <section className="rounded-r border border-linea bg-papel p-4">
-            <h2 className="text-[0.8125rem] font-semibold">
-              Rúbrica {NOMBRE_NIVEL[sesion.nivel].toLowerCase()}
-            </h2>
-            <ol className="mt-2 list-decimal space-y-1 pl-5 text-[0.9375rem] text-tinta-2">
+        <aside className="space-y-4">
+          <section className="tarjeta px-4 py-3.5">
+            <h2 className="rotulo">Qué te van a exigir de {sesion.nivel}</h2>
+            <ol className="mt-2.5 space-y-2">
               {rubrica.map((c, i) => (
-                <li key={i} className="prosa" dangerouslySetInnerHTML={{ __html: enLinea(c) }} />
+                <li
+                  key={i}
+                  className="grid grid-cols-[1.25rem_1fr] gap-1 text-[0.875rem] leading-snug text-tinta-2"
+                >
+                  <span className="tabular font-mono text-[0.75rem] text-tinta-3">{i + 1}.</span>
+                  <span className="prosa" dangerouslySetInnerHTML={{ __html: enLinea(c) }} />
+                </li>
               ))}
             </ol>
           </section>
 
-          {fase === 'evaluando' || fase === 'guardando' ? (
+          {evaluando ? (
             <>
               {correccion ? <Scorecard c={correccion.c} modelo={correccion.modelo} /> : null}
-              <section className="aparece rounded-r border border-linea bg-papel p-4">
-                <h2 className="text-[0.8125rem] font-semibold">Respuesta que aprueba</h2>
-                <Markdown
-                  texto={pregunta.respuestaModelo}
-                  className="mt-2 text-[0.9375rem] text-tinta-2"
-                />
-              </section>
-              <section className="aparece rounded-r border border-brasa/40 bg-papel p-4">
-                <h2 className="text-[0.8125rem] font-semibold">
-                  ¿Cómo te ha ido? Decide cuándo vuelve
+
+              <section className="rounded-r border border-esquina/40 bg-papel px-4 py-3.5">
+                <h2 className="text-[0.875rem] font-semibold text-tinta">
+                  ¿Cómo ha ido? Decides cuándo vuelve
                 </h2>
-                <div className="mt-2 grid grid-cols-4 gap-1.5">
+                <p className="mt-0.5 text-[0.8125rem] text-tinta-3">
+                  {correccion
+                    ? `La IA propone "${NOTAS.find((n) => n.nota === nota)?.texto.toLowerCase()}". Cámbialo si no estás de acuerdo.`
+                    : 'Sé honesto: de esto depende cuándo te la vuelve a preguntar.'}
+                </p>
+                <div className="mt-2.5 grid grid-cols-2 gap-1.5 sm:grid-cols-4">
                   {NOTAS.map((n) => (
                     <button
                       key={n.nota}
                       type="button"
                       onClick={() => setNota(n.nota)}
-                      className={`rounded-r border px-2 py-2 text-[0.875rem] ${nota === n.nota ? 'border-brasa bg-brasa-suave text-tinta' : 'border-linea text-tinta-2 hover:border-linea-fuerte'}`}
+                      aria-pressed={nota === n.nota}
+                      className={`flex min-h-11 items-center justify-center gap-1.5 rounded-r border text-[0.875rem] transition-[transform,background-color,border-color,color] duration-[140ms] ease-salida active:scale-[0.97] ${
+                        nota === n.nota
+                          ? 'border-esquina bg-esquina text-esquina-tinta'
+                          : 'border-linea-fuerte text-tinta-2 hover:border-tinta-3 hover:text-tinta'
+                      }`}
                     >
-                      <kbd className="mr-1 font-mono text-[0.6875rem] opacity-60">{n.atajo}</kbd>
+                      <span className="font-mono text-[0.6875rem] opacity-70">{n.atajo}</span>
                       {n.texto}
                     </button>
                   ))}
                 </div>
                 <Boton
-                  variante="brasa"
-                  className="mt-3 w-full justify-center"
+                  variante="esquina"
+                  data-prueba="siguiente"
+                  className="mt-3 w-full"
                   onClick={() => void guardar()}
                   disabled={!nota || fase === 'guardando'}
-                  atajo="↵"
                 >
                   {fase === 'guardando'
                     ? 'Guardando…'
                     : indice + 1 >= pendientes.length
-                      ? 'Guardar y terminar'
-                      : 'Guardar y siguiente'}
+                      ? 'Terminar sesión'
+                      : 'Siguiente asalto'}
+                  <Atajo>↵</Atajo>
                 </Boton>
               </section>
             </>
           ) : null}
 
-          <details className="text-[0.75rem] text-tinta-3">
-            <summary className="cursor-pointer">Fuentes y origen de esta pregunta</summary>
-            <ul className="mt-1 space-y-0.5">
+          <details className="group tarjeta px-4 py-2.5">
+            <summary className="cursor-pointer list-none text-[0.75rem] text-tinta-3 marker:content-none">
+              De dónde sale esta pregunta
+            </summary>
+            <ul className="mt-2 space-y-1 text-[0.75rem] text-tinta-3">
               <li>
-                Origen: {pregunta.origen}. Versión {pregunta.version}.
+                Origen: {pregunta.origen.replace('-', ' ')}. Versión {pregunta.version}.
               </li>
               {pregunta.fuentes.map((f) => (
                 <li key={f.url}>
@@ -412,7 +486,7 @@ export function Motor({
                     href={f.url}
                     target="_blank"
                     rel="noreferrer"
-                    className="underline-offset-2 hover:underline"
+                    className="underline decoration-linea-fuerte underline-offset-2 hover:text-tinta"
                   >
                     {new URL(f.url).hostname}
                   </a>{' '}

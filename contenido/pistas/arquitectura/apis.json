@@ -155,6 +155,43 @@
       ],
       "origen": "generada-revisada",
       "estado": "publicada"
+    },
+    {
+      "id": "arq-apis-diseno-todo-crud",
+      "version": 1,
+      "pista": "arquitectura",
+      "familia": "apis",
+      "tipo": "razonamiento",
+      "modos": ["verbal", "diseno"],
+      "nivelMinimo": "junior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Diseña la API REST para gestionar una lista de tareas: crear, listar, marcar como hecha y borrar una tarea. ¿Qué rutas y métodos HTTP usarías?",
+        "en": "Design the REST API to manage a to-do list: create, list, mark as done, and delete a task. What routes and HTTP methods would you use?"
+      },
+      "rubrica": {
+        "junior": [
+          "Usa los verbos HTTP correctos: POST para crear, GET para listar, PATCH o PUT para marcar como hecha, DELETE para borrar",
+          "Usa rutas con el recurso en plural (`/tareas`) y el id en la URL para operar sobre una tarea concreta (`/tareas/:id`)"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica por qué PATCH (actualización parcial) encaja mejor que PUT para solo marcar como hecha, sin reenviar la tarea entera",
+          "Menciona qué código de estado devolvería cada operación (201 al crear, 200 al listar o marcar, 204 al borrar, 404 si el id no existe)"
+        ]
+      },
+      "respuestaModelo": "Cuatro rutas sobre el recurso `tareas`: `POST /tareas` para crear (devuelve 201 y la tarea creada), `GET /tareas` para listar (200 con el array), `PATCH /tareas/:id` para marcar como hecha (200 con la tarea actualizada) y `DELETE /tareas/:id` para borrar (204 sin contenido). `PATCH` encaja mejor que `PUT` para marcar como hecha porque solo se está cambiando un campo (`completada: true`); `PUT` implica reemplazar el recurso entero, y obligaría a reenviar título, descripción y el resto de campos solo para cambiar uno. Si `:id` no corresponde a ninguna tarea, tanto `PATCH` como `DELETE` deberían devolver 404 en vez de un 200 silencioso o un error genérico, para que el cliente sepa exactamente qué pasó.",
+      "etiquetas": ["arquitectura", "diseno-de-api", "rest"],
+      "fuentes": [
+        {
+          "url": "https://www.hellointerview.com/learn/system-design/core-concepts/api-design",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Ejercicio propio, versión introductoria de diseño de API CRUD para nivel junior, a partir del mismo patrón de diseño de API citado en el resto de este fichero."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
     }
   ]
 }

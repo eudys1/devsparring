@@ -393,6 +393,45 @@
       ],
       "origen": "curada",
       "estado": "publicada"
+    },
+    {
+      "id": "js-arrays-objetos-review-splice-en-foreach",
+      "version": 1,
+      "pista": "javascript",
+      "familia": "arrays-objetos",
+      "tipo": "review",
+      "modos": ["review"],
+      "nivelMinimo": "junior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Revisa esta función, que debería devolver una lista nueva sin los usuarios inactivos, dejando la lista original intacta. ¿Qué falla?",
+        "en": "Review this function, which should return a new list without inactive users, leaving the original list untouched. What's wrong?"
+      },
+      "contexto": "```js\nfunction quitarInactivos(usuarios) {\n  usuarios.forEach((u, i) => {\n    if (!u.activo) {\n      usuarios.splice(i, 1);\n    }\n  });\n  return usuarios;\n}\n```",
+      "rubrica": {
+        "junior": [
+          "Identifica que `usuarios.splice` muta el array original en vez de crear uno nuevo",
+          "Reconoce que `forEach` recorre el array a la vez que se está modificando, así que los índices dejan de corresponder a los elementos reales"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica el síntoma concreto: si hay dos usuarios inactivos seguidos, el segundo se salta porque splice desplaza los índices hacia atrás",
+          "Propone `usuarios.filter(u => u.activo)` como alternativa correcta e inmutable",
+          "Generaliza el antipatrón: mutar un array mientras se itera sobre él con su propio índice, con el método que sea"
+        ]
+      },
+      "respuestaModelo": "La función tiene dos problemas relacionados. Primero, `splice` muta el array `usuarios` original en el sitio, en vez de devolver una lista nueva, así que quien llama a la función ve alterada su lista aunque no lo esperaba. Segundo, y más grave, está mutando el array a la vez que `forEach` lo recorre por índice: al borrar el elemento `i`, todos los elementos posteriores se desplazan una posición hacia la izquierda, así que si hay dos usuarios inactivos seguidos, el segundo ocupa ahora el índice que ya se visitó y se salta. La forma correcta y sin este problema es `return usuarios.filter((u) => u.activo);`, que construye un array nuevo sin tocar el original y sin depender de índices que cambian mientras se itera.",
+      "etiquetas": ["arrays", "mutacion", "code-review"],
+      "fuentes": [
+        {
+          "url": "https://github.com/sudheerj/javascript-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "leida",
+          "nota": "Sin LICENSE visible; ejercicio de revisión redactado de cero a partir del antipatrón de mutar un array mientras se itera, mencionado en el repositorio."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
     }
   ]
 }

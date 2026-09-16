@@ -42,23 +42,27 @@ export function FormularioAcceso({ registro, volver }: { registro: boolean; volv
 
   if (estado === 'confirmar') {
     return (
-      <div className="rounded-r border border-linea bg-papel p-5">
-        <h1 className="text-xl font-semibold">Revisa tu correo</h1>
+      <div className="tarjeta px-5 py-5">
+        <h1 className="display text-[1.75rem] text-tinta">Revisa tu correo</h1>
         <p className="mt-2 text-tinta-2">
-          Te hemos enviado un enlace a <strong>{email}</strong>. Al abrirlo entras directamente.
+          Te hemos enviado un enlace a <strong className="text-tinta">{email}</strong>. Al abrirlo
+          entras directamente.
         </p>
       </div>
     );
   }
 
   return (
-    <form onSubmit={enviar} className="rounded-r border border-linea bg-papel p-5 shadow-panel">
-      <h1 className="text-xl font-semibold">{modo === 'registro' ? 'Crear cuenta' : 'Entrar'}</h1>
+    <form onSubmit={enviar} className="tarjeta px-5 py-5">
+      <h1 className="display text-[1.75rem] text-tinta">
+        {modo === 'registro' ? 'Crear cuenta' : 'Entrar'}
+      </h1>
       <p className="mt-1 text-[0.875rem] text-tinta-2">
         {modo === 'registro'
-          ? 'Solo correo y contraseña. La clave de la API la añades después, y se queda en tu navegador.'
-          : 'Con tu correo y contraseña.'}
+          ? 'Correo y contraseña. La clave de la API se añade después y se queda en tu navegador.'
+          : 'Con tu correo y tu contraseña.'}
       </p>
+
       <div className="mt-5 space-y-4">
         <div>
           <Rotulo htmlFor="email">Correo</Rotulo>
@@ -72,7 +76,9 @@ export function FormularioAcceso({ registro, volver }: { registro: boolean; volv
           />
         </div>
         <div>
-          <Rotulo htmlFor="clave">Contraseña</Rotulo>
+          <Rotulo htmlFor="clave" pista={modo === 'registro' ? 'mínimo 8 caracteres' : undefined}>
+            Contraseña
+          </Rotulo>
           <Entrada
             id="clave"
             type="password"
@@ -84,6 +90,7 @@ export function FormularioAcceso({ registro, volver }: { registro: boolean; volv
           />
         </div>
       </div>
+
       {error ? (
         <p
           role="alert"
@@ -92,13 +99,14 @@ export function FormularioAcceso({ registro, volver }: { registro: boolean; volv
           {error}
         </p>
       ) : null}
-      <div className="mt-5 flex items-center justify-between gap-3">
-        <Boton type="submit" variante="brasa" disabled={estado === 'enviando'}>
+
+      <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
+        <Boton type="submit" variante="esquina" tamano="grande" disabled={estado === 'enviando'}>
           {estado === 'enviando' ? 'Un momento…' : modo === 'registro' ? 'Crear cuenta' : 'Entrar'}
         </Boton>
         <button
           type="button"
-          className="text-[0.875rem] text-tinta-2 underline-offset-2 hover:underline"
+          className="inline-block text-[0.875rem] text-tinta-2 underline decoration-linea-fuerte underline-offset-2 transition-transform duration-[140ms] ease-salida hover:text-tinta active:scale-[0.97]"
           onClick={() => setModo(modo === 'registro' ? 'entrar' : 'registro')}
         >
           {modo === 'registro' ? 'Ya tengo cuenta' : 'Crear una cuenta'}

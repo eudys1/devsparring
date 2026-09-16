@@ -15,40 +15,45 @@ import {
 
 export function ClaveApi({ esDueno }: { esDueno: boolean }) {
   const guardada = useClaveGuardada();
-  const [valor, setValor] = useState('');
   const modelo = useModeloPreferido();
+  const [valor, setValor] = useState('');
   const [aviso, setAviso] = useState<string | null>(null);
 
   return (
-    <section className="rounded-r border border-linea bg-papel p-4">
-      <h2 className="font-semibold">Corrección con IA</h2>
+    <section className="h-max tarjeta px-4 py-4">
+      <h2 className="text-[1.0625rem] font-semibold text-tinta">Corrección con IA</h2>
       <p className="mt-1 text-[0.875rem] text-tinta-2">
-        Devsparring corrige con la API de Claude usando <strong>tu</strong> clave. Se guarda solo en
-        este navegador: Devsparring no la almacena en sus servidores y la usa solo para pedir la
-        corrección. Si cambias de dispositivo tendrás que volver a pegarla.
+        Se corrige con la API de Claude usando <strong className="text-tinta">tu</strong> clave. Se
+        guarda solo en este navegador: no se escribe en la base de datos ni en ningún registro. Si
+        cambias de dispositivo, la vuelves a pegar.
       </p>
+
       {esDueno ? (
-        <p className="mt-2 rounded-r border border-ok/40 bg-ok-suave px-3 py-2 text-[0.875rem] text-ok">
-          Esta es la cuenta del dueño: la clave está configurada en el servidor y no necesitas
-          pegarla.
+        <p className="mt-3 grid grid-cols-[3px_1fr] gap-2.5 rounded-r border border-ok/40 bg-ok-suave py-2 pr-3">
+          <span className="bg-ok" aria-hidden />
+          <span className="text-[0.875rem] text-ok">
+            Cuenta del dueño: la clave está en el servidor y no necesitas pegar nada.
+          </span>
         </p>
       ) : null}
 
       <div className="mt-4">
-        <Rotulo htmlFor="clave">Clave de API (empieza por sk-ant-)</Rotulo>
+        <Rotulo htmlFor="clave" pista="empieza por sk-ant-">
+          Clave de API
+        </Rotulo>
         {guardada ? (
-          <div className="flex items-center justify-between gap-3 rounded-r border border-linea bg-papel-2 px-3 py-2 font-mono text-[0.875rem]">
-            <span>{enmascarar(guardada)}</span>
-            <button
-              type="button"
-              className="text-[0.8125rem] text-tinta-2 underline-offset-2 hover:text-mal hover:underline"
+          <div className="flex items-center justify-between gap-3 rounded-r border border-linea-fuerte bg-papel-2 px-3 py-2">
+            <span className="font-mono text-[0.875rem] text-tinta">{enmascarar(guardada)}</span>
+            <Boton
+              variante="sutil"
+              tamano="pequeno"
               onClick={() => {
                 olvidarClaveYAvisar();
                 setAviso('Clave olvidada en este navegador.');
               }}
             >
               Olvidar
-            </button>
+            </Boton>
           </div>
         ) : (
           <div className="flex gap-2">
@@ -61,10 +66,12 @@ export function ClaveApi({ esDueno }: { esDueno: boolean }) {
               placeholder="sk-ant-…"
             />
             <Boton
-              variante="brasa"
+              variante="esquina"
               onClick={() => {
-                if (!/^sk-ant-[A-Za-z0-9_-]{20,}$/.test(valor.trim()))
-                  return setAviso('Eso no parece una clave de Anthropic.');
+                if (!/^sk-ant-[A-Za-z0-9_-]{20,}$/.test(valor.trim())) {
+                  setAviso('Eso no parece una clave de Anthropic.');
+                  return;
+                }
                 guardarClaveYAvisar(valor);
                 setValor('');
                 setAviso('Guardada en este navegador.');
@@ -74,9 +81,9 @@ export function ClaveApi({ esDueno }: { esDueno: boolean }) {
             </Boton>
           </div>
         )}
-        <p className="mt-2 text-[0.8125rem] text-tinta-3">
+        <p className="mt-2 text-[0.8125rem] leading-relaxed text-tinta-3">
           Se crea en la consola de Anthropic. Cada corrección cuesta alrededor de un céntimo con el
-          modelo estándar. Anthropic recomienda rotarla cada tres meses.
+          modelo estándar. Conviene rotarla cada tres meses.
         </p>
       </div>
 
@@ -85,18 +92,18 @@ export function ClaveApi({ esDueno }: { esDueno: boolean }) {
         <Selector
           id="modelo"
           value={modelo}
-          onChange={(e) => {
-            const m = e.target.value as ModeloPreferido;
-            guardarModeloYAvisar(m);
-          }}
+          onChange={(e) => guardarModeloYAvisar(e.target.value as ModeloPreferido)}
         >
-          <option value="estandar">Estándar (Sonnet 5): rápido y barato</option>
+          <option value="estandar">Estándar: rápido y barato</option>
           <option value="exhaustivo">
-            Exhaustivo (Opus 5): para diseño de sistemas, 2,5 veces más caro
+            Exhaustivo: para diseño de sistemas, 2,5 veces más caro
           </option>
         </Selector>
       </div>
-      {aviso ? <p className="mt-3 text-[0.875rem] text-tinta-2">{aviso}</p> : null}
+
+      <p aria-live="polite" className="mt-3 min-h-5 text-[0.875rem] text-tinta-2">
+        {aviso}
+      </p>
     </section>
   );
 }

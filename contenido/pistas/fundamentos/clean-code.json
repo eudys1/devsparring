@@ -153,8 +153,8 @@
       "version": 1,
       "pista": "fundamentos",
       "familia": "clean-code",
-      "tipo": "review",
-      "modos": ["review"],
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
       "nivelMinimo": "mid",
       "frecuencia": "baja",
       "texto": {
@@ -181,6 +181,44 @@
           "fecha": "2026-09-14",
           "tipo": "resumen",
           "nota": "Hilo no accesible por error HTTP 429 al hacer WebFetch; pregunta basada en patrones de entrevista senior documentados de forma general."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "fund-clean-code-review-nombres-genericos",
+      "version": 1,
+      "pista": "fundamentos",
+      "familia": "clean-code",
+      "tipo": "review",
+      "modos": ["review"],
+      "nivelMinimo": "junior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Revisa esta función. Más allá de que funcione, ¿qué le falta para ser código limpio?",
+        "en": "Review this function. Beyond the fact that it works, what is it missing to be clean code?"
+      },
+      "contexto": "```js\nfunction calc(a, b, c) {\n  let r = a * b;\n  if (c === 1) {\n    r = r - r * 0.21;\n  }\n  return r;\n}\n```",
+      "rubrica": {
+        "junior": [
+          "Señala que los nombres (`calc`, `a`, `b`, `c`, `r`) no dicen qué representa cada cosa",
+          "Identifica el número mágico `0.21` sin explicar qué es"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Propone nombres descriptivos (`calcularPrecioConDescuento`, `cantidad`, `precioUnitario`) y una constante con nombre para `0.21` (por ejemplo `PORCENTAJE_IVA`)",
+          "Señala que `c === 1` es un booleano disfrazado de número mágico; debería ser un parámetro booleano claro (`aplicarDescuento`) o, si hay más de dos casos, un enum"
+        ]
+      },
+      "respuestaModelo": "La función funciona, pero ninguno de sus nombres comunica intención: `calc` no dice qué calcula, y `a`, `b`, `c`, `r` obligan a leer el cuerpo entero para entender qué representa cada uno. Nombres como `calcularPrecioConDescuento(cantidad, precioUnitario, aplicarDescuento)` dejan claro qué hace la función sin necesidad de leer una línea de implementación. El literal `0.21` es un número mágico: nada en el código explica que es un porcentaje de IVA, así que cualquiera que lo lea por primera vez tiene que adivinarlo o preguntar; una constante con nombre, como `const PORCENTAJE_IVA = 0.21`, lo deja explícito. Por último, `c === 1` es un booleano disfrazado de número: el parámetro `c` solo puede significar \"sí\" o \"no\" para algo, así que debería ser directamente un parámetro booleano con un nombre claro, como `aplicarDescuento`, en vez de un número mágico que el que llama a la función tiene que recordar.",
+      "etiquetas": ["clean-code", "code-review", "nombres"],
+      "fuentes": [
+        {
+          "url": "https://coderslink.com/talento/blog/preguntas-esenciales-en-una-entrevista-de-programador/",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Ejercicio de revisión redactado de cero a partir de las heurísticas de nombres y números mágicos citadas en el artículo."
         }
       ],
       "origen": "generada-revisada",

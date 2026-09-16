@@ -1,38 +1,48 @@
 import type { Metadata } from 'next';
-import { Archivo, IBM_Plex_Mono, IBM_Plex_Sans } from 'next/font/google';
+import { Big_Shoulders, IBM_Plex_Mono, IBM_Plex_Sans } from 'next/font/google';
+import { GUION_TEMA } from '@/components/Tema';
 import './globals.css';
 
-// Display con eje de anchura para titulares condensados; Plex Sans y Plex Mono
-// comparten métrica y dan el aire de "hoja técnica" que quiere la identidad.
-const archivo = Archivo({
+// Display condensada de cartel para titulares y cifras; Plex Sans y Plex Mono
+// son hermanas, así que el conjunto es una familia. Ver docs/diseno.md.
+const display = Big_Shoulders({
   subsets: ['latin'],
-  variable: '--font-archivo',
-  axes: ['wdth'],
+  weight: ['600', '700'],
+  variable: '--fuente-display',
   display: 'swap',
 });
-const plexSans = IBM_Plex_Sans({
+const texto = IBM_Plex_Sans({
   subsets: ['latin'],
   weight: ['400', '500', '600'],
-  variable: '--font-plex-sans',
+  variable: '--fuente-texto',
   display: 'swap',
 });
-const plexMono = IBM_Plex_Mono({
+const mono = IBM_Plex_Mono({
   subsets: ['latin'],
   weight: ['400', '500'],
-  variable: '--font-plex-mono',
+  variable: '--fuente-mono',
   display: 'swap',
 });
 
 export const metadata: Metadata = {
   title: { default: 'Devsparring', template: '%s · Devsparring' },
   description:
-    'Entrena entrevistas técnicas de programación en español: teoría, código y conversación, corregido con rúbrica por nivel.',
+    'Entrena entrevistas técnicas de programación en español: teoría, código y conversación, corregido con la vara de tu nivel.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" className={`${archivo.variable} ${plexSans.variable} ${plexMono.variable}`}>
-      <body>{children}</body>
+    <html lang="es" className={`${display.variable} ${texto.variable} ${mono.variable}`}>
+      <head>
+        {/* Antes de pintar, para que no haya destello del tema contrario */}
+        <script dangerouslySetInnerHTML={{ __html: GUION_TEMA }} />
+      </head>
+      <body>
+        <a href="#contenido" className="saltar">
+          Saltar al contenido
+        </a>
+        {children}
+      </body>
     </html>
   );
 }

@@ -12,6 +12,8 @@ Diseñada genérica para otros perfiles tech.
 
 - `docs/decisiones.md`: decisiones de producto con fecha y porqué. Leer primero.
 - `docs/arquitectura.md`: decisiones técnicas, estructura, datos, descartes, deuda.
+- `docs/diseno.md`: la dirección de diseño (metáfora, color, tipografía,
+  movimiento, accesibilidad). Leer antes de tocar cualquier pantalla.
 - `docs/research/`: seis informes con fuentes y fechas (formatos de entrevista,
   bancos de preguntas, IA y comportamental, competencia, tecnología).
 - `contenido/`: el banco de preguntas en JSON, fuente de verdad, revisado por PR.
@@ -29,6 +31,9 @@ pnpm dev                 # desarrollo (Turbopack)
 pnpm verify              # format:check + lint + typecheck + test + build, en orden
 pnpm test:e2e            # Playwright, Chromium, contra el build de producción
 pnpm contenido:validar   # valida contenido/ contra el esquema zod
+pnpm revisar             # el bucle entero: checks + build + detector + capturas
+pnpm detector            # anti-patrones de diseño contra el listón de dev
+pnpm capturas            # pantallas públicas en dos temas y dos tamaños
 ```
 
 Nada está terminado hasta que `pnpm verify` está en verde, y se dice tal cual si
@@ -44,8 +49,11 @@ algo falló.
 - Toda pregunta del banco lleva fuentes con URL y fecha y un `origen`. Nada entra
   en `contenido/` sin revisión humana.
 - Nunca un copiloto para usar durante entrevistas reales. Solo práctica.
-- Diseño: manda el listón de `C:\dev\CLAUDE.md`. Skills de diseño solo bajo
-  demanda y sin hooks.
+- Diseño: manda el listón del CLAUDE.md de dev, concretado en `docs/diseno.md`.
+  Antes de enseñar una pantalla, `pnpm revisar` y mirar las capturas como
+  abogado del diablo. Skills de diseño solo bajo demanda y sin hooks.
+- Los ganchos de prueba son `data-prueba`, nunca el texto de los botones: el
+  texto cambia con el diseño y rompería el bucle de revisión.
 
 ## Trampas que ya costaron tiempo
 

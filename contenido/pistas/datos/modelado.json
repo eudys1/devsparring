@@ -115,6 +115,43 @@
       ],
       "origen": "generada-revisada",
       "estado": "publicada"
+    },
+    {
+      "id": "datos-modelado-diseno-blog-simple",
+      "version": 1,
+      "pista": "datos",
+      "familia": "modelado",
+      "tipo": "razonamiento",
+      "modos": ["verbal", "diseno"],
+      "nivelMinimo": "junior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Diseña las tablas para un blog sencillo con posts y comentarios. Cada post tiene un autor; cada comentario pertenece a un post y a un autor. ¿Qué tablas y claves usarías?",
+        "en": "Design the tables for a simple blog with posts and comments. Each post has an author; each comment belongs to a post and an author. What tables and keys would you use?"
+      },
+      "rubrica": {
+        "junior": [
+          "Propone tablas separadas para posts, comentarios y usuarios/autores",
+          "Usa claves foráneas (`author_id`, `post_id`) en vez de repetir los datos del autor en cada fila"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Añade un índice sobre `post_id` en comentarios para listar rápido los comentarios de un post",
+          "Explica qué pasa con los comentarios si se borra el post (borrado en cascada o restricción) y justifica la elección"
+        ]
+      },
+      "respuestaModelo": "Tres tablas: `users(id, name)`, `posts(id, title, body, author_id, created_at)` y `comments(id, post_id, author_id, body, created_at)`, con `author_id` en ambas apuntando a `users(id)` y `post_id` en `comments` apuntando a `posts(id)`, en vez de repetir el nombre del autor en cada fila. Para que listar los comentarios de un post sea rápido conforme la tabla crece, conviene un índice sobre `comments(post_id)`. Sobre qué pasa al borrar un post, lo más habitual es `ON DELETE CASCADE` en la clave foránea de `comments.post_id`, para que sus comentarios se borren con él y no queden huérfanos apuntando a un post inexistente; la alternativa, `ON DELETE RESTRICT`, tiene sentido si se prefiere impedir borrar un post mientras tenga comentarios, forzando una decisión explícita antes de perder ese historial.",
+      "etiquetas": ["modelado", "claves-foraneas"],
+      "fuentes": [
+        {
+          "url": "https://github.com/kansiris/SQL-interview-questions",
+          "fecha": "2026-09-14",
+          "tipo": "resumen",
+          "nota": "Patrón recurrente en bancos de preguntas SQL de modelado uno-a-muchos; pregunta redactada de nuevo para nivel junior."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
     }
   ]
 }

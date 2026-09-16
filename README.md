@@ -40,13 +40,18 @@ a las URL de redirección. Esos valores están también en `supabase/config.toml
 ## Verificar
 
 ```bash
+pnpm revisar     # el bucle completo: verificación, build, detector y capturas
 pnpm verify      # format:check + lint + typecheck + test + build
 pnpm test:e2e    # Playwright en Chromium contra el build de producción
 ```
 
+`pnpm revisar` deja las capturas en `capturas/` (fuera de git) para mirarlas
+antes de enseñar una pantalla.
+
 ## Dónde está cada cosa
 
-Ver `CLAUDE.md`, `docs/decisiones.md` y `docs/arquitectura.md`.
+Ver `CLAUDE.md`, `docs/decisiones.md`, `docs/arquitectura.md` y, para la dirección
+visual (por qué la noche, el bloque y la tarjeta del juez), `docs/diseno.md`.
 
 ## Licencia
 
