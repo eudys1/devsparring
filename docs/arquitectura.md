@@ -236,6 +236,16 @@ Manda el listón de `C:\dev\CLAUDE.md`. Sobre él:
   versión instalada.
   Antes de instalar cualquiera se comprueba fecha de último commit e issues.
 
+**Actualización del 19-09-2026.** Aquella decisión de copiar `critique`, `audit`
+y `polish` como ficheros nunca se ejecutó, así que durante todo el rediseño las
+skills de diseño no estuvieron disponibles en este proyecto: lo que se hizo fue
+reproducir sus criterios a mano, con las reglas de movimiento escritas en
+`docs/diseno.md` y `scripts/detector-diseno.mjs` como detector mecánico casero.
+Ya no hace falta copiarlas: viven en el catálogo de `~/.claude/skills` y están
+disponibles en cualquier proyecto de `C:\dev`. Siguen siendo de uso bajo
+demanda y sin hooks. El detector propio se queda, porque conoce los tokens y
+las reglas concretas de este proyecto.
+
 ## Barrido de preguntas
 
 Workflow `barrido-preguntas.yml`: cron `17 6 * * 1` con puerta de 21 días en
@@ -275,8 +285,10 @@ auto-merge. Excluidos LinkedIn y Glassdoor por sus condiciones.
    esquema). Cuando el esquema se estabilice, generar tipos con la CLI.
 7. La corrección no hace streaming: el usuario espera unos segundos con un
    estado de carga. Añadir streaming si la espera molesta.
-8. Las pantallas autenticadas no se han revisado visualmente contra un
-   Supabase real: el bucle de capturas cubre landing, entrar y demo.
+8. **Resuelto el 17-09-2026.** Las pantallas autenticadas ya se revisan contra
+   un Supabase real: los proyectos `sesion` y `app` de Playwright entran con la
+   cuenta de pruebas y dejan capturas en `capturas/app-*.png`. Queda pendiente
+   hacerlo también en móvil y en tema oscuro.
 9. El modo kata usa el worker de Monaco para transpilar; si Monaco no carga
    (sin red al CDN), el modo kata no funciona. Servirlo en local es una línea de
    configuración del loader.
