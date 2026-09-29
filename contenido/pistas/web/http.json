@@ -27,6 +27,25 @@
         ]
       },
       "respuestaModelo": "GET lee un recurso sin modificarlo, POST normalmente crea uno nuevo, PUT reemplaza el recurso completo con lo que se envía, PATCH aplica una modificación parcial sobre campos concretos, y DELETE lo elimina. La idempotencia describe si repetir la misma petición produce el mismo estado final que ejecutarla una sola vez: GET, PUT, DELETE, HEAD y OPTIONS son idempotentes por definición HTTP, mientras que POST y PATCH normalmente no lo son. Esto importa en la práctica sobre todo con POST que crean algo con efecto real, como un pago o una reserva: como el método en sí no garantiza idempotencia, si el cliente reintenta tras un timeout de red puede duplicar la operación, y la única forma fiable de evitarlo es que el propio backend implemente una idempotency key generada por el cliente.",
+      "test": {
+        "enunciado": "¿Cuál de estos métodos HTTP no es idempotente?",
+        "correcta": 1,
+        "opciones": [
+          {
+            "texto": "PUT",
+            "porque": "Es idempotente: reemplazar el recurso dos veces con lo mismo deja el mismo estado."
+          },
+          {
+            "texto": "POST",
+            "porque": "Cada llamada puede crear algo nuevo; por eso un POST repetido puede duplicar efectos."
+          },
+          {
+            "texto": "DELETE",
+            "porque": "Es idempotente: tras borrarlo, repetir la petición deja el mismo estado (ya no existe)."
+          },
+          { "texto": "GET", "porque": "Solo lee, así que es idempotente y además seguro." }
+        ]
+      },
       "etiquetas": ["http", "metodos", "idempotencia"],
       "fuentes": [
         {
@@ -64,6 +83,29 @@
         ]
       },
       "respuestaModelo": "401 Unauthorized significa 'no sabemos quién eres': falta el token de autenticación, es inválido o expiró, y se espera que el cliente se autentique (o reautentique) antes de reintentar; un ejemplo es una petición a un endpoint protegido sin cabecera de autorización. 403 Forbidden significa 'sabemos quién eres pero no tienes permiso': el usuario está correctamente autenticado, pero su rol o sus permisos no le dan acceso a ese recurso concreto, como un usuario normal intentando acceder a un panel de administración. Confundir estos dos códigos es un error bastante frecuente que aparece en revisiones de código, y tiene consecuencias reales: devolver 401 cuando en realidad es un problema de permisos puede llevar al cliente a intentar reautenticarse en bucle sin ningún resultado.",
+      "resumen": "401: no sabemos quién eres (falta el token, no vale o caducó). 403: sabemos quién eres, pero no tienes permiso, por ejemplo un usuario normal entrando en el panel de administración.",
+      "test": {
+        "enunciado": "Un usuario con sesión válida intenta entrar al panel de administración sin ser admin. ¿Qué código devuelves?",
+        "correcta": 2,
+        "opciones": [
+          {
+            "texto": "401 Unauthorized",
+            "porque": "401 es para cuando no sabemos quién eres: falta el token, no es válido o caducó."
+          },
+          {
+            "texto": "404 Not Found",
+            "porque": "Se usa a veces para no revelar que el recurso existe, pero el código que expresa esto es 403."
+          },
+          {
+            "texto": "403 Forbidden",
+            "porque": "Sabemos quién eres, pero tu rol no te da acceso a ese recurso."
+          },
+          {
+            "texto": "500 Internal Server Error",
+            "porque": "No es un fallo del servidor; es una decisión de permisos."
+          }
+        ]
+      },
       "etiquetas": ["http", "codigos-de-estado", "autenticacion"],
       "fuentes": [
         {
@@ -100,6 +142,28 @@
         ]
       },
       "respuestaModelo": "`Cache-Control: max-age` define la expiración: mientras no pase ese tiempo, el navegador usa la respuesta guardada sin ni siquiera preguntar al servidor si sigue siendo válida. Pasado ese tiempo (o si el servidor pide revalidación explícita), entra en juego la validación: el navegador hace una petición condicional con `If-None-Match` (comparando contra el `ETag` guardado) o `If-Modified-Since` (comparando contra `Last-Modified`), y si el servidor confirma que nada cambió responde con un 304 sin body, ahorrando el envío de la respuesta completa aunque sigue habiendo una petición de red. `no-cache` no significa 'no cachear': significa que siempre hay que revalidar antes de usar la copia guardada; `no-store` sí significa literalmente no guardar ninguna copia, ni siquiera para revalidar después, y se usa para respuestas sensibles que nunca deberían persistir en ningún cache intermedio.",
+      "test": {
+        "enunciado": "¿Qué significa que el servidor responda 304 a una petición condicional con `If-None-Match`?",
+        "correcta": 0,
+        "opciones": [
+          {
+            "texto": "Que no cambió nada: el navegador usa su copia y la respuesta llega sin body.",
+            "porque": "Es la validación: se ahorra reenviar el contenido cuando el `ETag` coincide."
+          },
+          {
+            "texto": "Que el recurso se movió a otra URL.",
+            "porque": "Eso es una redirección, como 301 o 302."
+          },
+          {
+            "texto": "Que el navegador no tiene permiso para usar la caché.",
+            "porque": "304 confirma justo lo contrario: la copia guardada sigue siendo válida."
+          },
+          {
+            "texto": "Que la caché caducó y hay que descargar todo de nuevo.",
+            "porque": "Si hubiera cambiado, respondería 200 con el contenido nuevo."
+          }
+        ]
+      },
       "etiquetas": ["http", "cache", "etag"],
       "fuentes": [
         {

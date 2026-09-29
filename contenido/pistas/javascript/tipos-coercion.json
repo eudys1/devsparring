@@ -27,6 +27,28 @@
         ]
       },
       "respuestaModelo": "`===` compara valor y tipo sin convertir nada; `==` primero intenta convertir los operandos a un tipo común y después compara, lo que produce resultados poco intuitivos como `'' == 0` siendo `true` o `'0' == false` siendo `true`. Por eso la recomendación general es usar siempre `===`. El único caso donde `==` se acepta de forma consciente es comparar contra `null` (`valor == null`), porque esa comparación es `true` tanto si `valor` es `null` como si es `undefined`, ahorrando escribir las dos comparaciones por separado; fuera de ese caso concreto, `==` suele considerarse una fuente de bugs sutiles.",
+      "test": {
+        "enunciado": "¿En qué caso se acepta usar `==` a conciencia?",
+        "correcta": 3,
+        "opciones": [
+          {
+            "texto": "Para comparar strings con números, como `'5' == 5`.",
+            "porque": "Es justo donde la conversión sorprende; mejor convertir a mano y usar `===`."
+          },
+          {
+            "texto": "Para comparar objetos por su contenido.",
+            "porque": "`==` y `===` comparan objetos por referencia, nunca por contenido."
+          },
+          {
+            "texto": "Nunca: `==` y `===` son exactamente iguales.",
+            "porque": "No lo son: `==` convierte tipos antes de comparar (`'' == 0` es `true`)."
+          },
+          {
+            "texto": "`valor == null`, para cubrir `null` y `undefined` a la vez.",
+            "porque": "Es `true` para los dos y te ahorra escribir las dos comparaciones."
+          }
+        ]
+      },
       "etiquetas": ["coercion"],
       "fuentes": [
         {
@@ -122,6 +144,19 @@
         ]
       },
       "respuestaModelo": "Los 8 valores falsy en JavaScript son: `undefined`, `null`, `NaN`, `false`, `''` (string vacío), `0`, `-0` y `0n` (BigInt cero). Cualquier otro valor es truthy, incluido un array vacío `[]` o un objeto vacío `{}`, lo que sorprende a quien espera que \"vacío\" sea falsy. Esto importa en la práctica porque `cantidad || 10` da `10` también cuando `cantidad` vale `0`, un bug clásico; usar `cantidad ?? 10` solo cae al valor por defecto si `cantidad` es `null` o `undefined`, tratando `0` como un valor válido.",
+      "test": {
+        "enunciado": "¿Cuál de estos valores es truthy?",
+        "correcta": 0,
+        "opciones": [
+          {
+            "texto": "`[]`",
+            "porque": "Un array vacío es un objeto, y todo objeto es truthy, aunque «esté vacío»."
+          },
+          { "texto": "`0`", "porque": "`0` es uno de los ocho valores falsy." },
+          { "texto": "`''`", "porque": "El string vacío es falsy." },
+          { "texto": "`NaN`", "porque": "`NaN` también es falsy." }
+        ]
+      },
       "etiquetas": ["coercion"],
       "fuentes": [
         {
@@ -160,6 +195,28 @@
         ]
       },
       "respuestaModelo": "`undefined` es el valor que JavaScript asigna automáticamente a una variable declarada pero sin inicializar, o a un parámetro de función que no se pasó. `null` es un valor que alguien asigna intencionalmente para representar \"ausencia de valor\". Una variable no declarada es distinta de ambas: acceder a ella lanza `ReferenceError`, mientras que leer una variable declarada sin asignar da `undefined` sin error. Una excepción práctica es `typeof`: `typeof variableNoDeclarada` no lanza error y devuelve `'undefined'`, por eso se usa para comprobar si algo existe sin arriesgar una excepción. Un dato curioso (y un error histórico del lenguaje) es que `typeof null` devuelve `'object'`, no `'null'`, y no se puede corregir sin romper compatibilidad con código existente.",
+      "test": {
+        "enunciado": "¿Qué devuelve `typeof variableNoDeclarada`?",
+        "correcta": 2,
+        "opciones": [
+          {
+            "texto": "Lanza un `ReferenceError`.",
+            "porque": "Leer una variable no declarada lanza, pero `typeof` es la excepción: no falla."
+          },
+          {
+            "texto": "`'null'`",
+            "porque": "`typeof` nunca devuelve `'null'` (con `null` da `'object'`)."
+          },
+          {
+            "texto": "`'undefined'`",
+            "porque": "Por eso se usaba para comprobar si algo existía sin arriesgarse a un error."
+          },
+          {
+            "texto": "`'object'`",
+            "porque": "Eso lo devuelve con `null` y con objetos, no con una variable que no existe."
+          }
+        ]
+      },
       "etiquetas": ["coercion"],
       "fuentes": [
         {
@@ -174,7 +231,7 @@
     },
     {
       "id": "js-tipos-coercion-04",
-      "version": 1,
+      "version": 2,
       "pista": "javascript",
       "familia": "tipos-coercion",
       "tipo": "definicion",
@@ -182,8 +239,8 @@
       "nivelMinimo": "junior",
       "frecuencia": "media",
       "texto": {
-        "es": "Explica la diferencia entre objetos mutables e inmutables en JavaScript con un ejemplo de cada uno.",
-        "en": "Explain the difference between mutable and immutable objects in JavaScript with an example of each."
+        "es": "Pasas un array a una función, ella hace `push` y el array original también cambia. Explica la diferencia entre objetos mutables e inmutables en JavaScript con un ejemplo de cada uno.",
+        "en": "You pass an array to a function, it calls `push`, and the original array changes too. Explain the difference between mutable and immutable objects in JavaScript with an example of each."
       },
       "rubrica": {
         "junior": [
@@ -198,6 +255,28 @@
         ]
       },
       "respuestaModelo": "Un valor primitivo (string, número, booleano) es inmutable por diseño del lenguaje: `'hola'.toUpperCase()` devuelve un string nuevo, no modifica el original, porque los strings no se pueden mutar. Un objeto o un array son mutables por defecto: `arr.push(1)` modifica el array original en el sitio, y si ese array se pasó como referencia a una función, quien la llamó ve el cambio aunque no lo esperara, una fuente común de bugs. Para trabajar de forma inmutable con objetos hay que hacerlo explícito: crear una copia con spread (`{...obj, campo: nuevo}`) en vez de mutar el original, o usar `Object.freeze` para impedir cambios de primer nivel.",
+      "test": {
+        "enunciado": "Pasas un array a una función que hace `lista.push(1)`. ¿Qué ve quien la llamó?",
+        "correcta": 1,
+        "opciones": [
+          {
+            "texto": "El array sin cambios, porque se pasó una copia.",
+            "porque": "Se pasa la referencia al mismo array, no una copia."
+          },
+          {
+            "texto": "El array con el 1 añadido: los arrays se pasan por referencia y son mutables.",
+            "porque": "Es una fuente común de bugs; para evitarlo, se trabaja con copias."
+          },
+          {
+            "texto": "Un error, porque los parámetros de una función son de solo lectura en JavaScript.",
+            "porque": "Los parámetros no son de solo lectura, y mutar su contenido es válido."
+          },
+          {
+            "texto": "Depende de si el array se declaró con `const`.",
+            "porque": "`const` no impide mutar el contenido; el cambio se ve igual."
+          }
+        ]
+      },
       "etiquetas": ["coercion", "inmutabilidad"],
       "fuentes": [
         {

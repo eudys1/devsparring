@@ -26,6 +26,29 @@
         ]
       },
       "respuestaModelo": "CORS es una restricción que aplican los navegadores, no los servidores: impide que código JavaScript ejecutado en el origen A lea la respuesta de una petición hecha al origen B, salvo que el servidor B lo permita explícitamente devolviendo la cabecera `Access-Control-Allow-Origin` con el origen A autorizado. Un error de CORS en consola indica que el navegador bloqueó la lectura de esa respuesta en el JavaScript de la página, pero no significa que el atacante no pudiera acceder a ese endpoint de otra forma: un atacante que no usa un navegador (con curl, un script, o servidor a servidor) nunca estuvo sujeto a la restricción de CORS, porque esa comprobación la hace el navegador, no el servidor. Por eso CORS nunca debe tratarse como una medida de seguridad real del backend, es solo una política de qué páginas web pueden leer una respuesta desde JavaScript; la autenticación y autorización siguen siendo responsabilidad exclusiva del servidor.",
+      "resumen": "CORS lo aplican los navegadores: impiden que el JS del origen A lea respuestas del origen B salvo que B lo permita. No protege al servidor: un atacante lo llama igual con curl o desde su servidor.",
+      "test": {
+        "enunciado": "¿Qué quiere decir un error de CORS en la consola del navegador?",
+        "correcta": 2,
+        "opciones": [
+          {
+            "texto": "Que el servidor bloqueó la petición por seguridad y no llegó a procesarla ni a ejecutar nada.",
+            "porque": "La petición suele llegar al servidor; lo que se bloquea es leer la respuesta en el navegador."
+          },
+          {
+            "texto": "Que el endpoint está protegido contra cualquier atacante.",
+            "porque": "Un atacante lo llama con curl o desde su servidor: CORS no aplica fuera del navegador."
+          },
+          {
+            "texto": "Que el navegador impidió al JavaScript de la página leer la respuesta.",
+            "porque": "CORS lo aplican los navegadores: protege a sus usuarios, no al servidor."
+          },
+          {
+            "texto": "Que falta un certificado HTTPS en el servidor.",
+            "porque": "CORS va de orígenes, no de certificados."
+          }
+        ]
+      },
       "etiquetas": ["seguridad", "cors"],
       "fuentes": [
         {
@@ -60,6 +83,28 @@
         ]
       },
       "respuestaModelo": "XSS ocurre cuando un atacante consigue que su propio código JavaScript se ejecute en el navegador de otro usuario, normalmente inyectándolo a través de un input que la aplicación acaba mostrando sin sanitizar. React mitiga la mayor parte de este riesgo por defecto: cualquier valor interpolado en JSX (`{texto}`) se escapa automáticamente, así que un `<script>` guardado como texto se muestra como texto plano, no se ejecuta. El riesgo real está en los puntos donde esa protección automática se salta deliberadamente: `dangerouslySetInnerHTML`, que inyecta HTML crudo tal cual; atributos como `href` o `src` con URLs controladas por el usuario, donde un valor tipo `javascript:alert(1)` puede ejecutarse; o renderizar HTML proveniente de un CMS externo sin pasarlo antes por una librería de sanitización como DOMPurify. La mitigación es sanitizar explícitamente cualquier HTML que no haya sido generado por el propio código de la app antes de insertarlo en el DOM.",
+      "test": {
+        "enunciado": "En React, ¿dónde está el riesgo real de XSS?",
+        "correcta": 0,
+        "opciones": [
+          {
+            "texto": "En `dangerouslySetInnerHTML` y en URLs `javascript:` con datos del usuario.",
+            "porque": "Ahí se salta el escapado automático que React aplica a cualquier `{valor}` en JSX."
+          },
+          {
+            "texto": "En cualquier `{texto}` interpolado en el JSX, porque React inserta el valor tal cual en el HTML de la página.",
+            "porque": "React escapa automáticamente lo interpolado: un `<script>` se muestra como texto."
+          },
+          {
+            "texto": "En usar componentes de clase en vez de funcionales.",
+            "porque": "El tipo de componente no afecta al XSS."
+          },
+          {
+            "texto": "En guardar el estado en `useState`.",
+            "porque": "Guardar datos en el estado no los ejecuta; el riesgo está en cómo se pintan."
+          }
+        ]
+      },
       "etiquetas": ["seguridad", "xss"],
       "fuentes": [
         {
@@ -96,6 +141,28 @@
         ]
       },
       "respuestaModelo": "CSRF explota que el navegador adjunta automáticamente las cookies de sesión a cualquier petición hacia el dominio que las emitió, sin importar desde qué página se originó esa petición. Un sitio malicioso puede montar un formulario oculto o una petición automática hacia la app legítima, y si la víctima tiene sesión activa, el navegador incluye su cookie de sesión sin que ella se entere, ejecutando una acción autenticada en su nombre. `httpOnly` evita que JavaScript malicioso LEA el contenido de la cookie (protege contra robo vía XSS), pero no evita que el navegador la ENVÍE automáticamente en esa petición cross-site, que es exactamente lo que CSRF explota: son dos ataques distintos con mitigaciones distintas. La protección real contra CSRF pasa por `SameSite=Lax` o `Strict` en la cookie de sesión, tokens CSRF únicos por formulario, o verificar la cabecera `Origin`/`Referer` en el servidor antes de procesar la petición.",
+      "test": {
+        "enunciado": "¿Por qué una cookie `httpOnly` no protege contra CSRF?",
+        "correcta": 3,
+        "opciones": [
+          {
+            "texto": "Porque `httpOnly` solo funciona con HTTPS.",
+            "porque": "Eso es el atributo `Secure`; y ninguno de los dos frena CSRF."
+          },
+          {
+            "texto": "Porque `httpOnly` impide que la cookie viaje al servidor en peticiones que vengan desde otro dominio.",
+            "porque": "Se envía igual; lo que impide es que JavaScript la lea."
+          },
+          {
+            "texto": "Porque `httpOnly` está obsoleto en los navegadores modernos.",
+            "porque": "Está plenamente vigente y protege contra el robo por XSS."
+          },
+          {
+            "texto": "Porque el navegador la sigue enviando sola en peticiones desde otra web.",
+            "porque": "`httpOnly` evita que la lea JavaScript; contra CSRF: `SameSite`, tokens y comprobar el origen."
+          }
+        ]
+      },
       "etiquetas": ["seguridad", "csrf", "cookies"],
       "fuentes": [
         {
@@ -132,6 +199,29 @@
         ]
       },
       "respuestaModelo": "Una inyección SQL ocurre cuando el input de un usuario se concatena directamente dentro del texto de una consulta SQL, permitiendo que ese input altere la estructura lógica de la query, por ejemplo cerrando una condición con comillas y añadiendo su propia lógica. ORMs como Prisma o Drizzle protegen de esto por defecto porque construyen las queries con parámetros (placeholders) en vez de concatenar strings, y el driver de la base de datos trata el valor como un dato, nunca como código SQL ejecutable. El riesgo vuelve a aparecer cuando el desarrollador se salta ese mecanismo a propósito: métodos de SQL crudo con interpolación manual de strings, como `$queryRawUnsafe` en Prisma con una plantilla de texto que incluye directamente el input del usuario, reabren exactamente el mismo agujero que el ORM estaba evitando.",
+      "resumen": "El input se concatena en el SQL y cambia la lógica de la query. Un ORM protege por defecto porque usa parámetros, pero no si escribes SQL crudo concatenando lo que envía el usuario.",
+      "test": {
+        "enunciado": "¿Cuándo un ORM como Prisma no te protege de una inyección SQL?",
+        "correcta": 1,
+        "opciones": [
+          {
+            "texto": "Cuando usas sus métodos normales, como `findMany` con un `where`.",
+            "porque": "Ahí construye la query con parámetros y el valor nunca se ejecuta como SQL."
+          },
+          {
+            "texto": "Cuando escribes SQL crudo concatenando el input del usuario.",
+            "porque": "Las vías de SQL crudo inseguras se saltan los parámetros; hay que usar las versiones parametrizadas."
+          },
+          {
+            "texto": "Cuando la base de datos es Postgres en vez de MySQL.",
+            "porque": "El motor no importa; lo que importa es si concatenas input en el texto de la query."
+          },
+          {
+            "texto": "Nunca: un ORM protege siempre al cien por cien.",
+            "porque": "Protege por defecto, pero no si concatenas input en SQL crudo."
+          }
+        ]
+      },
       "etiquetas": ["seguridad", "sql-injection", "orm"],
       "fuentes": [
         {
@@ -166,6 +256,29 @@
         ]
       },
       "respuestaModelo": "La edición 2025 del OWASP Top 10 incorporó dos categorías nuevas: 'Software Supply Chain Failures', centrada en dependencias o paquetes comprometidos y pipelines de build inseguros, y 'Mishandling of Exceptional Conditions', centrada en errores y excepciones mal gestionados. Sobre esta segunda: un ejemplo típico es un endpoint que, al recibir un input inesperado, lanza una excepción no controlada cuyo stack trace completo se filtra en la respuesta al cliente, revelando rutas internas del servidor o detalles de la base de datos; o un flujo de pago que, al fallar a mitad de una operación, deja el sistema en un estado inconsistente porque nadie consideró explícitamente qué pasa cuando esa excepción concreta ocurre, en vez de tratarla como un caso de diseño más.",
+      "resumen": "OWASP Top 10 de 2025 añadió fallos en la cadena de suministro de software (dependencias y pipelines comprometidos) y mala gestión de condiciones excepcionales (errores que filtran datos o dejan estados rotos).",
+      "test": {
+        "enunciado": "¿Cuál es una de las categorías nuevas del OWASP Top 10 de 2025?",
+        "correcta": 2,
+        "opciones": [
+          {
+            "texto": "Inyección SQL",
+            "porque": "La inyección está en la lista desde hace muchas ediciones; no es nueva."
+          },
+          {
+            "texto": "Cross-site scripting como categoría propia",
+            "porque": "XSS se incluye dentro de inyección desde 2021; no es una categoría nueva."
+          },
+          {
+            "texto": "Fallos en la cadena de suministro de software",
+            "porque": "Dependencias o paquetes comprometidos y pipelines de build inseguros. La otra nueva es la mala gestión de condiciones excepcionales."
+          },
+          {
+            "texto": "Contraseñas débiles",
+            "porque": "Forma parte de los fallos de autenticación, que ya estaban."
+          }
+        ]
+      },
       "etiquetas": ["seguridad", "owasp"],
       "fuentes": [
         {

@@ -26,6 +26,28 @@
         ]
       },
       "respuestaModelo": "El fine-tuning reentrena, al menos parcialmente, los pesos del modelo con ejemplos propios, cambiando su comportamiento o estilo de forma permanente. RAG deja el modelo intacto y en su lugar le da contexto externo en el momento de la consulta. RAG es la mejor opción cuando la información cambia a menudo y hay que poder actualizarla sin reentrenar nada, mientras que el fine-tuning encaja mejor cuando se necesita un estilo o formato muy consistente, o un comportamiento especializado que no se consigue solo con prompting y contexto añadido.",
+      "test": {
+        "enunciado": "Tu asistente tiene que responder con la documentación interna, que cambia cada semana. ¿Qué eliges?",
+        "correcta": 2,
+        "opciones": [
+          {
+            "texto": "Fine-tuning semanal del modelo con la documentación nueva de cada semana.",
+            "porque": "Reentrenar cada semana es caro y lento, y el modelo no cita la fuente; para datos que cambian, RAG."
+          },
+          {
+            "texto": "Subir la temperatura para que improvise mejor.",
+            "porque": "Más temperatura da más variedad, no más conocimiento: aumentaría el riesgo de inventar."
+          },
+          {
+            "texto": "RAG: recuperar los fragmentos relevantes y pasarlos como contexto.",
+            "porque": "El modelo queda intacto y basta con actualizar los documentos; el fine-tuning encaja mejor para estilo o formato."
+          },
+          {
+            "texto": "Un modelo más grande, que ya sabe más cosas.",
+            "porque": "Ningún modelo conoce tu documentación interna ni sus cambios de esta semana; hay que dársela."
+          }
+        ]
+      },
       "etiquetas": ["fine-tuning", "rag", "fundamentos"],
       "fuentes": [
         {
@@ -128,6 +150,28 @@
         ]
       },
       "respuestaModelo": "Un modelo de razonamiento está entrenado o configurado para dedicar más cómputo y más pasos internos a razonar antes de dar la respuesta final, a veces mostrando o resumiendo ese proceso intermedio. Esto suele mejorar los resultados en tareas lógicas o que requieren varios pasos encadenados, a cambio de más latencia y más coste por llamada. No siempre compensa usarlo: para una tarea simple, como clasificar un texto corto en una categoría, un modelo convencional suele dar un resultado igual de bueno mucho más rápido y barato, así que conviene reservarlo para tareas que de verdad se benefician del razonamiento extendido.",
+      "test": {
+        "enunciado": "¿Cuándo no compensa usar un modelo de razonamiento?",
+        "correcta": 0,
+        "opciones": [
+          {
+            "texto": "En tareas simples, como clasificar un texto corto en una categoría.",
+            "porque": "Un modelo convencional da un resultado igual de bueno, más rápido y más barato."
+          },
+          {
+            "texto": "En problemas lógicos de varios pasos encadenados.",
+            "porque": "Es justo donde más ayuda dedicar más cómputo a razonar antes de responder."
+          },
+          {
+            "texto": "Cuando la respuesta tiene que ser correcta a la primera.",
+            "porque": "La exigencia de acierto es un argumento a favor, no en contra, si la tarea es compleja."
+          },
+          {
+            "texto": "Cuando el problema necesita planificar varios pasos antes de escribir el código.",
+            "porque": "Planificar en varios pasos es de las tareas donde un modelo de razonamiento suele rendir mejor."
+          }
+        ]
+      },
       "etiquetas": ["seleccion-modelo", "razonamiento"],
       "fuentes": [
         {

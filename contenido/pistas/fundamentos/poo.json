@@ -28,6 +28,28 @@
         ]
       },
       "respuestaModelo": "Encapsulamiento es ocultar el estado interno de un objeto y exponer solo lo necesario (por ejemplo, un campo privado `#saldo` con un método `retirar()` que valida antes de tocarlo). Abstracción es modelar solo los detalles relevantes para el problema, ignorando lo demás. Herencia permite que una clase reutilice comportamiento de otra (`Perro extends Animal`). Polimorfismo es que distintos tipos respondan al mismo mensaje de forma distinta, por ejemplo `animal.hacerSonido()` da un resultado distinto según sea Perro o Gato. Un candidato senior añade que en JS/TS muchas veces se prefiere composición e interfaces sobre herencia profunda porque es más flexible y evita jerarquías frágiles.",
+      "test": {
+        "enunciado": "Un campo privado `#saldo` que solo se cambia con `retirar()`, que valida antes. ¿Qué pilar de la POO es?",
+        "correcta": 0,
+        "opciones": [
+          {
+            "texto": "Encapsulamiento",
+            "porque": "Se oculta el estado interno y solo se expone lo necesario, con la validación dentro."
+          },
+          {
+            "texto": "Herencia",
+            "porque": "La herencia es reutilizar comportamiento de otra clase, como `Perro extends Animal`."
+          },
+          {
+            "texto": "Polimorfismo",
+            "porque": "Es que tipos distintos respondan al mismo mensaje de forma distinta, como `hacerSonido()`."
+          },
+          {
+            "texto": "Abstracción de interfaces genéricas",
+            "porque": "La abstracción es modelar solo lo relevante; aquí lo que se describe es proteger el estado."
+          }
+        ]
+      },
       "etiquetas": ["poo", "diseno"],
       "fuentes": [
         {

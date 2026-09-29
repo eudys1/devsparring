@@ -28,6 +28,7 @@
         ]
       },
       "respuestaModelo": "El motor de JavaScript ejecuta el código en un único hilo, pero delega las operaciones de I/O (peticiones de red, temporizadores, lectura de archivos) al entorno que lo rodea: el navegador o, en Node, libuv, que sí puede usar hilos internos para eso. Cuando esas operaciones terminan, su callback o la resolución de la promesa se coloca en una cola de tareas, y el event loop la ejecuta solo cuando el call stack del hilo principal está vacío. Así el hilo de JavaScript nunca se queda bloqueado esperando una respuesta de red: sigue procesando otro código mientras tanto.",
+      "resumen": "El motor ejecuta en un solo hilo pero delega la I/O al navegador o a libuv. Al terminar, el callback va a una cola y el event loop lo ejecuta cuando la pila está vacía; el hilo nunca espera.",
       "test": {
         "enunciado": "Si JavaScript tiene un solo hilo, ¿cómo espera a una petición de red sin congelar la interfaz?",
         "correcta": 0,
@@ -88,6 +89,7 @@
         ]
       },
       "respuestaModelo": "El caso clásico es un autocompletado de búsqueda: el usuario escribe rápido, se disparan varias peticiones fetch, y la respuesta de una petición antigua puede llegar después que la de una más reciente y pisar el resultado correcto en pantalla, porque el orden de llegada de las respuestas de red no está garantizado. Para evitarlo, guardo un identificador incremental de la última petición enviada y descarto cualquier respuesta que no corresponda a esa última petición, o cancelo la petición anterior con `AbortController` en cuanto se dispara una nueva. Un caso similar ocurre con un doble clic en un botón de guardar que dispara dos peticiones: ahí conviene deshabilitar el botón mientras la primera está en curso.",
+      "resumen": "En un autocompletado, una respuesta vieja puede llegar después que la nueva y pisarla. Se evita descartando respuestas que no son de la última petición o cancelando la anterior con `AbortController`.",
       "etiquetas": ["concurrencia", "asincronia"],
       "fuentes": [
         {

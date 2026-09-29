@@ -28,6 +28,28 @@
         ]
       },
       "respuestaModelo": "Documentar cómo instalar las dependencias depende de que cada persona (o cada máquina de CI) siga los pasos exactamente igual, y ese documento se desactualiza con el tiempo. Docker empaqueta la app junto con su entorno de ejecución exacto (versión de Node, dependencias del sistema, variables) en una imagen reproducible: la misma imagen que corre en el portátil de un desarrollador es la que corre en CI y en producción, eliminando el clásico 'en mi máquina funciona'. La imagen es la plantilla inmutable; el contenedor es una instancia en ejecución de esa imagen, y se pueden levantar varios contenedores idénticos a partir de la misma imagen.",
+      "test": {
+        "enunciado": "¿Qué resuelve Docker que no resuelve un documento con los pasos de instalación?",
+        "correcta": 2,
+        "opciones": [
+          {
+            "texto": "Que la aplicación arranque bastante más rápido en producción, porque el contenedor ya viene precalentado de fábrica.",
+            "porque": "La velocidad no es lo que aporta; lo que aporta es la reproducibilidad del entorno."
+          },
+          {
+            "texto": "Que ya no haga falta escribir tests de la aplicación.",
+            "porque": "El entorno reproducible no sustituye a los tests."
+          },
+          {
+            "texto": "Que la misma imagen, con su entorno exacto, corra igual en tu portátil, en CI y en producción.",
+            "porque": "Elimina el «en mi máquina funciona»; el documento depende de que todos sigan los pasos igual y se desactualiza."
+          },
+          {
+            "texto": "Que el código quede cifrado dentro del contenedor.",
+            "porque": "Docker empaqueta el entorno, no cifra el código."
+          }
+        ]
+      },
       "etiquetas": ["docker", "contenedores"],
       "fuentes": [
         {
@@ -66,6 +88,29 @@
         ]
       },
       "respuestaModelo": "Una imagen multi-stage separa el Dockerfile en varias fases: una fase de 'build' que instala todas las dependencias (incluidas las de desarrollo), compila y hace el build de Next.js, y una fase 'final' que parte de una imagen base limpia y solo copia el resultado compilado (`.next`, `node_modules` de producción) desde la fase anterior. Esto reduce drásticamente el tamaño de la imagen final, porque no arrastra compiladores, herramientas de build ni el código fuente completo, y de paso reduce la superficie de ataque en producción: menos software instalado es menos software que un atacante puede explotar si compromete el contenedor.",
+      "resumen": "El Dockerfile tiene una fase de build que instala y compila, y una final limpia que solo copia el resultado. Imagen mucho más pequeña, sin herramientas de build y con menos superficie de ataque.",
+      "test": {
+        "enunciado": "¿Qué ganas con una imagen multi-stage de Docker para Next.js?",
+        "correcta": 0,
+        "opciones": [
+          {
+            "texto": "Una imagen final pequeña, sin herramientas de build ni código fuente completo.",
+            "porque": "La fase de build compila; la final parte de una base limpia y copia solo el resultado, con menos superficie de ataque."
+          },
+          {
+            "texto": "Poder ejecutar varias aplicaciones en el mismo contenedor.",
+            "porque": "Multi-stage trata de las fases del build, no de meter varias apps juntas."
+          },
+          {
+            "texto": "Que el build se haga en el navegador del usuario.",
+            "porque": "El build ocurre al construir la imagen, nunca en el navegador."
+          },
+          {
+            "texto": "Evitar tener que instalar dependencias en la fase de build, porque se copian ya instaladas desde tu máquina local.",
+            "porque": "La fase de build las instala todas, incluidas las de desarrollo; lo que cambia es qué se copia al final."
+          }
+        ]
+      },
       "etiquetas": ["docker", "nextjs", "produccion"],
       "fuentes": [
         {

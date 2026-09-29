@@ -28,6 +28,29 @@
         ]
       },
       "respuestaModelo": "La pirámide propone muchos tests unitarios en la base (rápidos, baratos, prueban una función o módulo aislado), menos tests de integración en el medio (prueban que varias piezas colaboran bien) y pocos e2e en la cima (recorren la app real de punta a punta). Se recomienda esa proporción porque los unitarios son rápidos y baratos de mantener, mientras un e2e es lento, más frágil ante cambios de UI, y cuando falla es más difícil saber exactamente qué se rompió por su alcance amplio. En la práctica muchos equipos prefieren un \"testing trophy\" con más peso en integración, pero la lógica de coste-velocidad es la misma.",
+      "resumen": "Muchos unitarios (rápidos y baratos), menos de integración y pocos e2e (lentos, frágiles y difíciles de diagnosticar). Por eso la proporción; en la práctica muchos equipos engordan la integración.",
+      "test": {
+        "enunciado": "¿Por qué la pirámide de testing recomienda más tests unitarios que e2e?",
+        "correcta": 2,
+        "opciones": [
+          {
+            "texto": "Porque los e2e no detectan errores reales de la aplicación.",
+            "porque": "Los detectan, y dan mucha confianza; el problema es su coste y su fragilidad."
+          },
+          {
+            "texto": "Porque los unitarios prueban la aplicación entera de punta a punta.",
+            "porque": "Eso es lo que hace un e2e; un unitario prueba una pieza aislada."
+          },
+          {
+            "texto": "Porque son rápidos y baratos, y un e2e es lento y frágil y cuesta ver qué se rompió.",
+            "porque": "Muchos unitarios en la base, algunos de integración y pocos e2e en la cima."
+          },
+          {
+            "texto": "Porque los e2e necesitan una base de datos de pago y un entorno aparte para ejecutarse.",
+            "porque": "No necesitan nada de pago; el problema es lo lentos y frágiles que son."
+          }
+        ]
+      },
       "etiquetas": ["testing"],
       "fuentes": [
         {
@@ -103,6 +126,28 @@
         ]
       },
       "respuestaModelo": "Un stub reemplaza una dependencia devolviendo datos fijos, por ejemplo un `RepositorioDeUsuarios` falso que siempre devuelve el mismo usuario, útil cuando solo necesitas datos predecibles. Un spy envuelve una función real y registra cómo se llamó, útil para comprobar que se invocó `enviarEmail` con los argumentos correctos sin cambiar su comportamiento. Un mock va más allá: se configuran expectativas concretas (\"debe llamarse exactamente una vez con este argumento\") y el test falla si no se cumplen. Abusar de mocks acopla los tests a los detalles de implementación; conviene reservarlos para verificar interacciones críticas, no cualquier llamada interna.",
+      "test": {
+        "enunciado": "Quieres comprobar que se llamó a `enviarEmail` con los argumentos correctos sin cambiar lo que hace. ¿Qué usas?",
+        "correcta": 1,
+        "opciones": [
+          {
+            "texto": "Un stub que devuelva siempre el mismo resultado.",
+            "porque": "Un stub reemplaza la dependencia con datos fijos; no te dice cómo se la llamó."
+          },
+          {
+            "texto": "Un spy",
+            "porque": "Envuelve la función real y registra cómo se llamó, sin cambiar su comportamiento."
+          },
+          {
+            "texto": "Un test e2e que abra el buzón de correo de verdad.",
+            "porque": "Es lento, frágil y depende de un servicio externo; para esto basta un spy."
+          },
+          {
+            "texto": "Un `console.log` dentro de `enviarEmail`.",
+            "porque": "No es una comprobación: el test no falla si la llamada es incorrecta."
+          }
+        ]
+      },
       "etiquetas": ["testing"],
       "fuentes": [
         {
@@ -141,6 +186,29 @@
         ]
       },
       "respuestaModelo": "Un test de integración verifica que varias piezas del propio sistema colaboran bien: por ejemplo, que el formulario de login llama correctamente al servicio de autenticación, mockeando la respuesta de red pero usando el código real del formulario y del servicio juntos. Un test e2e recorre la app real de punta a punta, simulando a un usuario real: abre el navegador, rellena el formulario de login contra un backend real o casi real, y comprueba que termina en la pantalla esperada. Los e2e dan más confianza porque prueban el sistema completo, pero son más lentos y frágiles ante cambios de UI, por eso se usan con moderación frente a los de integración.",
+      "resumen": "Integración: piezas propias colaborando con la red mockeada (el formulario de login llama bien al servicio). E2E: la app real de punta a punta en un navegador, hasta la pantalla final.",
+      "test": {
+        "enunciado": "En un login, ¿qué es un test e2e y no uno de integración?",
+        "correcta": 3,
+        "opciones": [
+          {
+            "texto": "Comprobar que el formulario llama al servicio de autenticación, con la red simulada.",
+            "porque": "Eso es integración: piezas reales del propio sistema juntas, con la red mockeada."
+          },
+          {
+            "texto": "Probar la función que valida el formato del email.",
+            "porque": "Es un test unitario: una función aislada."
+          },
+          {
+            "texto": "Comprobar que el botón está deshabilitado con los campos vacíos, renderizando solo el componente.",
+            "porque": "Es un test de componente: no recorre la aplicación real."
+          },
+          {
+            "texto": "Abrir el navegador, rellenar el login contra el backend y llegar a la pantalla esperada.",
+            "porque": "Recorre la app de punta a punta como un usuario real; da más confianza, pero es más lento y frágil."
+          }
+        ]
+      },
       "etiquetas": ["testing"],
       "fuentes": [
         {

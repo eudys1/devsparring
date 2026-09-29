@@ -28,6 +28,29 @@
         ]
       },
       "respuestaModelo": "ACID son las cuatro garantías de una transacción: Atomicidad (todo el bloque de operaciones se aplica o no se aplica nada), Consistencia (las reglas y constraints de la base de datos se respetan siempre, antes y después), Aislamiento (transacciones concurrentes no se pisan de forma incoherente entre sí) y Durabilidad (una vez confirmada, la transacción sobrevive a un crash del servidor). El ejemplo clásico es transferir dinero entre dos cuentas: debitar de una y acreditar en otra tienen que ser atómicas, porque si el proceso falla a mitad sin transacción, el dinero puede desaparecer o duplicarse.",
+      "resumen": "ACID: atomicidad (todo o nada), consistencia (las reglas se cumplen), aislamiento (las concurrentes no se pisan) y durabilidad (lo confirmado sobrevive). Ejemplo: una transferencia entre dos cuentas.",
+      "test": {
+        "enunciado": "En una transferencia entre dos cuentas, ¿qué propiedad ACID evita que se debite una sin acreditar la otra?",
+        "correcta": 0,
+        "opciones": [
+          {
+            "texto": "Atomicidad",
+            "porque": "O se aplican las dos operaciones o ninguna: no puede quedar dinero a medio camino."
+          },
+          {
+            "texto": "Durabilidad",
+            "porque": "Garantiza que lo confirmado sobrevive a un crash, pero no que las dos operaciones vayan juntas."
+          },
+          {
+            "texto": "Aislamiento",
+            "porque": "Evita que transacciones concurrentes se pisen; no une las dos operaciones en un todo."
+          },
+          {
+            "texto": "Consistencia",
+            "porque": "Mantiene las reglas y constraints; la garantía de todo o nada es la atomicidad."
+          }
+        ]
+      },
       "etiquetas": ["sql", "transacciones", "acid"],
       "fuentes": [
         {

@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "react-patrones-01",
-      "version": 1,
+      "version": 2,
       "pista": "react",
       "familia": "patrones",
       "tipo": "definicion",
@@ -12,8 +12,8 @@
       "nivelMinimo": "mid",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Qué son `Suspense` y los error boundaries, y por qué son mecanismos complementarios?",
-        "en": "What are `Suspense` and error boundaries, and why are they complementary mechanisms?"
+        "es": "Tu dashboard se queda en blanco entero cuando falla la carga de un solo widget. ¿Qué son `Suspense` y los error boundaries, y por qué son mecanismos complementarios?",
+        "en": "Your whole dashboard goes blank when a single widget fails to load. What are `Suspense` and error boundaries, and why are they complementary mechanisms?"
       },
       "rubrica": {
         "junior": [
@@ -27,6 +27,29 @@
         ]
       },
       "respuestaModelo": "`Suspense` captura el hecho de que un componente está esperando algo (una carga de código con `lazy`, o de datos con las APIs que lo soportan) y mientras tanto muestra un fallback en su lugar, sin que el desarrollador tenga que gestionar manualmente un estado de carga. Los error boundaries son componentes (de clase, con `getDerivedStateFromError` y `componentDidCatch`, o envoltorios de librerías como `react-error-boundary`) que capturan errores lanzados durante el renderizado de sus hijos y muestran una UI alternativa en vez de que toda la app se rompa en blanco. Son complementarios porque cubren dos fases distintas: `Suspense` cubre la espera, el error boundary cubre el fallo; y ambos comparten una limitación importante, no capturan errores que ocurren en handlers de eventos (un `onClick` que lanza) ni en código asíncrono fuera del ciclo de render, para eso sigue haciendo falta un `try/catch` normal.",
+      "resumen": "`Suspense` muestra un fallback mientras algo carga; un error boundary muestra una UI alternativa si algo falla al renderizar. Uno cubre la espera y el otro el error, así que van juntos.",
+      "test": {
+        "enunciado": "¿Por qué `Suspense` y los error boundaries son complementarios?",
+        "correcta": 2,
+        "opciones": [
+          {
+            "texto": "Porque los dos muestran un spinner mientras se carga algo.",
+            "porque": "Solo `Suspense` trata la espera; el error boundary trata los fallos."
+          },
+          {
+            "texto": "Porque los dos se escriben siempre como componentes de clase.",
+            "porque": "`Suspense` es un componente de React; solo los error boundaries propios necesitan clase."
+          },
+          {
+            "texto": "Porque uno gestiona la espera y el otro los errores al renderizar.",
+            "porque": "`Suspense` muestra un fallback mientras algo carga; el error boundary, una UI alternativa si algo falla."
+          },
+          {
+            "texto": "Porque uno funciona en el servidor y el otro en el cliente.",
+            "porque": "Ninguno se define por dónde se ejecuta; se definen por lo que capturan."
+          }
+        ]
+      },
       "etiquetas": ["patrones", "suspense", "error-boundaries"],
       "fuentes": [
         {
@@ -64,6 +87,29 @@
         ]
       },
       "respuestaModelo": "Un `<div onClick>` solo responde al clic del ratón: no es focuseable por teclado por defecto (no aparece en el orden de tabulación), no tiene un rol semántico que indique que es interactivo, y no responde a `Enter` ni `Espacio` como esperaría cualquier usuario que navega con teclado. Un lector de pantalla lo anuncia como texto plano, sin indicar que se puede activar. `<button>` trae todo eso gratis: foco por teclado, rol de botón anunciado por el lector de pantalla, y la activación con `Enter`/`Espacio` ya implementada por el navegador. En una revisión de código este es uno de los hallazgos de accesibilidad más frecuentes y más baratos de arreglar: si el elemento se puede simplemente cambiar a `<button>` (con los estilos adecuados) es la solución preferida; si por alguna razón debe seguir siendo un `<div>`, hay que añadir `tabIndex={0}`, `role=\"button\"` y manejar `onKeyDown` a mano.",
+      "resumen": "Un `<div onClick>` solo responde al ratón: sin foco de teclado, sin rol y sin Enter ni Espacio, y el lector lo anuncia como texto. `<button>` trae todo eso gratis; por eso se señala en una revisión.",
+      "test": {
+        "enunciado": "¿Qué le falta a un `<div onClick>` que sí tiene un `<button>`?",
+        "correcta": 1,
+        "opciones": [
+          {
+            "texto": "Nada, siempre que el `div` tenga estilos de botón y `cursor: pointer` para que parezca pulsable.",
+            "porque": "El estilo es solo visual: sigue sin foco, sin rol y sin teclado."
+          },
+          {
+            "texto": "El foco por teclado, el rol de botón y la activación con Enter y Espacio.",
+            "porque": "El lector de pantalla lo anuncia como texto plano; `<button>` trae todo eso gratis."
+          },
+          {
+            "texto": "La capacidad de recibir clics del ratón.",
+            "porque": "El clic funciona; lo que falla es todo lo que no es ratón."
+          },
+          {
+            "texto": "Que funcione dentro de un formulario de React.",
+            "porque": "El `div` funciona igual ahí; el problema es la accesibilidad."
+          }
+        ]
+      },
       "etiquetas": ["patrones", "accesibilidad"],
       "fuentes": [
         {
@@ -78,7 +124,7 @@
     },
     {
       "id": "react-patrones-03",
-      "version": 1,
+      "version": 2,
       "pista": "react",
       "familia": "patrones",
       "tipo": "definicion",
@@ -86,8 +132,8 @@
       "nivelMinimo": "senior",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Qué son las Server Components de React y en qué se diferencian de SSR tradicional?",
-        "en": "What are React Server Components and how do they differ from traditional SSR?"
+        "es": "Un compañero dice que los Server Components \"son el SSR de siempre con otro nombre\". ¿Qué son las Server Components de React y en qué se diferencian del SSR tradicional?",
+        "en": "A teammate says Server Components \"are just good old SSR with a new name\". What are React Server Components and how do they differ from traditional SSR?"
       },
       "rubrica": {
         "junior": [
@@ -101,6 +147,29 @@
         ]
       },
       "respuestaModelo": "El SSR tradicional genera el HTML inicial en el servidor para que la primera pintura sea rápida, pero después el navegador descarga el JavaScript de esos mismos componentes y los vuelve a ejecutar entero para 'hidratarlos' y hacerlos interactivos: el código del componente viaja al cliente igualmente. Los Server Components van más allá: se ejecutan exclusivamente en el servidor, su código nunca se incluye en el bundle que descarga el navegador, y por eso pueden hacer acceso directo a una base de datos o al sistema de archivos sin arriesgarse a filtrar credenciales, porque ese código físicamente no llega al cliente. Solo los Client Components, marcados explícitamente con la directiva `\"use client\"`, se hidratan y ejecutan también en el navegador; el resto del árbol se queda como HTML (y una serialización especial) que no necesita JavaScript para existir.",
+      "resumen": "SSR genera HTML en el servidor, pero luego el navegador descarga ese código y lo hidrata. Los Server Components solo se ejecutan en el servidor y su código nunca entra en el bundle del cliente.",
+      "test": {
+        "enunciado": "¿Qué diferencia a los Server Components del SSR tradicional?",
+        "correcta": 0,
+        "opciones": [
+          {
+            "texto": "Su código nunca llega al bundle del navegador; en SSR se descarga y se hidrata.",
+            "porque": "Por eso pueden acceder directamente a la base de datos o al sistema de ficheros."
+          },
+          {
+            "texto": "Generan el HTML en el navegador del usuario en vez de en el servidor, y así ahorran trabajo a la infraestructura.",
+            "porque": "Los dos generan HTML en el servidor; la diferencia es qué código viaja después."
+          },
+          {
+            "texto": "Solo funcionan con páginas estáticas generadas en el build.",
+            "porque": "Pueden ejecutarse en cada petición; no se limitan a lo estático."
+          },
+          {
+            "texto": "Permiten usar `useState` en el servidor.",
+            "porque": "Los Server Components no usan estado ni efectos; eso es de los de cliente."
+          }
+        ]
+      },
       "etiquetas": ["patrones", "server-components", "ssr"],
       "fuentes": [
         {
@@ -138,6 +207,28 @@
         ]
       },
       "respuestaModelo": "El prop drilling ocurre cuando un dato necesita llegar de un componente ancestro a uno descendiente lejano, y hay que pasarlo como prop a través de varios componentes intermedios que no lo usan para nada, solo lo reenvían. La primera alternativa, antes incluso de pensar en Context, es la composición: en vez de pasar el dato, se pasa el componente ya construido como `children` o como prop de tipo elemento, evitando que los intermedios necesiten saber que ese dato existe. Context resuelve el caso donde de verdad muchos componentes en distintos niveles necesitan el mismo valor, especialmente si cambia poco (tema, idioma, usuario autenticado). Cuando el estado es compartido por partes del árbol que no tienen relación de ancestro directo y cambia con frecuencia, un store externo como Zustand o Redux suele encajar mejor que forzar Context a ese caso de uso.",
+      "test": {
+        "enunciado": "¿Cuál es la primera alternativa al prop drilling, antes de pensar en Context?",
+        "correcta": 3,
+        "opciones": [
+          {
+            "texto": "Guardar el dato en `localStorage` y leerlo en el componente lejano.",
+            "porque": "Mete persistencia donde no hace falta y rompe el flujo de datos de React."
+          },
+          {
+            "texto": "Una variable global exportada desde un módulo.",
+            "porque": "React no se entera de sus cambios y no vuelve a pintar."
+          },
+          {
+            "texto": "Duplicar el estado en cada componente intermedio.",
+            "porque": "Crea varias fuentes de verdad que se desincronizan."
+          },
+          {
+            "texto": "Composición: pasar el componente ya construido como `children`.",
+            "porque": "Los intermedios ya no necesitan saber que el dato existe; Context queda para lo que usan muchos."
+          }
+        ]
+      },
       "etiquetas": ["patrones", "prop-drilling", "context"],
       "fuentes": [
         {
@@ -211,6 +302,7 @@
         ]
       },
       "respuestaModelo": "La estructura razonable usa un estado para el texto del input y otro para el valor 'debounciado', con un `useEffect` que arma un `setTimeout` de 300ms cada vez que cambia el texto y lo cancela en la limpieza del efecto (o un hook `useDebouncedValue` que encapsule ese patrón). La petición real se dispara cuando cambia el valor debounciado, usando un `AbortController` para cancelar la petición anterior si el usuario sigue escribiendo, o alternativamente comparando el texto que originó la respuesta con el texto actual del input antes de pintar los resultados, para no mostrar una respuesta vieja que llegó tarde. El componente mantiene un estado de tres posiciones (cargando, con resultados, sin resultados) que se actualiza de forma coherente para evitar parpadeos entre ellos. Para accesibilidad, la lista de resultados se comporta como un combobox: las flechas mueven un índice activo, Enter selecciona el resultado resaltado, y un `aria-live=\"polite\"` anuncia cuántos resultados aparecieron para quien usa lector de pantalla.",
+      "resumen": "Texto y valor con debounce de 300 ms; `AbortController` para cancelar la petición vieja; estados de cargando, con resultados y sin resultados; y un combobox con flechas, Enter y `aria-live` para el recuento.",
       "etiquetas": ["patrones", "debounce", "accesibilidad", "condicion-de-carrera"],
       "fuentes": [
         {

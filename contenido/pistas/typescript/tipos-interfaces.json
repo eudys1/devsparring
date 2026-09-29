@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "ts-tipos-interfaces-01",
-      "version": 1,
+      "version": 2,
       "pista": "typescript",
       "familia": "tipos-interfaces",
       "tipo": "definicion",
@@ -12,8 +12,8 @@
       "nivelMinimo": "junior",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Qué significa que \"TypeScript es un superset de JavaScript\"? ¿Qué aporta que no tenga JS?",
-        "en": "What does it mean that \"TypeScript is a superset of JavaScript\"? What does it add that JS doesn't have?"
+        "es": "Un compañero pregunta si puede renombrar un `.js` a `.ts` y que siga funcionando igual. ¿Qué significa que \"TypeScript es un superset de JavaScript\"? ¿Qué aporta que no tenga JS?",
+        "en": "A teammate asks whether they can rename a `.js` file to `.ts` and have it keep working. What does \"TypeScript is a superset of JavaScript\" mean? What does it add that JS lacks?"
       },
       "rubrica": {
         "junior": [
@@ -28,6 +28,28 @@
         ]
       },
       "respuestaModelo": "Que TypeScript sea un superset de JavaScript significa que cualquier archivo `.js` válido es también un archivo `.ts` válido: TypeScript no cambia la sintaxis de JavaScript, la extiende. Lo que añade es un sistema de tipos estáticos que se comprueba en tiempo de desarrollo, antes de ejecutar nada, permitiendo detectar errores como pasar un string donde se espera un número mucho antes de que lleguen a producción. En tiempo de ejecución no existen los tipos: el compilador de TypeScript los quita al transpilar a JavaScript plano, así que el beneficio es enteramente durante el desarrollo (autocompletado, refactors seguros, documentación viva) a cambio de un paso de compilación adicional y una curva de aprendizaje del sistema de tipos.",
+      "test": {
+        "enunciado": "¿Qué pasa con los tipos de TypeScript en tiempo de ejecución?",
+        "correcta": 1,
+        "opciones": [
+          {
+            "texto": "El navegador los comprueba al ejecutar el código.",
+            "porque": "El navegador ejecuta JavaScript sin tipos; no ve ninguno."
+          },
+          {
+            "texto": "No existen: el compilador los quita al pasar a JavaScript.",
+            "porque": "Se comprueban en desarrollo; para validar datos que llegan en ejecución hace falta otra cosa, como Zod."
+          },
+          {
+            "texto": "Se convierten en validaciones automáticas de los datos de entrada.",
+            "porque": "No generan ninguna validación: desaparecen al compilar."
+          },
+          {
+            "texto": "Hacen que el código se ejecute más rápido.",
+            "porque": "No afectan a la velocidad; en ejecución no existen."
+          }
+        ]
+      },
       "etiquetas": ["typescript"],
       "fuentes": [
         {
@@ -63,6 +85,28 @@
         ]
       },
       "respuestaModelo": "Los tipos básicos incluyen `string` (`'hola'`), `number` (`42`), `boolean` (`true`), `array` (`number[]` o `Array<number>`), y `tuple` (`[number, string]`), que a diferencia del array fija tanto la longitud como el tipo de cada posición. También forman parte del vocabulario básico `any` (desactiva el chequeo de tipos), `unknown` (tipo seguro para valores de origen desconocido, obliga a comprobar antes de usar), `void` (ausencia de valor de retorno), y `never` (un valor que nunca ocurre, como el retorno de una función que siempre lanza). Los tipos unión (`string | number`) combinan varios tipos posibles para una misma variable.",
+      "test": {
+        "enunciado": "¿Qué diferencia una tupla `[number, string]` de un array `number[]`?",
+        "correcta": 2,
+        "opciones": [
+          {
+            "texto": "La tupla no se puede recorrer con un bucle.",
+            "porque": "En ejecución es un array normal y se recorre igual."
+          },
+          {
+            "texto": "El array solo admite números y la tupla admite cualquier tipo.",
+            "porque": "La tupla fija qué tipo va en cada posición; no admite cualquier cosa."
+          },
+          {
+            "texto": "La tupla fija la longitud y el tipo de cada posición.",
+            "porque": "`[number, string]` dice que hay dos elementos: primero un número y después un texto."
+          },
+          {
+            "texto": "La tupla es inmutable por defecto.",
+            "porque": "No lo es salvo que la declares `readonly`."
+          }
+        ]
+      },
       "etiquetas": ["typescript"],
       "fuentes": [
         {
@@ -101,6 +145,28 @@
         ]
       },
       "respuestaModelo": "Ambos describen la forma de un valor, y para el caso simple de un objeto son casi intercambiables. La diferencia práctica es que `interface` se puede extender con `extends` y admite \"declaration merging\": declarar la misma interfaz dos veces en el mismo scope combina ambas definiciones en una, útil para que una librería permita a quien la consume añadir campos a un tipo existente. `type` no permite eso, pero es más flexible para expresar uniones (`type Id = string | number`), intersecciones, y tipos condicionales que `interface` no puede representar. Un criterio práctico: `interface` para formas de objetos o props públicas de una librería pensadas para extenderse, `type` para uniones, tipos derivados o construcciones más complejas.",
+      "test": {
+        "enunciado": "¿Qué permite `interface` que no permite `type`?",
+        "correcta": 0,
+        "opciones": [
+          {
+            "texto": "El declaration merging: dos declaraciones con el mismo nombre se combinan.",
+            "porque": "Útil para que una librería deje añadir campos a un tipo existente."
+          },
+          {
+            "texto": "Expresar uniones como `string | number`.",
+            "porque": "Es al revés: las uniones se expresan con `type`."
+          },
+          {
+            "texto": "Describir la forma de un objeto.",
+            "porque": "Los dos lo hacen; para un objeto simple son casi intercambiables."
+          },
+          {
+            "texto": "Escribir tipos condicionales.",
+            "porque": "Los tipos condicionales son cosa de `type`, no de `interface`."
+          }
+        ]
+      },
       "etiquetas": ["typescript"],
       "fuentes": [
         {
@@ -115,7 +181,7 @@
     },
     {
       "id": "ts-tipos-interfaces-04",
-      "version": 1,
+      "version": 2,
       "pista": "typescript",
       "familia": "tipos-interfaces",
       "tipo": "definicion",
@@ -123,8 +189,8 @@
       "nivelMinimo": "junior",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Qué son las interfaces en TypeScript y cómo funcionan?",
-        "en": "What are interfaces in TypeScript and how do they work?"
+        "es": "Recibes de una API un objeto de usuario y quieres que el editor te avise si lees un campo que no existe. ¿Qué son las interfaces en TypeScript y cómo funcionan?",
+        "en": "You get a user object from an API and want the editor to warn you if you read a field that doesn't exist. What are interfaces in TypeScript and how do they work?"
       },
       "rubrica": {
         "junior": [
@@ -138,6 +204,28 @@
         ]
       },
       "respuestaModelo": "Una interfaz describe la forma que debe tener un objeto: qué propiedades tiene y de qué tipo, y opcionalmente qué métodos. TypeScript usa tipado estructural (duck typing): cualquier objeto que tenga las propiedades requeridas cumple la interfaz, sin necesidad de declararlo explícitamente. Se puede marcar una propiedad como opcional con `campo?: tipo` o como de solo lectura con `readonly campo: tipo`. Una clase puede además implementar una interfaz de forma explícita con `class Usuario implements Persona`, lo que hace que el compilador avise en tiempo de compilación si la clase deja de cumplir el contrato.",
+      "test": {
+        "enunciado": "Un objeto tiene todas las propiedades de la interfaz `Persona` pero nunca se declaró como tal. ¿La cumple?",
+        "correcta": 3,
+        "opciones": [
+          {
+            "texto": "No: hay que escribir `implements Persona` en su clase.",
+            "porque": "`implements` es opcional; sirve para que el compilador lo compruebe de forma explícita."
+          },
+          {
+            "texto": "No: tiene que crearse con `new Persona()`.",
+            "porque": "Las interfaces no se instancian; solo describen una forma."
+          },
+          {
+            "texto": "Solo si tiene exactamente esas propiedades y ninguna más.",
+            "porque": "Puede tener más; el tipado estructural pide que tenga al menos las requeridas."
+          },
+          {
+            "texto": "Sí: TypeScript usa tipado estructural.",
+            "porque": "Si tiene la forma requerida, cumple la interfaz, sin declararlo."
+          }
+        ]
+      },
       "etiquetas": ["typescript"],
       "fuentes": [
         {
@@ -173,6 +261,28 @@
         ]
       },
       "respuestaModelo": "`any` desactiva por completo el chequeo de tipos: se puede llamar cualquier método o acceder a cualquier propiedad sobre un valor `any` sin que el compilador se queje, aunque eso rompa en tiempo de ejecución. `unknown` es el tipo seguro equivalente: acepta cualquier valor igual que `any`, pero no permite operar con él directamente, obliga a comprobar o estrechar el tipo primero (con `typeof`, `instanceof`, o un type guard propio) antes de usarlo. Por ejemplo, `function f(x: unknown) { x.toUpperCase() }` no compila hasta que se comprueba `typeof x === 'string'` antes; con `any` compilaría sin avisos y fallaría en tiempo de ejecución si `x` no es un string. Por eso se recomienda `unknown` como valor por defecto para datos de origen externo (respuesta de una API, `JSON.parse`), dejando `any` solo como último recurso deliberado.",
+      "test": {
+        "enunciado": "¿Por qué se recomienda `unknown` en vez de `any` para datos de origen desconocido?",
+        "correcta": 1,
+        "opciones": [
+          {
+            "texto": "Porque `unknown` es más rápido en tiempo de ejecución.",
+            "porque": "En ejecución los tipos no existen; la diferencia es solo en compilación."
+          },
+          {
+            "texto": "Porque obliga a comprobar el tipo antes de usar el valor.",
+            "porque": "Con `any`, `x.toUpperCase()` compila y puede romper en ejecución; con `unknown`, no compila sin comprobar."
+          },
+          {
+            "texto": "Porque `unknown` no acepta todos los valores, solo objetos.",
+            "porque": "Acepta cualquier valor, igual que `any`; lo que cambia es qué te deja hacer con él."
+          },
+          {
+            "texto": "Porque `any` está desaconsejado y dará error en versiones futuras.",
+            "porque": "`any` sigue siendo válido; se evita porque apaga el chequeo, no porque vaya a desaparecer."
+          }
+        ]
+      },
       "etiquetas": ["typescript"],
       "fuentes": [
         {
@@ -207,6 +317,28 @@
         ]
       },
       "respuestaModelo": "Un `enum` agrupa un conjunto fijo de valores con nombre, como `enum Estado { Pendiente, Hecho }`. Un enum numérico por defecto asigna 0, 1, 2... y además genera un objeto JavaScript real en tiempo de ejecución con mapeo inverso (`Estado[0] === 'Pendiente'`), lo que añade código extra al bundle y puede sorprender. Una unión de string literals (`type Estado = 'pendiente' | 'hecho'`) no genera ningún código en tiempo de ejecución, es puramente un tipo, y se integra mejor con narrowing en un `switch`. Por eso muchos equipos prefieren la unión de literales, reservando `enum` para casos donde de verdad se necesita el objeto en tiempo de ejecución. Una alternativa para no repetir los valores es definir un array con `as const` y derivar el tipo unión de sus elementos.",
+      "test": {
+        "enunciado": "¿Por qué muchos equipos prefieren `type Estado = 'pendiente' | 'hecho'` a un `enum`?",
+        "correcta": 2,
+        "opciones": [
+          {
+            "texto": "Porque los `enum` no se pueden usar en un `switch`.",
+            "porque": "Se pueden usar en un `switch` sin problema."
+          },
+          {
+            "texto": "Porque la unión permite valores que no están en la lista.",
+            "porque": "Es al revés: solo admite esos literales exactos."
+          },
+          {
+            "texto": "Porque la unión no genera código en ejecución y encaja mejor con el narrowing.",
+            "porque": "Un enum numérico genera un objeto real con mapeo inverso que añade código al bundle."
+          },
+          {
+            "texto": "Porque los `enum` están prohibidos en modo `strict`.",
+            "porque": "`strict` no los prohíbe; es una preferencia de diseño."
+          }
+        ]
+      },
       "etiquetas": ["typescript"],
       "fuentes": [
         {
@@ -244,6 +376,29 @@
         ]
       },
       "respuestaModelo": "TypeScript deduce el tipo de una variable, un parámetro con valor por defecto, o el retorno de una función a partir del valor asignado o del código, sin que haga falta escribirlo explícitamente: `const x = 5` ya es `number` para el compilador. Conviene anotar explícitamente en la firma pública de una función exportada o de una API, porque el tipo documenta el contrato para quien la consuma sin tener que leer la implementación, y evita que un cambio interno cambie silenciosamente el tipo de retorno inferido. También conviene anotar cuando TypeScript no tiene suficiente información y terminaría infiriendo algo demasiado amplio, como `any` en un parámetro sin valor por defecto. Fuera de esos casos, anotar tipos obvios como `const x: number = 5` es ruido innecesario que no aporta nada sobre lo que ya infiere el compilador.",
+      "resumen": "TypeScript deduce tipos del valor o del código (`const x = 5` ya es `number`). Conviene anotar en la firma pública de lo exportado: documenta el contrato y evita cambios silenciosos.",
+      "test": {
+        "enunciado": "¿Dónde conviene anotar el tipo aunque TypeScript lo pueda inferir?",
+        "correcta": 0,
+        "opciones": [
+          {
+            "texto": "En la firma pública de una función exportada.",
+            "porque": "Documenta el contrato y evita que un cambio interno altere en silencio el tipo de retorno."
+          },
+          {
+            "texto": "En cada variable local, como `const x: number = 5`.",
+            "porque": "Es ruido: la inferencia ya lo sabe y no aporta información."
+          },
+          {
+            "texto": "En ningún sitio: la inferencia siempre acierta.",
+            "porque": "Acierta con el código que hay; el problema es que cambie sin que nadie lo decida."
+          },
+          {
+            "texto": "Solo en los tests, porque en el código de producción sobra.",
+            "porque": "Es al revés: donde más importa es en las APIs que usa otra gente."
+          }
+        ]
+      },
       "etiquetas": ["typescript"],
       "fuentes": [
         {
@@ -326,6 +481,28 @@
         ]
       },
       "respuestaModelo": "Un enum numérico asigna por defecto 0, 1, 2... a cada miembro en el orden en que se declaran, salvo que se especifique otro valor. Un enum de string asigna directamente el valor literal indicado a cada miembro. El enum de string da más seguridad al depurar porque un `console.log` muestra el valor legible directamente (`'ACTIVO'`), mientras uno numérico solo muestra un número sin contexto (`2`), obligando a consultar la definición del enum para saber qué representa. El riesgo adicional de un enum numérico es que si se reordena o inserta un miembro en medio, los valores numéricos de los siguientes miembros cambian, lo que rompe silenciosamente datos ya persistidos en una base de datos que dependían del número concreto.",
+      "test": {
+        "enunciado": "¿Qué ventaja tiene un enum de string frente a uno numérico al depurar?",
+        "correcta": 3,
+        "opciones": [
+          {
+            "texto": "Ocupa menos memoria en ejecución.",
+            "porque": "La diferencia de memoria es irrelevante; la ventaja es de legibilidad."
+          },
+          {
+            "texto": "Se compila más rápido.",
+            "porque": "El tiempo de compilación no cambia de forma apreciable."
+          },
+          {
+            "texto": "Permite valores fuera del enum sin dar error.",
+            "porque": "No es una ventaja, y además no es cierto: el tipo sigue restringido."
+          },
+          {
+            "texto": "Un `console.log` muestra `'ACTIVO'` en vez de un número sin contexto.",
+            "porque": "Con uno numérico ves `2` y tienes que ir a la definición para saber qué significa."
+          }
+        ]
+      },
       "etiquetas": ["typescript"],
       "fuentes": [
         {

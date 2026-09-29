@@ -79,32 +79,60 @@ export async function POST(request: Request) {
   });
   const modelo = MODELOS[p.modelo];
 
-  try {
-    const cliente = clienteAnthropic(clave);
-    const respuesta = await cliente.messages.create({
-      model: modelo,
-      max_tokens: 2048,
-      // El sistema y la rúbrica van primero y se marcan para caché: una sesión
-      // encadena correcciones en pocos minutos y el prefijo es estable.
-      system: [{ type: 'text', text: promptSistema(), cache_control: { type: 'ephemeral' } }],
-      messages: [{ role: 'user', content: usuarioPrompt }],
-      output_config: { format: { type: 'json_schema', schema: JSON_SCHEMA_CORRECCION } },
-    });
-    const texto = respuesta.content.flatMap((b) => (b.type === 'text' ? [b.text] : [])).join('');
-    const correccion = parsearCorreccion(texto);
-    return NextResponse.json({ ok: true, correccion, modelo, versionRubrica: VERSION_RUBRICA });
-  } catch (e) {
-    if (e instanceof z.ZodError || e instanceof SyntaxError) {
-      return NextResponse.json({ ok: false, codigo: 'salida_invalida' }, { status: 502 });
-    }
-    const delgado = errorDelgado(e);
-    // Solo el código y el estado: el error del SDK puede llevar la petición entera.
-    console.error(
-      JSON.stringify(sanitizar({ evento: 'correccion_error', usuario: usuario.id, ...delgado })),
-    );
-    return NextResponse.json(
-      { ok: false, codigo: delgado.codigo },
-      { status: delgado.estado ?? 502 },
-    );
-  }
+  // La respuesta va en NDJSON: un evento por trozo de texto y uno final con la
+  // corrección validada. Así la pantalla enseña la nota en cuanto llega en vez
+  // de esperar a la respuesta entera (deuda 7 de docs/arquitectura.md). Los
+  // errores de antes de empezar (sesión, clave, pregunta) siguen siendo JSON.
+  const cliente = clienteAnthropic(clave);
+  const flujo = cliente.messages.stream({
+    model: modelo,
+    max_tokens: 2048,
+    // El sistema y la rúbrica van primero y se marcan para caché: una sesión
+    // encadena correcciones en pocos minutos y el prefijo es estable.
+    system: [{ type: 'text', text: promptSistema(), cache_control: { type: 'ephemeral' } }],
+    messages: [{ role: 'user', content: usuarioPrompt }],
+    output_config: { format: { type: 'json_schema', schema: JSON_SCHEMA_CORRECCION } },
+  });
+  const codificador = new TextEncoder();
+  const cuerpoFlujo = new ReadableStream<Uint8Array>({
+    async start(canal) {
+      // Tras cancelar, el canal ya está cerrado y encolar lanza: se ignora.
+      const enviar = (evento: object) => {
+        try {
+          canal.enqueue(codificador.encode(`${JSON.stringify(evento)}\n`));
+        } catch {}
+      };
+      flujo.on('text', (trozo) => enviar({ t: 'delta', d: trozo }));
+      try {
+        const mensaje = await flujo.finalMessage();
+        const texto = mensaje.content.flatMap((b) => (b.type === 'text' ? [b.text] : [])).join('');
+        const correccion = parsearCorreccion(texto);
+        enviar({ t: 'fin', ok: true, correccion, modelo, versionRubrica: VERSION_RUBRICA });
+      } catch (e) {
+        if (e instanceof z.ZodError || e instanceof SyntaxError) {
+          enviar({ t: 'fin', ok: false, codigo: 'salida_invalida' });
+        } else {
+          const delgado = errorDelgado(e);
+          // Solo el código y el estado: el error del SDK puede llevar la petición entera.
+          console.error(
+            JSON.stringify(
+              sanitizar({ evento: 'correccion_error', usuario: usuario.id, ...delgado }),
+            ),
+          );
+          enviar({ t: 'fin', ok: false, codigo: delgado.codigo });
+        }
+      } finally {
+        try {
+          canal.close();
+        } catch {}
+      }
+    },
+    // Si el usuario se va a mitad, no se sigue gastando su crédito.
+    cancel() {
+      flujo.abort();
+    },
+  });
+  return new Response(cuerpoFlujo, {
+    headers: { 'content-type': 'application/x-ndjson; charset=utf-8', 'cache-control': 'no-store' },
+  });
 }

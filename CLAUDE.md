@@ -36,6 +36,7 @@ pnpm revisar             # el bucle entero: checks + build + detector + capturas
 pnpm detector            # anti-patrones de diseño contra el listón de dev
 pnpm capturas            # pantallas públicas en dos temas y dos tamaños
 pnpm capturas:app        # pantallas con sesión (servidor levantado y e2e hecho antes)
+pnpm tipos:supabase      # tipos de la base (necesita npx supabase login con la cuenta dueña)
 ```
 
 Nada está terminado hasta que `pnpm verify` está en verde, y se dice tal cual si
@@ -71,5 +72,7 @@ algo falló.
   referencia de cliente, no como texto. El guion del tema vivía en `Tema.tsx`
   y el `<head>` pintaba un error: el tema no se recordaba al recargar
   (29-09-2026). Los guiones de cabecera van en `components/guiones.ts`.
+- Monaco se sirve desde `public/monaco` (lo copia `scripts/copiar-monaco.mjs` en dev y
+  build). Si el modo kata no carga el editor, falta esa copia.
 - Si el e2e con sesión falla con `fetch failed` y el host de Supabase da
   NXDOMAIN, el proyecto gratuito está pausado: se reactiva desde su panel.

@@ -28,6 +28,28 @@
         ]
       },
       "respuestaModelo": "`git merge` combina dos ramas creando un commit de fusión con dos padres, preservando el historial real tal como ocurrió, con las ramas visibles. `git rebase` reescribe los commits de una rama para que parezcan creados a partir del último commit de otra, dejando un historial lineal sin commit de fusión. La regla práctica es no rebasear ramas públicas o compartidas, porque reescribe commits que otras personas ya tienen y les rompe el historial local; sí es seguro rebasear tu propia rama de feature antes de abrir el PR para limpiar el historial, usando `git push --force-with-lease` en vez de `--force` a secas.",
+      "test": {
+        "enunciado": "¿Cuándo no deberías hacer `git rebase`?",
+        "correcta": 3,
+        "opciones": [
+          {
+            "texto": "En tu rama de feature local antes de abrir la PR.",
+            "porque": "Es justo el caso seguro: nadie más tiene esos commits y queda un historial limpio."
+          },
+          {
+            "texto": "Cuando quieres un historial lineal sin commits de fusión.",
+            "porque": "Para eso existe el rebase; conseguir historial lineal es su ventaja."
+          },
+          {
+            "texto": "Nunca: rebase y merge son intercambiables en cualquier situación.",
+            "porque": "No lo son: rebase reescribe commits y merge los conserva; eso importa cuando otros ya los tienen."
+          },
+          {
+            "texto": "Sobre una rama compartida que otras personas ya se han bajado.",
+            "porque": "Reescribe commits que otros ya tienen y les rompe el historial local; ahí se usa merge."
+          }
+        ]
+      },
       "etiquetas": ["git"],
       "fuentes": [
         {

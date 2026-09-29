@@ -28,6 +28,28 @@
         ]
       },
       "respuestaModelo": "CommonJS resuelve los `require` de forma dinámica y síncrona en tiempo de ejecución: se puede hacer `require` condicionalmente dentro de un `if`, y lo que se exporta es una copia del valor en el momento del `require`. Los módulos ES se resuelven de forma estática, antes de ejecutar el código, lo que permite a las herramientas de build hacer tree-shaking (eliminar exports no usados) y tener bindings en vivo: si el módulo exportador cambia el valor exportado después, el importador lo ve actualizado. ESM también soporta top-level `await`. Node soporta ambos, activando ESM con `\"type\": \"module\"` en el `package.json` o con extensión `.mjs`, y CommonJS por defecto o con `.cjs`.",
+      "test": {
+        "enunciado": "¿Qué permite ESM (`import`/`export`) que CommonJS (`require`) no permite?",
+        "correcta": 0,
+        "opciones": [
+          {
+            "texto": "Que el build elimine los exports que nadie usa (tree-shaking).",
+            "porque": "ESM se resuelve de forma estática, antes de ejecutar, y las herramientas saben qué se usa."
+          },
+          {
+            "texto": "Cargar un módulo dentro de un `if`, según una condición.",
+            "porque": "Eso lo permite justo CommonJS, que resuelve `require` en ejecución (ESM tiene `import()` dinámico aparte)."
+          },
+          {
+            "texto": "Usar módulos en Node.js.",
+            "porque": "Node soporta los dos; CommonJS fue su sistema original."
+          },
+          {
+            "texto": "Exportar funciones y no solo valores.",
+            "porque": "Los dos exportan funciones sin problema."
+          }
+        ]
+      },
       "etiquetas": ["modulos"],
       "fuentes": [
         {
@@ -42,7 +64,7 @@
     },
     {
       "id": "js-modulos-02",
-      "version": 1,
+      "version": 2,
       "pista": "javascript",
       "familia": "modulos",
       "tipo": "definicion",
@@ -50,8 +72,8 @@
       "nivelMinimo": "junior",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Qué es una IIFE (Immediately Invoked Function Expression) y para qué se usaba antes de tener módulos?",
-        "en": "What is an IIFE (Immediately Invoked Function Expression) and what was it used for before modules existed?"
+        "es": "En un script heredado ves `(function () { ... })();` envolviendo todo el fichero. ¿Qué es una IIFE (Immediately Invoked Function Expression) y para qué se usaba antes de tener módulos?",
+        "en": "In a legacy script you see `(function () { ... })();` wrapping the whole file. What is an IIFE (Immediately Invoked Function Expression) and what was it used for before modules?"
       },
       "rubrica": {
         "junior": ["Reconoce la sintaxis `(function() { ... })()` y que se ejecuta inmediatamente"],
@@ -63,6 +85,28 @@
         ]
       },
       "respuestaModelo": "Una IIFE es una función que se define y se invoca en el mismo momento, típicamente `(function() { ... })()`. Antes de tener módulos nativos, era la forma habitual de crear un scope privado: cualquier variable declarada dentro solo existía dentro de esa función, evitando contaminar el objeto global cuando varios scripts se cargaban en la misma página. Sobre esa base se construyó el \"revealing module pattern\": la IIFE devolvía un objeto con solo las funciones que se querían exponer públicamente, manteniendo el resto privado por closure. Hoy los módulos ES cumplen esa misma función de forma nativa (cada módulo tiene su propio scope), por lo que la IIFE para este propósito concreto ya no es necesaria, aunque el patrón sigue usándose en algunos bundles y scripts sueltos.",
+      "test": {
+        "enunciado": "¿Para qué se usaba una IIFE antes de tener módulos nativos?",
+        "correcta": 2,
+        "opciones": [
+          {
+            "texto": "Para que el código se ejecutara más rápido al cargar la página.",
+            "porque": "La velocidad era la misma; el objetivo era aislar variables."
+          },
+          {
+            "texto": "Para poder usar `await` fuera de una función `async`.",
+            "porque": "Es muy anterior a `async/await`; su uso clásico era el scope privado."
+          },
+          {
+            "texto": "Para crear un scope privado y no contaminar el objeto global.",
+            "porque": "Las variables vivían dentro de la función; sobre eso se construyó el revealing module pattern."
+          },
+          {
+            "texto": "Para declarar funciones que se pudieran llamar antes de definirse.",
+            "porque": "Eso es el hoisting de las funciones declaradas, no una IIFE."
+          }
+        ]
+      },
       "etiquetas": ["modulos", "closures"],
       "fuentes": [
         {

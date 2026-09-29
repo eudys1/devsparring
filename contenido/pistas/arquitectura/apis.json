@@ -67,6 +67,28 @@
         ]
       },
       "respuestaModelo": "Idempotencia significa que repetir la misma operación produce el mismo resultado que hacerla una sola vez, sin efectos secundarios adicionales. POST no es idempotente por definición del protocolo HTTP: cada llamada puede crear un nuevo recurso o efecto. El problema real es que si el cliente reintenta un POST tras un timeout de red, sin saber si el primer intento llegó a completarse en el servidor, puede acabar cobrando dos veces por el mismo pedido. La solución es que el cliente genere una `Idempotency-Key` única por operación (un UUID, por ejemplo) y la envíe en la petición; el servidor la guarda junto con el resultado de la primera ejecución, y si llega otra petición con la misma key, devuelve el resultado guardado sin volver a ejecutar el cobro.",
+      "test": {
+        "enunciado": "Un cliente reintenta un POST de «cobrar pago» tras un timeout. ¿Cómo evitas cobrar dos veces?",
+        "correcta": 2,
+        "opciones": [
+          {
+            "texto": "Cambiando el endpoint a GET, que es idempotente por definición.",
+            "porque": "GET no debe tener efectos: cobrar con GET rompe HTTP y deja el cobro expuesto a prefetch y cachés."
+          },
+          {
+            "texto": "Desactivando los reintentos en todos los clientes de la API.",
+            "porque": "Los timeouts de red existen igual; sin reintento el cliente no sabe si cobró o no."
+          },
+          {
+            "texto": "Con una `Idempotency-Key` que el servidor recuerda y no reprocesa.",
+            "porque": "El cliente genera una clave única por operación y, si llega repetida, el servidor devuelve el resultado ya guardado."
+          },
+          {
+            "texto": "Subiendo el timeout del cliente a un minuto para no reintentar tan pronto.",
+            "porque": "Reduce los reintentos, pero no los elimina: el duplicado sigue siendo posible."
+          }
+        ]
+      },
       "etiquetas": ["arquitectura", "idempotencia", "apis", "pagos"],
       "fuentes": [
         {
@@ -181,6 +203,7 @@
         ]
       },
       "respuestaModelo": "Cuatro rutas sobre el recurso `tareas`: `POST /tareas` para crear (devuelve 201 y la tarea creada), `GET /tareas` para listar (200 con el array), `PATCH /tareas/:id` para marcar como hecha (200 con la tarea actualizada) y `DELETE /tareas/:id` para borrar (204 sin contenido). `PATCH` encaja mejor que `PUT` para marcar como hecha porque solo se está cambiando un campo (`completada: true`); `PUT` implica reemplazar el recurso entero, y obligaría a reenviar título, descripción y el resto de campos solo para cambiar uno. Si `:id` no corresponde a ninguna tarea, tanto `PATCH` como `DELETE` deberían devolver 404 en vez de un 200 silencioso o un error genérico, para que el cliente sepa exactamente qué pasó.",
+      "resumen": "Cuatro rutas sobre `tareas`: POST crea (201), GET lista (200), PATCH `/tareas/:id` marca como hecha (200) y DELETE borra (204). PATCH y no PUT, porque solo cambia un campo.",
       "etiquetas": ["arquitectura", "diseno-de-api", "rest"],
       "fuentes": [
         {

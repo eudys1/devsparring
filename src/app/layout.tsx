@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { JetBrains_Mono, Onest } from 'next/font/google';
 import { GUIONES_CABECERA } from '@/components/guiones';
+import { DESCRIPCION, OPEN_GRAPH_BASE, URL_SITIO } from '@/lib/sitio';
 import './globals.css';
 
 // Onest para todo, del texto corrido a las cifras grandes (en negrita cerrada);
@@ -19,9 +20,11 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(URL_SITIO),
   title: { default: 'Devsparring', template: '%s · Devsparring' },
-  description:
-    'Entrena entrevistas técnicas de programación en español: teoría, código y conversación, corregido con la vara de tu nivel.',
+  description: DESCRIPCION,
+  openGraph: { ...OPEN_GRAPH_BASE, description: DESCRIPCION },
+  twitter: { card: 'summary_large_image', images: OPEN_GRAPH_BASE.images },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

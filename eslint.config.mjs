@@ -17,7 +17,14 @@ const sinImportsCruzados = (patrones) => ({
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
-  globalIgnores(['.next/**', 'out/**', 'build/**', 'next-env.d.ts', 'capturas/**']),
+  globalIgnores([
+    '.next/**',
+    'out/**',
+    'build/**',
+    'next-env.d.ts',
+    'capturas/**',
+    'public/monaco/**',
+  ]),
   {
     files: ['src/features/**/*.{ts,tsx}'],
     rules: sinImportsCruzados([

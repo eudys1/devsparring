@@ -2,8 +2,7 @@
 // En Next 16 esto es proxy.ts (antes middleware.ts) y corre en runtime Node.
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
-
-const RUTAS_PUBLICAS = ['/', '/entrar', '/auth', '/demo'];
+import { RUTAS_PRIVADAS } from '@/lib/sitio';
 
 // Si Supabase no responde (proyecto pausado, red caída), auth-js reintenta con
 // espera creciente y cada página tardaba 25 s en cargar. Con este tope se sigue
@@ -45,8 +44,8 @@ export async function proxy(request: NextRequest) {
 
   const claims = await reclamaciones(() => supabase.auth.getClaims());
   const ruta = request.nextUrl.pathname;
-  const esPublica = RUTAS_PUBLICAS.some((r) => ruta === r || ruta.startsWith(`${r}/`));
-  if (!claims && !esPublica) {
+  const esPrivada = RUTAS_PRIVADAS.some((r) => ruta === r || ruta.startsWith(`${r}/`));
+  if (!claims && esPrivada) {
     const url = request.nextUrl.clone();
     url.pathname = '/entrar';
     url.searchParams.set('volver', ruta);
@@ -57,6 +56,6 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|woff2?)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico|monaco/|.*\\.(?:svg|png|jpg|jpeg|gif|webp|woff2?)$).*)',
   ],
 };

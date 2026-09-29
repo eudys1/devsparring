@@ -28,6 +28,7 @@
         ]
       },
       "respuestaModelo": "Para generar el código corto, una opción simple es un contador incremental codificado en base62, que garantiza unicidad sin comprobar colisiones pero es predecible (se puede adivinar el siguiente código); otra opción es un hash truncado de la URL original, que reparte mejor pero necesita comprobar colisiones al insertar. Guardaría el mapeo código-URL en una base de datos clave-valor por el patrón de acceso simple (buscar por clave), y pondría una caché en memoria (o Redis) delante, porque las lecturas (redirecciones) son muchísimo más frecuentes que las escrituras (crear un enlace nuevo). Otras decisiones a definir serían si los enlaces expiran, si se registran métricas de clics de forma asíncrona para no ralentizar la redirección, y si se usa una redirección 301 (cacheable por el navegador) o 302 según si se quiere poder cambiar el destino más adelante.",
+      "resumen": "El código corto sale de un contador en base62 (único pero predecible) o de un hash truncado (hay que mirar colisiones). Almacén clave-valor y caché delante, porque hay muchas más lecturas que escrituras.",
       "etiquetas": ["diseno-sistemas"],
       "fuentes": [
         {

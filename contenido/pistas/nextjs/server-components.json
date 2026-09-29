@@ -26,6 +26,28 @@
         ]
       },
       "respuestaModelo": "Una Server Action es una función marcada con la directiva `\"use server\"` que el componente cliente puede invocar como si fuera una función local normal; por debajo, Next.js genera un endpoint HTTP oculto que recibe esa invocación. El riesgo de seguridad más común es tratarla como 'de confianza' solo por vivir en el servidor: como sigue siendo un endpoint HTTP accesible, cualquiera que conozca (o adivine) el identificador de la acción puede invocarla directamente con curl, saltándose por completo la interfaz que la llama normalmente. Por eso dentro de la propia Server Action hay que revalidar autenticación y autorización, y validar el input recibido, exactamente igual que se haría en cualquier endpoint público de una API REST, sin asumir que solo el formulario legítimo puede llegar hasta ahí.",
+      "test": {
+        "enunciado": "¿Qué riesgo de seguridad hay que vigilar en una Server Action?",
+        "correcta": 1,
+        "opciones": [
+          {
+            "texto": "Que se ejecuta en el navegador del usuario y deja expuesto el código del servidor a cualquiera que lo inspeccione.",
+            "porque": "Se ejecuta en el servidor; el riesgo es otro: que se la pueda llamar desde fuera."
+          },
+          {
+            "texto": "Que es un endpoint HTTP público: hay que validar sesión y permisos dentro.",
+            "porque": "Cualquiera que conozca su identificador puede invocarla con curl, sin pasar por tu interfaz."
+          },
+          {
+            "texto": "Que no se puede llamar más de una vez por página.",
+            "porque": "No tiene ese límite; se puede llamar tantas veces como haga falta."
+          },
+          {
+            "texto": "Que no admite validar los datos de entrada.",
+            "porque": "Admite validar y debe hacerlo, igual que cualquier endpoint."
+          }
+        ]
+      },
       "etiquetas": ["server-components", "server-actions", "seguridad"],
       "fuentes": [
         {
@@ -60,6 +82,7 @@
         ]
       },
       "respuestaModelo": "En Next.js, cualquier variable de entorno sin el prefijo `NEXT_PUBLIC_` solo existe en el servidor y nunca se incluye en el bundle del cliente; el error sería importar directamente, desde un Client Component, un módulo que usa esa variable, porque el bundler intentaría incluirlo en el JavaScript que descarga el navegador. La solución correcta es que el Client Component nunca toque el secreto: pide el dato ya resuelto a un Server Component padre que se lo pasa como prop, o dispara una Server Action, o llama a un Route Handler propio, y es ese código que corre solo en el servidor el que usa la clave de API para hacer la llamada externa y devuelve al cliente únicamente el resultado ya procesado, sin el secreto de por medio.",
+      "resumen": "Las variables sin `NEXT_PUBLIC_` solo existen en el servidor. El Client Component nunca toca el secreto: pide el dato ya resuelto a un Server Component, una Server Action o una ruta API.",
       "etiquetas": ["server-components", "secretos", "variables-de-entorno"],
       "fuentes": [
         {
@@ -97,6 +120,7 @@
         ]
       },
       "respuestaModelo": "La Server Action empieza comprobando la sesión del usuario autenticado leyendo la cookie de sesión (por ejemplo con una función `getSession()` del lado del servidor); si no hay sesión válida, devuelve de inmediato un objeto `{ error: 'No autenticado' }` en vez de lanzar una excepción, porque una Server Action es invocable directamente y no debe confiar en que solo la UI protegida la llama. Después valida el `formData`: extrae el nombre, comprueba que no esté vacío y que tenga una longitud razonable, devolviendo un error de campo legible si falla. Solo entonces actualiza el registro del usuario en la base de datos. Para que el cambio se vea reflejado al instante sin esperar a que expire una cache antigua, usa `updateTag()` (semántica 'read-your-writes' propia de Server Actions en Next.js 16) o `revalidatePath`/`revalidateTag` según la versión del proyecto. Todo el flujo de error se comunica devolviendo un objeto serializable, nunca lanzando una excepción sin capturar, para que el formulario en el cliente pueda mostrar el mensaje concreto al usuario.",
+      "resumen": "Comprobar la sesión dentro de la acción, validar el nombre y devolver `{ error }` legible en vez de lanzar; actualizar en base de datos y llamar a `updateTag` o `revalidatePath` para ver el cambio ya.",
       "etiquetas": ["server-components", "server-actions", "cache", "validacion"],
       "fuentes": [
         {

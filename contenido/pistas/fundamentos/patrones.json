@@ -28,6 +28,28 @@
         ]
       },
       "respuestaModelo": "Singleton garantiza que una clase tenga una única instancia accesible globalmente, típico en conexiones a base de datos o configuración de la app. El problema es que introduce estado global implícito: cualquier módulo puede depender de él sin que se vea en su firma, lo que dificulta testear en aislamiento (los tests se contaminan entre sí si el Singleton guarda estado) y sustituirlo por un doble de prueba. La alternativa habitual es inyectar la instancia como dependencia en vez de importarla directamente, manteniendo la garantía de instancia única a nivel de configuración de la app, no acoplada al código que la usa.",
+      "test": {
+        "enunciado": "¿Qué problema trae el patrón Singleton en los tests?",
+        "correcta": 0,
+        "opciones": [
+          {
+            "texto": "Estado global implícito: los tests se contaminan entre sí y cuesta sustituirlo.",
+            "porque": "Cualquier módulo depende de él sin que se vea en su firma. La alternativa es inyectar la instancia como dependencia."
+          },
+          {
+            "texto": "Que crea una instancia nueva en cada test y los ralentiza muchísimo al ejecutarlos.",
+            "porque": "Es al revés: garantiza una única instancia, y justo eso hace que el estado pase de un test a otro."
+          },
+          {
+            "texto": "Que no se puede usar en JavaScript porque no hay clases de verdad.",
+            "porque": "Se puede, con clases o con un simple módulo que exporta una instancia."
+          },
+          {
+            "texto": "Que impide usar async/await dentro de los métodos de la clase.",
+            "porque": "No tiene nada que ver con la asincronía; su problema es el estado global compartido."
+          }
+        ]
+      },
       "etiquetas": ["patrones", "testing"],
       "fuentes": [
         {
@@ -66,6 +88,28 @@
         ]
       },
       "respuestaModelo": "Factory encapsula la lógica de crear objetos: en vez de que el cliente haga `new ClienteEmail()` o `new ClienteSMS()`, una función `crearNotificador(tipo)` decide qué clase instanciar. Observer permite que varios suscriptores reaccionen a un evento sin acoplarse entre sí, como el propio modelo de eventos del DOM o un `EventEmitter` de Node. Strategy permite intercambiar un algoritmo (por ejemplo distintas formas de calcular el precio con descuento) pasando la estrategia como parámetro, sin que el código cliente sepa cuál se está usando. Los tres comparten la idea de aislar una decisión (qué crear, quién se entera, qué algoritmo aplicar) detrás de una interfaz.",
+      "test": {
+        "enunciado": "Tienes varias formas de calcular el precio con descuento y quieres cambiar entre ellas sin tocar el código que las usa. ¿Qué patrón es?",
+        "correcta": 2,
+        "opciones": [
+          {
+            "texto": "Factory, porque crea el objeto del descuento.",
+            "porque": "Factory decide qué objeto crear; lo que describes es intercambiar un algoritmo."
+          },
+          {
+            "texto": "Observer, porque el precio avisa a quien le interese.",
+            "porque": "Observer es para reaccionar a eventos sin acoplarse, como los eventos del DOM; no para elegir algoritmo."
+          },
+          {
+            "texto": "Strategy: la forma de calcular se pasa como parámetro.",
+            "porque": "El código cliente no sabe qué cálculo usa; se intercambia la estrategia sin tocarlo."
+          },
+          {
+            "texto": "Singleton, para que solo exista un cálculo de descuento.",
+            "porque": "Singleton limita a una instancia; aquí quieres varias formas de calcular, no una sola."
+          }
+        ]
+      },
       "etiquetas": ["patrones", "diseno"],
       "fuentes": [
         {
@@ -103,6 +147,28 @@
         ]
       },
       "respuestaModelo": "El patrón Repository abstrae el origen de los datos (base de datos, API externa, caché) detrás de una interfaz simple con operaciones de dominio, como `buscarPorId` o `guardar`. La lógica de negocio depende de esa interfaz, no de una librería de base de datos concreta, lo que permite sustituirla en los tests por un repositorio en memoria y probar reglas de negocio sin levantar infraestructura real. También facilita cambiar de proveedor de datos con un impacto acotado. En proyectos muy pequeños puede ser sobre-ingeniería si solo hay un CRUD trivial sobre una tabla.",
+      "test": {
+        "enunciado": "¿Qué ganas al acceder a los datos a través de un Repository?",
+        "correcta": 1,
+        "opciones": [
+          {
+            "texto": "Consultas SQL más rápidas, porque el patrón las optimiza solo.",
+            "porque": "El patrón no optimiza nada; es una frontera de diseño, no una capa de rendimiento."
+          },
+          {
+            "texto": "Probar la lógica de negocio con un repositorio en memoria, sin base de datos.",
+            "porque": "La lógica depende de una interfaz de dominio (`buscarPorId`, `guardar`), no de una librería concreta."
+          },
+          {
+            "texto": "No tener que escribir tests, porque el repositorio ya está probado.",
+            "porque": "Al contrario: el patrón facilita escribir tests de las reglas de negocio."
+          },
+          {
+            "texto": "Evitar tener que modelar los datos antes de guardarlos en la base.",
+            "porque": "El modelado sigue haciendo falta; el repositorio solo esconde de dónde vienen y adónde van."
+          }
+        ]
+      },
       "etiquetas": ["patrones", "testing", "diseno"],
       "fuentes": [
         {

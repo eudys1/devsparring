@@ -114,6 +114,7 @@ export const NOMBRE_FAMILIA: Record<string, string> = {
   'patrones-arquitectura': 'Patrones de arquitectura',
   poo: 'Programación orientada a objetos',
   produccion: 'Producción',
+  'programar-con-agentes': 'Programar con agentes',
   'prompt-engineering': 'Prompt engineering',
   rag: 'RAG',
   razonamiento: 'Razonamiento',

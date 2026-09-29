@@ -28,6 +28,29 @@
         ]
       },
       "respuestaModelo": "La arquitectura hexagonal separa la lógica de negocio, el 'dominio', de los detalles técnicos como el framework HTTP, el ORM o el proveedor de email, comunicándose con ellos a través de interfaces llamadas 'puertos', que luego implementan 'adaptadores' concretos. El problema que evita es que cambiar de Express a Fastify, o de Prisma a Drizzle, obligue a reescribir las reglas de negocio: como el dominio solo depende de interfaces abstractas, se puede sustituir el adaptador sin tocar la lógica central. El coste es más indirección y más archivos, lo que puede ser sobreingeniería en un CRUD pequeño donde ese cambio de tecnología nunca va a pasar.",
+      "resumen": "El dominio habla con framework, ORM o email solo a través de interfaces (puertos) que implementan adaptadores; así cambiar de Express o de Prisma no obliga a reescribir las reglas de negocio.",
+      "test": {
+        "enunciado": "¿Qué problema concreto evita la arquitectura hexagonal (puertos y adaptadores)?",
+        "correcta": 3,
+        "opciones": [
+          {
+            "texto": "Que el backend sea lento con muchas peticiones concurrentes.",
+            "porque": "No es una técnica de rendimiento; organiza dependencias, no la concurrencia."
+          },
+          {
+            "texto": "Tener que escribir tests unitarios, porque el dominio queda validado solo por su propia estructura.",
+            "porque": "Al contrario: facilita probar el dominio con adaptadores falsos, pero los tests siguen haciendo falta."
+          },
+          {
+            "texto": "Tener que usar TypeScript: con puertos no hacen falta tipos.",
+            "porque": "Los puertos son interfaces, y los tipos ayudan justo a definirlas."
+          },
+          {
+            "texto": "Reescribir las reglas de negocio al cambiar de framework o de ORM.",
+            "porque": "El dominio solo depende de interfaces (puertos); se cambia el adaptador sin tocar la lógica central."
+          }
+        ]
+      },
       "etiquetas": ["arquitectura", "hexagonal", "patrones"],
       "fuentes": [
         {

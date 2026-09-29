@@ -26,6 +26,7 @@
         ]
       },
       "respuestaModelo": "La validación tiene que ocurrir en el borde de entrada del servidor, en un middleware o al inicio del propio handler, usando una librería de esquemas como Zod, Joi, o la validación integrada de JSON Schema en Fastify, y siempre antes de que el dato llegue a tocar la base de datos. La validación en el frontend mejora la experiencia de usuario (feedback inmediato, sin esperar a un viaje de red), pero no es una barrera de seguridad: cualquiera puede saltarse por completo el formulario y mandar la petición directamente con curl o Postman con cualquier body que quiera, así que si el servidor no valida por su cuenta, esa validación de frontend no protege nada. La regla práctica es que el frontend valida para UX, el backend valida porque es la única barrera real.",
+      "resumen": "En el borde del servidor, al inicio del handler o en un middleware, con un esquema (Zod, JSON Schema) antes de tocar la base de datos. La validación del frontend es comodidad; cualquiera la salta con curl.",
       "test": {
         "enunciado": "¿Por qué no basta con validar el body de un POST en el frontend?",
         "correcta": 2,
@@ -84,6 +85,7 @@
         ]
       },
       "respuestaModelo": "Los errores 'operacionales', esperables dentro del funcionamiento normal de la API (un input inválido, un recurso que no existe, un conflicto de negocio), se representan con clases de error propias (por ejemplo `NotFoundError`, `ValidationError`) que un middleware de error final en Express captura y traduce al código HTTP y formato de respuesta correspondiente. Los errores de programación, una excepción que nadie esperaba y que revela un bug real (una referencia nula, un fallo de tipo), se tratan distinto: se loguean con el stack trace completo para poder diagnosticarlos después, y según la arquitectura del proceso, conviene dejar morir ese proceso de forma controlada en vez de intentar 'seguir como si nada hubiera pasado', porque su estado interno puede haber quedado inconsistente; un proceso supervisor u orquestador (PM2, Kubernetes) lo reinicia automáticamente, lo que es más seguro que un proceso que sigue vivo pero en un estado desconocido.",
+      "resumen": "Errores operacionales con clases propias (`NotFoundError`, `ValidationError`) que un middleware final traduce a su código HTTP. Los de programación se loguean con stack y el proceso muere controlado para que lo reinicien.",
       "etiquetas": ["errores-validacion", "manejo-de-errores"],
       "fuentes": [
         {
@@ -159,6 +161,7 @@
         ]
       },
       "respuestaModelo": "El handler empieza validando el body con un esquema (por ejemplo Zod) que comprueba formato de email, longitud mínima de contraseña y presencia del nombre, devolviendo 400 con un objeto de error que identifica campo por campo qué falló, no un mensaje genérico como 'datos inválidos'. Si la validación pasa, hashea la contraseña con bcrypt o argon2 antes de guardarla; en ningún momento se persiste ni se devuelve en texto plano. Al insertar el usuario, si la base de datos rechaza la operación por violar el constraint único de email, el handler captura esa excepción concreta (no un catch genérico que devuelva 500) y responde 409 indicando que el email ya está registrado. En éxito devuelve 201 con el usuario creado, excluyendo explícitamente el campo de contraseña (hasheada o no) del objeto de respuesta.",
+      "resumen": "Validar el body con un esquema y devolver 400 con errores por campo; hashear con bcrypt o argon2; devolver 409 si el email ya existe (mejor con constraint único) y 201 con el usuario sin la contraseña.",
       "etiquetas": ["errores-validacion", "autenticacion", "hashing"],
       "fuentes": [
         {

@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "web-css-01",
-      "version": 1,
+      "version": 2,
       "pista": "web",
       "familia": "css",
       "tipo": "definicion",
@@ -12,8 +12,8 @@
       "nivelMinimo": "junior",
       "frecuencia": "alta",
       "texto": {
-        "es": "Explica el modelo de caja CSS (`box-sizing: content-box` vs `border-box`).",
-        "en": "Explain the CSS box model (`box-sizing: content-box` vs `border-box`)."
+        "es": "Dos columnas con `width: 50%` y `padding: 16px` no caben en la misma fila. Explica el modelo de caja CSS (`box-sizing: content-box` frente a `border-box`).",
+        "en": "Two columns with `width: 50%` and `padding: 16px` don't fit on the same row. Explain the CSS box model (`box-sizing: content-box` vs `border-box`)."
       },
       "rubrica": {
         "junior": [
@@ -26,6 +26,7 @@
         ]
       },
       "respuestaModelo": "Con `content-box`, que es el valor por defecto del navegador, las propiedades `width` y `height` miden solo el área de contenido: el padding y el border se suman por encima, así que una caja con `width: 200px` y `padding: 20px` ocupa en realidad 240px de ancho total. Con `border-box`, `width` y `height` incluyen el padding y el border dentro de esa medida, así que la caja con `width: 200px` sigue midiendo 200px de ancho total, y el padding le resta espacio al contenido en vez de sumarse por fuera. Por eso muchos resets globales aplican `* { box-sizing: border-box; }` al principio del proyecto: hace que el tamaño declarado sea el tamaño real en pantalla, evitando el cálculo mental constante de sumar padding y border cada vez que se ajusta un layout.",
+      "resumen": "Con `content-box`, `width` mide solo el contenido y padding y borde se suman (200 + 40 = 240 px). Con `border-box`, los incluye y la caja mide lo que dices; por eso se suele poner en todo.",
       "test": {
         "enunciado": "Con `box-sizing: content-box`, `width: 200px` y `padding: 20px`, ¿cuánto mide la caja de ancho, sin contar el borde?",
         "correcta": 3,
@@ -122,6 +123,7 @@
         ]
       },
       "respuestaModelo": "La especificidad se calcula por capas de peso, de mayor a menor: un estilo inline en el propio elemento gana siempre, después los selectores por id, después clases, atributos y pseudoclases, y por último elementos y pseudoelementos; dentro de una misma regla, ese peso se suma por cada selector que aparece. `!important` rompe deliberadamente esa jerarquía: una declaración marcada así gana sin importar la especificidad normal del selector que la contiene. El problema es que, una vez que un equipo empieza a usarlo para 'ganar' una guerra de especificidad puntual, la única forma de sobreescribir esa regla más adelante es con otro `!important` todavía más específico, y ese patrón se repite en cascada hasta que el CSS se vuelve imposible de razonar o mantener sin buscar en todo el proyecto quién puso el último `!important`.",
+      "resumen": "Peso de mayor a menor: estilo inline, ids, clases, atributos y pseudoclases, elementos. `!important` se salta esa jerarquía y obliga a más `!important` para sobrescribirlo: una escalada difícil de mantener.",
       "test": {
         "enunciado": "¿Por qué da problemas abusar de `!important`?",
         "correcta": 1,
@@ -181,6 +183,7 @@
         ]
       },
       "respuestaModelo": "Mobile-first define primero los estilos base pensados para la pantalla más pequeña, sin ninguna media query, y va añadiendo complejidad progresivamente con media queries `min-width` a medida que el viewport crece: cada breakpoint añade lo que hace falta, no sobreescribe lo anterior. El enfoque contrario, partir de desktop y usar `max-width`, define primero el layout completo para pantallas grandes y luego usa media queries para ir quitando o simplificando cosas en pantallas pequeñas, lo que en la práctica suele producir más reglas CSS totales porque el móvil tiene que cargar y luego sobreescribir estilos pensados para un layout que nunca va a usar tal cual. El resultado práctico de mobile-first suele ser mejor rendimiento en móvil, precisamente porque no hay que anular reglas de escritorio innecesarias en el dispositivo con menos recursos.",
+      "resumen": "Mobile-first parte del móvil sin media queries y añade con `min-width` según crece la pantalla. Desde desktop con `max-width` se deshace lo ya definido, y el móvil carga CSS que no usa.",
       "etiquetas": ["css", "responsive", "mobile-first"],
       "fuentes": [
         {

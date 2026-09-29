@@ -27,6 +27,28 @@
         ]
       },
       "respuestaModelo": "Se renderiza el componente con `render()` y se mockea la petición de red (con MSW o un mock del cliente de fetch) para controlar qué responde la API, en vez de mockear funciones internas del componente. Como la petición es asíncrona, hay que usar las consultas `findBy...` de `screen`, que esperan a que el elemento aparezca, en lugar de `getBy...`, que falla inmediatamente si el dato todavía no llegó; por ejemplo `await screen.findByText('nombre del usuario')`. La filosofía de Testing Library es testear el comportamiento observable por el usuario (qué texto aparece, qué botón se puede pulsar) en vez de detalles de implementación como el nombre de un estado interno, lo que hace que el test siga pasando aunque se refactorice cómo está construido el componente por dentro.",
+      "test": {
+        "enunciado": "Un componente pinta el nombre del usuario tras un `fetch`. ¿Qué consulta de Testing Library usas?",
+        "correcta": 2,
+        "opciones": [
+          {
+            "texto": "`getByText`, que falla al momento si no encuentra el texto.",
+            "porque": "Falla antes de que llegue la respuesta: el dato todavía no está."
+          },
+          {
+            "texto": "`queryByText`, que devuelve `null` y no espera.",
+            "porque": "No espera a que aparezca; sirve para comprobar que algo no está."
+          },
+          {
+            "texto": "`await screen.findByText(...)`, que espera a que el elemento aparezca.",
+            "porque": "Se mockea la red (por ejemplo con MSW) y se espera al resultado, sin espiar el interior del componente."
+          },
+          {
+            "texto": "Leer el estado interno del componente con un `ref` y comprobar que el nombre ya está guardado en él.",
+            "porque": "Testing Library prueba lo que ve el usuario, no los detalles de implementación."
+          }
+        ]
+      },
       "etiquetas": ["testing", "testing-library", "async"],
       "fuentes": [
         {

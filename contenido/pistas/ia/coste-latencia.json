@@ -24,6 +24,28 @@
         ]
       },
       "respuestaModelo": "Normalmente se factura por tokens de entrada y de salida por separado, con precios distintos entre ambos: la salida suele costar más por token que la entrada, porque generarla requiere más cómputo que solo procesarla. Además el precio varía bastante según el tamaño o la versión del modelo elegido: un modelo más grande y capaz cuesta más por token que uno pequeño pensado para tareas sencillas. Por eso el coste de una función con LLM depende tanto de cuánto contexto se manda como de cuánto texto se le pide generar.",
+      "test": {
+        "enunciado": "¿Cómo se suele facturar el uso de un LLM por API?",
+        "correcta": 2,
+        "opciones": [
+          {
+            "texto": "Por número de palabras de la respuesta.",
+            "porque": "Se mide en tokens, no en palabras, y se cobra también la entrada, no solo la respuesta."
+          },
+          {
+            "texto": "Por tiempo de conexión con el servidor, como si fuera un servicio que se paga por minutos.",
+            "porque": "El tiempo no es la unidad de cobro; lo es la cantidad de tokens procesados y generados."
+          },
+          {
+            "texto": "Por tokens de entrada y de salida, con precios distintos y la salida más cara.",
+            "porque": "Generar cuesta más cómputo que procesar, y el precio por token cambia según el tamaño del modelo."
+          },
+          {
+            "texto": "Con una cuota fija mensual sin importar el uso.",
+            "porque": "Las API se cobran por uso; las cuotas fijas son de productos de consumo, no del acceso por API."
+          }
+        ]
+      },
       "etiquetas": ["coste", "pricing"],
       "fuentes": [
         {
@@ -74,7 +96,7 @@
     },
     {
       "id": "ia-coste-latencia-03",
-      "version": 1,
+      "version": 2,
       "pista": "ia",
       "familia": "coste-latencia",
       "tipo": "definicion",
@@ -82,8 +104,8 @@
       "nivelMinimo": "junior",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Qué es el streaming de respuestas de un LLM y por qué se usa?",
-        "en": "What is LLM response streaming and why is it used?"
+        "es": "Los usuarios abandonan tu chat porque la respuesta tarda ocho segundos en aparecer entera. ¿Qué es el streaming de respuestas de un LLM y por qué ayuda?",
+        "en": "Users abandon your chat because the answer takes eight seconds to appear in full. What is LLM response streaming and why does it help?"
       },
       "rubrica": {
         "junior": ["Explica que la API va devolviendo tokens a medida que se generan"],
@@ -94,6 +116,28 @@
         ]
       },
       "respuestaModelo": "El streaming permite que la API vaya devolviendo tokens a medida que se generan, en vez de esperar a que el modelo termine toda la respuesta para enviarla de una vez. Esto reduce la latencia percibida por el usuario, porque empieza a ver texto casi de inmediato aunque la latencia total, el tiempo hasta la última palabra, sea exactamente la misma. En el frontend implica renderizar el texto de forma progresiva a medida que llegan los fragmentos, algo que la mayoría de frameworks de UI modernos soportan sin demasiada complicación.",
+      "test": {
+        "enunciado": "¿Qué mejora el streaming de las respuestas de un LLM?",
+        "correcta": 0,
+        "opciones": [
+          {
+            "texto": "La latencia percibida: el usuario empieza a leer casi al momento.",
+            "porque": "El tiempo hasta la última palabra es el mismo; lo que baja es la espera hasta ver el primer texto."
+          },
+          {
+            "texto": "El coste: el streaming cobra menos tokens.",
+            "porque": "Se cobran los mismos tokens con o sin streaming; solo cambia cómo llegan."
+          },
+          {
+            "texto": "El tiempo total de generación de la respuesta completa, que se reduce a la mitad.",
+            "porque": "El modelo tarda lo mismo en generar la respuesta entera; el streaming solo la va entregando por trozos."
+          },
+          {
+            "texto": "La calidad de la respuesta, porque el modelo piensa por partes.",
+            "porque": "El streaming es una forma de entrega; no cambia cómo razona ni lo que genera el modelo."
+          }
+        ]
+      },
       "etiquetas": ["streaming", "ux"],
       "fuentes": [
         {
@@ -130,6 +174,29 @@
         ]
       },
       "respuestaModelo": "El prompt caching permite marcar una parte fija del prompt, por ejemplo un system prompt largo o un documento que se repite en varias llamadas, para que el proveedor la reutilice en vez de reprocesarla desde cero cada vez, cobrando una fracción del precio normal en esas relecturas. Ahorra de verdad cuando el mismo prefijo de contexto se reusa muchas veces en un periodo corto, como una conversación larga con el mismo system prompt o una app que consulta el mismo documento base repetidamente. No aporta nada si cada prompt es prácticamente distinto al anterior, porque entonces no hay nada que cachear de forma efectiva.",
+      "resumen": "Marcar una parte fija del prompt para que el proveedor la reutilice y la cobre mucho más barata en las relecturas. Ahorra cuando el mismo prefijo largo se repite en poco tiempo; si cambia, nada.",
+      "test": {
+        "enunciado": "¿Cuándo ahorra dinero de verdad el prompt caching?",
+        "correcta": 3,
+        "opciones": [
+          {
+            "texto": "Siempre, en cualquier llamada, aunque el prompt cambie entero cada vez.",
+            "porque": "Si cada petición tiene un contexto distinto no hay prefijo que reutilizar y no se ahorra nada."
+          },
+          {
+            "texto": "Cuando la respuesta del modelo es muy larga.",
+            "porque": "La caché aplica al prompt de entrada que se repite, no a los tokens de salida."
+          },
+          {
+            "texto": "Cuando se baja la temperatura a cero.",
+            "porque": "La temperatura cambia cómo se elige el siguiente token; no tiene nada que ver con reutilizar el prompt."
+          },
+          {
+            "texto": "Cuando el mismo prefijo largo se reusa muchas veces en poco tiempo.",
+            "porque": "El proveedor reutiliza ese prefijo en vez de reprocesarlo y cobra una fracción del precio en esas relecturas."
+          }
+        ]
+      },
       "etiquetas": ["coste", "prompt-caching"],
       "fuentes": [
         {
@@ -201,6 +268,7 @@
         ]
       },
       "respuestaModelo": "Depende de la complejidad real de la tarea, no es lo mismo una clasificación simple que un razonamiento largo con varios pasos, del volumen de llamadas, porque a mayor volumen más pesa el coste por token en la factura total, y de la tolerancia a error que tenga el caso de uso. Una práctica habitual es medir con un eval si el modelo barato llega a la calidad mínima aceptable para esa tarea concreta antes de pagar el modelo caro por defecto sin cuestionarlo; muchas veces un modelo pequeño bien afinado a la tarea rinde casi igual que uno grande, y en volumen alto esa diferencia de coste es enorme.",
+      "resumen": "Según la complejidad de la tarea, el volumen de llamadas y la tolerancia a error. Medir con un eval si el barato llega a la calidad mínima antes de pagar el caro por defecto.",
       "etiquetas": ["coste", "seleccion-modelo"],
       "fuentes": [
         {

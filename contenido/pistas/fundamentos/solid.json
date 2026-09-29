@@ -28,6 +28,28 @@
         ]
       },
       "respuestaModelo": "SRP dice que una clase debería tener una sola razón para cambiar, es decir, responder ante un solo actor o motivo de negocio. Una señal típica de violación es una clase `ReportGenerator` que calcula totales, los formatea a HTML y además los guarda en disco: si cambia el formato de salida, si cambia el cálculo o si cambia el almacenamiento, la misma clase se ve afectada por tres razones distintas. La solución habitual es separar en `CalculadorDeTotales`, `FormateadorHTML` y `RepositorioDeReportes`, cada una con un único motivo de cambio, sin fragmentar en exceso solo por principio.",
+      "test": {
+        "enunciado": "Una clase calcula totales, los formatea a HTML y los guarda en disco. ¿Qué principio incumple?",
+        "correcta": 3,
+        "opciones": [
+          {
+            "texto": "Sustitución de Liskov, porque no hereda de ninguna clase base del proyecto.",
+            "porque": "Liskov trata de que un subtipo pueda sustituir a su padre; aquí no hay herencia."
+          },
+          {
+            "texto": "Abierto/cerrado, porque tiene demasiados métodos públicos.",
+            "porque": "OCP va de extender sin modificar; el número de métodos no es su criterio."
+          },
+          {
+            "texto": "Segregación de interfaces, porque no implementa ninguna.",
+            "porque": "ISP es no depender de métodos que no usas; el problema aquí es otro."
+          },
+          {
+            "texto": "Responsabilidad única: tiene tres razones distintas para cambiar.",
+            "porque": "Si cambia el cálculo, el formato o el almacenamiento, la misma clase se toca. Se separa en tres."
+          }
+        ]
+      },
       "etiquetas": ["solid", "diseno"],
       "fuentes": [
         {
@@ -65,6 +87,28 @@
         ]
       },
       "respuestaModelo": "Sin OCP, calcular el descuento de un pedido suele empezar como un `switch (tipoCliente)` dentro de una función que crece con cada tipo de cliente nuevo, arriesgando romper los casos existentes cada vez que se toca. Aplicando OCP, se define una interfaz `EstrategiaDeDescuento` con una implementación por tipo de cliente, y añadir un cliente nuevo significa crear una clase nueva sin tocar las existentes. La señal de alarma es precisamente ese condicional que crece sin parar; la solución típica es polimorfismo o el patrón Strategy, no añadir otro `else if`.",
+      "test": {
+        "enunciado": "¿Qué señal indica que falta aplicar el principio abierto/cerrado?",
+        "correcta": 2,
+        "opciones": [
+          {
+            "texto": "Que una clase tenga métodos privados.",
+            "porque": "Los métodos privados son encapsulamiento y no tienen que ver con extender sin modificar."
+          },
+          {
+            "texto": "Que haya interfaces con una sola implementación.",
+            "porque": "Puede ser prematuro, pero no rompe OCP; lo rompe lo contrario, no poder extender."
+          },
+          {
+            "texto": "Un `switch` por tipo que crece con cada caso nuevo.",
+            "porque": "Cada tipo nuevo obliga a tocar código que ya funcionaba; se resuelve con polimorfismo o Strategy."
+          },
+          {
+            "texto": "Que la clase herede de otra clase del propio proyecto.",
+            "porque": "Heredar no rompe OCP; de hecho, es una de las formas de extender."
+          }
+        ]
+      },
       "etiquetas": ["solid", "diseno"],
       "fuentes": [
         {
@@ -102,6 +146,28 @@
         ]
       },
       "respuestaModelo": "LSP dice que si `B` hereda de `A`, cualquier código que funcione con un `A` debe seguir funcionando si se le pasa un `B`, sin sorpresas. El ejemplo clásico es `Cuadrado extends Rectangulo`: si `Rectangulo` tiene `setAncho` y `setAlto` independientes, un `Cuadrado` que fuerza ambos lados iguales rompe el comportamiento esperado por cualquier código que asuma que cambiar el ancho no afecta al alto. La solución no es forzar la herencia a encajar, sino replantear el modelo: quizá ninguno debería heredar del otro, o ambos deberían implementar una interfaz `Forma` más simple con solo `area()`.",
+      "test": {
+        "enunciado": "¿Por qué `Cuadrado extends Rectangulo` viola el principio de sustitución de Liskov?",
+        "correcta": 1,
+        "opciones": [
+          {
+            "texto": "Porque un cuadrado tiene menos lados que un rectángulo.",
+            "porque": "Los dos tienen cuatro lados; el problema está en el comportamiento de los setters."
+          },
+          {
+            "texto": "Porque el código que cambia el ancho sin tocar el alto deja de funcionar.",
+            "porque": "El cuadrado fuerza los dos lados iguales y rompe lo que el código espera de un rectángulo."
+          },
+          {
+            "texto": "Porque TypeScript no permite heredar de una clase con setters.",
+            "porque": "Lo permite; el fallo es de diseño, no de compilación."
+          },
+          {
+            "texto": "Porque la herencia siempre viola Liskov y conviene evitarla del todo en cualquier diseño.",
+            "porque": "La herencia bien usada cumple Liskov; lo que falla es forzar esta en concreto."
+          }
+        ]
+      },
       "etiquetas": ["solid", "diseno"],
       "fuentes": [
         {
@@ -139,6 +205,28 @@
         ]
       },
       "respuestaModelo": "ISP dice que nadie debería depender de métodos que no usa. Una interfaz `Trabajador` con `trabajar()` e `comer()` obliga a un `Robot` a implementar `comer()` sin sentido. En TypeScript se resuelve dividiendo en `interface Trabajador { trabajar(): void }` e `interface SerVivo { comer(): void }`, y una clase implementa solo las que necesita (`class Humano implements Trabajador, SerVivo`). El problema real que evita es una clase que implementa una interfaz grande a medias, con métodos vacíos o que lanzan error, señal de que la interfaz debería partirse.",
+      "test": {
+        "enunciado": "Un `Robot` implementa `Trabajador` y tiene que definir `comer()` vacío. ¿Qué principio arregla eso?",
+        "correcta": 3,
+        "opciones": [
+          {
+            "texto": "Responsabilidad única: el robot hace demasiadas cosas.",
+            "porque": "El robot no hace demasiado: lo obligan a tener un método que no usa."
+          },
+          {
+            "texto": "Inversión de dependencias: el robot debe recibir su comida.",
+            "porque": "DIP trata de depender de abstracciones; aquí sobra un método de la interfaz."
+          },
+          {
+            "texto": "Liskov: el robot no puede sustituir a un humano en ningún caso.",
+            "porque": "Liskov va de subtipos que rompen expectativas; la raíz aquí es una interfaz demasiado grande."
+          },
+          {
+            "texto": "Segregación de interfaces: separar `Trabajador` y `SerVivo`.",
+            "porque": "Nadie debería depender de métodos que no usa; cada clase implementa solo lo que necesita."
+          }
+        ]
+      },
       "etiquetas": ["solid", "typescript"],
       "fuentes": [
         {
@@ -175,6 +263,28 @@
         ]
       },
       "respuestaModelo": "La Inversión de Dependencias es el principio: los módulos de alto nivel no deberían depender de módulos de bajo nivel, ambos deberían depender de abstracciones. La Inyección de Dependencias es una de las técnicas para conseguirlo: en vez de que un `ServicioDePedidos` haga `new RepositorioSQL()` dentro de sí mismo, recibe una interfaz `RepositorioDePedidos` por el constructor, y quien lo instancia decide qué implementación concreta pasarle. Esto permite sustituir la implementación real por una en memoria en los tests sin tocar el servicio. Un contenedor de DI (como los de NestJS) automatiza ese cableado, pero el principio se puede aplicar a mano perfectamente.",
+      "test": {
+        "enunciado": "¿Qué relación hay entre inversión e inyección de dependencias?",
+        "correcta": 0,
+        "opciones": [
+          {
+            "texto": "La inversión es el principio; la inyección, una técnica para cumplirlo.",
+            "porque": "Depender de abstracciones es el principio; pasar la implementación por el constructor es una forma de conseguirlo."
+          },
+          {
+            "texto": "Son dos nombres para lo mismo, usados en distintos lenguajes.",
+            "porque": "Son niveles distintos: uno es un principio de diseño y el otro una técnica concreta."
+          },
+          {
+            "texto": "La inyección obliga a usar un framework que gestione las dependencias.",
+            "porque": "Basta con pasar la dependencia por el constructor; un contenedor de DI es opcional."
+          },
+          {
+            "texto": "La inversión consiste en que el módulo cree dentro sus propias dependencias.",
+            "porque": "Es justo lo contrario: crear con `new` dentro ata el módulo a una implementación concreta."
+          }
+        ]
+      },
       "etiquetas": ["solid", "diseno", "testing"],
       "fuentes": [
         {

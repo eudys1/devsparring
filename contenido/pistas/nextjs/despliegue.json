@@ -60,6 +60,28 @@
         ]
       },
       "respuestaModelo": "Turbopack pasó a ser el bundler por defecto en Next.js 16, con builds entre 2 y 5 veces más rápidos y un Fast Refresh (recarga en caliente durante el desarrollo) hasta 10 veces más rápido que con webpack. El coste de este cambio recae en los proyectos que tienen configuración webpack personalizada avanzada (loaders o plugins muy específicos) que todavía no tiene equivalente completo en Turbopack: para esos casos existe la vía de escape `next dev --webpack` y `next build --webpack`, que permite seguir usando webpack explícitamente mientras se migra esa configuración, en vez de quedar bloqueado por el cambio de bundler por defecto.",
+      "test": {
+        "enunciado": "Turbopack es el bundler por defecto en Next.js 16. ¿Qué proyectos pueden tener problemas?",
+        "correcta": 2,
+        "opciones": [
+          {
+            "texto": "Los que usan TypeScript en vez de JavaScript.",
+            "porque": "Turbopack soporta TypeScript sin problema."
+          },
+          {
+            "texto": "Los que tienen más de cien páginas.",
+            "porque": "El tamaño no es el problema; de hecho, ahí es donde más se nota que es rápido."
+          },
+          {
+            "texto": "Los que tienen configuración webpack personalizada avanzada.",
+            "porque": "Loaders o plugins sin equivalente en Turbopack; para eso quedan `next dev --webpack` y `next build --webpack`."
+          },
+          {
+            "texto": "Los que despliegan fuera de Vercel, porque Turbopack solo genera builds compatibles con su infraestructura.",
+            "porque": "El bundler no depende de dónde despliegues."
+          }
+        ]
+      },
       "etiquetas": ["despliegue", "turbopack", "next-16"],
       "fuentes": [
         {
@@ -96,6 +118,29 @@
         ]
       },
       "respuestaModelo": "`next/image` genera automáticamente varios tamaños de una misma imagen, sirve el formato más eficiente que soporte el navegador, y aplica lazy loading por defecto para las imágenes fuera del viewport inicial, sin que el desarrollador tenga que implementar nada de eso a mano. En Next.js 16 cambiaron dos valores por defecto: el TTL de caché de imágenes subió de 60 segundos a 4 horas, reduciendo peticiones de optimización repetidas, y la calidad por defecto quedó fijada a `[75]`. Para permitir imágenes remotas conviene usar `images.remotePatterns`, que permite especificar patrones concretos de dominio y ruta, en vez del `images.domains` ya deprecado, que era más permisivo y por tanto un riesgo de seguridad mayor si se configuraba de forma demasiado amplia.",
+      "resumen": "`next/image` genera tamaños, sirve el mejor formato y aplica lazy loading por defecto. En Next.js 16, la caché de imágenes pasó de 60 segundos a 4 horas y la calidad por defecto quedó en 75.",
+      "test": {
+        "enunciado": "¿Qué cambió por defecto en `next/image` con Next.js 16?",
+        "correcta": 0,
+        "opciones": [
+          {
+            "texto": "El TTL de caché de imágenes pasó de 60 segundos a 4 horas.",
+            "porque": "Menos optimizaciones repetidas; además, la calidad por defecto quedó fijada en 75."
+          },
+          {
+            "texto": "Se desactivó el lazy loading por defecto.",
+            "porque": "Sigue aplicando lazy loading a las imágenes fuera del viewport inicial."
+          },
+          {
+            "texto": "Ya no genera varios tamaños de cada imagen: sirve siempre la original y deja al navegador que la escale.",
+            "porque": "Sigue generándolos y sirviendo el formato más eficiente que admita el navegador."
+          },
+          {
+            "texto": "Ahora solo admite imágenes en formato PNG.",
+            "porque": "Sirve el formato más eficiente que soporte el navegador, como WebP o AVIF."
+          }
+        ]
+      },
       "etiquetas": ["despliegue", "next-image", "rendimiento"],
       "fuentes": [
         {
@@ -132,6 +177,29 @@
         ]
       },
       "respuestaModelo": "Antes de este cambio, `next/image` permitía usar rutas `src` locales combinadas con query strings sin ninguna restricción adicional, lo que abría la puerta a un ataque de enumeración de archivos locales: alguien podía manipular la query string para intentar acceder o listar ficheros del servidor a través del propio endpoint de optimización de imágenes. Desde Next.js 16 ese comportamiento ya no está permitido por defecto; hace falta configurar explícitamente `images.localPatterns` para autorizar ese caso concreto, cerrando el hueco de seguridad que existía cuando el comportamiento permisivo venía activado sin que el desarrollador lo hubiera pedido.",
+      "resumen": "Rutas locales con query string permitían enumerar ficheros del servidor a través del optimizador de imágenes. Desde Next.js 16 hay que autorizarlo de forma explícita con `images.localPatterns`.",
+      "test": {
+        "enunciado": "¿Qué riesgo corrigió Next.js 16 en `next/image` con rutas locales y query strings?",
+        "correcta": 3,
+        "opciones": [
+          {
+            "texto": "Que las imágenes se servían sin comprimir.",
+            "porque": "Es un problema de rendimiento, no de seguridad, y no es lo que se corrigió."
+          },
+          {
+            "texto": "Que se podían subir imágenes con virus al servidor.",
+            "porque": "`next/image` no gestiona subidas; optimiza imágenes que ya existen."
+          },
+          {
+            "texto": "Que las imágenes remotas se cargaban sin HTTPS.",
+            "porque": "Lo corregido afecta a rutas locales con query string, no a remotas."
+          },
+          {
+            "texto": "Enumerar ficheros locales del servidor manipulando la query string.",
+            "porque": "Ahora hay que autorizar ese caso de forma explícita con `images.localPatterns`."
+          }
+        ]
+      },
       "etiquetas": ["despliegue", "next-image", "seguridad"],
       "fuentes": [
         {

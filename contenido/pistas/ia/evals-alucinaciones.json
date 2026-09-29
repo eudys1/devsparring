@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "ia-evals-alucinaciones-01",
-      "version": 1,
+      "version": 2,
       "pista": "ia",
       "familia": "evals-alucinaciones",
       "tipo": "definicion",
@@ -12,8 +12,8 @@
       "nivelMinimo": "junior",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Qué es una alucinación en un LLM?",
-        "en": "What is a hallucination in an LLM?"
+        "es": "El chatbot de soporte cita, muy seguro, una política de devoluciones que tu empresa no tiene. ¿Qué es una alucinación en un LLM y por qué ocurre?",
+        "en": "The support chatbot confidently quotes a return policy your company doesn't have. What is a hallucination in an LLM and why does it happen?"
       },
       "rubrica": {
         "junior": [
@@ -26,6 +26,28 @@
         ]
       },
       "respuestaModelo": "Una alucinación es cuando el modelo genera una respuesta que suena coherente y segura pero es factualmente incorrecta o directamente inventada, sin base real en el contexto proporcionado ni en conocimiento verificable. Es distinto de un simple error de sintaxis: el texto puede estar perfectamente bien escrito y sonar convincente, ese es justamente el problema. Un ejemplo típico en desarrollo es un modelo que sugiere un método que no existe en una librería concreta, con una sintaxis plausible pero completamente inventada.",
+      "test": {
+        "enunciado": "¿Qué es una alucinación de un LLM?",
+        "correcta": 0,
+        "opciones": [
+          {
+            "texto": "Una respuesta que suena segura y bien escrita, pero es falsa o inventada.",
+            "porque": "El problema es justo que convence: por ejemplo, sugerir un método de una librería que no existe con una sintaxis plausible."
+          },
+          {
+            "texto": "Un error de sintaxis en el código que genera el modelo.",
+            "porque": "Un error de sintaxis se ve al compilar; la alucinación puede estar impecablemente escrita y ser falsa."
+          },
+          {
+            "texto": "Una respuesta cortada porque se superó el límite de tokens.",
+            "porque": "Eso es un truncado por la ventana de contexto o el máximo de salida, no una invención."
+          },
+          {
+            "texto": "Una respuesta que tarda demasiado en llegar al usuario y bloquea la interfaz.",
+            "porque": "La latencia es otro problema; una alucinación puede llegar en milisegundos."
+          }
+        ]
+      },
       "etiquetas": ["evals", "alucinaciones", "fundamentos"],
       "fuentes": [
         {
@@ -98,6 +120,29 @@
         ]
       },
       "respuestaModelo": "Un eval mide la calidad de las respuestas de un sistema con LLM sobre un conjunto de casos representativos, a menudo con una métrica definida o incluso otro LLM haciendo de juez, en vez de comparar contra una única salida exacta esperada como haría un test unitario tradicional. Hace falta este enfoque distinto porque la salida de un LLM no es determinista ni tiene un único resultado correcto: dos respuestas con palabras distintas pueden ser igual de válidas, así que 'assert igual a X' no funciona como criterio, y en su lugar se necesita puntuar la calidad según criterios explícitos.",
+      "resumen": "Un eval mide la calidad sobre casos representativos con una métrica o un LLM juez. No compara con una salida exacta como un test unitario, porque la salida no es determinista ni única.",
+      "test": {
+        "enunciado": "¿Por qué un eval no puede ser un simple «assert igual a X» como un test unitario?",
+        "correcta": 3,
+        "opciones": [
+          {
+            "texto": "Porque los evals no pueden ejecutarse de forma automática.",
+            "porque": "Se automatizan igual; lo que cambia es el criterio para dar una respuesta por buena."
+          },
+          {
+            "texto": "Porque los LLM siempre devuelven exactamente el mismo texto.",
+            "porque": "Es al revés: la salida no es determinista, y por eso la comparación exacta no funciona."
+          },
+          {
+            "texto": "Porque los evals solo miden la latencia y el coste de cada llamada al modelo.",
+            "porque": "Miden la calidad de las respuestas; latencia y coste se vigilan aparte."
+          },
+          {
+            "texto": "Porque dos respuestas con palabras distintas pueden ser igual de correctas.",
+            "porque": "Por eso se usan métricas definidas o un LLM que hace de juez sobre un conjunto de casos representativos."
+          }
+        ]
+      },
       "etiquetas": ["evals", "testing"],
       "fuentes": [
         {
@@ -135,6 +180,28 @@
         ]
       },
       "respuestaModelo": "LLM-as-judge consiste en usar otro LLM, a veces el mismo modelo con un prompt distinto, para puntuar la calidad de una respuesta según criterios definidos de antemano, en vez de que una persona revise cada caso a mano. Es útil porque permite escalar la evaluación a muchos más casos de los que un equipo humano podría revisar manualmente. Pero hereda los sesgos del modelo que hace de juez, puede ser inconsistente entre ejecuciones distintas del mismo caso, y por eso no sustituye una muestra de revisión humana periódica que sirva de referencia para validar que el juez automático sigue midiendo lo correcto.",
+      "test": {
+        "enunciado": "¿Qué limitación tiene usar un LLM como juez para evaluar respuestas?",
+        "correcta": 1,
+        "opciones": [
+          {
+            "texto": "No se puede automatizar y alguien tiene que lanzarlo a mano.",
+            "porque": "Se automatiza sin problema; de hecho, su ventaja es escalar la evaluación a muchos casos."
+          },
+          {
+            "texto": "Hereda los sesgos del modelo juez y puede ser inconsistente entre ejecuciones.",
+            "porque": "Por eso no sustituye a revisar una muestra a mano de vez en cuando."
+          },
+          {
+            "texto": "Solo sirve para evaluar código, no texto.",
+            "porque": "Se usa sobre todo para texto: resúmenes, respuestas de soporte, tono."
+          },
+          {
+            "texto": "Obliga a usar siempre un modelo distinto del que se está evaluando, y eso encarece.",
+            "porque": "A menudo se usa el mismo modelo con otro prompt. Cambiarlo ayuda contra el sesgo propio, pero no es obligatorio."
+          }
+        ]
+      },
       "etiquetas": ["evals", "llm-as-judge"],
       "fuentes": [
         {

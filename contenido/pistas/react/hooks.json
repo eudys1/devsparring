@@ -331,6 +331,28 @@
         ]
       },
       "respuestaModelo": "El montaje es el primer render del componente, tras el cual React ejecuta todos los efectos cuyo array de dependencias se cumple, incluyendo los que tienen array vacío (corren una sola vez). La actualización ocurre cada vez que cambia el estado, una prop o un valor de contexto que el componente usa: React vuelve a renderizar y, tras pintar, solo repite los efectos cuyas dependencias cambiaron respecto al render anterior. El desmontaje sucede cuando el componente sale del árbol; antes de quitarlo, React llama a la función de limpieza devuelta por cada efecto activo (para cancelar suscripciones, temporizadores o listeners), y esa misma limpieza también se dispara justo antes de repetir un efecto en una actualización, no solo al desmontar.",
+      "test": {
+        "enunciado": "¿Cuándo llama React a la función de limpieza que devuelve un `useEffect`?",
+        "correcta": 3,
+        "opciones": [
+          {
+            "texto": "Solo una vez, justo al montar el componente, para preparar lo que el efecto vaya a necesitar después.",
+            "porque": "Al montar se ejecuta el efecto, no su limpieza."
+          },
+          {
+            "texto": "Nunca, salvo que la llames tú a mano.",
+            "porque": "La llama React; tú solo la devuelves desde el efecto."
+          },
+          {
+            "texto": "Antes del primer render del componente.",
+            "porque": "Antes del primer render no hay nada que limpiar todavía."
+          },
+          {
+            "texto": "Antes de repetir el efecto y al desmontar el componente.",
+            "porque": "Ahí se cancelan suscripciones o temporizadores para no dejar nada vivo."
+          }
+        ]
+      },
       "etiquetas": ["hooks", "ciclo-de-vida"],
       "fuentes": [
         {

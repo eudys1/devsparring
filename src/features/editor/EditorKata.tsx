@@ -9,12 +9,21 @@ import type { Monaco, OnMount } from '@monaco-editor/react';
 import type { Caso, ResultadoEjecucion } from './runner/casos';
 import { ejecutarEnWorker } from './runner/ejecutar';
 
-const Editor = dynamic(() => import('@monaco-editor/react'), {
-  ssr: false,
-  loading: () => (
-    <div className="h-[420px] animate-pulse rounded-r bg-papel-2" aria-label="Cargando editor" />
-  ),
-});
+// Monaco se sirve desde public/monaco (scripts/copiar-monaco.mjs), no desde el
+// CDN por defecto del loader: así el modo kata funciona sin red a terceros.
+const Editor = dynamic(
+  () =>
+    import('@monaco-editor/react').then((m) => {
+      m.loader.config({ paths: { vs: '/monaco/vs' } });
+      return m;
+    }),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-[420px] animate-pulse rounded-r bg-papel-2" aria-label="Cargando editor" />
+    ),
+  },
+);
 
 export type Props = {
   codigoInicial: string;

@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "ia-vector-stores-01",
-      "version": 1,
+      "version": 2,
       "pista": "ia",
       "familia": "vector-stores",
       "tipo": "definicion",
@@ -12,8 +12,8 @@
       "nivelMinimo": "junior",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Qué es una base de datos vectorial y en qué se diferencia de una relacional?",
-        "en": "What is a vector database and how does it differ from a relational one?"
+        "es": "Tu jefe pregunta si el buscador semántico necesita una base de datos nueva o vale el Postgres que ya tenéis. ¿Qué es una base de datos vectorial y en qué se diferencia de una relacional?",
+        "en": "Your manager asks whether the semantic search needs a new database or the Postgres you already have is enough. What is a vector database and how does it differ from a relational one?"
       },
       "rubrica": {
         "junior": [
@@ -27,6 +27,29 @@
         ]
       },
       "respuestaModelo": "Una base de datos vectorial almacena vectores de alta dimensión y está optimizada para búsqueda por similitud, es decir, encontrar los vectores más cercanos a uno dado, en vez de la búsqueda exacta por clave o índice que hace una base de datos relacional. Mientras una BD relacional responde bien a '¿qué fila tiene este id?', una vector store responde a '¿qué elementos se parecen más a este?'. En muchos sistemas reales conviene combinarlas: los metadatos estructurados y transaccionales viven en la base relacional habitual, y solo los embeddings para búsqueda semántica viven en la vector store.",
+      "resumen": "Guarda vectores y está optimizada para buscar los más parecidos a uno dado, no por clave exacta como una relacional. En la práctica se combinan: metadatos en la relacional, similitud en la vectorial.",
+      "test": {
+        "enunciado": "¿Qué pregunta responde bien una base de datos vectorial y mal una relacional?",
+        "correcta": 0,
+        "opciones": [
+          {
+            "texto": "¿Qué elementos se parecen más a este?",
+            "porque": "Está optimizada para buscar vecinos por similitud entre vectores de alta dimensión."
+          },
+          {
+            "texto": "¿Qué fila tiene este id?",
+            "porque": "Esa es la especialidad de la relacional: búsqueda exacta por clave o índice."
+          },
+          {
+            "texto": "¿Cuántos pedidos hubo el mes pasado?",
+            "porque": "Es una agregación sobre datos estructurados: terreno de SQL, no de similitud."
+          },
+          {
+            "texto": "¿Qué usuarios tienen el email verificado?",
+            "porque": "Es un filtro exacto sobre un campo; una relacional lo resuelve con un índice."
+          }
+        ]
+      },
       "etiquetas": ["vector-store", "fundamentos"],
       "fuentes": [
         {
@@ -61,6 +84,28 @@
         ]
       },
       "respuestaModelo": "FAISS es una librería local que sirve bien para prototipos donde no hace falta un servicio gestionado. Pinecone es gestionado en la nube, con poco esfuerzo operativo, pensado para producción sin querer mantener infraestructura propia. Weaviate es open source, soporta búsqueda híbrida y filtrado avanzado por metadatos si se necesita ese control. Y pgvector es una extensión de Postgres, útil cuando ya se tiene esa base de datos en el stack y el volumen es moderado, porque evita añadir una pieza más de infraestructura solo para los embeddings.",
+      "test": {
+        "enunciado": "Ya usas Postgres y el volumen de vectores es moderado. ¿Qué vector store tiene más sentido?",
+        "correcta": 3,
+        "opciones": [
+          {
+            "texto": "Pinecone, para no mantener nada.",
+            "porque": "Es una buena opción gestionada, pero añade un servicio y un coste cuando Postgres ya puede hacerlo."
+          },
+          {
+            "texto": "FAISS en el servidor de la web.",
+            "porque": "FAISS es una librería local, cómoda para prototipos; en producción obliga a gestionar el índice a mano."
+          },
+          {
+            "texto": "Montar un clúster de Weaviate propio.",
+            "porque": "Tiene sentido si necesitas búsqueda híbrida o filtros avanzados; con volumen moderado es una pieza más que operar."
+          },
+          {
+            "texto": "pgvector, la extensión de Postgres.",
+            "porque": "Evita añadir infraestructura: los vectores viven junto a los datos que ya tienes."
+          }
+        ]
+      },
       "etiquetas": ["vector-store", "herramientas"],
       "fuentes": [
         {
@@ -98,6 +143,28 @@
         ]
       },
       "respuestaModelo": "Buscar el vecino más cercano exacto entre millones de vectores de alta dimensión es computacionalmente muy costoso si se compara uno a uno. Los algoritmos ANN, como HNSW o IVF, construyen estructuras que permiten encontrar candidatos muy buenos, aunque no siempre el óptimo matemático, a una fracción del coste. Esto es aceptable en búsqueda semántica porque no se necesita el resultado perfecto, sino uno suficientemente relevante para el usuario o para el LLM que lo va a usar como contexto, y la diferencia de calidad entre el resultado exacto y el aproximado suele ser imperceptible en la práctica.",
+      "test": {
+        "enunciado": "¿Por qué la búsqueda semántica usa ANN en vez de búsqueda exacta?",
+        "correcta": 1,
+        "opciones": [
+          {
+            "texto": "Porque la búsqueda exacta no se puede programar con vectores.",
+            "porque": "Se puede, comparando uno a uno; el problema es lo cara que resulta con millones de vectores."
+          },
+          {
+            "texto": "Porque da candidatos muy buenos a una fracción del coste, y no hace falta el óptimo.",
+            "porque": "Algoritmos como HNSW o IVF sacrifican un poco de precisión por mucha velocidad; para dar contexto a un LLM basta."
+          },
+          {
+            "texto": "Porque ANN siempre devuelve el vecino más cercano exacto, solo que bastante más rápido.",
+            "porque": "No siempre: es aproximado por definición, y eso es justo lo que lo hace rápido."
+          },
+          {
+            "texto": "Porque ANN no necesita embeddings.",
+            "porque": "ANN opera precisamente sobre embeddings; es una forma de buscar entre ellos."
+          }
+        ]
+      },
       "etiquetas": ["vector-store", "ann"],
       "fuentes": [
         {
@@ -132,6 +199,7 @@
         ]
       },
       "respuestaModelo": "Hay un trade-off directo: pedir más resultados (k alto) aumenta la probabilidad de incluir el fragmento correcto entre los recuperados, pero también añade más tokens de contexto y más ruido que puede confundir al modelo con información irrelevante. No hay un número mágico, se ajusta empíricamente midiendo la calidad de la respuesta final con distintos valores de k sobre un set de preguntas de referencia. Una estrategia habitual es pedir un k inicial más alto de lo necesario y aplicar un reranker después, quedándose solo con los mejores candidatos tras reordenar, en vez de confiar en que la búsqueda vectorial sola acierte con pocos resultados.",
+      "resumen": "Un k alto trae más probabilidad de acertar pero también más tokens y ruido. Se ajusta midiendo la respuesta final con distintos k; habitual: pedir de más y dejar que un reranker se quede con los mejores.",
       "etiquetas": ["vector-store", "rag"],
       "fuentes": [
         {
@@ -168,6 +236,7 @@
         ]
       },
       "respuestaModelo": "En una aplicación multi-tenant o con permisos por usuario, filtrar por metadatos como el tenant_id o los permisos no es opcional: sin ese filtro aplicado en la propia búsqueda vectorial, se puede acabar devolviendo información de un cliente a otro, un fallo de seguridad grave. La mayoría de vector stores soportan filtrado pre búsqueda, que reduce el espacio de candidatos antes de buscar, o post búsqueda, que filtra después de traer los resultados; hay que verificar cuál usa la herramienta concreta porque afecta tanto al rendimiento como a la corrección: un filtro post búsqueda mal implementado puede devolver menos de k resultados válidos sin que nadie se dé cuenta.",
+      "resumen": "En multi-tenant, filtrar por `tenant_id` o permisos en la propia búsqueda no es opcional: sin él se sirven datos de un cliente a otro. Mirar si la herramienta filtra antes o después de buscar.",
       "etiquetas": ["vector-store", "seguridad", "multi-tenant"],
       "fuentes": [
         {

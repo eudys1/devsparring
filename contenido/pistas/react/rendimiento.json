@@ -27,6 +27,28 @@
         ]
       },
       "respuestaModelo": "`React.memo` envuelve un componente para que React se salte su re-render si las props recibidas son iguales a las del render anterior, usando por defecto una comparación superficial (shallow equal) propiedad por propiedad. El problema aparece cuando alguna prop es un objeto, array o función creada de nuevo en cada render del padre (por ejemplo un callback inline sin `useCallback`): la comparación superficial siempre los ve como distintos, así que `memo` nunca evita el re-render, y encima paga el coste de comparar las props en cada ocasión, quedando peor que no memoizar nada. La recomendación es no aplicar `memo` de forma preventiva en todo el árbol, sino medir con React DevTools Profiler qué componentes realmente re-renderizan de forma cara e innecesaria antes de envolverlos.",
+      "test": {
+        "enunciado": "¿Por qué `React.memo` a veces no evita ningún render?",
+        "correcta": 1,
+        "opciones": [
+          {
+            "texto": "Porque solo funciona con componentes de clase.",
+            "porque": "`React.memo` es precisamente para componentes funcionales."
+          },
+          {
+            "texto": "Porque el padre crea en cada render objetos o funciones nuevos que se pasan como props.",
+            "porque": "La comparación superficial los ve distintos siempre, y encima se paga el coste de comparar."
+          },
+          {
+            "texto": "Porque compara las props en profundidad y es demasiado lento.",
+            "porque": "Compara de forma superficial por defecto, no en profundidad."
+          },
+          {
+            "texto": "Porque desactiva los hooks del componente.",
+            "porque": "Los hooks siguen funcionando igual dentro de un componente memorizado."
+          }
+        ]
+      },
       "etiquetas": ["rendimiento", "memo"],
       "fuentes": [
         {
@@ -100,6 +122,7 @@
         ]
       },
       "respuestaModelo": "La técnica principal es windowing o virtualización: renderizar en el DOM solo las filas que están dentro (o cerca) del viewport visible, con librerías como `react-window` o `@tanstack/react-virtual`, en vez de montar los 5.000 nodos de golpe. Junto a eso, memoizar cada fila con `React.memo` evita que se vuelvan a renderizar filas que no cambiaron cuando el padre re-renderiza por otro motivo, pero solo funciona si se evita pasarle props inline nuevas cada vez (funciones u objetos creados en cada render rompen la memoización). Si el caso de uso lo permite, paginar o cargar bajo demanda en vez de traer las 5.000 filas de golpe reduce tanto el trabajo del backend como el tamaño inicial de la lista a virtualizar.",
+      "resumen": "Virtualizar: montar solo las filas cercanas al viewport con `react-window` o `@tanstack/react-virtual`. Además, `React.memo` en cada fila, con props estables para que la comparación sirva.",
       "etiquetas": ["rendimiento", "listas", "virtualizacion"],
       "fuentes": [
         {

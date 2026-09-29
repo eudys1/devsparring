@@ -1,3 +1,5 @@
+import type { Metadata } from 'next';
+import { OPEN_GRAPH_BASE } from '@/lib/sitio';
 import Link from 'next/link';
 import { Motor } from '@/app/(app)/practicar/[sesionId]/Motor';
 import { Marca } from '@/components/Marca';
@@ -6,10 +8,16 @@ import { estilosBoton } from '@/components/ui/Boton';
 import { cargarBanco } from '@/features/preguntas/cargar';
 import { paraModo, paraNivel, publicadas, seleccionar } from '@/features/preguntas/filtrar';
 
-export const metadata = { title: 'Demo' };
+export const metadata: Metadata = {
+  title: 'Demo: tres preguntas reales sin cuenta',
+  description:
+    'Prueba Devsparring sin registrarte: tres preguntas reales de entrevista técnica en Tipo test, con el porqué de cada opción. No se guarda nada.',
+  alternates: { canonical: '/demo' },
+  openGraph: { ...OPEN_GRAPH_BASE, title: 'Demo de Devsparring', url: '/demo' },
+};
 
-// Prueba sin cuenta: tres preguntas reales del banco, autoevaluación y prompt
-// para copiar. No guarda nada. Es el "producto real, no maqueta" de la landing.
+// Prueba sin cuenta: tres preguntas reales del banco en Tipo test. No guarda
+// nada. Es el "producto real, no maqueta" de la landing.
 export default async function Demo() {
   const banco = publicadas(await cargarBanco());
   const candidatas = paraNivel(paraModo(banco, 'flash'), 'mid').filter(

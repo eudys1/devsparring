@@ -28,6 +28,28 @@
         ]
       },
       "respuestaModelo": "CI (Integración Continua) corre en cada push o pull request: instalar dependencias, lint, ejecutar tests y hacer el build, para detectar problemas antes de mezclar el código a la rama principal. CD (Entrega o Despliegue Continuo) entra después: una vez el código pasa CI en la rama principal, se despliega automáticamente (o con una aprobación manual, según cuánto riesgo asuma el equipo) a staging y luego a producción. Un matiz importante a nivel senior es que los tests que tardan mucho (end-to-end pesados) no deberían bloquear cada commit individual; conviene correrlos en paralelo con el resto del pipeline o en una etapa separada para no ralentizar el feedback rápido que necesita cada desarrollador.",
+      "test": {
+        "enunciado": "En un pipeline de CI/CD, ¿qué va en CI y no en CD?",
+        "correcta": 3,
+        "opciones": [
+          {
+            "texto": "Desplegar la aplicación a producción tras cada merge.",
+            "porque": "Eso es CD: entra después, cuando el código ya pasó CI en la rama principal."
+          },
+          {
+            "texto": "Promover a producción el build que ya se probó en staging, tras una aprobación manual del equipo.",
+            "porque": "También es CD: decide cómo y cuándo llega a los entornos."
+          },
+          {
+            "texto": "Hacer rollback si el despliegue falla.",
+            "porque": "Es parte de desplegar, así que pertenece a CD."
+          },
+          {
+            "texto": "Instalar, pasar lint, ejecutar los tests y hacer el build en cada push o PR.",
+            "porque": "CI detecta problemas antes de mezclar el código en la rama principal."
+          }
+        ]
+      },
       "etiquetas": ["ci-cd", "pipeline"],
       "fuentes": [
         {
@@ -66,6 +88,28 @@
         ]
       },
       "respuestaModelo": "Development es el entorno local de cada desarrollador. Staging replica producción lo más fielmente posible, misma infraestructura, datos similares pero no reales ni sensibles, para detectar problemas antes de que los vea un usuario real. Producción es el entorno que usan los usuarios reales, con datos reales. Probar directamente en producción sin red de seguridad arriesga datos y usuarios reales si algo sale mal. Las excepciones controladas (feature flags que activan una función solo para un porcentaje de usuarios, canary releases que despliegan a una fracción del tráfico antes de generalizar, rollout gradual vigilando métricas de error) son formas seguras de 'probar en producción' porque limitan el radio de impacto y permiten revertir rápido si algo falla, muy distinto de desplegar sin ningún control.",
+      "test": {
+        "enunciado": "¿Para qué sirve el entorno de staging?",
+        "correcta": 1,
+        "opciones": [
+          {
+            "texto": "Para que cada desarrollador pruebe en su máquina.",
+            "porque": "Ese es el entorno de development, el local de cada uno."
+          },
+          {
+            "texto": "Para probar en un entorno igual a producción, pero con datos que no son reales.",
+            "porque": "Detecta problemas antes de que los vea un usuario, sin arriesgar datos reales."
+          },
+          {
+            "texto": "Para guardar las copias de seguridad de la base de datos de producción.",
+            "porque": "Los backups tienen su propio sitio; staging es un entorno para probar."
+          },
+          {
+            "texto": "Para servir a los usuarios cuando producción se cae.",
+            "porque": "No es un respaldo de producción; es un entorno de pruebas previo."
+          }
+        ]
+      },
       "etiquetas": ["ci-cd", "entornos", "despliegue"],
       "fuentes": [
         {

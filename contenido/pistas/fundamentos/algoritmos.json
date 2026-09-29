@@ -87,6 +87,7 @@
         ]
       },
       "respuestaModelo": "Un `Map` conviene cuando las claves no son siempre strings (pueden ser objetos), cuando necesito el orden de inserción garantizado, o cuando hay muchas inserciones y borrados frecuentes, porque además expone `.size` directamente sin contar propiedades a mano. Un objeto plano sigue siendo cómodo para estructuras fijas conocidas en tiempo de escritura. Un `Set` conviene cuando necesito garantizar unicidad y comprobar pertenencia muchas veces: `set.has(x)` es O(1) frente a `array.includes(x)` que es O(n), lo que importa mucho al trabajar con colecciones grandes, por ejemplo para deduplicar ids.",
+      "resumen": "`Map` cuando las claves no son strings, importa el orden o hay muchas altas y bajas. `Set` para garantizar unicidad y comprobar pertenencia: `has` es O(1) frente al O(n) de `includes`.",
       "test": {
         "enunciado": "¿Cuándo conviene un `Set` en vez de un array?",
         "correcta": 2,
@@ -184,6 +185,7 @@
         ]
       },
       "respuestaModelo": "Antes de escribir código, definiría qué cuenta exactamente como duplicado: ¿coincidencia exacta de cliente, producto e importe, o también hay que considerar una ventana temporal de unos minutos? Con eso claro, construiría una clave compuesta por esos campos y agruparía los 100.000 pedidos en un `Map` de clave a lista de pedidos en una sola pasada O(n), en vez de comparar cada pedido contra todos los demás. Dentro de cada grupo con más de un pedido, si hace falta ventana temporal, ordenaría por fecha y compararía solo pedidos consecutivos dentro del grupo. Antes de borrar nada, revisaría manualmente una muestra de los grupos detectados, porque dos pedidos idénticos también pueden ser legítimos (el cliente repitió la compra por error suyo, no del sistema), y eso no se debería borrar automáticamente sin confirmación.",
+      "resumen": "Primero definir qué es un duplicado. Luego una clave compuesta (cliente, producto, importe) y agrupar en un `Map` en una pasada O(n); dentro de cada grupo, ordenar por fecha y comparar vecinos.",
       "etiquetas": ["algoritmos", "datos"],
       "fuentes": [
         {

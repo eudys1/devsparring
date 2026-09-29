@@ -8,9 +8,9 @@
     "node": ">=22.12"
   },
   "scripts": {
-    "dev": "next dev",
-    "dev:webpack": "next dev --webpack",
-    "build": "next build",
+    "dev": "node scripts/copiar-monaco.mjs && next dev",
+    "dev:webpack": "node scripts/copiar-monaco.mjs && next dev --webpack",
+    "build": "node scripts/copiar-monaco.mjs && next build",
     "start": "next start",
     "lint": "eslint",
     "format": "prettier --write .",
@@ -24,7 +24,8 @@
     "detector": "node scripts/detector-diseno.mjs",
     "capturas": "node scripts/capturas.mjs",
     "revisar": "node scripts/revisar.mjs",
-    "capturas:app": "node scripts/capturas-app.mjs"
+    "capturas:app": "node scripts/capturas-app.mjs",
+    "tipos:supabase": "npx supabase gen types typescript --project-id gbrzpvpvgxvwgbbygowf --schema public > src/lib/supabase/tipos.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "latest",

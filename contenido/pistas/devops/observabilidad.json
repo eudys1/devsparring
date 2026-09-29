@@ -67,6 +67,7 @@
         ]
       },
       "respuestaModelo": "Un log de petición HTTP útil incluye un request id o trace id para correlacionar todos los logs del mismo request entre servicios, el método y la ruta, el código de estado de la respuesta, la latencia, y el id del usuario (no su email o nombre si no hace falta para la investigación). Explícitamente se excluyen o se enmascaran contraseñas, tokens de sesión, números de tarjeta y cualquier otro dato sensible, porque los sistemas de logging suelen tener una retención larga y bastante menos control de acceso que la base de datos principal de la aplicación; un log con datos sensibles es una superficie de fuga de datos que dura mucho más de lo necesario.",
+      "resumen": "Request id para correlacionar, método, ruta, estado, latencia e id de usuario. Nunca contraseñas, tokens ni tarjetas: los logs se guardan mucho tiempo y con menos control de acceso que la base de datos.",
       "etiquetas": ["observabilidad", "logs", "seguridad"],
       "fuentes": [
         {
@@ -105,6 +106,28 @@
         ]
       },
       "respuestaModelo": "Una health check es un endpoint, normalmente `/health` o similar, que responde rápido indicando si el proceso puede atender tráfico. A nivel senior se distingue 'liveness' (el proceso está vivo, no colgado) de 'readiness' (está listo para atender tráfico, por ejemplo ya terminó de conectar a la base de datos al arrancar); un proceso puede estar vivo pero no listo. El balanceador de carga o el orquestador consulta esa ruta periódicamente y saca de rotación, o reinicia, las instancias que fallan el check, evitando enviarles tráfico y que sirvan errores a usuarios reales mientras se recuperan o se reemplazan.",
+      "test": {
+        "enunciado": "¿Qué diferencia hay entre un health check de liveness y uno de readiness?",
+        "correcta": 3,
+        "opciones": [
+          {
+            "texto": "Son lo mismo con dos nombres distintos.",
+            "porque": "Responden a preguntas distintas: un proceso puede estar vivo sin estar listo."
+          },
+          {
+            "texto": "Liveness mide la latencia de cada petición y readiness, el consumo de memoria del proceso en cada momento.",
+            "porque": "Ninguno mide eso; los dos responden sí o no sobre el estado del proceso."
+          },
+          {
+            "texto": "Readiness solo se consulta una vez, al desplegar.",
+            "porque": "Se consulta periódicamente para sacar o volver a meter la instancia en rotación."
+          },
+          {
+            "texto": "Liveness: el proceso no está colgado. Readiness: puede atender tráfico ya.",
+            "porque": "Por ejemplo, al arrancar está vivo, pero no listo hasta conectar a la base de datos."
+          }
+        ]
+      },
       "etiquetas": ["observabilidad", "health-checks", "orquestacion"],
       "fuentes": [
         {

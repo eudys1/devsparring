@@ -128,3 +128,21 @@ test('el repaso relámpago se hace sin escribir: girar, puntuarse y seguir', asy
   await page.keyboard.press('Enter');
   await expect(page.getByLabel(/Asalto 2 de/)).toBeVisible();
 });
+
+test('una kata carga Monaco desde el propio dominio y ejecuta los tests', async ({ page }) => {
+  // Monaco se sirve desde public/monaco: sin red al CDN el modo kata no cargaba.
+  const aTerceros: string[] = [];
+  page.on('request', (r) => {
+    if (r.url().includes('cdn.jsdelivr.net')) aTerceros.push(r.url());
+  });
+  await page.goto('/practicar?modo=kata&pista=javascript');
+  await page.getByRole('button', { name: 'Empezar' }).click();
+  await expect(page.getByLabel(/Asalto 1 de/)).toBeVisible();
+  await expect(page.locator('.monaco-editor').first()).toBeVisible({ timeout: 20_000 });
+  await page.getByRole('button', { name: /Ejecutar tests/ }).click();
+  await expect(page.getByLabel('Resultado de los tests')).toContainText(/tests pasan|Error/, {
+    timeout: 20_000,
+  });
+  expect(aTerceros).toEqual([]);
+  await capturar(page, 'kata');
+});

@@ -28,6 +28,29 @@
         ]
       },
       "respuestaModelo": "En una función normal, `this` se decide según cómo se llama, no dónde se define: como método de un objeto (`obj.metodo()`), `this` es `obj`; llamada suelta (`funcion()`), `this` es `undefined` en strict mode o el objeto global en modo normal. Una arrow function no tiene su propio `this`: captura el `this` léxico del contexto donde se creó, útil por ejemplo dentro de un método para que un callback interno siga viendo el `this` del objeto exterior. En un event handler del DOM, una función normal asignada como listener tiene `this` apuntando al elemento que disparó el evento, mientras una arrow function seguiría usando el `this` léxico de fuera, que normalmente no es el elemento. `call`, `apply` y `bind` permiten fijar explícitamente qué será `this` al invocar la función.",
+      "resumen": "En una función normal, `this` depende de cómo se llama: el objeto en `obj.metodo()`, `undefined` en una llamada suelta con strict mode. La arrow captura el `this` del contexto donde se creó.",
+      "test": {
+        "enunciado": "¿Qué `this` tiene una arrow function?",
+        "correcta": 3,
+        "opciones": [
+          {
+            "texto": "El objeto sobre el que se llama, como un método normal.",
+            "porque": "Eso es lo que hace una función normal; la arrow no tiene `this` propio."
+          },
+          {
+            "texto": "Siempre el objeto global.",
+            "porque": "Solo si se creó en un contexto donde `this` era el global; lo que hace es heredarlo."
+          },
+          {
+            "texto": "El elemento que disparó el evento, si se usa como handler.",
+            "porque": "Eso pasa con una función normal como listener; la arrow conserva el `this` exterior."
+          },
+          {
+            "texto": "El `this` del contexto donde se creó (`this` léxico).",
+            "porque": "Útil dentro de un método para que un callback siga viendo el objeto exterior."
+          }
+        ]
+      },
       "etiquetas": ["this", "scope"],
       "fuentes": [
         {
@@ -66,6 +89,28 @@
         ]
       },
       "respuestaModelo": "En JavaScript cada objeto tiene un enlace interno a otro objeto, su prototipo, accesible con `Object.getPrototypeOf(obj)`. Cuando se accede a una propiedad que el objeto no tiene directamente, el motor sube por esa cadena de prototipos hasta encontrarla o llegar a `null`. Las clases de ES6 (`class Perro extends Animal`) no son un sistema de herencia distinto: son azúcar sintáctico sobre este mismo mecanismo, `extends` simplemente configura el prototipo de la clase hija para que apunte al prototipo de la clase padre. Entender la cadena de prototipos ayuda a explicar por qué modificar `Array.prototype` afecta a todos los arrays existentes, por ejemplo.",
+      "test": {
+        "enunciado": "¿Qué son las clases de ES6 respecto a la herencia prototípica?",
+        "correcta": 0,
+        "opciones": [
+          {
+            "texto": "Azúcar sintáctico sobre el mismo mecanismo de prototipos.",
+            "porque": "`extends` configura el prototipo de la clase hija para que apunte al de la padre."
+          },
+          {
+            "texto": "Un sistema nuevo de herencia que sustituye a los prototipos.",
+            "porque": "No hay otro sistema: por debajo sigue siendo la cadena de prototipos."
+          },
+          {
+            "texto": "Una forma de copiar los métodos del padre en cada instancia.",
+            "porque": "No se copian: la instancia los encuentra subiendo por la cadena de prototipos."
+          },
+          {
+            "texto": "Una característica solo de TypeScript que se elimina al compilar.",
+            "porque": "Las clases son de JavaScript desde ES2015; TypeScript añade tipos encima."
+          }
+        ]
+      },
       "etiquetas": ["prototipos", "poo"],
       "fuentes": [
         {
@@ -104,6 +149,28 @@
         ]
       },
       "respuestaModelo": "Las tres sirven para controlar explícitamente qué es `this` al invocar una función. `call(contexto, arg1, arg2)` invoca la función inmediatamente con `this` fijado y los argumentos separados por comas. `apply(contexto, [arg1, arg2])` hace lo mismo pero recibe los argumentos como un array, aunque hoy en día el spread (`fn.call(ctx, ...args)`) ha reducido bastante el uso de `apply`. `bind(contexto)` no invoca la función: devuelve una nueva función con `this` fijado permanentemente, útil por ejemplo para pasar un método de una clase como callback (`boton.addEventListener('click', this.manejarClick.bind(this))`) sin que pierda su `this` original.",
+      "test": {
+        "enunciado": "¿Qué hace `fn.bind(obj)` que no hacen `call` ni `apply`?",
+        "correcta": 2,
+        "opciones": [
+          {
+            "texto": "Recibe los argumentos como un array.",
+            "porque": "Eso es `apply`; `bind` recibe el contexto y, opcionalmente, argumentos fijos."
+          },
+          {
+            "texto": "Invoca la función con `this` fijado en el mismo momento de la llamada.",
+            "porque": "Eso hacen `call` y `apply`; `bind` no invoca nada."
+          },
+          {
+            "texto": "Devuelve una función nueva con `this` fijado, sin invocarla.",
+            "porque": "Útil para pasar un método como callback sin perder su `this`."
+          },
+          {
+            "texto": "Fija `this` solo durante la primera llamada.",
+            "porque": "Lo fija de forma permanente en la función que devuelve."
+          }
+        ]
+      },
       "etiquetas": ["this"],
       "fuentes": [
         {
@@ -139,6 +206,28 @@
         ]
       },
       "respuestaModelo": "Cuando se llama con `new` a una función constructora, JavaScript crea un objeto nuevo, lo enlaza como `this` dentro de la función, y lo devuelve automáticamente si la función no devuelve otro objeto explícitamente. Si se llama sin `new`, no se crea ningún objeto nuevo: `this` dentro de la función apunta al objeto global en modo normal (o es `undefined` en strict mode), así que cualquier propiedad que la función intente asignar a `this.algo` termina contaminando el objeto global, o lanza `TypeError` al intentar leer una propiedad de `undefined` en strict mode. Las clases de ES6 evitan este problema de raíz: llamar a una clase sin `new` lanza directamente `TypeError: Class constructor cannot be invoked without 'new'`.",
+      "test": {
+        "enunciado": "¿Qué pasa si llamas a una función constructora sin `new` en strict mode?",
+        "correcta": 1,
+        "opciones": [
+          {
+            "texto": "Se crea el objeto igual, porque `new` es opcional.",
+            "porque": "Sin `new` no se crea ningún objeto nuevo ni se enlaza como `this`."
+          },
+          {
+            "texto": "`this` es `undefined` y asignar `this.algo` lanza un `TypeError`.",
+            "porque": "En modo normal, en cambio, `this` sería el global y lo contaminaría en silencio."
+          },
+          {
+            "texto": "Devuelve el objeto global con las propiedades asignadas.",
+            "porque": "En strict mode `this` no es el global, así que no puede devolverlo."
+          },
+          {
+            "texto": "Devuelve `null`.",
+            "porque": "Sin `return` explícito devuelve `undefined`, y antes falla al asignar sobre `this`."
+          }
+        ]
+      },
       "etiquetas": ["this", "prototipos"],
       "fuentes": [
         {

@@ -183,6 +183,7 @@
         ]
       },
       "respuestaModelo": "Para un caso unidireccional simple, el servidor avisando al cliente de 'hay contenido nuevo', Server-Sent Events es más simple que WebSockets: funciona sobre HTTP normal, trae reconexión automática nativa en el navegador, y no exige mantener sockets bidireccionales que aquí no se necesitan. WebSockets se justifican cuando además el cliente necesita enviar datos en tiempo real hacia el servidor, como en un chat o una herramienta colaborativa; usarlos solo para notificar 'hay posts nuevos' es más infraestructura de la que hace falta. Polling (consultar cada N segundos) es la opción más simple de implementar y a veces suficiente si la inmediatez no es crítica, a costa de más latencia percibida y carga innecesaria en el servidor cuando no hay nada nuevo.",
+      "resumen": "Server-Sent Events: el aviso va solo del servidor al cliente, funciona sobre HTTP y reconecta solo. WebSockets, cuando el cliente también envía en tiempo real (chat); polling, si la inmediatez no es crítica.",
       "etiquetas": ["arquitectura", "tiempo-real", "sse", "websockets", "razonamiento"],
       "fuentes": [
         {
@@ -221,6 +222,7 @@
         ]
       },
       "respuestaModelo": "Para un volumen de 200.000 filas, generar el CSV de forma síncrona dentro del mismo request es arriesgado: puede tardar varios segundos o minutos, y mientras tanto ocupa una conexión/hilo del servidor que debería estar disponible para otras peticiones. Hay dos alternativas razonables: generar el CSV de forma asíncrona en una cola de trabajo y avisar al usuario cuando esté listo (por email, notificación en la UI, o un endpoint que consulta el estado), o hacer streaming de la respuesta con backpressure, escribiendo filas al stream HTTP a medida que se leen de la base de datos, en vez de construir el CSV entero en memoria antes de enviarlo. La clave es nunca bloquear el request-response del servidor web principal con un trabajo que puede tardar minutos.",
+      "resumen": "No en el request: tarda y ocupa el servidor. O se genera en una cola y se avisa al usuario cuando esté, o se hace streaming de la respuesta con backpressure, fila a fila.",
       "etiquetas": ["arquitectura", "exportacion", "streaming", "razonamiento"],
       "fuentes": [
         {

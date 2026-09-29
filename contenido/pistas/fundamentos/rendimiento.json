@@ -136,6 +136,7 @@
         ]
       },
       "respuestaModelo": "Dado que cambia una vez al día pero se consulta miles de veces por minuto, cachearía en varios niveles: en el servidor, un caché en memoria (o Redis si hay varias instancias) para no golpear la base de datos en cada petición, con un TTL de unas horas; y en el borde, cabeceras `Cache-Control` para que una CDN sirva la respuesta directamente sin llegar siquiera al servidor la mayoría de las veces. Para invalidar cuando el dato cambia, en vez de esperar solo al TTL, invalidaría manualmente la clave de caché en el momento del cambio (o usaría un esquema de versionado de la clave, tipo `productos:v123`), así el dato nuevo se sirve de inmediato sin esperar a que expire el TTL.",
+      "resumen": "Caché en varios niveles: en memoria o Redis en el servidor con TTL de horas, y `Cache-Control` para que la CDN sirva casi todo. Al cambiar el dato, invalidar la clave sin esperar al TTL.",
       "etiquetas": ["rendimiento", "cache"],
       "fuentes": [
         {

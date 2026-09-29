@@ -185,6 +185,7 @@
         ]
       },
       "respuestaModelo": "Tres tablas: `users(id, name)`, `posts(id, title, body, author_id, created_at)` y `comments(id, post_id, author_id, body, created_at)`, con `author_id` en ambas apuntando a `users(id)` y `post_id` en `comments` apuntando a `posts(id)`, en vez de repetir el nombre del autor en cada fila. Para que listar los comentarios de un post sea rápido conforme la tabla crece, conviene un índice sobre `comments(post_id)`. Sobre qué pasa al borrar un post, lo más habitual es `ON DELETE CASCADE` en la clave foránea de `comments.post_id`, para que sus comentarios se borren con él y no queden huérfanos apuntando a un post inexistente; la alternativa, `ON DELETE RESTRICT`, tiene sentido si se prefiere impedir borrar un post mientras tenga comentarios, forzando una decisión explícita antes de perder ese historial.",
+      "resumen": "Tres tablas: `users`, `posts` con `author_id` y `comments` con `post_id` y `author_id`, todas con claves foráneas; índice en `comments(post_id)` y decidir qué pasa al borrar un post.",
       "etiquetas": ["modelado", "claves-foraneas"],
       "fuentes": [
         {

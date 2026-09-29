@@ -270,6 +270,29 @@
         ]
       },
       "respuestaModelo": "Técnicamente se puede añadir un método a `Array.prototype` y estará disponible en todos los arrays, pero trae riesgos serios: si una futura versión del lenguaje añade un método nativo con el mismo nombre pero comportamiento distinto (como pasó con implementaciones caseras de `flat` antes de que existiera el nativo), el código propio puede romperse silenciosamente al actualizar el motor. También puede romper código de terceros que recorre objetos con `for...in` esperando solo sus propias propiedades, si el método añadido es enumerable. La excepción razonable es un polyfill bien documentado y acotado a rellenar exactamente el comportamiento de una feature estándar que aún no existe en el entorno objetivo, no una extensión de conveniencia propia.",
+      "resumen": "Se puede añadir un método a `Array.prototype`, pero puede chocar con un método nativo futuro del mismo nombre y romper código ajeno que recorre con `for...in`. Solo se justifica un polyfill acotado.",
+      "test": {
+        "enunciado": "¿Qué riesgo tiene añadir tus propios métodos a `Array.prototype`?",
+        "correcta": 0,
+        "opciones": [
+          {
+            "texto": "Que una versión futura del lenguaje añada uno nativo con el mismo nombre y otro comportamiento.",
+            "porque": "Pasó con implementaciones caseras de `flat`. Además puede romper código que recorre objetos con `for...in`."
+          },
+          {
+            "texto": "Que el método solo esté disponible en los arrays creados después de añadirlo.",
+            "porque": "Está disponible en todos los arrays, también en los que ya existían: ese es parte del problema."
+          },
+          {
+            "texto": "Que el navegador lo bloquea por seguridad y lanza un error.",
+            "porque": "El navegador lo permite; el riesgo es de mantenimiento y de choques, no un bloqueo."
+          },
+          {
+            "texto": "Que los arrays dejan de poder usar `map` y `filter`.",
+            "porque": "Los métodos nativos siguen ahí; el riesgo es chocar con nombres futuros o con código de terceros."
+          }
+        ]
+      },
       "etiquetas": ["arrays-objetos"],
       "fuentes": [
         {

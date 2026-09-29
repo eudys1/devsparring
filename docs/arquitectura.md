@@ -270,28 +270,42 @@ auto-merge. Excluidos LinkedIn y Glassdoor por sus condiciones.
 
 ## Deuda y riesgos abiertos (por lo que más duele)
 
-1. Spike Monaco + Turbopack: **resuelto el 14-09-2026**. `@monaco-editor/react`
-   4.7.0 con `next/dynamic` compila con `next build` (Turbopack) y renderiza con
-   resaltado en el build de producción de Next 16.3.5. Monaco se carga desde el
-   CDN del loader por defecto; si algún día hace falta servirlo en local, se
-   configura `loader.config({ paths })`.
-2. Mapeo puntuación → nota FSRS sin datos reales.
+1. **Resuelto el 29-09-2026: Monaco se sirve en local.** `scripts/copiar-monaco.mjs`
+   copia `monaco-editor/min/vs` a `public/monaco/vs` (fuera de git) en `pnpm dev` y
+   `pnpm build`, y `EditorKata` apunta el loader ahí. El proxy no corre sobre
+   `/monaco/`. Un e2e abre una kata, ejecuta los tests y comprueba que no se pide
+   nada a jsdelivr. `monaco-editor` sigue en devDependencies: Vercel las instala
+   para el build, y moverlo hacía que pnpm resolviera de nuevo todas las
+   dependencias en `latest`.
+2. Mapeo puntuación → nota FSRS y parámetros de FSRS sin datos reales. No se
+   calibra todavía: con una sola cuenta y días de uso no hay muestra. La tabla
+   `repasos` ya guarda lo que pide el optimizador (tarjeta, fecha, nota, estado,
+   días transcurridos). Cuándo: el optimizador de Anki no exige mínimo desde la
+   24.06 (antes 400 o 1000 repasos) y la comunidad aconseja unos 1000 repasos
+   para mejorar de verdad a los parámetros por defecto (faqs.ankiweb.net y
+   github.com/ankitects/anki/issues/3094, consultados el 29-09-2026, resumen del
+   buscador). Ojo: FSRS usa solo el primer repaso de cada tarjeta por día.
 3. Sin acceso automatizable a Reddit ni Glassdoor: las experiencias en español
    se recogen a mano y con el registro de entrevistas del usuario.
 4. Sin datos agregados de cómo son las entrevistas en España; hipótesis de
    formato clásico con retraso frente a EE. UU.
 5. Voz depende del navegador; Firefox sin soporte.
-6. Tipos de Supabase escritos a mano en cada `db.ts` (sin generar desde el
-   esquema). Cuando el esquema se estabilice, generar tipos con la CLI.
-7. La corrección no hace streaming: el usuario espera unos segundos con un
-   estado de carga. Añadir streaming si la espera molesta.
+6. Tipos de Supabase escritos a mano en cada `db.ts`. El comando está listo
+   (`pnpm tipos:supabase` escribe `src/lib/supabase/tipos.ts`), pero necesita
+   `npx supabase login` con la cuenta dueña del proyecto: la CLI de esta máquina
+   no tiene acceso (29-09-2026). Tras generarlo, pasar `<Database>` a los clientes
+   y borrar los tipos a mano.
+7. **Resuelto el 29-09-2026: la corrección llega en streaming.** La ruta responde
+   NDJSON (un evento por trozo de texto y uno final con la corrección validada);
+   los errores de antes de empezar siguen siendo JSON. Como el JSON sale en el
+   orden del schema, la nota llega en los primeros tokens: la pantalla enseña
+   "Nota provisional" y en qué parte va (`features/correccion/parcial.ts`).
+   Si el usuario se va a mitad, se aborta la llamada. Probado contra la API real.
 8. **Resuelto el 17-09-2026.** Las pantallas autenticadas ya se revisan contra
    un Supabase real: los proyectos `sesion` y `app` de Playwright entran con la
    cuenta de pruebas y dejan capturas en `capturas/app-*.png`. Queda pendiente
    hacerlo también en móvil y en tema oscuro.
-9. El modo kata usa el worker de Monaco para transpilar; si Monaco no carga
-   (sin red al CDN), el modo kata no funciona. Servirlo en local es una línea de
-   configuración del loader.
+9. **Resuelto con el punto 1.** El modo kata ya no depende del CDN de Monaco.
 
 ## Diseño y bucle de revisión (15-09-2026)
 

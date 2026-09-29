@@ -776,3 +776,37 @@ select:not(:disabled) {
     scroll-behavior: auto !important;
   }
 }
+
+@layer components {
+  /* Páginas legales: texto corrido, titulares con aire y enlaces que lo parecen */
+  .legal {
+    color: var(--tinta);
+    line-height: 1.65;
+  }
+  .legal h2 {
+    margin-top: 2.25rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-wrap: balance;
+  }
+  .legal p,
+  .legal ul {
+    margin-top: 0.75rem;
+    max-width: 65ch;
+  }
+  .legal ul {
+    list-style: disc;
+    padding-left: 1.25rem;
+  }
+  .legal li + li {
+    margin-top: 0.4rem;
+  }
+  .legal a {
+    color: var(--punto);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .legal a:hover {
+    color: var(--tinta);
+  }
+}

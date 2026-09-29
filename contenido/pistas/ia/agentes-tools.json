@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "ia-agentes-tools-01",
-      "version": 1,
+      "version": 2,
       "pista": "ia",
       "familia": "agentes-tools",
       "tipo": "definicion",
@@ -12,8 +12,8 @@
       "nivelMinimo": "junior",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Qué es un agente de IA en el contexto de desarrollo de software?",
-        "en": "What is an AI \"agent\" in the context of software development?"
+        "es": "Tu equipo duda entre un asistente que responde dudas del código y otro que arregla tests fallidos por su cuenta. ¿Qué es un agente de IA y qué lo diferencia del primero?",
+        "en": "Your team is choosing between an assistant that answers questions about the code and one that fixes failing tests on its own. What is an AI agent and what sets it apart from the first?"
       },
       "rubrica": {
         "junior": [
@@ -27,6 +27,29 @@
         ]
       },
       "respuestaModelo": "Un agente de IA es un sistema donde un LLM decide de forma iterativa qué acciones tomar, llamar una herramienta, leer el resultado, decidir el siguiente paso, para cumplir un objetivo, en vez de limitarse a dar una única respuesta a una única petición. En desarrollo de software esto se ve, por ejemplo, en un asistente que puede explorar un repositorio, ejecutar tests, leer el resultado de esos tests y ajustar el código en base a lo que encontró, todo dentro de la misma tarea sin que el humano tenga que dar una instrucción nueva en cada paso.",
+      "resumen": "Un sistema donde un LLM decide en bucle qué herramienta usar, lee el resultado y elige el siguiente paso hasta cumplir un objetivo, en vez de dar una única respuesta a una única petición.",
+      "test": {
+        "enunciado": "¿Qué distingue a un agente de IA de una llamada normal a un LLM?",
+        "correcta": 2,
+        "opciones": [
+          {
+            "texto": "Que usa un modelo más grande y más caro.",
+            "porque": "El tamaño del modelo no lo define: un agente puede usar un modelo pequeño. Lo que cambia es el bucle de decisiones."
+          },
+          {
+            "texto": "Que responde sin necesidad de un prompt.",
+            "porque": "Un agente también parte de un objetivo o una instrucción; no funciona sin nada que hacer."
+          },
+          {
+            "texto": "Que decide en bucle qué herramienta usar y qué hacer con cada resultado.",
+            "porque": "En vez de una única respuesta a una única petición, itera: por ejemplo, ejecuta los tests, lee el fallo y ajusta el código dentro de la misma tarea."
+          },
+          {
+            "texto": "Que está entrenado solo con código de repositorios públicos para programar mejor.",
+            "porque": "Los datos de entrenamiento no lo convierten en agente; cualquier LLM de chat puede actuar como agente si se le da el bucle y las herramientas."
+          }
+        ]
+      },
       "etiquetas": ["agentes", "fundamentos"],
       "fuentes": [
         {
@@ -41,7 +64,7 @@
     },
     {
       "id": "ia-agentes-tools-02",
-      "version": 1,
+      "version": 2,
       "pista": "ia",
       "familia": "agentes-tools",
       "tipo": "definicion",
@@ -49,8 +72,8 @@
       "nivelMinimo": "junior",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Qué es function calling o tool use y para qué sirve?",
-        "en": "What is function calling / tool use and what is it for?"
+        "es": "Quieres que el asistente de tu tienda diga el estado real de un pedido, que no estaba en sus datos de entrenamiento. ¿Qué es function calling (tool use) y cómo lo resuelve?",
+        "en": "You want your store's assistant to report the real status of an order, which was never in its training data. What is function calling (tool use) and how does it solve this?"
       },
       "rubrica": {
         "junior": [
@@ -64,6 +87,29 @@
         ]
       },
       "respuestaModelo": "Function calling, o tool use, es la capacidad del modelo de, en vez de solo generar texto libre, generar una petición estructurada con el nombre de una función y sus argumentos, para que la aplicación ejecute una acción real, por ejemplo llamar a una API externa o consultar una base de datos, y le devuelva el resultado. Con eso el modelo puede seguir razonando con información actualizada o específica que nunca vio durante su entrenamiento, como el estado actual de un pedido o el precio de una acción en tiempo real, en vez de tener que inventarlo.",
+      "resumen": "El modelo, en vez de solo texto, genera una llamada estructurada (función y argumentos); tu aplicación la ejecuta y le devuelve el resultado, así razona con datos actuales que no vio al entrenar.",
+      "test": {
+        "enunciado": "¿Qué hace el modelo cuando usa function calling (tool use)?",
+        "correcta": 0,
+        "opciones": [
+          {
+            "texto": "Propone una llamada estructurada (función y argumentos) y tu app la ejecuta.",
+            "porque": "El modelo no ejecuta nada: propone la llamada y tu aplicación la hace y le devuelve el resultado para que siga razonando."
+          },
+          {
+            "texto": "Ejecuta él mismo el código de la función en los servidores del proveedor.",
+            "porque": "La ejecución es cosa de tu aplicación; el modelo solo produce la petición estructurada."
+          },
+          {
+            "texto": "Reentrena sus pesos con los datos que devuelve la función.",
+            "porque": "No hay reentrenamiento: el resultado de la herramienta entra como contexto de la conversación y se olvida al terminar."
+          },
+          {
+            "texto": "Descarga la documentación de la API y la memoriza para usarla en llamadas futuras.",
+            "porque": "El modelo no guarda nada entre llamadas; lo que sabe de la herramienta es la descripción que le pasas en cada petición."
+          }
+        ]
+      },
       "etiquetas": ["agentes", "tool-use"],
       "fuentes": [
         {
@@ -100,6 +146,28 @@
         ]
       },
       "respuestaModelo": "En un agente ReAct el modelo razona sobre cuál es el siguiente paso más útil, elige y ejecuta una herramienta, y observa el resultado que le devuelve esa herramienta antes de decidir el siguiente movimiento. El ciclo razonar-actuar-observar se repite tantas veces como haga falta hasta que el modelo considera que ya tiene suficiente información para responder o completar la tarea. Es imprescindible poner un límite explícito, un número máximo de iteraciones o un timeout, porque sin él un agente puede quedarse repitiendo el mismo patrón indefinidamente si no encuentra una salida clara.",
+      "test": {
+        "enunciado": "En un agente tipo ReAct, ¿por qué hay que poner un límite de iteraciones o un timeout?",
+        "correcta": 3,
+        "opciones": [
+          {
+            "texto": "Porque el proveedor corta la conexión automáticamente a partir de diez llamadas seguidas.",
+            "porque": "No es un límite del proveedor; el problema es del propio bucle del agente."
+          },
+          {
+            "texto": "Porque cada iteración reentrena el modelo y lo vuelve más lento.",
+            "porque": "Las iteraciones no reentrenan nada; solo añaden pasos y contexto a la tarea."
+          },
+          {
+            "texto": "Porque el razonamiento solo funciona en la primera vuelta del bucle.",
+            "porque": "El ciclo razonar-actuar-observar sirve justo porque se repite; el riesgo es que se repita sin fin."
+          },
+          {
+            "texto": "Porque sin él puede quedarse repitiendo acciones sin avanzar y gastar sin control.",
+            "porque": "Un agente que no converge encadena llamadas y herramientas indefinidamente; el límite corta el bucle y el coste."
+          }
+        ]
+      },
       "etiquetas": ["agentes", "react"],
       "fuentes": [
         {
@@ -137,6 +205,7 @@
         ]
       },
       "respuestaModelo": "El riesgo principal es que el modelo tome acciones irreversibles basándose en una interpretación incorrecta del contexto, o incluso en instrucciones inyectadas dentro de algo que está procesando, como un fichero o un resultado de herramienta con texto malicioso. Se mitiga con el principio de menor privilegio, dando al agente solo el acceso estrictamente necesario, exigiendo confirmación humana explícita antes de cualquier acción destructiva o difícil de revertir, ejecutando el agente en un entorno aislado (sandboxing), y fijando límites explícitos de qué rutas, comandos o recursos puede tocar en vez de confiar solo en que el modelo se comporte bien por defecto.",
+      "resumen": "Que haga algo irreversible por malinterpretar el contexto o por instrucciones inyectadas. Se mitiga con menor privilegio, confirmación humana en lo destructivo y un entorno aislado.",
       "etiquetas": ["agentes", "seguridad"],
       "fuentes": [
         {
@@ -174,6 +243,28 @@
         ]
       },
       "respuestaModelo": "Un asistente tipo Copilot sugiere y el humano decide y aplica cada cambio de forma individual, así que el control queda en manos de la persona en todo momento. Un agente autónomo puede encadenar múltiples pasos, llamar varias herramientas seguidas, y ejecutar acciones sin que haya intervención humana en cada paso intermedio, lo que exige mucho más control y observabilidad, porque nadie está revisando cada decisión en el momento en que se toma. Copilot encaja bien para tareas cortas donde el humano quiere quedarse con el control fino; el agente autónomo encaja mejor para tareas largas y bien acotadas donde revisar cada paso sería demasiado lento.",
+      "test": {
+        "enunciado": "¿Qué diferencia principal hay entre un agente autónomo y un asistente tipo Copilot?",
+        "correcta": 1,
+        "opciones": [
+          {
+            "texto": "El agente siempre escribe mejor código que Copilot.",
+            "porque": "La calidad del código no es lo que los separa; depende del modelo, del contexto y de la tarea."
+          },
+          {
+            "texto": "En Copilot decides tú cada cambio; el agente encadena pasos sin que revises cada uno.",
+            "porque": "Por eso el agente exige más control y observabilidad: nadie está revisando cada decisión en el momento en que se toma."
+          },
+          {
+            "texto": "Copilot funciona sin conexión y el agente necesita internet.",
+            "porque": "Los dos suelen depender de un modelo remoto; la conexión no es la diferencia."
+          },
+          {
+            "texto": "El agente no usa ningún LLM: sigue reglas programadas a mano por el equipo que lo mantiene.",
+            "porque": "Un agente de IA se apoya en un LLM que decide los pasos; lo de reglas a mano sería un script clásico."
+          }
+        ]
+      },
       "etiquetas": ["agentes", "copilot"],
       "fuentes": [
         {
@@ -211,6 +302,7 @@
         ]
       },
       "respuestaModelo": "Lo primero es revisar los logs del razonamiento del agente y de las observaciones que recibió tras cada llamada: muchas veces la causa es que la herramienta devuelve un error poco claro y el modelo interpreta que vale la pena repetir la misma acción esperando un resultado distinto. Como salvaguarda estructural conviene añadir un límite duro de iteraciones que corte el bucle aunque el modelo no se dé cuenta por sí solo. Y como arreglo de fondo, mejorar el mensaje de error o el resultado que recibe la herramienta para que sea lo bastante informativo como para que el modelo pueda cambiar de estrategia en vez de repetir ciegamente.",
+      "resumen": "Mirar en los logs qué observó tras cada llamada: a menudo un error poco claro le invita a repetir. Poner un límite duro de iteraciones y, de fondo, mejorar el mensaje que devuelve la herramienta.",
       "etiquetas": ["agentes", "debugging"],
       "fuentes": [
         {

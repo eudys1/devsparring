@@ -28,6 +28,28 @@
         ]
       },
       "respuestaModelo": "Narrowing es cuando TypeScript reduce automáticamente un tipo unión a uno más específico dentro de una rama de código, basándose en una comprobación en tiempo de ejecución. Con `typeof valor === 'string'`, dentro del `if` TypeScript sabe que `valor` es `string`, sin necesitar un cast manual. Con `instanceof`, `if (error instanceof RangoInvalidoError)` estrecha el tipo dentro del bloque a esa clase concreta. Con un discriminated union como `{ kind: 'circulo', radio: number } | { kind: 'cuadrado', lado: number }`, un `switch (forma.kind)` estrecha el tipo en cada `case` según el valor literal de `kind`, permitiendo acceder a `radio` o `lado` sin comprobación adicional dentro de cada rama. En todos los casos, el análisis de flujo de TypeScript hace el trabajo automáticamente a partir de la comprobación en tiempo de ejecución.",
+      "test": {
+        "enunciado": "¿Qué es el narrowing en TypeScript?",
+        "correcta": 0,
+        "opciones": [
+          {
+            "texto": "Que TypeScript reduce un tipo unión a uno concreto tras una comprobación en el código.",
+            "porque": "Tras `typeof valor === 'string'`, dentro del `if` ya sabe que es `string`, sin cast."
+          },
+          {
+            "texto": "Convertir un valor de un tipo a otro en tiempo de ejecución, por ejemplo pasar un string a número con `Number()`.",
+            "porque": "Eso es una conversión; el narrowing no cambia el valor, solo lo que el compilador sabe de él."
+          },
+          {
+            "texto": "Reducir el tamaño del bundle quitando tipos que no se usan.",
+            "porque": "Los tipos ya desaparecen al compilar; el narrowing es análisis de tipos, no del bundle."
+          },
+          {
+            "texto": "Usar `as` para decirle al compilador de qué tipo es algo.",
+            "porque": "`as` es una aserción que tú impones; el narrowing lo deduce el compilador de una comprobación real."
+          }
+        ]
+      },
       "etiquetas": ["narrowing"],
       "fuentes": [
         {
@@ -121,6 +143,28 @@
         ]
       },
       "respuestaModelo": "`never` representa un valor que nunca puede ocurrir: el tipo de retorno de una función que nunca termina normalmente, porque siempre lanza una excepción o entra en un bucle infinito. `function fallar(msg: string): never { throw new Error(msg); }` tiene tipo de retorno `never` porque nunca llega a devolver nada. El otro uso clásico es en el `default` de un `switch` exhaustivo sobre un discriminated union: si se manejaron todos los casos posibles en los `case` anteriores, lo que llega al `default` debería tener tipo `never`, y pasarlo a una función `assertNever(valor: never)` hace que el compilador avise si en el futuro se añade una variante sin manejar. `never` es distinto de `void`: `void` significa \"la función retorna pero no devuelve nada útil\", mientras `never` significa \"la función no retorna en absoluto\".",
+      "test": {
+        "enunciado": "¿Qué tipo de retorno tiene una función que siempre lanza una excepción?",
+        "correcta": 3,
+        "opciones": [
+          {
+            "texto": "`void`",
+            "porque": "`void` es para funciones que terminan sin devolver nada útil; esta nunca termina con normalidad."
+          },
+          {
+            "texto": "`undefined`",
+            "porque": "Devolvería `undefined` si terminara; pero nunca llega a terminar."
+          },
+          {
+            "texto": "`any`",
+            "porque": "`any` apaga el chequeo; aquí hay un tipo exacto que dice que nunca se devuelve nada."
+          },
+          {
+            "texto": "`never`",
+            "porque": "Representa un valor que no puede ocurrir. También se usa en el `default` de un `switch` exhaustivo."
+          }
+        ]
+      },
       "etiquetas": ["narrowing"],
       "fuentes": [
         {

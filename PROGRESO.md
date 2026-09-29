@@ -5,56 +5,48 @@ Se actualiza al cerrar cada paso.
 
 ## Hecho el 29-09-2026
 
-Primer commit (`f2e232d`): rediseño "Cielo y noche con papel", palpa pública en
-verde, "¿Está mal? Avísalo", tope de espera a Supabase y latido.
+Commits de Eudys: `f2e232d` (rediseño, palpa, aviso de preguntas mal, latido),
+`cee8ca6` (Tipo test y primera tanda), `01db915` (rúbricas de kata, research,
+repaso relámpago).
 
-Segunda tanda (sin commit todavía: lo hace Eudys):
+Tercera tanda (sin commit todavía: lo hace Eudys). Detalle y porqués en
+`docs/decisiones.md`, sección "29-09-2026 (tarde)".
 
-- **Punto 2, palpa con sesión** sobre Hoy, Practicar, Temario, Cuenta y
-  Entrevistas, y capturas con sesión en escritorio y móvil, claro y oscuro
-  (`pnpm capturas:app`, script nuevo).
-- **Punto 3, lo que nunca se había usado entero:** la corrección con IA
-  responde y valida el esquema en Explicar, Kata, Revisión, Diseño y STAR
-  (probado contra la API con la clave del dueño). Los tests de kata se ejecutan
-  en el navegador y pintan esperado/recibido. Falta que Eudys pruebe el botón de
-  corregir con IA desde su cuenta, que usa la misma ruta.
-- Arreglos que salieron de ahí: la columna de criterios de las katas se quedaba
-  en 100 px; los avisos de tipos se cortaban; "Últimos asaltos" enseñaba las
-  comillas de código; las familias del temario salían sin tilde (ahora tienen
-  nombre en `nombres.ts` y un test obliga a dárselo a las nuevas); nombres de
-  navegación duplicados.
+- **Tipo test completo:** 178 preguntas con opciones (tandas de 36, 41 y 60).
+- **Resúmenes:** 90 preguntas de Explicar con `resumen` para el repaso relámpago.
+- **35 preguntas situadas** en vez de "¿Qué es X?", con la versión subida.
+- **Pista de IA:** familia "Programar con agentes", 8 preguntas **en borrador**.
+- **404 real, SEO y legal:** robots, sitemap, canonical, JSON-LD, imagen para
+  compartir, noindex tras la sesión, privacidad y aviso legal.
+- **Monaco en local** y **corrección en streaming** (deuda 1, 7 y 9).
+- **Catálogo de skills:** el paquete de vídeo duplicado sale a
+  `~/.claude/skills-archivo`.
+
+Verificación de esta tanda: `pnpm verify`, `pnpm test:e2e` (con sesión),
+`pnpm detector` y palpa. El resultado exacto va en el mensaje de cierre.
 
 ## Bloqueos (dependen de Eudys)
 
-- **Latido de Supabase:** la migración `20260929120000_latido.sql` no se aplicó
-  porque el proyecto seguía pausado al hacer push. Commit vacío para disparar la
-  integración, añadir los secretos `SUPABASE_URL` y `SUPABASE_PUBLISHABLE_KEY` y
-  relanzar el workflow.
+- **Revisar las 8 preguntas en borrador** de `contenido/pistas/ia/programar-con-agentes.json`
+  y pasar a `publicada` las que valgan.
+- **Aviso legal y privacidad:** el contacto es el canal de incidencias del
+  repositorio. Decidir si se pone un correo y el nombre completo
+  (`TITULAR` en `src/lib/sitio.ts`); para ejercer derechos de datos, un canal
+  público no es lo ideal.
+- **Supabase, URL de producción:** comprobar en el panel (Authentication → URL
+  Configuration) que el Site URL es `https://devsparring.vercel.app` y que
+  `https://devsparring.vercel.app/auth/confirmar` está en las redirecciones.
+  `supabase/config.toml` ya la lista, pero la integración de GitHub aplica
+  migraciones, no la configuración de auth.
+- **Tipos de Supabase:** `npx supabase login` con la cuenta dueña y luego
+  `pnpm tipos:supabase`. Después, pasar `<Database>` a los clientes y quitar
+  los tipos a mano.
+- **Borrar una cuenta:** la privacidad dice que se puede pedir y que se borra
+  todo (las tablas tienen `on delete cascade`), pero hoy se hace a mano desde el
+  panel de Supabase. Si se abre a más gente, merece un botón en Cuenta.
 
-## Pendiente de palpa (decidir con el despliegue)
+## Pendiente
 
-Vista previa social (og:title, og:image), 404 de verdad para rutas
-desconocidas (hoy el proxy redirige a /entrar), privacidad y aviso legal,
-robots.txt, sitemap, canonical y JSON-LD. Sospechoso sin confirmar: palpa con
-sesión vio un error al pulsar "Empezar"; a mano funciona. Probablemente palpa
-comparte el token de refresco entre pestañas y Supabase revoca la sesión.
-
-## Pendiente general (lista de Eudys, en orden)
-
-1. ~~Commitear~~ (Eudys, a cada tanda).
-2. ~~Palpa, axe y capturas con sesión~~ hecho.
-3. ~~Probar corrección con IA, kata, Revisión, Diseño y STAR~~ hecho salvo el
-   botón desde la cuenta de Eudys.
-4. ~~Botón "esta pregunta está mal"~~ hecho.
-5. ~~Landing que explique la app~~ hecho con "Cómo funciona".
-6. ~~Modo Tipo test~~ en marcha: código, esquema, tests de coherencia, demo y portada.
-   Primera tanda de 41 preguntas con opciones (junior y mid, siete pistas), para
-   revisar por PR. Quedan 137 candidatas para tandas siguientes (IA, Next.js,
-   DevOps, Arquitectura y el resto de JavaScript y Fundamentos).
-7. ~~Resumen de una frase y repaso relámpago~~ hecho (variante de Explicar).
-   Falta contenido: `resumen` escrito a mano en las ~90 preguntas de Explicar
-   cuya primera frase pasa de 240 caracteres (sobre todo las de razonamiento).
-8. ~~Research: pistas graduales, ronda sin tema, criterio de mentor, salvar la racha~~ hecho.
-9. Pista de IA 2026 y buenas prácticas de vibe coding.
-10. Sanear y ampliar el banco por PR. ~~Rúbricas de las 23 katas~~ hechas, con
-    test que lo vigila. Queda reescribir definiciones secas como situaciones reales.
+- Calibrar FSRS cuando haya unos 1000 repasos (`docs/arquitectura.md`, deuda 2).
+- Candidata a Tipo test propuesta y sin respuesta: `js-tipos-coercion-kata-suma`.
+- El barrido del lunes 5 de octubre abrirá su primera PR con las reglas nuevas.

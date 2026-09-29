@@ -28,6 +28,7 @@
         ]
       },
       "respuestaModelo": "El N+1 ocurre cuando traes N filas con una query y luego haces una query adicional por cada una para su relación, por ejemplo un `findMany` de posts seguido de un `findUnique` del autor dentro de un `.map()`: eso es 1 + N queries en vez de 1 o 2. Se detecta activando el logging de queries de Prisma (`log: ['query']`) en desarrollo y viendo docenas de `SELECT` idénticos repetidos en el log. Se arregla con `include`/`select` en la misma llamada a `findMany` (Prisma genera un JOIN o un batch automático), o explícitamente con `relationLoadStrategy: 'join'`; en casos más complejos con múltiples fuentes, un dataloader que agrupa las peticiones del mismo tick también resuelve el patrón.",
+      "resumen": "N+1 es una query para la lista y otra por cada fila para su relación. Se ve en el log de queries de Prisma y se arregla con `include`/`select` en la misma llamada.",
       "etiquetas": ["prisma", "orm", "n+1", "rendimiento"],
       "fuentes": [
         {
@@ -66,6 +67,7 @@
         ]
       },
       "respuestaModelo": "Prisma define el esquema en su propio DSL y genera un cliente TypeScript totalmente tipado a través de un motor intermedio; la experiencia de desarrollo es muy pulida pero añade una capa de 'magia' y algo de overhead, sobre todo notable en cold starts serverless. Drizzle es un query builder tipado sobre TypeScript, mucho más cercano al SQL real, sin motor Rust intermedio: da más control fino sobre la query exacta que se ejecuta y suele arrancar más rápido en entornos edge/serverless. Ninguno es objetivamente mejor; la decisión depende de si el equipo prefiere la DX guiada de Prisma o el control explícito de Drizzle.",
+      "resumen": "Prisma: esquema en su DSL y cliente generado muy pulido, con algo de magia y overhead en cold starts. Drizzle: query builder tipado, cercano al SQL, más control y arranque ligero. Depende del equipo.",
       "etiquetas": ["prisma", "drizzle", "orm"],
       "fuentes": [
         {
@@ -105,6 +107,7 @@
         ]
       },
       "respuestaModelo": "```ts\nconst posts = await prisma.post.findMany({\n  orderBy: { createdAt: 'desc' },\n  take: 20,\n  select: {\n    id: true,\n    title: true,\n    createdAt: true,\n    author: { select: { name: true } },\n  },\n});\n```\nUna sola llamada a `findMany` con `select` anidado trae los 20 posts y el nombre de su autor en una query (o dos, resueltas eficientemente por Prisma), en vez de un `findUnique` por post dentro de un `.map()`. Si hubiera N+1 se vería en el log como un `SELECT * FROM Post ...` seguido de 20 `SELECT * FROM User WHERE id = ...` casi idénticos. Para que el filtro por `authorId` sea rápido hace falta `@@index([authorId])` en el modelo `Post`, si no lo trae ya implícito la relación.",
+      "resumen": "Un solo `findMany` con `orderBy`, `take: 20` y `select` anidado del nombre del autor, en vez de un `findUnique` por post dentro de un `.map()`; y `@@index([authorId])` en `Post`.",
       "etiquetas": ["prisma", "orm", "n+1", "indices"],
       "fuentes": [
         {

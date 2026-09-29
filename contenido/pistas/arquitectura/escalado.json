@@ -28,6 +28,7 @@
         ]
       },
       "respuestaModelo": "El primer paso es hacer el servidor 'stateless': sacar la sesión y cualquier estado en memoria fuera del proceso (a Redis o a la base de datos) para poder levantar N réplicas idénticas detrás de un balanceador de carga sin que importe a cuál llegue cada request. Antes de simplemente añadir más réplicas conviene identificar el cuello de botella real con métricas: si el problema es CPU de la aplicación, replicar ayuda; si el problema es la base de datos, añadir más instancias del servidor solo traslada la saturación río abajo. Conviene explorar cache primero, un CDN para estáticos y Redis para queries calientes, porque suele ser más barato y rápido de implementar que escalar la base de datos, que es la pieza más cara y compleja de escalar horizontalmente.",
+      "resumen": "Primero, servidor stateless (sesión fuera del proceso) para poner N réplicas tras un balanceador; antes, medir el cuello de botella: si es la base de datos, replicar la API no sirve.",
       "etiquetas": ["arquitectura", "escalado", "stateless"],
       "fuentes": [
         {
@@ -65,6 +66,29 @@
         ]
       },
       "respuestaModelo": "Un CDN (Content Delivery Network) sirve contenido cacheado desde nodos geográficamente cerca del usuario, reduciendo la latencia frente a pedirlo siempre al servidor de origen; encaja de forma natural con estáticos (JS, CSS, imágenes) y páginas generadas estáticamente. El contenido personalizado por usuario, o muy sensible a estar siempre actualizado, como el saldo de una cuenta o cualquier dato privado, necesita reglas de cache muy cuidadosas o directamente no debería cachearse en el CDN: un error de configuración en la clave de cache (por ejemplo, no incluir el id de usuario o la cookie de sesión en esa clave) puede acabar sirviéndole a un usuario los datos cacheados de otro, un fallo de seguridad grave y difícil de detectar hasta que ya ha pasado.",
+      "resumen": "Un CDN sirve caché desde nodos cercanos al usuario: ideal para estáticos. Lo personalizado o privado (el saldo de una cuenta) no va ahí sin reglas muy cuidadas, o se sirve a quien no toca.",
+      "test": {
+        "enunciado": "¿Qué contenido no deberías poner detrás de un CDN sin reglas de caché muy cuidadas?",
+        "correcta": 0,
+        "opciones": [
+          {
+            "texto": "Datos personalizados por usuario, como el saldo de una cuenta.",
+            "porque": "Un error de configuración puede servir los datos privados de un usuario a otro, o datos viejos."
+          },
+          {
+            "texto": "Los ficheros JS y CSS de la aplicación con hash en el nombre.",
+            "porque": "Son el caso ideal: estáticos que no cambian, y el hash invalida la caché al cambiar."
+          },
+          {
+            "texto": "Las imágenes del catálogo que ven todos los usuarios por igual.",
+            "porque": "Es contenido público y estable: justo lo que un CDN sirve mejor desde cerca del usuario."
+          },
+          {
+            "texto": "Una landing generada de forma estática en el build.",
+            "porque": "Es la misma para todos y cambia poco; encaja de forma natural en un CDN."
+          }
+        ]
+      },
       "etiquetas": ["arquitectura", "cdn", "cache"],
       "fuentes": [
         {

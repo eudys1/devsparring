@@ -87,6 +87,28 @@
         ]
       },
       "respuestaModelo": "`WHERE` filtra filas individuales ANTES de que se agrupen, así que no puede usar funciones de agregación como `COUNT` o `SUM`. `HAVING` filtra los grupos DESPUÉS de calcular la agregación, por ejemplo `GROUP BY customer_id HAVING COUNT(*) > 5` para quedarte con clientes con más de 5 pedidos. Conviene usar `WHERE` para descartar filas cuanto antes (reduce el trabajo de agrupar) y reservar `HAVING` solo para condiciones que dependen del resultado agregado. Confundir los dos es un error clásico de sintaxis en entrevistas de nivel junior.",
+      "test": {
+        "enunciado": "¿Qué diferencia hay entre WHERE y HAVING en una consulta con GROUP BY?",
+        "correcta": 1,
+        "opciones": [
+          {
+            "texto": "HAVING es más rápido que WHERE porque usa los índices de la tabla.",
+            "porque": "No va de velocidad: HAVING trabaja sobre el resultado ya agregado, no sobre filas."
+          },
+          {
+            "texto": "WHERE filtra filas antes de agrupar; HAVING filtra los grupos después.",
+            "porque": "Por eso en HAVING puedes usar `COUNT()` o `SUM()` y en WHERE no."
+          },
+          {
+            "texto": "Son equivalentes; HAVING existe solo por compatibilidad con SQL antiguo.",
+            "porque": "No son intercambiables: en WHERE no puedes filtrar por `COUNT()` ni `SUM()`."
+          },
+          {
+            "texto": "WHERE solo admite columnas con índice.",
+            "porque": "WHERE filtra por cualquier columna; el índice solo cambia lo rápido que va."
+          }
+        ]
+      },
       "etiquetas": ["sql", "group-by"],
       "fuentes": [
         {
@@ -166,6 +188,7 @@
         ]
       },
       "respuestaModelo": "```sql\nSELECT\n  c.id,\n  c.name,\n  COALESCE(SUM(oi.quantity * oi.unit_price), 0) AS total_spent\nFROM customers c\nLEFT JOIN orders o\n  ON o.customer_id = c.id\n  AND o.status = 'completed'\n  AND o.created_at >= NOW() - INTERVAL '30 days'\nLEFT JOIN order_items oi ON oi.order_id = o.id\nGROUP BY c.id, c.name\nORDER BY total_spent DESC\nLIMIT 5;\n```\nLa clave es que el filtro de estado y fecha vive en la condición del `ON`, no en el `WHERE`: si se pusiera en `WHERE`, cualquier fila donde `o` es NULL (cliente sin pedidos en el periodo) se descartaría y el `LEFT JOIN` se comportaría como un `INNER JOIN`. Un índice compuesto `(customer_id, created_at)` o `(created_at, status)` en `orders` evita un escaneo completo cuando la tabla crece.",
+      "resumen": "`LEFT JOIN` de clientes a pedidos y líneas, `COALESCE(SUM(...), 0)`, agrupar, ordenar y `LIMIT 5`. La clave: el filtro de estado y fecha va en el `ON`; en el `WHERE` haría desaparecer a los que no tienen pedidos.",
       "etiquetas": ["sql", "joins", "agregacion"],
       "fuentes": [
         {

@@ -1,8 +1,9 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Marca } from '@/components/Marca';
 import { FormularioAcceso } from './FormularioAcceso';
 
-export const metadata = { title: 'Entrar' };
+export const metadata: Metadata = { title: 'Entrar', robots: { index: false, follow: true } };
 
 export default async function Entrar({
   searchParams,

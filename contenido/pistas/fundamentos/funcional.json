@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "fund-funcional-01",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "funcional",
       "tipo": "definicion",
@@ -12,8 +12,8 @@
       "nivelMinimo": "junior",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Qué es una función pura? ¿Por qué son más fáciles de testear?",
-        "en": "What is a pure function? Why are they easier to test?"
+        "es": "Una función que calcula precios da resultados distintos en los tests según la hora a la que se ejecutan. ¿Qué es una función pura? ¿Por qué son más fáciles de testear?",
+        "en": "A price-calculation function gives different results in tests depending on the time they run. What is a pure function? Why are they easier to test?"
       },
       "rubrica": {
         "junior": [
@@ -88,6 +88,28 @@
         ]
       },
       "respuestaModelo": "Trabajar de forma inmutable significa que, en vez de modificar un objeto existente, se crea uno nuevo con los cambios aplicados, dejando el original intacto. `Object.freeze` impide reasignar o borrar propiedades de primer nivel de un objeto, pero es superficial: si una propiedad es a su vez un objeto anidado, ese objeto interno sigue siendo mutable. Para trabajar de forma inmutable en la práctica se suelen usar copias con spread (`{...obj, campo: nuevo}`) o `structuredClone` para clones profundos, y en estructuras más complejas librerías como Immer. La inmutabilidad importa especialmente en UIs reactivas porque permite detectar cambios comparando referencias en vez de recorrer todo el objeto.",
+      "test": {
+        "enunciado": "¿Basta `Object.freeze` para que un objeto con objetos anidados sea inmutable?",
+        "correcta": 1,
+        "opciones": [
+          {
+            "texto": "Sí: congela el objeto y todo lo que contiene, a cualquier profundidad.",
+            "porque": "Es superficial: solo el primer nivel queda congelado. Los objetos anidados siguen siendo mutables."
+          },
+          {
+            "texto": "No: congela solo el primer nivel; lo anidado sigue siendo mutable.",
+            "porque": "Para inmutabilidad real se trabaja con copias (spread, `structuredClone`) o se congela en profundidad a propósito."
+          },
+          {
+            "texto": "Sí, pero solo si el objeto se declara con `const`.",
+            "porque": "`const` impide reasignar la variable, no mutar el objeto; y no cambia lo que hace `freeze`."
+          },
+          {
+            "texto": "No, porque `Object.freeze` solo funciona con arrays y nunca con objetos.",
+            "porque": "Funciona con cualquier objeto, arrays incluidos; su límite es la profundidad, no el tipo."
+          }
+        ]
+      },
       "etiquetas": ["funcional", "inmutabilidad"],
       "fuentes": [
         {

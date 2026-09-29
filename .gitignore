@@ -49,3 +49,6 @@ next-env.d.ts
 
 # generado por los tests (coherencia del banco), se regenera en cada pasada
 /contenido/COBERTURA.md
+
+# Monaco servido en local: lo copia scripts/copiar-monaco.mjs
+/public/monaco/

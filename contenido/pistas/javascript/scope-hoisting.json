@@ -28,6 +28,28 @@
         ]
       },
       "respuestaModelo": "`var` tiene scope de función (o global si está fuera de una), se puede redeclarar, y se hoistea inicializada a `undefined`. `let` y `const` tienen scope de bloque (`{}`), no se pueden redeclarar en el mismo scope, y aunque también se hoistean quedan en la Temporal Dead Zone hasta su línea de declaración. `const` además impide reasignar el binding tras la declaración, pero si el valor es un objeto o array, su contenido se puede seguir mutando (`const arr = []; arr.push(1)` es válido). El bug clásico de `var` es un bucle `for (var i...)` con un `setTimeout` dentro: todas las funciones ven el mismo `i` final, mientras que con `let` cada iteración tiene su propio enlace.",
+      "test": {
+        "enunciado": "¿Qué es cierto sobre `const arr = []`?",
+        "correcta": 1,
+        "opciones": [
+          {
+            "texto": "El array queda congelado: `arr.push(1)` lanza un error en tiempo de ejecución.",
+            "porque": "`const` protege la variable, no el contenido: `push` funciona sin error."
+          },
+          {
+            "texto": "No puedes reasignar `arr`, pero sí mutar su contenido con `push`.",
+            "porque": "`const` impide reasignar el binding; si el valor es un objeto o un array, se puede seguir mutando."
+          },
+          {
+            "texto": "Tiene scope de función, igual que `var`.",
+            "porque": "`const` y `let` tienen scope de bloque (`{}`)."
+          },
+          {
+            "texto": "Se puede redeclarar más abajo en el mismo bloque.",
+            "porque": "`const` y `let` no se pueden redeclarar en el mismo scope; `var` sí."
+          }
+        ]
+      },
       "etiquetas": ["scope"],
       "fuentes": [
         {
@@ -41,7 +63,7 @@
     },
     {
       "id": "js-scope-hoisting-02",
-      "version": 1,
+      "version": 2,
       "pista": "javascript",
       "familia": "scope-hoisting",
       "tipo": "definicion",
@@ -49,8 +71,8 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Qué es la \"Temporal Dead Zone\" (TDZ) en JavaScript?",
-        "en": "What is the \"Temporal Dead Zone\" (TDZ) in JavaScript?"
+        "es": "Un `console.log(x)` antes de `let x = 1` lanza un `ReferenceError`, pero con `var` imprime `undefined`. ¿Qué es la \"Temporal Dead Zone\" (TDZ) en JavaScript?",
+        "en": "A `console.log(x)` before `let x = 1` throws a `ReferenceError`, but with `var` it prints `undefined`. What is the \"Temporal Dead Zone\" (TDZ) in JavaScript?"
       },
       "rubrica": {
         "junior": [
@@ -64,6 +86,25 @@
         ]
       },
       "respuestaModelo": "La Temporal Dead Zone es el tramo entre el inicio del bloque donde se declara una variable con `let` o `const` y la línea donde realmente se declara. Durante ese tramo la variable ya está registrada en el scope (por eso se dice que se hoistea) pero no inicializada, así que acceder a ella lanza un `ReferenceError`, a diferencia de `var`, que en la misma situación devolvería `undefined` sin error. La TDZ existe para detectar antes errores donde se usa una variable antes de que su declaración tenga sentido, en vez de dejar pasar silenciosamente un `undefined`.",
+      "test": {
+        "enunciado": "¿Qué pasa si lees una variable `let` antes de su línea de declaración, en el mismo bloque?",
+        "correcta": 3,
+        "opciones": [
+          {
+            "texto": "Devuelve `undefined`, igual que con `var`.",
+            "porque": "Eso pasa con `var`; con `let` la variable está en la TDZ y la lectura falla."
+          },
+          { "texto": "Devuelve `null`.", "porque": "No devuelve ningún valor: lanza un error." },
+          {
+            "texto": "Busca la variable en el scope exterior.",
+            "porque": "La variable ya está registrada en este bloque, así que no sube al exterior: falla aquí."
+          },
+          {
+            "texto": "Lanza un `ReferenceError` por la Temporal Dead Zone.",
+            "porque": "Ya está registrada en el scope pero no inicializada; así se detectan antes estos errores."
+          }
+        ]
+      },
       "etiquetas": ["scope", "hoisting"],
       "fuentes": [
         {
@@ -102,6 +143,28 @@
         ]
       },
       "respuestaModelo": "El hoisting es que el motor de JavaScript registra las declaraciones (no las asignaciones) al principio de su scope antes de ejecutar el código línea a línea. Con `var`, acceder a la variable antes de su línea de asignación da `undefined`, no un error, porque la declaración se hoistea pero no el valor. Una función declarada con `function foo(){}` se hoistea completa, cuerpo incluido, así que se puede llamar antes de la línea donde aparece en el código. `let` y `const` también se hoistean en el sentido de que el motor sabe que existen, pero quedan en la Temporal Dead Zone y lanzan error si se accede antes de su declaración. Una función expresada (`const foo = function(){}`) sigue las reglas de `const`, no las de una función declarada: no se puede llamar antes de esa línea.",
+      "test": {
+        "enunciado": "¿Qué pasa si llamas a `foo()` antes de la línea `function foo() {}`?",
+        "correcta": 0,
+        "opciones": [
+          {
+            "texto": "Funciona: una función declarada se hoistea completa, con su cuerpo.",
+            "porque": "A diferencia de `var`, que se hoistea sin valor, y de `let`, que queda en la TDZ."
+          },
+          {
+            "texto": "Lanza un `ReferenceError`, como con `let`.",
+            "porque": "Las funciones declaradas se hoistean enteras; con `let` sí fallaría."
+          },
+          {
+            "texto": "`foo` vale `undefined` y lanza «foo is not a function».",
+            "porque": "Eso pasaría con `var foo = function() {}`, no con una función declarada."
+          },
+          {
+            "texto": "Depende del navegador.",
+            "porque": "Es comportamiento definido por el lenguaje, igual en todos los motores."
+          }
+        ]
+      },
       "etiquetas": ["scope", "hoisting"],
       "fuentes": [
         {
@@ -116,7 +179,7 @@
     },
     {
       "id": "js-scope-hoisting-04",
-      "version": 1,
+      "version": 2,
       "pista": "javascript",
       "familia": "scope-hoisting",
       "tipo": "definicion",
@@ -124,8 +187,8 @@
       "nivelMinimo": "junior",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Qué es el \"strict mode\" en JavaScript y qué errores comunes previene?",
-        "en": "What is \"strict mode\" in JavaScript and what common mistakes does it prevent?"
+        "es": "Heredas un script antiguo, sin módulos, que de vez en cuando crea variables globales por error. ¿Qué es el \"strict mode\" en JavaScript y qué errores comunes previene?",
+        "en": "You inherit an old script, without modules, that now and then creates global variables by mistake. What is \"strict mode\" in JavaScript and what common mistakes does it prevent?"
       },
       "rubrica": {
         "junior": [
@@ -140,6 +203,28 @@
         ]
       },
       "respuestaModelo": "El strict mode, activado con `\"use strict\"` al principio de un archivo o función, hace que JavaScript sea más estricto y detecte errores que en modo normal (sloppy mode) pasarían silenciosamente. El caso más citado es que asignar una variable sin declararla (`x = 5` sin `var`/`let`/`const`) lanza `ReferenceError` en vez de crear una variable global por accidente. También cambia que `this` sea `undefined` en una función normal llamada sin contexto, en vez de apuntar al objeto global. Los módulos ES (`import`/`export`) y el cuerpo de las clases usan strict mode automáticamente, sin necesidad de activarlo a mano.",
+      "test": {
+        "enunciado": "¿Qué cambia el strict mode al asignar `x = 5` sin declarar `x`?",
+        "correcta": 2,
+        "opciones": [
+          {
+            "texto": "Nada: crea una variable global igual que en modo normal.",
+            "porque": "Eso es lo que hace el modo normal; el strict mode lo prohíbe."
+          },
+          {
+            "texto": "Crea la variable, pero local a la función.",
+            "porque": "No crea ninguna: obliga a declararla."
+          },
+          {
+            "texto": "Lanza un `ReferenceError` en vez de crear una global por accidente.",
+            "porque": "Es el error más citado que previene. Los módulos ES ya son estrictos por defecto."
+          },
+          {
+            "texto": "La convierte automáticamente en una constante.",
+            "porque": "No declara nada por su cuenta; lanza un error."
+          }
+        ]
+      },
       "etiquetas": ["scope"],
       "fuentes": [
         {
@@ -175,6 +260,29 @@
         ]
       },
       "respuestaModelo": "Si dentro de una función se escribe `contador = 1` sin declarar `contador` con `var`, `let` o `const`, en modo normal (sloppy mode) JavaScript crea silenciosamente una variable global, lo que puede provocar que otra función que use el mismo nombre se pise sin que nadie lo note. En strict mode esa misma línea lanza un `ReferenceError` porque no se permite asignar a un identificador que no ha sido declarado, forzando a declarar explícitamente la variable. Por eso conviene activar strict mode (o directamente trabajar con módulos ES, que lo activan por defecto) para detectar este tipo de errores en el momento en que ocurren, no cuando ya causaron un bug difícil de rastrear.",
+      "resumen": "En modo normal, asignar sin declarar crea en silencio una variable global que otras funciones pueden pisar. En strict mode esa misma línea lanza un `ReferenceError`.",
+      "test": {
+        "enunciado": "Sin strict mode, ¿qué pasa si dentro de una función escribes `contador = 1` sin declararlo?",
+        "correcta": 1,
+        "opciones": [
+          {
+            "texto": "Lanza un `ReferenceError`.",
+            "porque": "Eso es lo que hace el strict mode; en modo normal no avisa."
+          },
+          {
+            "texto": "Se crea en silencio una variable global.",
+            "porque": "Otra función con el mismo nombre la puede pisar sin que nadie lo note."
+          },
+          {
+            "texto": "Se crea una variable local de la función.",
+            "porque": "No queda local: termina en el objeto global."
+          },
+          {
+            "texto": "Se ignora la línea.",
+            "porque": "No se ignora: crea la global, que es lo peligroso."
+          }
+        ]
+      },
       "etiquetas": ["scope"],
       "fuentes": [
         {

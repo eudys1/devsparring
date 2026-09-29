@@ -27,6 +27,29 @@
         ]
       },
       "respuestaModelo": "Tres causas comunes: listeners de eventos que se añaden pero nunca se remueven cuando el componente o elemento se destruye; temporizadores (`setInterval`) que siguen corriendo indefinidamente porque nadie llamó a `clearInterval`; y referencias a nodos DOM ya eliminados que se quedan guardadas en una variable global o capturadas por un closure, impidiendo que el recolector de basura los libere aunque ya no estén en la página. Una cuarta causa habitual son variables globales accidentales que acumulan datos sin límite. Para evitar retener referencias sin querer, `WeakMap` y `WeakRef` permiten asociar datos a un objeto sin impedir que el recolector de basura lo libere cuando ya no hay otras referencias fuertes.",
+      "resumen": "Listeners que nunca se quitan, `setInterval` sin `clearInterval` y referencias a nodos DOM ya eliminados guardadas en globales o closures, que impiden que el recolector los libere.",
+      "test": {
+        "enunciado": "¿Cuál de estas es una causa típica de fuga de memoria en el navegador?",
+        "correcta": 3,
+        "opciones": [
+          {
+            "texto": "Declarar demasiadas variables con `const` en una función.",
+            "porque": "Las variables locales se liberan al salir de la función si nada las retiene."
+          },
+          {
+            "texto": "Usar arrow functions en lugar de funciones normales.",
+            "porque": "El tipo de función no provoca fugas; lo hacen las referencias que se quedan vivas."
+          },
+          {
+            "texto": "Hacer demasiadas peticiones `fetch` seguidas sin esperar a que termine la anterior.",
+            "porque": "Muchas peticiones cuestan red, pero la memoria se libera cuando terminan si nada las retiene."
+          },
+          {
+            "texto": "Un `setInterval` que nadie cancela con `clearInterval` al destruir el componente.",
+            "porque": "Sigue corriendo y retiene todo lo que usa. También los listeners sin quitar y los nodos DOM eliminados guardados en variables."
+          }
+        ]
+      },
       "etiquetas": ["memoria"],
       "fuentes": [
         {
@@ -61,6 +84,29 @@
         ]
       },
       "respuestaModelo": "Un `WeakMap` es como un `Map` pero sus claves deben ser objetos, y esas claves se mantienen con una referencia débil: si no queda ninguna otra referencia fuerte al objeto usado como clave, el recolector de basura puede liberarlo igualmente, y su entrada desaparece del `WeakMap` sola. Un `Map` normal, en cambio, retiene sus claves para siempre mientras el `Map` exista, aunque nadie más las referencie, lo que puede causar una fuga de memoria si se usa para asociar datos a objetos que van y vienen. El caso de uso típico es guardar metadatos asociados a nodos DOM (por ejemplo, un caché de medidas): al usar `WeakMap`, cuando el nodo se elimina de la página y ya no hay otra referencia, tanto el nodo como su entrada en el `WeakMap` se liberan automáticamente, sin necesidad de limpiar manualmente.",
+      "resumen": "Un `WeakMap` solo admite objetos como clave y no los retiene: si nadie más los referencia, se liberan y su entrada desaparece. Útil para asociar datos a objetos sin alargar su vida.",
+      "test": {
+        "enunciado": "¿Por qué un `WeakMap` ayuda a evitar fugas de memoria que un `Map` causaría?",
+        "correcta": 1,
+        "opciones": [
+          {
+            "texto": "Porque borra sus entradas automáticamente cada pocos segundos.",
+            "porque": "No hay temporizador: la entrada se va cuando la clave ya no tiene otras referencias."
+          },
+          {
+            "texto": "Porque sus claves son referencias débiles: si nadie más usa el objeto, se libera.",
+            "porque": "Un `Map` retiene sus claves mientras exista, aunque nadie más las use."
+          },
+          {
+            "texto": "Porque guarda los valores comprimidos y ocupa menos memoria.",
+            "porque": "No comprime nada; la diferencia es cómo retiene las claves."
+          },
+          {
+            "texto": "Porque admite cualquier tipo de clave, incluidos strings y números, sin retenerlas.",
+            "porque": "Es al revés: solo admite objetos como clave, y por eso puede tratarlas como débiles."
+          }
+        ]
+      },
       "etiquetas": ["memoria"],
       "fuentes": [
         {

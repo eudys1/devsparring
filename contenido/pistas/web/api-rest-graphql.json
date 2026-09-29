@@ -26,6 +26,7 @@
         ]
       },
       "respuestaModelo": "GraphQL resuelve el over-fetching y el under-fetching típico de REST: el cliente pide exactamente los campos que necesita, incluso de datos anidados relacionados, en una sola petición, en vez de tener que hacer varias llamadas a distintos endpoints o recibir de vuelta campos que nunca usa. También evita tener que versionar el endpoint cada vez que cambia la forma de los datos, porque el cliente decide la forma de la respuesta en la propia query. A cambio introduce problemas nuevos: complica el cacheo HTTP estándar, porque casi todo va por POST a un único endpoint y las respuestas ya no se pueden cachear por URL como con GET en REST; abre el riesgo de queries muy costosas o anidadas sin límite si no se implementa un límite de complejidad de query; y mueve parte de la lógica de agregación al backend, donde resolver una query anidada de forma ingenua puede caer en el mismo problema N+1 que existe en cualquier ORM si no se usa batching (dataloaders).",
+      "resumen": "GraphQL resuelve el over-fetching y under-fetching de REST: el cliente pide justo los campos, en una sola petición. A cambio, complica el cacheo HTTP y abre la puerta a queries caras que hay que limitar.",
       "etiquetas": ["api-rest-graphql", "rest", "graphql"],
       "fuentes": [
         {

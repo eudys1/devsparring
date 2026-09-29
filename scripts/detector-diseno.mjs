@@ -12,7 +12,8 @@
 //
 // Ignora ficheros de test (*.test.*, *.spec.*): no son superficie de diseño.
 // Los colores literales solo se comprueban en src/components y src/app,
-// excepto globals.css, que es donde viven los tokens a propósito.
+// excepto globals.css, que es donde viven los tokens a propósito, y las imágenes
+// generadas con ImageResponse (opengraph-image, icon), que no admiten var(--...).
 
 import { readdir, readFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -88,6 +89,10 @@ function* coincidencias(regex, contenido) {
 
 function enScopeColor(rutaAbs) {
   if (path.basename(rutaAbs) === 'globals.css') return false;
+  // Las imágenes que Next genera con ImageResponse (Satori) se pintan fuera del
+  // DOM, sin variables CSS: ahí el color literal es la única forma de darlo.
+  if (/^(opengraph-image|twitter-image|icon|apple-icon)\.[tj]sx?$/.test(path.basename(rutaAbs)))
+    return false;
   const rel = path.relative(RAIZ, rutaAbs).replace(/\\/g, '/');
   return rel.startsWith('src/components/') || rel.startsWith('src/app/');
 }

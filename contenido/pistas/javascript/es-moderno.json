@@ -28,6 +28,28 @@
         ]
       },
       "respuestaModelo": "`?.` (optional chaining) accede a una propiedad, llama a un método, o indexa un array, devolviendo `undefined` en corto-circuito si el valor de la izquierda es `null` o `undefined`, en vez de lanzar `TypeError`. `??` (nullish coalescing) devuelve el operando derecho solo si el izquierdo es `null` o `undefined`, a diferencia de `||`, que cae al operando derecho ante cualquier valor falsy, incluidos `0`, `''` o `false`. El bug clásico es `cantidad || 10`: si `cantidad` vale `0` (un valor legítimo), la expresión da `10` en vez de `0`; `cantidad ?? 10` trata `0` como válido y solo cae al default si `cantidad` es `null` o `undefined`.",
+      "test": {
+        "enunciado": "Si `cantidad` vale `0`, ¿qué da `cantidad ?? 10`?",
+        "correcta": 0,
+        "opciones": [
+          {
+            "texto": "`0`",
+            "porque": "`??` solo usa el valor por defecto si el izquierdo es `null` o `undefined`; el `0` es un valor válido."
+          },
+          {
+            "texto": "`10`",
+            "porque": "Eso lo daría `cantidad || 10`, que cae al derecho ante cualquier valor falsy: el bug clásico."
+          },
+          {
+            "texto": "`undefined`",
+            "porque": "`??` devuelve uno de los dos operandos; aquí, el izquierdo, que vale `0`."
+          },
+          {
+            "texto": "Un `TypeError`",
+            "porque": "No lanza nada: es un operador normal con cualquier valor."
+          }
+        ]
+      },
       "etiquetas": ["es-moderno"],
       "fuentes": [
         {
@@ -65,6 +87,28 @@
         ]
       },
       "respuestaModelo": "Optional chaining (`?.`) y nullish coalescing (`??`), de ES2020, para acceder a propiedades anidadas de forma segura y dar valores por defecto sin el bug de `||` con `0`. `Promise.allSettled`, también de ES2020, para esperar varias promesas sin que el fallo de una cancele el resultado de las demás. Y top-level `await` en módulos ES (ES2022), que permite usar `await` fuera de una función `async` a nivel de módulo, útil para inicializar configuración asíncrona al cargar un módulo. `structuredClone` como API global (no parte del estándar ECMAScript en sí, pero disponible en navegadores y Node modernos) también se usa mucho para clones profundos sin librerías.",
+      "test": {
+        "enunciado": "¿Qué permite el `await` de nivel superior (top-level await, ES2022)?",
+        "correcta": 2,
+        "opciones": [
+          {
+            "texto": "Usar `await` dentro de cualquier función, aunque no sea `async`.",
+            "porque": "Dentro de funciones sigue haciendo falta `async`; lo nuevo es el nivel superior del módulo."
+          },
+          {
+            "texto": "Convertir un script clásico en síncrono.",
+            "porque": "No convierte nada en síncrono; espera una promesa al cargar el módulo."
+          },
+          {
+            "texto": "Usar `await` fuera de funciones, en el nivel superior de un módulo ES.",
+            "porque": "Útil para inicializar configuración asíncrona al cargar un módulo."
+          },
+          {
+            "texto": "Esperar a varias promesas a la vez sin `Promise.all`.",
+            "porque": "Para eso siguen `Promise.all` o `allSettled`; top-level await no lo cambia."
+          }
+        ]
+      },
       "etiquetas": ["es-moderno"],
       "fuentes": [
         {
@@ -303,7 +347,7 @@
     },
     {
       "id": "js-es-moderno-03",
-      "version": 1,
+      "version": 2,
       "pista": "javascript",
       "familia": "es-moderno",
       "tipo": "definicion",
@@ -311,8 +355,8 @@
       "nivelMinimo": "senior",
       "frecuencia": "baja",
       "texto": {
-        "es": "¿Qué es un `Proxy` en JavaScript? Da un ejemplo simple de interceptar el acceso a una propiedad de un objeto.",
-        "en": "What is a `Proxy` in JavaScript? Give a simple example of intercepting property access on an object."
+        "es": "Quieres registrar en consola cada propiedad que tu app lee de un objeto de configuración, para saber cuáles se usan de verdad. ¿Qué es un `Proxy` en JavaScript y cómo interceptarías ese acceso?",
+        "en": "You want to log every property your app reads from a configuration object, to find out which ones are really used. What is a `Proxy` in JavaScript and how would you intercept that access?"
       },
       "rubrica": {
         "junior": [
@@ -326,6 +370,28 @@
         ]
       },
       "respuestaModelo": "Un `Proxy` envuelve un objeto y permite interceptar operaciones fundamentales sobre él (leer una propiedad, asignarla, comprobar si existe, etc.) mediante \"traps\". Por ejemplo, `new Proxy(objetivo, { get(obj, prop) { console.log('leyendo', prop); return Reflect.get(obj, prop); } })` intercepta cualquier lectura de propiedad, la loguea, y delega el comportamiento real a `Reflect.get`, que hace lo que haría el acceso normal. `Reflect` se usa junto a `Proxy` precisamente para no reimplementar a mano el comportamiento por defecto dentro de cada trap. Un caso de uso real es validar automáticamente que solo se asignen valores de un tipo esperado a un objeto, o construir un ORM ligero donde acceder a una propiedad dispara una consulta a base de datos de forma transparente.",
+      "test": {
+        "enunciado": "En un `Proxy` con una trampa `get`, ¿para qué se usa `Reflect.get`?",
+        "correcta": 1,
+        "opciones": [
+          {
+            "texto": "Para impedir que se lea la propiedad.",
+            "porque": "Hace justo lo contrario: realiza la lectura normal."
+          },
+          {
+            "texto": "Para delegar en el comportamiento normal sin reimplementarlo a mano.",
+            "porque": "La trampa hace lo suyo (loguear, validar) y `Reflect.get` hace lo que haría el acceso normal."
+          },
+          {
+            "texto": "Para copiar el objeto antes de leerlo, así el original nunca se toca.",
+            "porque": "No copia nada; ejecuta la operación estándar sobre el objeto objetivo."
+          },
+          {
+            "texto": "Para convertir la propiedad a string antes de devolverla.",
+            "porque": "Devuelve el valor tal cual; no hace conversiones."
+          }
+        ]
+      },
       "etiquetas": ["es-moderno"],
       "fuentes": [
         {

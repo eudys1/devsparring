@@ -157,6 +157,7 @@
         ]
       },
       "respuestaModelo": "El compilador de TypeScript (`tsc`, o herramientas más rápidas como esbuild o SWC que reimplementan la transpilación) convierte los archivos `.ts` en `.js` quitando las anotaciones de tipo y transformando sintaxis que el entorno objetivo no soporte. El `target` en `tsconfig.json` decide a qué versión de ECMAScript se transpila la sintaxis moderna: con `target: 'ES2015'`, una arrow function o una clase se convierten en su equivalente con funciones tradicionales para navegadores antiguos; con un `target` más moderno como `ES2020`, se preserva más sintaxis nativa, generando código más compacto pero menos compatible con entornos viejos. Herramientas como esbuild o SWC hacen esta transpilación mucho más rápido que `tsc`, pero no comprueban tipos: por eso en un pipeline moderno suele haber un paso separado de `tsc --noEmit` solo para el chequeo de tipos, y esbuild/SWC solo para generar el JavaScript final.",
+      "resumen": "`tsc`, esbuild o SWC quitan los tipos y transforman la sintaxis que el entorno no soporte. `target` decide a qué versión de ECMAScript se baja: con uno antiguo, arrows y clases se reescriben.",
       "test": {
         "enunciado": "¿Qué decide el `target` de `tsconfig.json`?",
         "correcta": 2,

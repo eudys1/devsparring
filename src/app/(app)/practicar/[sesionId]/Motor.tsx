@@ -15,6 +15,7 @@ import { Ficha, Peso } from '@/components/ui/Dato';
 import { enLinea, Markdown } from '@/components/ui/Markdown';
 import { pedirCorreccion } from '@/features/correccion/cliente';
 import type { Correccion } from '@/features/correccion/esquema-salida';
+import { ETIQUETA_TRAMO, type Avance } from '@/features/correccion/parcial';
 import { promptParaCopiar } from '@/features/correccion/prompt';
 import { Scorecard } from '@/features/correccion/Scorecard';
 import { leerClave, leerModelo } from '@/features/cuenta/clave';
@@ -71,6 +72,8 @@ export function Motor({
   const [tests, setTests] = useState<ResultadoEjecucion | null>(null);
   const [nota, setNota] = useState<Nota | null>(null);
   const [error, setError] = useState<string | null>(null);
+  // Lo que se sabe de la corrección mientras llega: la nota sale antes que el resto.
+  const [avance, setAvance] = useState<Avance | null>(null);
   const [copiado, setCopiado] = useState(false);
   // Autoevaluación sin IA: marcar qué criterios de la rúbrica has cubierto.
   const [cubiertos, setCubiertos] = useState<number[]>([]);
@@ -111,16 +114,21 @@ export function Motor({
     if (!respuesta.trim() && !esKata) return setError('Escribe algo antes de corregir.');
     setError(null);
     setFase('corrigiendo');
-    const r = await pedirCorreccion({
-      preguntaId: pregunta.id,
-      modo: sesion.modo,
-      nivel: sesion.nivel,
-      idioma: sesion.idioma,
-      respuesta,
-      resultadoTests: tests ? textoResultado(tests) : undefined,
-      modelo: leerModelo(),
-      apiKey: leerClave() ?? undefined,
-    });
+    setAvance(null);
+    const r = await pedirCorreccion(
+      {
+        preguntaId: pregunta.id,
+        modo: sesion.modo,
+        nivel: sesion.nivel,
+        idioma: sesion.idioma,
+        respuesta,
+        resultadoTests: tests ? textoResultado(tests) : undefined,
+        modelo: leerModelo(),
+        apiKey: leerClave() ?? undefined,
+      },
+      setAvance,
+    );
+    setAvance(null);
     if (!r.ok) {
       setError(r.mensaje);
       setFase('respondiendo');
@@ -577,6 +585,20 @@ export function Motor({
                 <Boton variante="sutil" onClick={autoevaluar}>
                   Sin IA
                 </Boton>
+              ) : null}
+              {fase === 'corrigiendo' ? (
+                <p
+                  className="w-full text-[0.875rem] text-tinta-2"
+                  aria-live="polite"
+                  data-prueba="avance-correccion"
+                >
+                  {avance?.puntuacion !== undefined ? (
+                    <strong className="tabular-nums text-tinta">
+                      Nota provisional {avance.puntuacion}/10 ·{' '}
+                    </strong>
+                  ) : null}
+                  {ETIQUETA_TRAMO[avance?.tramo ?? 'empezando']}…
+                </p>
               ) : null}
             </div>
           ) : null}

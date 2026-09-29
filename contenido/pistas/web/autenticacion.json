@@ -27,6 +27,7 @@
         ]
       },
       "respuestaModelo": "Una sesión guardada en el servidor (por ejemplo en Redis) es fácil de revocar al instante: basta con borrar esa entrada y el usuario queda deslogueado en la siguiente petición, pero requiere un almacenamiento compartido si hay varios servidores detrás de un balanceador. Un JWT es autocontenido y sin estado: el propio token lleva la información firmada, lo que facilita escalar horizontalmente y encaja bien en arquitecturas de microservicios donde no todos los servicios comparten la misma base de sesiones, pero a cambio es difícil de revocar antes de que expire sin mantener una lista negra, lo que reintroduce parte del estado que se quería evitar. En ambos casos, el token o el identificador de sesión debe viajar en una cookie `httpOnly`, `Secure` y con `SameSite` configurado, nunca en `localStorage`, porque una cookie `httpOnly` no es accesible desde JavaScript y reduce el impacto de un XSS.",
+      "resumen": "Sesión en servidor: fácil de revocar al momento, pero necesita un almacén compartido. JWT: sin estado y fácil de escalar, pero difícil de revocar antes de que caduque. Los dos, en cookie `httpOnly`.",
       "etiquetas": ["autenticacion", "jwt", "sesiones"],
       "fuentes": [
         {
@@ -41,7 +42,7 @@
     },
     {
       "id": "web-autenticacion-02",
-      "version": 1,
+      "version": 2,
       "pista": "web",
       "familia": "autenticacion",
       "tipo": "definicion",
@@ -49,8 +50,8 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Qué es OAuth 2.0 y qué diferencia hay entre autenticación y autorización?",
-        "en": "What is OAuth 2.0 and what's the difference between authentication and authorization?"
+        "es": "Tu app ofrece \"Entrar con Google\" y además distingue usuarios normales de administradores. ¿Qué es OAuth 2.0 y qué diferencia hay entre autenticación y autorización?",
+        "en": "Your app offers \"Sign in with Google\" and also tells regular users apart from admins. What is OAuth 2.0 and what is the difference between authentication and authorization?"
       },
       "rubrica": {
         "junior": [

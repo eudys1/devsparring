@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "ts-clases-01",
-      "version": 1,
+      "version": 2,
       "pista": "typescript",
       "familia": "clases",
       "tipo": "definicion",
@@ -12,8 +12,8 @@
       "nivelMinimo": "junior",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Qué hacen los modificadores `public`, `private` y `protected` en una clase de TypeScript?",
-        "en": "What do the `public`, `private` and `protected` modifiers do in a TypeScript class?"
+        "es": "Un compañero marca un campo como `private` y aun así lo ve con `console.log` en el navegador. ¿Qué hacen de verdad los modificadores `public`, `private` y `protected` en una clase de TypeScript?",
+        "en": "A teammate marks a field `private` and still sees it with `console.log` in the browser. What do the `public`, `private` and `protected` modifiers really do in a TypeScript class?"
       },
       "rubrica": {
         "junior": [
@@ -121,7 +121,7 @@
     },
     {
       "id": "ts-clases-03",
-      "version": 1,
+      "version": 2,
       "pista": "typescript",
       "familia": "clases",
       "tipo": "definicion",
@@ -129,8 +129,8 @@
       "nivelMinimo": "mid",
       "frecuencia": "baja",
       "texto": {
-        "es": "¿Qué es una clase abstracta en TypeScript y para qué sirve frente a una interfaz?",
-        "en": "What is an abstract class in TypeScript, and what is it useful for compared to an interface?"
+        "es": "Tienes varios exportadores (CSV, PDF) que comparten la mitad del código y solo difieren en un paso. ¿Qué es una clase abstracta en TypeScript y para qué sirve frente a una interfaz?",
+        "en": "You have several exporters (CSV, PDF) that share half their code and differ in only one step. What is an abstract class in TypeScript and what is it useful for compared to an interface?"
       },
       "rubrica": {
         "junior": ["Explica que una clase abstracta no se puede instanciar directamente"],

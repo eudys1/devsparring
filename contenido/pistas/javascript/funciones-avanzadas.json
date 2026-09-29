@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "js-funciones-avanzadas-01",
-      "version": 1,
+      "version": 2,
       "pista": "javascript",
       "familia": "funciones-avanzadas",
       "tipo": "definicion",
@@ -12,8 +12,8 @@
       "nivelMinimo": "junior",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Qué es una \"first class function\" y qué es una \"higher order function\"? Da un ejemplo de cada una.",
-        "en": "What is a \"first class function\" and what is a \"higher order function\"? Give an example of each."
+        "es": "En una revisión alguien dice que `pedidos.map(formatear)` funciona \"porque las funciones son de primera clase\". ¿Qué es una \"first class function\" y qué es una \"higher order function\"? Da un ejemplo de cada una.",
+        "en": "In a review someone says `orders.map(format)` works \"because functions are first-class\". What is a \"first class function\" and what is a \"higher order function\"? Give an example of each."
       },
       "rubrica": {
         "junior": [
@@ -28,6 +28,28 @@
         ]
       },
       "respuestaModelo": "Que JavaScript tenga \"first class functions\" significa que las funciones se tratan como cualquier otro valor: se pueden guardar en una variable, pasar como argumento, devolver desde otra función, o meter en un array. Una \"higher order function\" es una función que recibe una o más funciones como argumento, devuelve una función, o ambas cosas; `Array.prototype.map` es el ejemplo más común, porque recibe una función callback como argumento. Un ejemplo propio de higher order que además ilustra devolver una función es `crearMultiplicador(factor)`, que devuelve una nueva función `x => x * factor`. Las higher order functions solo son posibles porque el lenguaje trata las funciones como first class: sin eso no se podrían pasar como argumento en primer lugar.",
+      "test": {
+        "enunciado": "¿Qué es una higher order function?",
+        "correcta": 0,
+        "opciones": [
+          {
+            "texto": "Una función que recibe funciones como argumento, devuelve una función, o ambas.",
+            "porque": "`Array.prototype.map` es el ejemplo típico: recibe un callback."
+          },
+          {
+            "texto": "Una función que se ejecuta con más prioridad que las demás.",
+            "porque": "No tiene nada que ver con la prioridad; va de trabajar con funciones como valores."
+          },
+          {
+            "texto": "Una función declarada en el nivel superior del módulo, fuera de clases.",
+            "porque": "Dónde se declara no importa; lo que la define es que recibe o devuelve funciones."
+          },
+          {
+            "texto": "Una función que llama a otras funciones dentro de su cuerpo para repartir el trabajo.",
+            "porque": "Llamar a otras funciones lo hace casi cualquier función; hay que recibirlas o devolverlas."
+          }
+        ]
+      },
       "etiquetas": ["funciones"],
       "fuentes": [
         {

@@ -1,0 +1,459 @@
+{
+  "pista": "ia",
+  "familia": "programar-con-agentes",
+  "preguntas": [
+    {
+      "id": "ia-programar-con-agentes-01",
+      "version": 1,
+      "pista": "ia",
+      "familia": "programar-con-agentes",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Un compañero dice que hace \"vibe coding\" en el repo de producción: acepta todo lo que propone el agente sin leer los diffs. ¿Qué es el vibe coding y dónde pondrías el límite?",
+        "en": "A teammate says they \"vibe code\" in the production repo: they accept everything the agent proposes without reading the diffs. What is vibe coding and where would you draw the line?"
+      },
+      "rubrica": {
+        "junior": [
+          "Define vibe coding como generar código con IA sin leerlo ni entenderlo, aceptando los cambios y pegando los errores de vuelta",
+          "Distingue un prototipo desechable de código que va a producción"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Sitúa el origen del término (Karpathy, febrero de 2025) y que él mismo lo planteó para proyectos de fin de semana",
+          "Propone el límite concreto: en producción, cada diff se lee, se prueba y alguien responde de él",
+          "Menciona que la alternativa no es dejar la IA, sino usarla con verificación (tests, revisión, plan)"
+        ]
+      },
+      "respuestaModelo": "Vibe coding es programar con un modelo de IA sin leer ni entender el código que genera: aceptas todos los cambios, pegas los errores de vuelta sin comentarios y juzgas solo si \"parece que funciona\". El término lo acuñó Andrej Karpathy el 2 de febrero de 2025, y él mismo lo presentó como algo para proyectos de fin de semana, no para software del que alguien depende. El límite lo pondría en qué pasa si falla: para un prototipo desechable o una prueba de concepto es una forma legítima de explorar rápido; en el repo de producción no, porque nadie puede responder de un código que nadie ha leído. Ahí cada diff se lee, pasa tests y revisión, y quien lo mergea es responsable de él igual que si lo hubiera escrito. La alternativa no es dejar de usar el agente, sino usarlo con red: plan antes de tocar código, cambios pequeños y una comprobación que el propio agente pueda ejecutar.",
+      "resumen": "Programar con IA sin leer ni entender el código, aceptando todo. Vale para prototipos desechables; en producción cada diff se lee, se prueba y alguien responde de él.",
+      "test": {
+        "enunciado": "¿Qué describe mejor el \"vibe coding\" tal como lo acuñó Karpathy en 2025?",
+        "opciones": [
+          {
+            "texto": "Programar con buena música y sin reuniones, en estado de flujo.",
+            "porque": "Suena al nombre, pero el término habla de cómo se trata el código generado por IA, no del ambiente."
+          },
+          {
+            "texto": "Usar un agente con plan, tests y revisión de cada diff antes de mergear.",
+            "porque": "Eso es justo lo contrario: programar con IA de forma disciplinada, lo que se recomienda para producción."
+          },
+          {
+            "texto": "Aceptar lo que genera la IA sin leer el código y pegarle los errores de vuelta.",
+            "porque": "Es la definición original: \"olvidar que el código existe\". Útil para prototipos, peligroso en producción."
+          },
+          {
+            "texto": "Escribir el código a mano y pedir a la IA solo que lo documente y lo comente.",
+            "porque": "Aquí el humano escribe y entiende todo el código; el vibe coding va justo en la dirección opuesta."
+          }
+        ],
+        "correcta": 2
+      },
+      "etiquetas": ["vibe coding", "agentes", "revisión"],
+      "fuentes": [
+        {
+          "url": "https://x.com/karpathy/status/1886192184808149383",
+          "fecha": "2026-09-29",
+          "tipo": "resumen",
+          "nota": "Tuit original del 02-02-2025 que acuña el término."
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/Vibe_coding",
+          "fecha": "2026-09-29",
+          "tipo": "resumen"
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "borrador"
+    },
+    {
+      "id": "ia-programar-con-agentes-02",
+      "version": 1,
+      "pista": "ia",
+      "familia": "programar-con-agentes",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Vas a pedirle a un agente de código que añada \"Entrar con Google\" a una app que no conoces bien. ¿Cómo organizas el trabajo para que no resuelva el problema equivocado?",
+        "en": "You are about to ask a coding agent to add \"Sign in with Google\" to an app you don't know well. How do you structure the work so it doesn't solve the wrong problem?"
+      },
+      "rubrica": {
+        "junior": [
+          "Separa explorar y planificar de implementar, en vez de pedir el código directamente",
+          "Pide tests o una comprobación que el agente pueda ejecutar"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Revisa y corrige el plan antes de que se escriba código (ficheros afectados, flujo de sesión, secretos)",
+          "Pide una spec con lo que queda fuera de alcance y una verificación de extremo a extremo",
+          "Hace commits en puntos lógicos para poder revertir, y reconoce que para un cambio de una línea el plan sobra"
+        ]
+      },
+      "respuestaModelo": "Separaría el trabajo en cuatro fases. Primero explorar sin tocar nada: que el agente lea cómo se gestionan hoy la sesión, el login y los secretos. Segundo, planificar: que proponga qué ficheros cambian, cómo queda el flujo de sesión y qué variables de entorno hacen falta; ese plan lo leo y lo corrijo antes de que exista una línea de código, porque ahí es barato cambiar de idea. Para una feature así también le pediría una spec corta con lo que queda fuera de alcance y un paso final de verificación de extremo a extremo. Tercero, implementar contra el plan, con tests del callback de OAuth que el agente ejecute y arregle hasta que pasen, enseñándome la salida en vez de decirme que funciona. Cuarto, commits en puntos lógicos para que revertir sea trivial. El plan tiene coste: si el cambio se describe en una frase (renombrar una variable, un log), se lo pido directamente.",
+      "etiquetas": ["agentes", "planificación", "flujo de trabajo"],
+      "fuentes": [
+        {
+          "url": "https://code.claude.com/docs/en/best-practices",
+          "fecha": "2026-09-29",
+          "tipo": "leida",
+          "nota": "Explore, plan, implement, commit; spec con fuera de alcance y verificación final."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "borrador"
+    },
+    {
+      "id": "ia-programar-con-agentes-03",
+      "version": 1,
+      "pista": "ia",
+      "familia": "programar-con-agentes",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Un agente te entrega código que parece terminado, pero falla en casos límite y tú acabas siendo quien encuentra cada error. ¿Qué le darías para que cierre el bucle solo?",
+        "en": "An agent hands you code that looks finished, but it fails on edge cases and you end up being the one who finds every bug. What would you give it so it can close the loop on its own?"
+      },
+      "rubrica": {
+        "junior": [
+          "Propone darle una comprobación que devuelva pasa o falla: tests, build, linter",
+          "Explica que sin ella el agente para cuando el trabajo \"parece hecho\""
+        ],
+        "senior": [
+          "Lo anterior",
+          "Da ejemplos concretos de casos en el propio prompt y pide ejecutar e iterar",
+          "Pide evidencia (salida de los tests, comando ejecutado, captura) en vez de una afirmación de éxito",
+          "Menciona una segunda revisión con contexto limpio para que quien hace el trabajo no sea quien lo corrige"
+        ]
+      },
+      "respuestaModelo": "Le daría una comprobación que pueda ejecutar y que devuelva pasa o falla: una suite de tests, el código de salida del build, el linter o una captura para comparar con el diseño. Sin eso, la única señal que tiene es que el trabajo \"parece hecho\", así que para ahí y yo me convierto en el bucle de verificación. Con la comprobación, el agente trabaja, la ejecuta, lee el resultado e itera hasta que pasa. En el propio prompt pondría casos concretos, incluidos los límite, y le pediría que me enseñe la evidencia (la salida de los tests, el comando que ejecutó) en vez de decirme que funciona: revisar evidencia es más rápido que repetir la verificación. Para trabajos largos añadiría una revisión con contexto limpio, por ejemplo un subagente que solo ve el diff y los criterios, porque quien hizo el trabajo tiende a darlo por bueno.",
+      "resumen": "Una comprobación que pueda ejecutar (tests, build, linter, captura). Sin ella para cuando parece hecho; con ella itera hasta que pasa. Y que enseñe la evidencia, no que la afirme.",
+      "test": {
+        "opciones": [
+          {
+            "texto": "Una comprobación que pueda ejecutar: tests, build o linter que digan pasa o falla.",
+            "porque": "Cierra el bucle: el agente ejecuta, lee el resultado e itera hasta que pasa, sin esperar a que tú encuentres el error."
+          },
+          {
+            "texto": "Un prompt más largo que le pida con insistencia que no cometa errores esta vez.",
+            "porque": "Pedirlo no le da ninguna señal nueva: sigue sin forma de saber si el código funciona."
+          },
+          {
+            "texto": "Un modelo más grande, que ya no se equivoca en los casos límite.",
+            "porque": "Un modelo mejor falla menos, pero sin comprobación sigue parando cuando el trabajo solo parece hecho."
+          },
+          {
+            "texto": "Más temperatura, para que explore más soluciones distintas.",
+            "porque": "Más variedad no aporta verificación; puede incluso producir código menos predecible."
+          }
+        ],
+        "correcta": 0
+      },
+      "etiquetas": ["agentes", "tests", "verificación"],
+      "fuentes": [
+        {
+          "url": "https://code.claude.com/docs/en/best-practices",
+          "fecha": "2026-09-29",
+          "tipo": "leida",
+          "nota": "Sección \"Give Claude a way to verify its work\"."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "borrador"
+    },
+    {
+      "id": "ia-programar-con-agentes-04",
+      "version": 1,
+      "pista": "ia",
+      "familia": "programar-con-agentes",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "El fichero de instrucciones del agente de tu repo (CLAUDE.md o AGENTS.md) tiene 600 líneas y el agente ignora justo las reglas importantes. ¿Qué pondrías en ese fichero y qué sacarías?",
+        "en": "Your repo's agent instructions file (CLAUDE.md or AGENTS.md) is 600 lines long and the agent ignores exactly the rules that matter. What belongs in that file and what would you take out?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que el fichero se carga en cada sesión y que si es largo las reglas importantes se pierden",
+          "Incluye comandos de build y test y las trampas no obvias del proyecto"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Saca lo que el agente deduce leyendo el código, la documentación larga y lo que cambia a menudo",
+          "Mueve lo que solo aplica a veces a skills o documentos que se cargan bajo demanda",
+          "Convierte en hook lo que debe cumplirse siempre, porque el fichero es un consejo y el hook una garantía"
+        ]
+      },
+      "respuestaModelo": "Ese fichero se carga en cada sesión, así que compite por el contexto con el trabajo real: si es largo, las pocas reglas que importan se pierden entre el ruido. Dejaría lo que el agente no puede adivinar: comandos de build, lint y tests, reglas de estilo que se salen de lo habitual, convenciones del repositorio (ramas, PR), decisiones de arquitectura propias y trampas no obvias, como variables de entorno obligatorias. Sacaría lo que deduce leyendo el código, las convenciones estándar del lenguaje, documentación larga (mejor un enlace), descripciones fichero a fichero y lo que cambia a menudo. Lo que solo aplica a veces iría a skills o documentos que se cargan bajo demanda. Y lo que tiene que cumplirse siempre, sin excepción, lo convertiría en hook: el fichero es un consejo, el hook se ejecuta. La prueba para cada línea es preguntarse si quitarla haría que el agente se equivocara.",
+      "resumen": "Se carga en cada sesión: si es largo, lo importante se pierde. Dentro, comandos, trampas y reglas que no se deducen del código; fuera, lo obvio y lo largo. Lo innegociable, en un hook.",
+      "test": {
+        "enunciado": "¿Qué conviene incluir en el CLAUDE.md o AGENTS.md de un repositorio?",
+        "opciones": [
+          {
+            "texto": "Una descripción de cada fichero del proyecto, para que el agente no tenga que abrirlos.",
+            "porque": "El agente puede leer el código; describirlo fichero a fichero engorda el contexto y se desactualiza."
+          },
+          {
+            "texto": "Toda la documentación de la API, pegada entera para tenerla siempre a mano.",
+            "porque": "Es contenido largo que no hace falta en cada sesión: mejor un enlace o un documento bajo demanda."
+          },
+          {
+            "texto": "Reglas genéricas como \"escribe código limpio\" y \"no cometas errores\".",
+            "porque": "Son obvias y no cambian el comportamiento; solo añaden ruido que tapa las reglas útiles."
+          },
+          {
+            "texto": "Comandos de build y test y las trampas que no se deducen del código.",
+            "porque": "Es justo lo que el agente no puede adivinar y le evita errores en cada sesión."
+          }
+        ],
+        "correcta": 3
+      },
+      "etiquetas": ["agentes", "contexto", "claude.md"],
+      "fuentes": [
+        {
+          "url": "https://code.claude.com/docs/en/best-practices",
+          "fecha": "2026-09-29",
+          "tipo": "leida",
+          "nota": "Sección \"Write an effective CLAUDE.md\", con la tabla de incluir y excluir."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "borrador"
+    },
+    {
+      "id": "ia-programar-con-agentes-05",
+      "version": 1,
+      "pista": "ia",
+      "familia": "programar-con-agentes",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "En una sesión larga, tu agente empieza a olvidar instrucciones del principio y a cometer más errores. ¿Qué es la context engineering y qué técnicas usarías?",
+        "en": "In a long session, your agent starts forgetting early instructions and making more mistakes. What is context engineering and which techniques would you use?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que el contexto es finito y que el rendimiento empeora a medida que se llena",
+          "Propone limpiar el contexto entre tareas distintas"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Define context engineering como decidir qué tokens entran, no solo cómo se redacta el prompt",
+          "Menciona recuperar información bajo demanda en vez de cargarlo todo al principio",
+          "Menciona compactación, notas fuera del contexto y subagentes que devuelven resúmenes"
+        ]
+      },
+      "respuestaModelo": "La context engineering es el paso siguiente al prompt engineering: en vez de buscar las palabras justas, decides qué información ocupa la ventana de contexto en cada momento, con la idea de meter el conjunto más pequeño de tokens que más ayude. Importa porque el contexto es finito y se degrada: cuantos más tokens hay, peor recuerda el modelo lo que tiene dentro (lo que Anthropic llama context rot), y por eso el agente olvida instrucciones del principio. Técnicas: limpiar el contexto entre tareas que no tienen que ver; recuperar información bajo demanda con herramientas (leer un fichero cuando hace falta) en vez de cargarlo todo al empezar; compactar, resumiendo la conversación cuando se acerca al límite; tomar notas en un fichero fuera del contexto que se vuelven a leer después; y delegar investigaciones en subagentes con su propio contexto que devuelven solo un resumen. Si he corregido al agente dos veces por lo mismo, empiezo una sesión limpia con un prompt mejor.",
+      "resumen": "Decidir qué información ocupa el contexto, que es finito y se degrada al llenarse. Técnicas: limpiarlo entre tareas, cargar bajo demanda, compactar, notas fuera y subagentes que resumen.",
+      "test": {
+        "opciones": [
+          {
+            "texto": "Escribir prompts más largos y detallados para que el modelo no se olvide de nada.",
+            "porque": "Más tokens llenan antes el contexto y empeoran el recuerdo: es parte del problema, no la solución."
+          },
+          {
+            "texto": "Decidir qué información ocupa el contexto en cada momento, porque es finito y se degrada.",
+            "porque": "Es la definición: el conjunto más pequeño de tokens útiles, con técnicas como compactar o cargar bajo demanda."
+          },
+          {
+            "texto": "Reentrenar el modelo con el código del proyecto para que no dependa del contexto.",
+            "porque": "Eso sería fine-tuning; la context engineering trabaja con lo que entra en cada llamada, sin tocar el modelo."
+          },
+          {
+            "texto": "Ampliar la ventana de contexto contratando un plan superior del proveedor.",
+            "porque": "Una ventana mayor tarda más en llenarse, pero el recuerdo sigue empeorando al crecer el contexto."
+          }
+        ],
+        "correcta": 1
+      },
+      "etiquetas": ["agentes", "contexto", "context engineering"],
+      "fuentes": [
+        {
+          "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+          "fecha": "2026-09-29",
+          "tipo": "leida",
+          "nota": "Publicado el 29-09-2025: context rot, recuperación bajo demanda, compactación, notas y subagentes."
+        },
+        {
+          "url": "https://code.claude.com/docs/en/best-practices",
+          "fecha": "2026-09-29",
+          "tipo": "leida",
+          "nota": "Limpiar el contexto entre tareas y empezar de cero tras dos correcciones fallidas."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "borrador"
+    },
+    {
+      "id": "ia-programar-con-agentes-06",
+      "version": 1,
+      "pista": "ia",
+      "familia": "programar-con-agentes",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "El agente añade al `package.json` un paquete que nadie del equipo conoce y que se publicó en npm hace dos semanas. ¿Qué es el slopsquatting y cómo te proteges?",
+        "en": "The agent adds to `package.json` a package nobody on the team knows, published to npm two weeks ago. What is slopsquatting and how do you protect yourself?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que los modelos a veces inventan nombres de paquetes que no existen",
+          "Explica que un atacante registra ese nombre con código malicioso"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Menciona que los nombres inventados se repiten entre ejecuciones, lo que hace rentable el ataque",
+          "Propone comprobar quién publica, antigüedad y descargas antes de instalar",
+          "Propone controles en CI: lockfile, lista de dependencias permitidas o un escáner de la cadena de suministro"
+        ]
+      },
+      "respuestaModelo": "El slopsquatting es un ataque a la cadena de suministro que aprovecha las alucinaciones: el modelo sugiere instalar un paquete con un nombre verosímil que no existe, y un atacante registra ese nombre en npm o PyPI con código malicioso para que lo instale quien copie la sugerencia sin mirar. Funciona porque los nombres inventados no son aleatorios: estudios de 2025 encontraron paquetes alucinados en torno a uno de cada cinco fragmentos generados, y buena parte de esos nombres se repetían entre ejecuciones, así que el atacante sabe cuáles registrar. Me protegería tratando cada dependencia nueva que propone un agente como una decisión: comprobar que el paquete es el del proyecto oficial, quién lo publica, su antigüedad y sus descargas; desconfiar de uno de hace dos semanas que nadie conoce. En CI, lockfile, revisión explícita de dependencias nuevas en la PR y un escáner de la cadena de suministro.",
+      "resumen": "Registrar con código malicioso el nombre de un paquete que los modelos inventan. Se evita comprobando autor, antigüedad y descargas de cada dependencia nueva, con lockfile y revisión en CI.",
+      "test": {
+        "opciones": [
+          {
+            "texto": "Registrar dominios parecidos al de una web conocida para robar credenciales.",
+            "porque": "Eso es typosquatting de dominios o phishing; el slopsquatting va de paquetes que inventa la IA."
+          },
+          {
+            "texto": "Que la IA genere código lento y descuidado que hay que reescribir después.",
+            "porque": "El nombre recuerda a \"slop\", pero no va de calidad del código sino de un ataque de cadena de suministro."
+          },
+          {
+            "texto": "Publicar con malware un paquete cuyo nombre suelen inventar los modelos.",
+            "porque": "Es la definición: el atacante registra el nombre alucinado y espera a que alguien lo instale sin mirar."
+          },
+          {
+            "texto": "Que un agente borre dependencias del proyecto que cree que no se usan.",
+            "porque": "Es un riesgo de dar permisos de escritura a un agente, pero no es lo que describe el término."
+          }
+        ],
+        "correcta": 2
+      },
+      "etiquetas": ["seguridad", "dependencias", "cadena de suministro"],
+      "fuentes": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Slopsquatting",
+          "fecha": "2026-09-29",
+          "tipo": "resumen",
+          "nota": "Término acuñado por Seth Larson."
+        },
+        {
+          "url": "https://www.helpnetsecurity.com/2025/04/14/package-hallucination-slopsquatting-malicious-code/",
+          "fecha": "2026-09-29",
+          "tipo": "resumen",
+          "nota": "Estudio sobre 16 modelos: alrededor del 20 % de muestras con paquetes inventados, muchos repetidos."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "borrador"
+    },
+    {
+      "id": "ia-programar-con-agentes-07",
+      "version": 1,
+      "pista": "ia",
+      "familia": "programar-con-agentes",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "senior",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Tu responsable dice que con agentes el equipo va el doble de rápido \"porque se nota\" y quiere recortar la revisión de código. ¿Qué le respondes, con datos?",
+        "en": "Your manager says the team is twice as fast with agents \"because you can feel it\" and wants to cut back on code review. How do you respond, with data?"
+      },
+      "rubrica": {
+        "junior": [
+          "Distingue la sensación de ir más rápido de una medición",
+          "Defiende mantener la revisión mientras no haya datos"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Cita el estudio de METR de 2025 (desarrolladores experimentados un 19 % más lentos creyendo ir un 20 % más rápido) y sus límites",
+          "Cita que DORA 2025 describe la IA como amplificador: más throughput, a veces a costa de estabilidad",
+          "Propone medir en el propio equipo (tiempo de ciclo, fallos en producción, reverts) antes de cambiar el proceso"
+        ]
+      },
+      "respuestaModelo": "Le diría que \"se nota\" es justo lo que más engaña aquí. En el ensayo aleatorio de METR publicado en julio de 2025, dieciséis desarrolladores experimentados en sus propios repos tardaron un 19 % más con IA, mientras creían haber ido un 20 % más rápido. No es la última palabra: eran herramientas de principios de 2025 y en febrero de 2026 METR explicó que su nuevo experimento sufre sesgo de selección (muchos ya no aceptan trabajar sin IA), así que la cifra real puede ser mejor. Pero enseña que la percepción no sirve como métrica. El informe DORA de 2025 apunta en la misma dirección: la IA amplifica lo que ya hay, sube el throughput y puede bajar la estabilidad si la base no es sólida. Recortar revisión justo cuando se genera más código es quitar el freno al acelerar. Propondría medir unas semanas en nuestro equipo (tiempo de ciclo, fallos en producción, reverts, tiempo de revisión) y decidir con eso.",
+      "resumen": "La sensación no es una medida: en METR 2025 iban un 19 % más lentos creyendo ir un 20 % más rápido, y DORA 2025 ve la IA como amplificador. Medir en el equipo antes de recortar revisión.",
+      "etiquetas": ["productividad", "agentes", "métricas"],
+      "fuentes": [
+        {
+          "url": "https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/",
+          "fecha": "2026-09-29",
+          "tipo": "resumen",
+          "nota": "Ensayo aleatorio, 16 desarrolladores y 246 tareas: 19 % más lentos, con una percepción de 20 % más rápidos."
+        },
+        {
+          "url": "https://metr.org/blog/2026-02-24-uplift-update/",
+          "fecha": "2026-09-29",
+          "tipo": "leida",
+          "nota": "Rediseño del experimento por sesgo de selección; las estimaciones de finales de 2025 son poco fiables y probablemente pesimistas."
+        },
+        {
+          "url": "https://dora.dev/dora-report-2025/",
+          "fecha": "2026-09-29",
+          "tipo": "resumen",
+          "nota": "La IA como amplificador de las fortalezas y los problemas de cada organización."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "borrador"
+    },
+    {
+      "id": "ia-programar-con-agentes-08",
+      "version": 1,
+      "pista": "ia",
+      "familia": "programar-con-agentes",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Te toca revisar una PR de 900 líneas generada casi entera por un agente. ¿En qué te fijas que quizá no mirarías igual en una PR escrita por una persona?",
+        "en": "You have to review a 900-line PR generated almost entirely by an agent. What do you look at that you might not check the same way in a human-written PR?"
+      },
+      "rubrica": {
+        "junior": [
+          "Comprueba que las APIs, funciones y paquetes que usa existen de verdad",
+          "Revisa si se han tocado o borrado tests para que pasen"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Busca vulnerabilidades típicas (entradas sin validar, inyección, secretos) citando que el código generado las introduce a menudo",
+          "Vigila cambios fuera de alcance y sobreingeniería (capas, validaciones de casos imposibles)",
+          "Pide trocear la PR o una revisión con contexto limpio, y deja claro que quien la mergea responde de ella"
+        ]
+      },
+      "respuestaModelo": "Primero, el tamaño: 900 líneas no se revisan bien, así que pediría trocearla o, al menos, un resumen del plan para revisar contra él. Luego miraría lo que un agente falla de forma característica. Que existan las APIs, funciones y paquetes que usa (los modelos inventan nombres verosímiles, y un paquete inventado puede ser un ataque). Que no haya tocado, saltado o borrado tests para ponerlos en verde. Seguridad, porque no viene sola: en el informe de Veracode de 2025, alrededor del 45 % de las tareas de código generado introducían vulnerabilidades del OWASP Top 10, así que busco entradas sin validar, consultas concatenadas, secretos y permisos. Cambios fuera de alcance: ficheros que nadie pidió tocar, refactors de paso. Y sobreingeniería: capas, abstracciones y validaciones de casos imposibles que añaden código que mantener. Ayuda una segunda revisión con contexto limpio que solo vea el diff. Y quien mergea responde del código igual que si lo hubiera escrito.",
+      "resumen": "Trocearla; comprobar que APIs y paquetes existen, que no se han tocado tests para pasar, la seguridad (Veracode 2025: ~45 % con fallos OWASP), el alcance y la sobreingeniería.",
+      "etiquetas": ["revisión de código", "agentes", "seguridad"],
+      "fuentes": [
+        {
+          "url": "https://www.veracode.com/blog/genai-code-security-report/",
+          "fecha": "2026-09-29",
+          "tipo": "resumen",
+          "nota": "80 tareas y más de 100 modelos: el 45 % de las muestras introducía vulnerabilidades del OWASP Top 10."
+        },
+        {
+          "url": "https://code.claude.com/docs/en/best-practices",
+          "fecha": "2026-09-29",
+          "tipo": "leida",
+          "nota": "Revisión adversarial con contexto limpio y aviso contra perseguir hallazgos que llevan a sobreingeniería."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "borrador"
+    }
+  ]
+}

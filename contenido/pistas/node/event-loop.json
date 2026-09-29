@@ -80,6 +80,28 @@
         ]
       },
       "respuestaModelo": "El event loop de Node avanza por varias fases (timers, pending callbacks, poll, check, close callbacks, entre otras), cada una procesando un tipo distinto de callback pendiente. `setImmediate` está diseñado específicamente para ejecutarse en la fase 'check', justo después de que termine la fase de poll (donde se procesa I/O), lo que lo hace útil para 'ejecuta esto justo después de que termine el I/O de este ciclo'. `process.nextTick` no es una fase del loop en sí: su cola (junto con la de microtasks de promesas) se vacía por completo antes de pasar de una fase a la siguiente, con prioridad más alta que cualquier callback de cualquier fase. Esto es potente pero peligroso: si dentro de un callback de `process.nextTick` se programa otro `process.nextTick`, y así sucesivamente en bucle, el event loop nunca consigue avanzar a la siguiente fase, muriendo de inanición (starvation) y bloqueando efectivamente toda la aplicación aunque técnicamente no haya ningún bucle síncrono infinito visible.",
+      "test": {
+        "enunciado": "En Node, ¿qué se ejecuta antes: `setImmediate` o `process.nextTick`?",
+        "correcta": 0,
+        "opciones": [
+          {
+            "texto": "`process.nextTick`: su cola se vacía antes de pasar a la siguiente fase.",
+            "porque": "No es una fase del loop; se atiende en cuanto termina la operación actual, antes que `setImmediate`."
+          },
+          {
+            "texto": "`setImmediate`, porque su nombre lo dice: se ejecuta justo al terminar la línea actual, antes que cualquier otra cola.",
+            "porque": "El nombre engaña: se ejecuta en la fase check, después del poll, y `process.nextTick` va antes."
+          },
+          {
+            "texto": "Los dos a la vez, en paralelo.",
+            "porque": "Todo corre en un solo hilo; el orden lo marcan las colas y las fases."
+          },
+          {
+            "texto": "Depende del sistema operativo.",
+            "porque": "El orden entre ambos está definido por Node, no por el sistema operativo."
+          }
+        ]
+      },
       "etiquetas": ["event-loop", "process.nexttick", "setimmediate"],
       "fuentes": [
         {

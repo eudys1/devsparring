@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "ia-llm-fundamentos-01",
-      "version": 1,
+      "version": 2,
       "pista": "ia",
       "familia": "llm-fundamentos",
       "tipo": "definicion",
@@ -12,8 +12,8 @@
       "nivelMinimo": "junior",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Qué es un LLM (Large Language Model) y cómo genera texto?",
-        "en": "What is an LLM and how does it generate text?"
+        "es": "Alguien de producto cree que el LLM \"busca la respuesta en una base de datos\". ¿Cómo le explicas qué es un LLM y cómo genera texto?",
+        "en": "Someone in product thinks the LLM \"looks the answer up in a database\". How do you explain what an LLM is and how it generates text?"
       },
       "rubrica": {
         "junior": [
@@ -28,6 +28,28 @@
         ]
       },
       "respuestaModelo": "Un LLM es un modelo de lenguaje entrenado con una red transformer sobre enormes cantidades de texto, aprendiendo a estimar qué palabra (token) es más probable a continuación de un texto dado. En inferencia genera de forma autorregresiva: produce un token, lo añade al contexto y repite el proceso hasta terminar la respuesta. No entiende el mundo como una persona, sino que aprovecha patrones estadísticos del lenguaje observados durante el entrenamiento. Por eso puede sonar coherente sin estar necesariamente verificando ningún hecho.",
+      "test": {
+        "enunciado": "¿Cómo genera texto un LLM?",
+        "correcta": 3,
+        "opciones": [
+          {
+            "texto": "Busca la respuesta en una base de datos de frases ya escritas.",
+            "porque": "No recupera frases: genera token a token según lo que aprendió del lenguaje."
+          },
+          {
+            "texto": "Entiende el mundo como una persona y lo explica con sus propias palabras.",
+            "porque": "Aprovecha patrones estadísticos del lenguaje; por eso puede sonar coherente sin que lo que dice sea verificable."
+          },
+          {
+            "texto": "Escribe la respuesta entera de golpe y luego la corrige.",
+            "porque": "Genera de forma autorregresiva, un token detrás de otro, sin un borrador completo previo."
+          },
+          {
+            "texto": "Predice el siguiente token más probable, lo añade al contexto y repite.",
+            "porque": "Es la generación autorregresiva: cada token nuevo pasa a formar parte del contexto para predecir el siguiente."
+          }
+        ]
+      },
       "etiquetas": ["fundamentos", "transformer"],
       "fuentes": [
         {
@@ -42,7 +64,7 @@
     },
     {
       "id": "ia-llm-fundamentos-02",
-      "version": 1,
+      "version": 2,
       "pista": "ia",
       "familia": "llm-fundamentos",
       "tipo": "definicion",
@@ -50,8 +72,8 @@
       "nivelMinimo": "junior",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Qué es un token y por qué no equivale a una palabra?",
-        "en": "What is a token and why is it not the same as a word?"
+        "es": "La factura de la API sale bastante más alta de lo que calculaste contando palabras. ¿Qué es un token y por qué no equivale a una palabra?",
+        "en": "The API bill is much higher than you estimated by counting words. What is a token and why is it not the same as a word?"
       },
       "rubrica": {
         "junior": [
@@ -65,6 +87,28 @@
         ]
       },
       "respuestaModelo": "Un token es la unidad mínima de texto que el modelo procesa, generada por un tokenizador que suele usar un algoritmo tipo BPE para dividir el texto en subpalabras. Una palabra común puede ser un único token, pero una palabra larga, poco frecuente o en otro idioma puede partirse en varios. Esto importa en la práctica porque el precio de la API y el límite de la ventana de contexto se miden en tokens, no en palabras, así que un texto con muchas palabras raras consume más tokens de lo que parece a simple vista.",
+      "test": {
+        "enunciado": "¿Por qué un token no equivale a una palabra?",
+        "correcta": 1,
+        "opciones": [
+          {
+            "texto": "Porque un token siempre es un carácter.",
+            "porque": "Los tokenizadores tipo BPE usan subpalabras: una palabra común puede ser un solo token."
+          },
+          {
+            "texto": "Porque el tokenizador trocea en subpalabras: una palabra rara puede ser varios tokens.",
+            "porque": "Importa porque el precio y la ventana de contexto se miden en tokens: un texto con palabras raras gasta más de lo que parece."
+          },
+          {
+            "texto": "Porque los tokens solo cuentan los signos de puntuación.",
+            "porque": "Los tokens cubren todo el texto: palabras, trozos de palabra, espacios y puntuación."
+          },
+          {
+            "texto": "Porque en todos los idiomas cada palabra ocupa exactamente dos tokens, ni más ni menos.",
+            "porque": "No hay una proporción fija: depende de la palabra, del idioma y del tokenizador."
+          }
+        ]
+      },
       "etiquetas": ["tokenizacion"],
       "fuentes": [
         {
@@ -79,7 +123,7 @@
     },
     {
       "id": "ia-llm-fundamentos-03",
-      "version": 1,
+      "version": 2,
       "pista": "ia",
       "familia": "llm-fundamentos",
       "tipo": "definicion",
@@ -87,8 +131,8 @@
       "nivelMinimo": "junior",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Qué es la ventana de contexto (context window) y qué pasa cuando se supera?",
-        "en": "What is the context window and what happens when it is exceeded?"
+        "es": "En una conversación larga, el asistente empieza a olvidar lo que el usuario dijo al principio. ¿Qué es la ventana de contexto y qué pasa cuando se supera?",
+        "en": "In a long conversation, the assistant starts forgetting what the user said at the beginning. What is the context window and what happens when it is exceeded?"
       },
       "rubrica": {
         "junior": [
@@ -102,6 +146,28 @@
         ]
       },
       "respuestaModelo": "La ventana de contexto es el número máximo de tokens, sumando entrada y salida, que el modelo puede manejar en una sola llamada. Si se supera, la API devuelve un error o el sistema tiene que truncar el historial más antiguo antes de enviarlo. En una aplicación de chat con conversaciones largas esto obliga a decidir una estrategia: resumir el historial periódicamente, recortar los mensajes más viejos, o apoyarse en RAG para traer solo el contexto relevante en vez de arrastrar toda la conversación en cada llamada.",
+      "test": {
+        "enunciado": "¿Qué cuenta dentro de la ventana de contexto de un LLM?",
+        "correcta": 2,
+        "opciones": [
+          {
+            "texto": "Solo el mensaje del usuario, sin el system prompt.",
+            "porque": "Cuenta todo lo que se envía, incluido el system prompt y el historial."
+          },
+          {
+            "texto": "Solo las palabras de la respuesta generada.",
+            "porque": "La ventana se mide en tokens y suma entrada y salida, no solo la respuesta."
+          },
+          {
+            "texto": "Los tokens de entrada y de salida sumados en una misma llamada.",
+            "porque": "Si se supera, la API da error o hay que recortar el historial, resumirlo o traer solo lo relevante con RAG."
+          },
+          {
+            "texto": "Todas las conversaciones anteriores del usuario con ese modelo.",
+            "porque": "El modelo no recuerda otras llamadas; solo ve lo que le mandas en esta."
+          }
+        ]
+      },
       "etiquetas": ["contexto"],
       "fuentes": [
         {
@@ -116,7 +182,7 @@
     },
     {
       "id": "ia-llm-fundamentos-04",
-      "version": 1,
+      "version": 2,
       "pista": "ia",
       "familia": "llm-fundamentos",
       "tipo": "definicion",
@@ -124,8 +190,8 @@
       "nivelMinimo": "junior",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Qué es la temperatura en la generación de un LLM y cómo afecta al resultado?",
-        "en": "What is temperature in LLM generation and how does it affect output?"
+        "es": "Tu extractor de datos de facturas devuelve campos distintos si le pasas dos veces la misma factura. ¿Qué es la temperatura y cómo afecta al resultado?",
+        "en": "Your invoice data extractor returns different fields when given the same invoice twice. What is temperature and how does it affect the output?"
       },
       "rubrica": {
         "junior": [
@@ -139,6 +205,28 @@
         ]
       },
       "respuestaModelo": "La temperatura reescala la distribución de probabilidad sobre el siguiente token antes de muestrear. Con temperatura cercana a cero el modelo casi siempre elige el token más probable, dando respuestas repetibles y predecibles, útil para clasificación o extracción de datos. Con temperatura alta se amplifican las opciones menos probables, lo que da más variedad y creatividad a cambio de más riesgo de respuestas incoherentes o poco fiables. La elección depende de la tarea: nunca conviene subir la temperatura en tareas donde se necesita exactitud.",
+      "test": {
+        "enunciado": "Tienes que extraer datos de facturas en un JSON fijo. ¿Qué temperatura usas?",
+        "correcta": 0,
+        "opciones": [
+          {
+            "texto": "Cercana a cero, para respuestas repetibles y predecibles.",
+            "porque": "En extracción o clasificación quieres que el modelo elija casi siempre el token más probable."
+          },
+          {
+            "texto": "Alta, para que el modelo sea más creativo con los campos.",
+            "porque": "Más temperatura da variedad y también más riesgo de salidas incoherentes: justo lo contrario de lo que pide un formato fijo."
+          },
+          {
+            "texto": "Da igual: la temperatura solo cambia la velocidad.",
+            "porque": "La temperatura cambia cómo se elige cada token, no la velocidad de generación."
+          },
+          {
+            "texto": "La máxima, para que el modelo pruebe varios formatos.",
+            "porque": "Para un JSON fijo no quieres que pruebe formatos: quieres siempre el mismo."
+          }
+        ]
+      },
       "etiquetas": ["sampling"],
       "fuentes": [
         {
@@ -176,6 +264,29 @@
         ]
       },
       "respuestaModelo": "La temperatura afecta a toda la distribución de probabilidad de los tokens candidatos, mientras que top-p recorta la cola: solo considera el conjunto más pequeño de tokens cuya probabilidad acumulada supera el valor p, descartando las opciones muy improbables antes de muestrear. En la práctica se pueden combinar, pero eso añade dos fuentes de aleatoriedad difíciles de razonar juntas, así que en producción es habitual fijar uno de los dos parámetros al valor por defecto y ajustar solo el otro para tener un comportamiento más predecible.",
+      "resumen": "La temperatura cambia toda la distribución; top-p recorta la cola y solo muestrea entre los tokens que suman probabilidad p. En producción se suele ajustar uno y dejar el otro por defecto.",
+      "test": {
+        "enunciado": "¿Qué hace top-p (nucleus sampling) que no hace la temperatura?",
+        "correcta": 3,
+        "opciones": [
+          {
+            "texto": "Limita el número de palabras que puede tener la respuesta completa, igual que max_tokens.",
+            "porque": "Eso lo hace el máximo de tokens de salida; top-p actúa sobre qué token se elige en cada paso."
+          },
+          {
+            "texto": "Elige siempre el token más probable, sin aleatoriedad.",
+            "porque": "Eso sería una temperatura cercana a cero; top-p sigue muestreando dentro del conjunto que deja."
+          },
+          {
+            "texto": "Cambia la forma de toda la distribución de probabilidad.",
+            "porque": "Eso es lo que hace la temperatura: reescala toda la distribución."
+          },
+          {
+            "texto": "Recorta la cola: solo muestrea entre los tokens cuya probabilidad acumulada llega a p.",
+            "porque": "Descarta las opciones muy improbables antes de muestrear. En producción se suele ajustar uno de los dos, no ambos."
+          }
+        ]
+      },
       "etiquetas": ["sampling"],
       "fuentes": [
         {
@@ -250,6 +361,28 @@
         ]
       },
       "respuestaModelo": "Un modelo multimodal acepta y/o genera más de un tipo de dato, por ejemplo texto e imagen, en vez de trabajar solo con texto. En una app web normal esto se traduce en casos como dejar que un usuario suba una captura de un formulario roto y pedirle al modelo que identifique el problema visual, o generar automáticamente texto alternativo para las imágenes que suben los usuarios. Conviene recordar que añadir imágenes al prompt suele subir el coste y la latencia frente a una llamada solo de texto, así que hay que medir si compensa antes de usarlo por defecto.",
+      "test": {
+        "enunciado": "¿Qué caso de uso de un modelo multimodal encaja en una app web normal?",
+        "correcta": 1,
+        "opciones": [
+          {
+            "texto": "Traducir el texto de una página a otro idioma.",
+            "porque": "Traducir texto lo hace cualquier LLM de solo texto; no hace falta que sea multimodal."
+          },
+          {
+            "texto": "Generar el texto alternativo de las imágenes que suben los usuarios.",
+            "porque": "Recibe una imagen y devuelve texto: son dos tipos de dato. Ojo, las imágenes suben el coste y la latencia."
+          },
+          {
+            "texto": "Autocompletar el campo de búsqueda con sugerencias.",
+            "porque": "Es trabajo con texto; no hay un segundo tipo de dato que justifique un modelo multimodal."
+          },
+          {
+            "texto": "Resumir los comentarios de un producto.",
+            "porque": "Es texto de entrada y texto de salida; un modelo de solo texto basta."
+          }
+        ]
+      },
       "etiquetas": ["multimodal"],
       "fuentes": [
         {
@@ -287,6 +420,28 @@
         ]
       },
       "respuestaModelo": "El modelo base es el resultado del preentrenamiento: solo sabe continuar texto de forma plausible según lo que vio en su corpus, sin ningún concepto de seguir instrucciones ni de mantener un formato de conversación. El modelo instruct pasa por una fase adicional de afinado, típicamente instruction tuning y RLHF u otra técnica de alineación, para aprender a responder a peticiones concretas, mantener un rol de asistente y evitar salidas problemáticas. En un producto real casi siempre se usa el modelo instruct porque es el que da respuestas útiles y controlables desde la primera petición.",
+      "test": {
+        "enunciado": "¿Qué diferencia a un modelo instruct de un modelo base?",
+        "correcta": 2,
+        "opciones": [
+          {
+            "texto": "El instruct tiene muchos más parámetros, porque se entrenó con más datos que el base.",
+            "porque": "Suele ser el mismo modelo: lo que cambia es una fase de afinado posterior, no el tamaño."
+          },
+          {
+            "texto": "El base no puede generar texto.",
+            "porque": "El base genera texto perfectamente: continúa lo que le das de forma plausible."
+          },
+          {
+            "texto": "Se afinó para seguir instrucciones y hacer de asistente, no solo continuar texto.",
+            "porque": "Pasa por instruction tuning y alineación (RLHF u otra técnica); por eso es el que se usa en productos."
+          },
+          {
+            "texto": "El instruct solo funciona en inglés.",
+            "porque": "El idioma depende de los datos del modelo, no de que sea instruct o base."
+          }
+        ]
+      },
       "etiquetas": ["post-entrenamiento"],
       "fuentes": [
         {

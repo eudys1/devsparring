@@ -21,6 +21,41 @@ test('las rutas de la app sin sesión redirigen a entrar', async ({ page }) => {
   await expect(page).toHaveURL(/\/entrar\?volver=%2Fhoy/);
 });
 
+test('una ruta que no existe da 404, no una redirección a entrar', async ({ page }) => {
+  const respuesta = await page.goto('/no-existe-esta-ruta');
+  expect(respuesta?.status()).toBe(404);
+  await expect(page).toHaveURL(/\/no-existe-esta-ruta$/);
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Esto no existe');
+});
+
+test('privacidad y aviso legal se enlazan desde la portada y se leen sin sesión', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await page.getByRole('link', { name: 'Privacidad' }).click();
+  await expect(page).toHaveURL(/\/privacidad$/);
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Privacidad');
+  await page.getByRole('link', { name: 'Aviso legal' }).click();
+  await expect(page).toHaveURL(/\/aviso-legal$/);
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Aviso legal');
+});
+
+test('robots, sitemap y vista previa social están servidos', async ({ page, request }) => {
+  const robots = await (await request.get('/robots.txt')).text();
+  expect(robots).toContain('Disallow: /hoy');
+  expect(robots).toContain('Sitemap:');
+  const sitemap = await (await request.get('/sitemap.xml')).text();
+  expect(sitemap).toContain('/privacidad');
+  await page.goto('/');
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', /^https?:\/\//);
+  await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
+    'content',
+    /opengraph-image/,
+  );
+  const imagen = await request.get('/opengraph-image');
+  expect(imagen.headers()['content-type']).toContain('image/png');
+});
+
 test('la demo es un Tipo test: se elige con el teclado, se explica cada opción y se avanza', async ({
   page,
 }) => {

@@ -24,6 +24,28 @@
         ]
       },
       "respuestaModelo": "El principio básico es que ningún secreto real se comitea nunca al repositorio: en local se usa un fichero `.env` explícitamente listado en `.gitignore`, con un `.env.example` sin valores reales como referencia para el equipo. En staging y producción no conviene depender de ficheros `.env` sueltos en el servidor; lo habitual es usar un gestor de secretos dedicado, como Vault o el sistema de parámetros/secretos del proveedor cloud (AWS Secrets Manager, variables de entorno cifradas de Vercel, etc.), que además da control de acceso y auditoría sobre quién puede ver o rotar cada secreto. Además, la app debería validar toda su configuración al arrancar, usando algo como un esquema Zod sobre `process.env`, y fallar de inmediato con un mensaje claro si falta una variable requerida, en vez de arrancar 'a medias' y descubrir el problema más tarde en producción cuando ya es demasiado tarde.",
+      "test": {
+        "enunciado": "¿Dónde deben vivir los secretos de producción de una API Node?",
+        "correcta": 1,
+        "opciones": [
+          {
+            "texto": "En un `.env` commiteado al repositorio, siempre que el repositorio sea privado y solo tenga acceso el equipo.",
+            "porque": "Ningún secreto real se commitea, aunque el repo sea privado: se filtra con cualquier acceso al código."
+          },
+          {
+            "texto": "En un gestor de secretos, como el del proveedor cloud o Vault.",
+            "porque": "Da control de acceso y rotación. En local, un `.env` en `.gitignore` y un `.env.example` sin valores reales."
+          },
+          {
+            "texto": "En constantes dentro del código, para que no se pierdan.",
+            "porque": "Quedan en el historial de git para siempre y cualquiera con el código las ve."
+          },
+          {
+            "texto": "En el `package.json`, en la sección de scripts.",
+            "porque": "Es un fichero versionado; los secretos acabarían en el repositorio."
+          }
+        ]
+      },
       "etiquetas": ["produccion", "secretos", "configuracion"],
       "fuentes": [
         {

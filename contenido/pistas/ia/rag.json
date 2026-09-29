@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "ia-rag-01",
-      "version": 1,
+      "version": 2,
       "pista": "ia",
       "familia": "rag",
       "tipo": "definicion",
@@ -12,8 +12,8 @@
       "nivelMinimo": "junior",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Qué es RAG (Retrieval-Augmented Generation) y qué problema resuelve frente a usar solo el LLM?",
-        "en": "What is RAG and what problem does it solve versus just using the LLM?"
+        "es": "Tu asistente interno no sabe nada de la documentación de la empresa ni de lo publicado este mes. ¿Qué es RAG (Retrieval-Augmented Generation) y qué resuelve frente a usar solo el LLM?",
+        "en": "Your internal assistant knows nothing about the company's documentation or anything published this month. What is RAG (Retrieval-Augmented Generation) and what does it solve compared to using the LLM alone?"
       },
       "rubrica": {
         "junior": [
@@ -27,6 +27,29 @@
         ]
       },
       "respuestaModelo": "RAG combina un paso de recuperación con la generación del LLM: en vez de confiar solo en lo que el modelo aprendió durante su entrenamiento, que puede estar desactualizado o no incluir datos privados de la empresa, se busca contexto relevante en una fuente externa y se inyecta en el prompt antes de generar la respuesta. Esto resuelve dos problemas a la vez: permite usar información propia sin reentrenar nada, y reduce la tasa de alucinaciones porque el modelo tiene datos concretos en los que apoyarse en vez de inventar a partir de patrones generales.",
+      "resumen": "Recuperar contexto relevante de una fuente externa y meterlo en el prompt antes de generar. Permite usar datos propios o recientes sin reentrenar y reduce las alucinaciones.",
+      "test": {
+        "enunciado": "¿Qué problema resuelve RAG frente a usar solo el LLM?",
+        "correcta": 1,
+        "opciones": [
+          {
+            "texto": "Que el modelo tarda demasiado en responder.",
+            "porque": "RAG añade un paso de búsqueda: si acaso, suma latencia."
+          },
+          {
+            "texto": "Que el modelo no conoce datos privados o recientes, y tiende a inventar sin ellos.",
+            "porque": "Se busca contexto relevante en una fuente externa y se inyecta en el prompt, sin reentrenar nada."
+          },
+          {
+            "texto": "Que el modelo no sabe formatear JSON.",
+            "porque": "El formato se resuelve con instrucciones o salida estructurada; RAG va de aportar información."
+          },
+          {
+            "texto": "Que el modelo es demasiado caro por token y RAG reduce la factura de cada consulta.",
+            "porque": "RAG no abarata el token; incluso suele alargar el prompt con el contexto recuperado."
+          }
+        ]
+      },
       "etiquetas": ["rag", "fundamentos"],
       "fuentes": [
         {
@@ -64,6 +87,28 @@
         ]
       },
       "respuestaModelo": "El pipeline empieza troceando los documentos fuente en fragmentos manejables (chunking), generando un embedding de cada fragmento y guardándolos en un vector store. En tiempo de consulta, la pregunta del usuario se convierte también en embedding, se recuperan los fragmentos más relevantes por similitud, opcionalmente se reordenan con un reranker más preciso, y finalmente esos fragmentos se pasan como contexto al LLM junto con la pregunta original para generar la respuesta final. Cada uno de esos pasos, chunk, embed, index, retrieve, rerank, generate, puede fallar por separado y conviene poder medirlos por separado.",
+      "test": {
+        "enunciado": "¿Cuál es el orden correcto de un pipeline RAG?",
+        "correcta": 2,
+        "opciones": [
+          {
+            "texto": "Generar la respuesta, luego buscar documentos que la confirmen.",
+            "porque": "Es al revés: primero se recupera el contexto y después se genera con él."
+          },
+          {
+            "texto": "Guardar la pregunta en la base vectorial y reentrenar el modelo.",
+            "porque": "No hay reentrenamiento en RAG; la pregunta se usa para buscar, no para entrenar."
+          },
+          {
+            "texto": "Trocear y embeber documentos; al consultar, embeber la pregunta, recuperar y generar.",
+            "porque": "Chunking, embeddings, vector store, recuperación por similitud, reranking opcional y generación con el contexto."
+          },
+          {
+            "texto": "Enviar todos los documentos enteros al modelo en cada consulta para que no se pierda nada.",
+            "porque": "No cabrían en la ventana de contexto y sería carísimo; por eso se recupera solo lo relevante."
+          }
+        ]
+      },
       "etiquetas": ["rag", "pipeline"],
       "fuentes": [
         {
@@ -211,6 +256,28 @@
         ]
       },
       "respuestaModelo": "La búsqueda vectorial inicial recorre el índice entero de forma rápida pero aproximada, así que trae un conjunto de candidatos razonablemente relevantes aunque no perfectamente ordenados. El reranker toma ese conjunto reducido, normalmente unas decenas de candidatos, y lo reordena con un modelo más pesado, a menudo un cross-encoder que compara la pregunta y cada candidato juntos en vez de comparar vectores sueltos. Aplicar ese modelo pesado a todo el índice sería demasiado caro, pero aplicarlo solo a los candidatos preseleccionados mejora bastante la relevancia final sin disparar el coste.",
+      "test": {
+        "enunciado": "¿Por qué el reranking se aplica después de la búsqueda vectorial y no a todo el índice?",
+        "correcta": 0,
+        "opciones": [
+          {
+            "texto": "Porque el reranker es preciso pero caro: solo compensa sobre unas decenas de candidatos.",
+            "porque": "La búsqueda vectorial filtra rápido y aproximado; el cross-encoder reordena bien ese conjunto pequeño."
+          },
+          {
+            "texto": "Porque el reranker no sabe leer vectores.",
+            "porque": "El motivo es el coste: compara la pregunta con cada candidato junto, y hacerlo con todo el índice sería inasumible."
+          },
+          {
+            "texto": "Porque el reranker solo funciona con documentos cortos.",
+            "porque": "La longitud no es el criterio; lo es el número de comparaciones que haría falta."
+          },
+          {
+            "texto": "Porque la búsqueda vectorial ya da el orden perfecto y el reranker solo quita duplicados.",
+            "porque": "La búsqueda vectorial es aproximada; el reranker existe justo para mejorar ese orden, no para quitar duplicados."
+          }
+        ]
+      },
       "etiquetas": ["rag", "reranking"],
       "fuentes": [
         {
@@ -246,6 +313,7 @@
         ]
       },
       "respuestaModelo": "Lo habitual es montar un pipeline de indexación incremental disparado por eventos de cambio en la base de datos de origen o por un job periódico, que solo re-embebe y actualiza los registros que cambiaron en vez de reprocesar todo el catálogo. Cada entrada del índice lleva metadatos de versión o timestamp que permiten detectar y purgar entradas obsoletas cuando un producto se elimina o cambia de forma significativa. Reindexar todo desde cero es más simple de implementar, pero solo es viable si el volumen de datos y la frecuencia de cambio son lo bastante bajos como para que el coste y el tiempo de reindexado no afecten a la disponibilidad del sistema.",
+      "resumen": "Indexación incremental disparada por cambios o por un job: solo se re-embebe lo que cambió, con metadatos de versión para purgar lo obsoleto. Reindexar todo solo vale si el volumen es pequeño.",
       "etiquetas": ["rag", "produccion", "sincronizacion"],
       "fuentes": [
         {

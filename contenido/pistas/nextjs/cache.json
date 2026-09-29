@@ -27,6 +27,28 @@
         ]
       },
       "respuestaModelo": "SSG (Static Site Generation) genera el HTML en tiempo de build, ideal para contenido que casi no cambia como una landing o un artículo de blog: la página ya está lista antes de que llegue ningún usuario. SSR (Server Side Rendering) genera el HTML en cada petición, necesario cuando el contenido es personalizado por usuario (un dashboard con sus propios datos) y no se puede precalcular de antemano. ISR (Incremental Static Regeneration) es un punto intermedio: sirve una página estática pero la regenera en segundo plano pasado un intervalo (`revalidate`) o bajo demanda, dando un balance entre frescura del contenido y la velocidad de servir algo ya cacheado. En Next.js 16 este modelo se reformula con Cache Components: la directiva `\"use cache\"` combinada con `revalidateTag(tag, profile)` sustituye al cacheo implícito de versiones anteriores por uno explícito y más predecible.",
+      "test": {
+        "enunciado": "Un dashboard con los datos de cada usuario. ¿Qué estrategia de renderizado usas?",
+        "correcta": 1,
+        "opciones": [
+          {
+            "texto": "SSG: se genera en el build y queda listo para todos.",
+            "porque": "En el build no se sabe quién va a entrar; sirve para contenido igual para todos."
+          },
+          {
+            "texto": "SSR: se genera en cada petición.",
+            "porque": "El contenido es personalizado y no se puede precalcular de antemano."
+          },
+          {
+            "texto": "ISR: página estática que se regenera cada cierto tiempo.",
+            "porque": "Regenerar una página compartida no sirve para datos distintos por usuario."
+          },
+          {
+            "texto": "Da igual: todas generan el mismo HTML.",
+            "porque": "Se diferencian justo en cuándo y para quién se genera el HTML."
+          }
+        ]
+      },
       "etiquetas": ["cache", "ssr", "ssg", "isr"],
       "fuentes": [
         {
@@ -63,6 +85,28 @@
         ]
       },
       "respuestaModelo": "Antes de Cache Components, el App Router asumía cacheo implícito por defecto en ciertos casos, lo que generaba una duda constante de '¿esto se está cacheando o no?' difícil de razonar sin leer la documentación con cuidado. Con Cache Components el modelo cambia a explícito y opt-in: se activa `cacheComponents: true` en `next.config.ts`, y a partir de ahí el código dinámico se ejecuta en cada request por defecto salvo que se marque explícitamente con la directiva `\"use cache\"`, que se puede aplicar a nivel de página completa, de un componente concreto, o incluso de una función individual. Esto invierte la responsabilidad: en vez de tener que saber qué se cachea implícitamente, el desarrollador declara explícitamente qué partes quiere que se cacheen.",
+      "test": {
+        "enunciado": "Con Cache Components (`cacheComponents: true`) en Next.js 16, ¿qué se cachea por defecto?",
+        "correcta": 2,
+        "opciones": [
+          {
+            "texto": "Todo lo que renderiza la página, salvo lo que marques de forma explícita como dinámico con una directiva propia.",
+            "porque": "Eso se parece al modelo implícito anterior; el nuevo es al revés."
+          },
+          {
+            "texto": "Solo las llamadas a `fetch`, nunca los componentes.",
+            "porque": "`\"use cache\"` se puede aplicar a páginas, componentes y funciones, no solo a `fetch`."
+          },
+          {
+            "texto": "Nada: lo dinámico se ejecuta en cada request salvo que lo marques con `\"use cache\"`.",
+            "porque": "El modelo pasa a explícito y opt-in, y así desaparece la duda de si algo se está cacheando."
+          },
+          {
+            "texto": "Las páginas estáticas durante 60 segundos exactos.",
+            "porque": "No hay una duración fija por defecto; la caché la decides tú con `\"use cache\"` y `cacheLife`."
+          }
+        ]
+      },
       "etiquetas": ["cache", "cache-components", "next-16"],
       "fuentes": [
         {
@@ -99,6 +143,28 @@
         ]
       },
       "respuestaModelo": "Ambas invalidan contenido asociado a una etiqueta de cache, pero con garantías distintas. `revalidateTag(tag, profile)` da semántica stale-while-revalidate: el usuario puede seguir viendo datos ligeramente viejos durante un instante mientras el contenido se revalida en segundo plano, y desde Next.js 16 exige indicar un perfil `cacheLife` que define esa ventana de comportamiento. `updateTag()` es más estricta y solo se puede llamar dentro de una Server Action: da semántica 'read-your-writes', es decir, expira el contenido cacheado y lo relee al instante, de forma que el propio usuario que acaba de hacer el cambio (por ejemplo, guardar su nombre de perfil) lo vea reflejado inmediatamente, sin la ventana de posible desactualización que sí acepta `revalidateTag`.",
+      "test": {
+        "enunciado": "Tras guardar un cambio en una Server Action, quieres que el usuario vea ya su dato nuevo. ¿Qué usas?",
+        "correcta": 0,
+        "opciones": [
+          {
+            "texto": "`updateTag()`, que da semántica «read-your-writes».",
+            "porque": "Expira la caché al momento y solo se puede llamar dentro de una Server Action."
+          },
+          {
+            "texto": "`revalidateTag()`, que garantiza ver el dato nuevo al instante.",
+            "porque": "Es stale-while-revalidate: el usuario puede ver un instante el dato viejo mientras se revalida."
+          },
+          {
+            "texto": "Recargar la página entera con `window.location.reload()`.",
+            "porque": "Funciona a lo bruto, pero pierde el estado y no usa la caché de forma correcta."
+          },
+          {
+            "texto": "Nada: la caché se vacía sola en cada Server Action.",
+            "porque": "Hay que invalidar las etiquetas que dependan del dato; no ocurre sola."
+          }
+        ]
+      },
       "etiquetas": ["cache", "revalidacion", "next-16"],
       "fuentes": [
         {
@@ -135,6 +201,29 @@
         ]
       },
       "respuestaModelo": "La trampa clásica es asumir cómo se comporta `fetch` sin comprobar antes la versión del proyecto: en versiones del App Router previas a Cache Components, una llamada `fetch` dentro de un Server Component podía cachearse de forma implícita sin que el desarrollador lo hubiera pedido explícitamente, lo que llevaba a mostrar en producción datos obsoletos que nadie esperaba ver desactualizados. Con Next.js 16 y el modelo de Cache Components, el comportamiento por defecto cambia a dinámico: cada `fetch` se ejecuta sin cache salvo que el desarrollador marque explícitamente esa parte del código con la directiva `\"use cache\"`. El aprendizaje práctico es no dar por sentado el comportamiento de cacheo de memoria, sino comprobar en qué versión y con qué configuración corre el proyecto concreto antes de razonar sobre frescura de datos.",
+      "resumen": "Asumir cómo se comporta `fetch` sin mirar la versión: antes de Cache Components se cacheaba de forma implícita y enseñaba datos obsoletos. En Next.js 16 no se cachea salvo que lo pidas.",
+      "test": {
+        "enunciado": "¿Qué cambió en Next.js 16, con Cache Components, en el cacheo por defecto de `fetch` en Server Components?",
+        "correcta": 3,
+        "opciones": [
+          {
+            "texto": "Ahora `fetch` se cachea siempre durante una hora.",
+            "porque": "Es al revés: por defecto ya no se cachea."
+          },
+          {
+            "texto": "`fetch` ya no se puede usar en Server Components.",
+            "porque": "Se puede usar con normalidad; lo que cambia es si se cachea."
+          },
+          {
+            "texto": "Nada; sigue cacheándose de forma implícita como antes.",
+            "porque": "Ese cacheo implícito era la trampa de versiones previas, con datos obsoletos que nadie esperaba."
+          },
+          {
+            "texto": "Pasa a ser dinámico: cada `fetch` se ejecuta sin caché salvo que lo pidas.",
+            "porque": "La trampa vieja era suponer que no se cacheaba cuando sí; ahora se cachea solo si lo marcas."
+          }
+        ]
+      },
       "etiquetas": ["cache", "fetch", "trampas"],
       "fuentes": [
         {
@@ -149,7 +238,7 @@
     },
     {
       "id": "next-cache-05",
-      "version": 1,
+      "version": 2,
       "pista": "nextjs",
       "familia": "cache",
       "tipo": "definicion",
@@ -157,8 +246,8 @@
       "nivelMinimo": "senior",
       "frecuencia": "baja",
       "texto": {
-        "es": "¿Qué es Partial Prerendering (PPR) y cómo se relaciona con Suspense?",
-        "en": "What is Partial Prerendering (PPR) and how does it relate to Suspense?"
+        "es": "Tu página de producto es igual para todos salvo el carrito del usuario, arriba a la derecha. ¿Qué es Partial Prerendering (PPR) y cómo se relaciona con Suspense?",
+        "en": "Your product page is the same for everyone except the user's cart in the top right corner. What is Partial Prerendering (PPR) and how does it relate to Suspense?"
       },
       "rubrica": {
         "junior": ["Explica que PPR sirve una carcasa estática al instante con huecos dinámicos"],
@@ -169,6 +258,29 @@
         ]
       },
       "respuestaModelo": "Partial Prerendering permite que una misma ruta combine una 'carcasa' estática que se sirve al instante (el layout, la navegación, cualquier parte que no depende del usuario) con 'huecos' dinámicos que se renderizan bajo demanda en el momento de la petición. Esos huecos dinámicos se delimitan explícitamente con `<Suspense>`: todo lo que queda fuera de un límite `Suspense` se puede prerenderizar de forma estática, mientras que lo que está dentro se trata como dinámico y se resuelve en el servidor cuando llega la petición real. En Next.js 16 esta idea se completa con el modelo de Cache Components, donde la directiva `\"use cache\"` marca de forma explícita qué partes son estáticas, en vez de que PPR tenga que inferirlo implícitamente del uso de APIs dinámicas dentro del árbol de componentes.",
+      "resumen": "Una ruta que mezcla una carcasa estática servida al instante con huecos dinámicos resueltos en cada petición. Los huecos se delimitan con `<Suspense>`: lo de fuera se prerenderiza, lo de dentro no.",
+      "test": {
+        "enunciado": "En Partial Prerendering, ¿qué marca los huecos dinámicos de una página?",
+        "correcta": 1,
+        "opciones": [
+          {
+            "texto": "La directiva `\"use client\"` en cada componente dinámico.",
+            "porque": "`\"use client\"` decide dónde se ejecuta el componente, no qué se prerenderiza."
+          },
+          {
+            "texto": "Los límites de `<Suspense>`.",
+            "porque": "Lo que queda fuera se prerenderiza estático; lo de dentro se resuelve en el servidor en cada petición."
+          },
+          {
+            "texto": "Un fichero `dynamic.ts` en la carpeta de la ruta.",
+            "porque": "No existe esa convención; los huecos se delimitan en el propio árbol de componentes."
+          },
+          {
+            "texto": "Las rutas con parámetros dinámicos, como `[id]`.",
+            "porque": "Una ruta con `[id]` puede ser estática o dinámica; los huecos los marca Suspense."
+          }
+        ]
+      },
       "etiquetas": ["cache", "ppr", "suspense"],
       "fuentes": [
         {

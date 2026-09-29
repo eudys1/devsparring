@@ -1,4 +1,5 @@
 import { ArrowRight, BookOpen, ClipboardList, Flame, Route, UserRound } from 'lucide-react';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Marca } from '@/components/Marca';
 import { Revelar } from '@/components/Revelar';
@@ -9,6 +10,7 @@ import { paraModo, publicadas } from '@/features/preguntas/filtrar';
 import { NOMBRE_MODO, NOMBRE_PISTA } from '@/features/preguntas/nombres';
 import { elegirTesis } from '@/features/preguntas/tesis';
 import { varas } from '@/features/preguntas/varas';
+import { DESCRIPCION, OPEN_GRAPH_BASE, URL_SITIO } from '@/lib/sitio';
 import { usuarioActual } from '@/lib/supabase/server';
 import { CaraACara } from './CaraACara';
 import { Cinta } from './Cinta';
@@ -16,6 +18,27 @@ import { Modos } from './Modos';
 import { Mosaico, type Tesela } from './Mosaico';
 import { RondaViva, type Guion } from './RondaViva';
 import { ConmutadorVara, VaraProvider } from './Vara';
+
+const TITULO = 'Devsparring · Entrena entrevistas técnicas en español';
+
+export const metadata: Metadata = {
+  title: { absolute: TITULO },
+  alternates: { canonical: '/' },
+  openGraph: { ...OPEN_GRAPH_BASE, title: TITULO, description: DESCRIPCION, url: '/' },
+};
+
+// Datos estructurados: qué es la app, para buscadores. Sin precio ni
+// valoraciones: no hay ni una cosa ni la otra que declarar.
+const JSON_LD = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'Devsparring',
+  url: URL_SITIO,
+  description: DESCRIPCION,
+  applicationCategory: 'EducationalApplication',
+  operatingSystem: 'Navegador web',
+  inLanguage: 'es',
+};
 
 // Las respuestas de la ronda en directo son ejemplos escritos aquí y marcados
 // como simulación en la propia tarjeta. La pregunta y las dimensiones son las
@@ -137,6 +160,10 @@ export default async function Landing() {
   return (
     <VaraProvider>
       <main className="overflow-x-clip">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD) }}
+        />
         {/* ── El cartel: el titular a la izquierda y el mazo a la derecha ─── */}
         <div className="mx-auto max-w-[82rem] px-4 sm:px-6">
           <header className="flex items-center justify-between gap-4 py-4 sm:py-5">
@@ -506,7 +533,21 @@ export default async function Landing() {
 
           <footer className="mt-10 flex flex-wrap items-center justify-between gap-4 border-t border-linea pt-6 font-mono text-[0.6875rem] uppercase tracking-[0.1em] text-tinta-2">
             <Marca />
-            <p>Proyecto personal de Eudys · Licencia MIT</p>
+            <nav aria-label="Legal" className="flex flex-wrap items-center gap-x-5 gap-y-2">
+              <Link
+                href="/privacidad"
+                className="underline decoration-linea-fuerte underline-offset-4 hover:text-tinta"
+              >
+                Privacidad
+              </Link>
+              <Link
+                href="/aviso-legal"
+                className="underline decoration-linea-fuerte underline-offset-4 hover:text-tinta"
+              >
+                Aviso legal
+              </Link>
+              <span>Proyecto personal de Eudys · Licencia MIT</span>
+            </nav>
           </footer>
         </Revelar>
       </main>

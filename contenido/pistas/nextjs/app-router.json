@@ -27,6 +27,28 @@
         ]
       },
       "respuestaModelo": "Por defecto, todo lo que se define dentro de `app/` es un Server Component: se ejecuta únicamente en el servidor y su código nunca viaja al navegador. Para convertir un componente en Client Component hace falta escribir la directiva `\"use client\"` en la primera línea del archivo; a partir de ahí ese componente se hidrata y puede usar `useState`, `useEffect` o manejar eventos del navegador, cosas que un Server Component no puede hacer, pero a cambio pierde la posibilidad de hacer `await` directo contra la base de datos o el sistema de archivos. El matiz que se suele pasar por alto es que `\"use client\"` no marca solo ese archivo: contamina a todo lo que ese módulo importa, así que todo el subárbol que cuelga de ahí se empaqueta y se envía al cliente, no solo el componente donde se puso la directiva.",
+      "test": {
+        "enunciado": "¿Qué puede hacer un Client Component que no puede un Server Component?",
+        "correcta": 1,
+        "opciones": [
+          {
+            "texto": "Hacer `await` directo contra la base de datos.",
+            "porque": "Es al revés: eso lo hace el Server Component; el cliente no puede."
+          },
+          {
+            "texto": "Usar `useState`, `useEffect` y manejar eventos del navegador.",
+            "porque": "Con `\"use client\"` se hidrata y es interactivo; a cambio, su código viaja al navegador."
+          },
+          {
+            "texto": "Quedarse fuera del bundle de JavaScript que descarga el navegador, para que la página cargue más rápido.",
+            "porque": "Esa es la ventaja del Server Component: su código nunca viaja al navegador."
+          },
+          {
+            "texto": "Leer secretos del servidor sin exponerlos al usuario.",
+            "porque": "Lo que va en un Client Component llega al navegador; los secretos se quedan en el servidor."
+          }
+        ]
+      },
       "etiquetas": ["app-router", "server-components", "client-components"],
       "fuentes": [
         {
@@ -61,6 +83,28 @@
         ]
       },
       "respuestaModelo": "En Next.js 16 el fichero `middleware.ts` pasó a llamarse `proxy.ts`, con la función exportada renombrada a `proxy`. El cambio de nombre busca comunicar con más precisión lo que realmente es: la frontera de red de la aplicación, el punto donde se interceptan peticiones antes de que lleguen a una ruta concreta (para redirigir, reescribir o añadir cabeceras), no un middleware genérico en el sentido de Express. La nueva convención corre en runtime Node.js por defecto. `middleware.ts` sigue funcionando para el runtime Edge por compatibilidad, pero queda marcado como deprecado, así que un proyecto nuevo debería empezar directamente con `proxy.ts`.",
+      "test": {
+        "enunciado": "¿Cómo se llama en Next.js 16 el antiguo `middleware.ts`?",
+        "correcta": 2,
+        "opciones": [
+          {
+            "texto": "`edge.ts`, porque siempre corre en el runtime Edge.",
+            "porque": "La nueva convención corre en runtime Node.js por defecto; el nombre tampoco es ese."
+          },
+          {
+            "texto": "`handler.ts`, con la función `handler`.",
+            "porque": "No existe esa convención; el nombre nuevo refleja que es la frontera de red."
+          },
+          {
+            "texto": "`proxy.ts`, con la función exportada `proxy`.",
+            "porque": "El nombre comunica lo que es: la frontera de red donde se interceptan peticiones, no un middleware tipo Express."
+          },
+          {
+            "texto": "Sigue llamándose `middleware.ts`; solo cambió la documentación.",
+            "porque": "Cambió el nombre del fichero y de la función; `middleware.ts` queda para el runtime Edge."
+          }
+        ]
+      },
       "etiquetas": ["app-router", "proxy", "middleware"],
       "fuentes": [
         {
@@ -97,6 +141,7 @@
         ]
       },
       "respuestaModelo": "La primera capa es validar la sesión en `proxy.ts` (el middleware/frontera de red) para redirigir a login antes de que la petición llegue a renderizar la ruta protegida, evitando el coste de renderizar una página que de todas formas se va a descartar. Pero esa capa no basta por sí sola: hay que revalidar la sesión también dentro del propio Server Component o Server Action que expone el dato sensible, como defensa en profundidad, porque confiar solo en el middleware deja la puerta abierta si alguien encuentra una forma de invocar esa lógica saltándose la frontera de red. El token o identificador de sesión debe viajar en una cookie `httpOnly`, `Secure` y con `SameSite` adecuado, nunca en `localStorage`, para que JavaScript malicioso no pueda leerlo directamente en caso de XSS.",
+      "resumen": "Primera capa en `proxy.ts` para redirigir a login pronto, pero no basta: hay que revalidar la sesión dentro de cada Server Component o Server Action que expone el dato, como defensa en profundidad.",
       "etiquetas": ["app-router", "autenticacion", "middleware"],
       "fuentes": [
         {
@@ -134,6 +179,7 @@
         ]
       },
       "respuestaModelo": "Las Server Actions son la opción natural para mutaciones disparadas desde dentro de la propia app, típicamente desde un formulario: se pueden invocar como si fueran una función local, dan progressive enhancement (el formulario funciona incluso sin JavaScript cargado) y reducen mucho el boilerplate frente a montar un endpoint y hacer fetch manual. Las rutas API en `app/api/.../route.ts` son necesarias cuando el consumidor no es la propia app: un webhook de un proveedor externo, una app móvil, una integración de terceros, o cualquier caso donde se necesite control fino sobre el método HTTP, las cabeceras de respuesta o el formato exacto del contrato, cosas que una Server Action no expone de la misma manera porque no está pensada como un endpoint público de propósito general.",
+      "resumen": "Server Actions para mutaciones desde la propia app, sobre todo formularios: menos boilerplate y funcionan sin JavaScript. Rutas API cuando el consumidor es externo: webhooks, apps móviles u otros servicios.",
       "etiquetas": ["app-router", "server-actions", "api-routes"],
       "fuentes": [
         {
@@ -170,6 +216,28 @@
         ]
       },
       "respuestaModelo": "En Next.js 16 ya no se puede leer `params`, `searchParams`, `cookies()` ni `headers()` de forma síncrona dentro de un Server Component: hay que hacer `await params` (o, en un Client Component, usar el hook `use(params)`). Esto rompe directamente cualquier código de tutoriales antiguos que asumía acceso síncrono, un patrón muy extendido en ejemplos previos a esta versión. Para no migrar cada archivo a mano, Next.js ofrece un codemod oficial (`@next/codemod`) que reescribe automáticamente los usos síncronos a la forma asíncrona correcta, y conviene mencionarlo como la vía recomendada en vez de una migración manual archivo por archivo.",
+      "test": {
+        "enunciado": "En Next.js 16, ¿cómo lees `params` en un Server Component?",
+        "correcta": 0,
+        "opciones": [
+          {
+            "texto": "Con `await params`, porque ya no se puede leer de forma síncrona.",
+            "porque": "Pasa igual con `searchParams`, `cookies()` y `headers()`; hay un codemod oficial para migrar."
+          },
+          {
+            "texto": "Directamente como un objeto síncrono, como siempre.",
+            "porque": "Es el patrón de tutoriales antiguos que Next.js 16 rompe."
+          },
+          {
+            "texto": "Con el hook `useParams` directamente dentro del Server Component, igual que en cualquier componente de React.",
+            "porque": "Los hooks no se usan en Server Components; en uno de cliente se usaría `use(params)`."
+          },
+          {
+            "texto": "Leyéndolos desde `window.location` en el servidor.",
+            "porque": "En el servidor no existe `window`."
+          }
+        ]
+      },
       "etiquetas": ["app-router", "breaking-changes", "next-16"],
       "fuentes": [
         {
@@ -204,6 +272,29 @@
         ]
       },
       "respuestaModelo": "Cuando muchos enlaces `<Link>` apuntan a rutas que comparten el mismo layout, Next.js 16 aplica 'layout deduplication': en vez de descargar ese layout una vez por cada uno de los 50 enlaces al hacer prefetch, lo descarga una única vez y lo reutiliza para todos, reduciendo drásticamente el tráfico de red que antes se desperdiciaba repitiendo el mismo contenido. Además, el prefetch es incremental: solo trae al caché del cliente las partes que todavía no tiene, y cancela la petición de prefetch de un enlace concreto si ese enlace sale del viewport antes de completarse, evitando gastar ancho de banda en rutas que el usuario probablemente no va a visitar.",
+      "resumen": "Deduplicación de layouts: el layout compartido se descarga una vez y se reutiliza para los 50 enlaces. Además, el prefetch es incremental y se cancela si el enlace sale de la vista.",
+      "test": {
+        "enunciado": "Una página tiene 50 enlaces a productos que comparten layout. ¿Qué hace el prefetch de Next.js 16?",
+        "correcta": 3,
+        "opciones": [
+          {
+            "texto": "Descarga el layout 50 veces, una por enlace, para tenerlo listo.",
+            "porque": "Eso era el desperdicio que se corrige: repetir el mismo contenido por cada enlace."
+          },
+          {
+            "texto": "Desactiva el prefetch cuando hay más de 20 enlaces en la página.",
+            "porque": "No hay un tope así; lo que cambia es cómo se deduplica lo que se descarga."
+          },
+          {
+            "texto": "Descarga todas las páginas de producto enteras al cargar.",
+            "porque": "El prefetch es incremental y solo trae lo que falta, no todo de golpe."
+          },
+          {
+            "texto": "Descarga el layout compartido una sola vez y lo reutiliza.",
+            "porque": "Es la deduplicación de layouts; además, el prefetch es incremental y se cancela si el enlace sale de la vista."
+          }
+        ]
+      },
       "etiquetas": ["app-router", "prefetching", "next-16"],
       "fuentes": [
         {

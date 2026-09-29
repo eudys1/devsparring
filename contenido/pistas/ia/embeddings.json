@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "ia-embeddings-01",
-      "version": 1,
+      "version": 2,
       "pista": "ia",
       "familia": "embeddings",
       "tipo": "definicion",
@@ -12,8 +12,8 @@
       "nivelMinimo": "junior",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Qué es un embedding?",
-        "en": "What is an embedding?"
+        "es": "Tu buscador interno no encuentra el documento de \"reembolsos\" cuando alguien busca \"devolver un pedido\". ¿Qué es un embedding y por qué lo resolvería?",
+        "en": "Your internal search can't find the \"refunds\" document when someone searches for \"return an order\". What is an embedding and why would it solve this?"
       },
       "rubrica": {
         "junior": [
@@ -27,6 +27,28 @@
         ]
       },
       "respuestaModelo": "Un embedding es un vector de números que representa el significado de un texto, una imagen u otro dato, generado por un modelo entrenado para esa tarea. Lo interesante no es el vector en sí, sino la geometría: elementos con significado parecido quedan cerca en ese espacio, aunque usen palabras distintas. Por ejemplo, 'coche' y 'automóvil' tendrían embeddings próximos aunque no compartan ni una letra, porque el modelo aprendió el contexto en el que aparecen. Esa propiedad es la que permite hacer búsqueda semántica en vez de búsqueda por coincidencia exacta de palabras.",
+      "test": {
+        "enunciado": "¿Qué propiedad de los embeddings permite hacer búsqueda semántica?",
+        "correcta": 1,
+        "opciones": [
+          {
+            "texto": "Que guardan el texto original comprimido para poder recuperarlo después palabra a palabra.",
+            "porque": "Un embedding no es una compresión reversible del texto; es un vector que representa su significado."
+          },
+          {
+            "texto": "Que textos de significado parecido quedan cerca, aunque usen palabras distintas.",
+            "porque": "Por eso «coche» y «automóvil» salen próximos sin compartir letras, y se puede buscar por significado."
+          },
+          {
+            "texto": "Que cada palabra recibe siempre el mismo número en todos los modelos.",
+            "porque": "Cada modelo genera su propio espacio: los vectores de dos modelos distintos no son comparables entre sí."
+          },
+          {
+            "texto": "Que ordenan alfabéticamente los documentos.",
+            "porque": "El orden alfabético no dice nada del significado; la búsqueda semántica se basa en la cercanía entre vectores."
+          }
+        ]
+      },
       "etiquetas": ["embeddings", "fundamentos"],
       "fuentes": [
         {
@@ -64,6 +86,28 @@
         ]
       },
       "respuestaModelo": "La métrica más habitual es la similitud coseno, que mide el ángulo entre dos vectores en vez de la distancia entre sus puntos. Esto la hace más robusta que la distancia euclidiana cuando la magnitud del vector varía con la longitud del texto original: dos textos con el mismo significado pero distinta longitud pueden tener vectores de magnitud diferente pero orientación similar, y el coseno lo captura mejor. Muchas bases vectoriales, de hecho, normalizan los vectores de antemano para que la similitud coseno se pueda calcular como un simple producto punto, más barato de computar a gran escala.",
+      "test": {
+        "enunciado": "¿Por qué se usa tanto la similitud coseno para comparar embeddings?",
+        "correcta": 2,
+        "opciones": [
+          {
+            "texto": "Porque es la única métrica que admiten las bases vectoriales.",
+            "porque": "Admiten varias, como la distancia euclidiana o el producto escalar; el coseno es la habitual, no la única."
+          },
+          {
+            "texto": "Porque mide la distancia entre las letras de los textos originales.",
+            "porque": "Compara vectores, no letras; los textos ya no intervienen una vez calculados los embeddings."
+          },
+          {
+            "texto": "Porque mide el ángulo entre vectores y no le afecta su magnitud.",
+            "porque": "Dos textos con el mismo significado y distinta longitud pueden tener magnitudes distintas pero orientación parecida, y el coseno lo capta."
+          },
+          {
+            "texto": "Porque es mucho más rápida de calcular que cualquier otra métrica.",
+            "porque": "La velocidad no es el motivo: con vectores normalizados coincide con el producto escalar, que cuesta lo mismo."
+          }
+        ]
+      },
       "etiquetas": ["embeddings", "similitud"],
       "fuentes": [
         {
@@ -100,6 +144,7 @@
         ]
       },
       "respuestaModelo": "Un caso claro es la detección de tickets de soporte duplicados o muy similares: se genera el embedding de cada ticket nuevo y se compara contra los recientes, marcando como posible duplicado cualquiera que supere un umbral de similitud coseno. Otros casos habituales son la búsqueda semántica de productos en un catálogo, el clustering de opiniones de usuarios para detectar temas recurrentes, o sistemas de recomendación que buscan ítems con embedding cercano al historial del usuario. En todos estos casos no hay generación de texto de por medio, solo comparación y agrupación de vectores.",
+      "resumen": "Detectar tickets de soporte duplicados comparando el embedding de cada nuevo con los recientes. También búsqueda semántica en un catálogo, clustering de opiniones y recomendaciones.",
       "etiquetas": ["embeddings", "casos-de-uso"],
       "fuentes": [
         {
@@ -137,6 +182,7 @@
         ]
       },
       "respuestaModelo": "Los vectores de dos modelos de embeddings distintos no son comparables entre sí, aunque tengan la misma dimensión: cada modelo aprendió su propio espacio vectorial con su propia distribución, así que la distancia entre un vector del modelo A y uno del modelo B no tiene ningún significado. El síntoma en producción es que las búsquedas empiezan a devolver resultados sin relación aparente con la consulta, y suele pasar tras cambiar de modelo de embeddings sin darse cuenta de que el índice antiguo quedó mezclado. La solución es re-indexar todo el contenido con el modelo nuevo antes de servir tráfico, no simplemente añadir los vectores nuevos al índice existente.",
+      "resumen": "Los vectores de modelos distintos no son comparables aunque tengan la misma dimensión: cada modelo tiene su espacio. Las búsquedas devuelven basura. La solución es reindexar todo con un solo modelo.",
       "etiquetas": ["embeddings", "produccion"],
       "fuentes": [
         {

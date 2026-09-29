@@ -28,6 +28,7 @@
         ]
       },
       "respuestaModelo": "Cuando ocurre un evento en un elemento del DOM, por defecto recorre dos fases: primero capturing, donde el evento baja desde el `document` hasta el elemento donde realmente ocurrió, y luego bubbling, donde sube de vuelta desde ese elemento hasta sus ancestros. La mayoría de los listeners escuchan en la fase de bubbling por defecto. Event delegation aprovecha el bubbling: en vez de poner un listener en cada elemento hijo, se pone uno solo en un ancestro común, y dentro del listener se comprueba `event.target` para saber en qué hijo concreto ocurrió el clic. Esto es más eficiente (un listener en vez de miles) y funciona automáticamente con elementos añadidos dinámicamente después, sin tener que registrar un listener nuevo cada vez.",
+      "resumen": "Un evento baja desde `document` hasta el elemento (capturing) y luego sube por sus ancestros (bubbling). La delegación aprovecha el bubbling: un solo listener en el padre atiende a todos los hijos.",
       "test": {
         "enunciado": "¿En qué se apoya la delegación de eventos?",
         "correcta": 1,
@@ -87,6 +88,7 @@
         ]
       },
       "respuestaModelo": "El atributo es lo que está escrito literalmente en el HTML (`<input value=\"hola\">`), mientras que la propiedad es el valor actual del objeto DOM en JavaScript (`elemento.value`), y ambos pueden desincronizarse: si el usuario escribe en el input, `elemento.value` refleja lo que escribió, pero `elemento.getAttribute('value')` sigue devolviendo el valor original del HTML. La mayoría de atributos generan una propiedad correspondiente automáticamente, aunque no siempre con el mismo nombre (el atributo `class` corresponde a la propiedad `className`) ni el mismo tipo (un atributo booleano como `disabled` se refleja como propiedad `true`/`false`, no como el string `\"disabled\"`). `getAttribute`/`setAttribute` acceden siempre al atributo tal cual, útil cuando se necesita el valor original del HTML en vez del estado actual.",
+      "resumen": "El atributo es lo escrito en el HTML; la propiedad, el valor vivo del objeto DOM. Se desincronizan: al escribir en un input cambia `value`, pero `getAttribute('value')` sigue dando el original.",
       "test": {
         "enunciado": "El usuario escribe en un `<input value=\"hola\">`. ¿Qué devuelve después `getAttribute('value')`?",
         "correcta": 0,
@@ -204,6 +206,28 @@
         ]
       },
       "respuestaModelo": "Los datos en `sessionStorage` duran mientras esa pestaña concreta esté abierta: sobreviven a recargar la página con F5, pero se borran en cuanto se cierra la pestaña. Abrir la misma URL en una pestaña nueva no hereda el `sessionStorage` de la primera, cada pestaña tiene el suyo propio aunque sea el mismo origen. Esto lo diferencia de `localStorage`, que persiste incluso después de cerrar y reabrir el navegador por completo, hasta que se borra explícitamente.",
+      "test": {
+        "enunciado": "¿Cuánto duran los datos guardados en `sessionStorage`?",
+        "correcta": 2,
+        "opciones": [
+          {
+            "texto": "Hasta que se cierra el navegador entero, en todas las pestañas del mismo sitio.",
+            "porque": "Van por pestaña: cada pestaña tiene el suyo, aunque sea el mismo origen."
+          },
+          {
+            "texto": "Para siempre, hasta que se borren a mano, como `localStorage`.",
+            "porque": "Esa es `localStorage`; `sessionStorage` se borra al cerrar la pestaña."
+          },
+          {
+            "texto": "Mientras esa pestaña siga abierta: sobreviven al F5 y se borran al cerrarla.",
+            "porque": "Abrir la misma URL en otra pestaña no hereda el `sessionStorage` de la primera."
+          },
+          {
+            "texto": "Hasta que el usuario recarga la página con F5.",
+            "porque": "Sobreviven a la recarga; se pierden al cerrar la pestaña."
+          }
+        ]
+      },
       "etiquetas": ["dom", "almacenamiento"],
       "fuentes": [
         {
@@ -241,6 +265,28 @@
         ]
       },
       "respuestaModelo": "Feature detection comprueba directamente si una funcionalidad concreta existe antes de usarla, por ejemplo `if ('fetch' in window)`, y actúa en consecuencia. Feature inference va un paso más allá y asume, sin comprobarlo, que si una API existe entonces otra relacionada también debería existir; es más frágil porque esa suposición puede dejar de cumplirse en el futuro. Usar el UA string (`navigator.userAgent`) para detectar el navegador es la técnica menos fiable de las tres: el string se puede falsificar, cambia de formato entre versiones, y no garantiza nada sobre qué funcionalidades soporta realmente ese navegador concreto. La práctica recomendada en código moderno es feature detection directa sobre la funcionalidad que se va a usar.",
+      "test": {
+        "enunciado": "¿Cuál es la forma más fiable de saber si puedes usar una API del navegador?",
+        "correcta": 1,
+        "opciones": [
+          {
+            "texto": "Leer `navigator.userAgent` y comprobar la versión del navegador.",
+            "porque": "Es la menos fiable: el string se puede falsificar y cambia entre versiones."
+          },
+          {
+            "texto": "Comprobar que existe antes de usarla, por ejemplo `if ('fetch' in window)`.",
+            "porque": "Es feature detection: preguntas por lo que necesitas, no por el navegador."
+          },
+          {
+            "texto": "Suponer que, si existe una API relacionada, la otra también existirá.",
+            "porque": "Eso es feature inference, y es frágil: esa suposición puede dejar de cumplirse."
+          },
+          {
+            "texto": "Probarla en Chrome, porque si funciona ahí funciona en todos los navegadores.",
+            "porque": "Cada motor implementa las APIs a su ritmo; lo que va en Chrome puede no existir en Safari."
+          }
+        ]
+      },
       "etiquetas": ["dom", "compatibilidad"],
       "fuentes": [
         {
@@ -278,6 +324,28 @@
         ]
       },
       "respuestaModelo": "La same-origin policy es una restricción de seguridad del navegador: un script solo puede leer libremente respuestas de recursos que compartan el mismo origen, entendido como la combinación exacta de esquema (http/https), dominio y puerto. Si una página en `https://a.com` intenta leer la respuesta de una petición a `https://b.com`, el navegador la bloquea por defecto, aunque la petición técnicamente se haya enviado. CORS es el mecanismo que permite relajar esta restricción de forma controlada: el servidor de `b.com` responde con cabeceras como `Access-Control-Allow-Origin` indicando explícitamente qué orígenes tienen permiso para leer su respuesta. Es importante notar que esta restricción la aplica el navegador para proteger al usuario, no el servidor: una petición hecha desde curl o desde un backend no está sujeta a la same-origin policy.",
+      "test": {
+        "enunciado": "¿Qué define un «mismo origen» en la same-origin policy?",
+        "correcta": 3,
+        "opciones": [
+          {
+            "texto": "Solo el dominio: `https://a.com` y `http://a.com` son el mismo origen.",
+            "porque": "El esquema también cuenta: http y https son orígenes distintos."
+          },
+          {
+            "texto": "El dominio y la ruta de la página.",
+            "porque": "La ruta no cuenta; lo que cuenta es esquema, dominio y puerto."
+          },
+          {
+            "texto": "Que las dos páginas estén en el mismo servidor físico.",
+            "porque": "El origen es una idea del navegador sobre la URL, no sobre dónde está el servidor."
+          },
+          {
+            "texto": "La combinación exacta de esquema, dominio y puerto.",
+            "porque": "Si cambia cualquiera, el navegador bloquea leer la respuesta salvo que el servidor lo permita con CORS."
+          }
+        ]
+      },
       "etiquetas": ["dom", "seguridad"],
       "fuentes": [
         {

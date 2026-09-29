@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "js-asincronia-01",
-      "version": 1,
+      "version": 2,
       "pista": "javascript",
       "familia": "asincronia",
       "tipo": "definicion",
@@ -12,8 +12,8 @@
       "nivelMinimo": "junior",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Qué es una Promise y cuáles son sus tres estados posibles? ¿Qué pasa si no manejas un `.catch()`?",
-        "en": "What is a Promise and what are its three possible states? What happens if you don't handle a `.catch()`?"
+        "es": "Un `fetch` falla en producción y en la consola solo aparece \"Uncaught (in promise)\". ¿Qué es una Promise, cuáles son sus tres estados posibles y qué pasa si no manejas el `.catch()`?",
+        "en": "A `fetch` fails in production and the console only shows \"Uncaught (in promise)\". What is a Promise, what are its three possible states, and what happens if you don't handle `.catch()`?"
       },
       "rubrica": {
         "junior": [
@@ -206,6 +206,7 @@
         ]
       },
       "respuestaModelo": "`debounce(fn, delay)` devuelve una función que, cada vez que se llama, cancela el temporizador pendiente con `clearTimeout` y programa uno nuevo con `setTimeout` para ejecutar `fn` pasados `delay` milisegundos; si llega otra llamada antes de que se cumpla el plazo, el ciclo se reinicia. El resultado es que `fn` solo se ejecuta cuando ha pasado `delay` ms sin nuevas llamadas. El caso de uso típico es un autocompletado de búsqueda o una validación de formulario mientras se escribe: sin debounce se dispararía una petición o un cálculo costoso en cada tecla pulsada. La variante \"leading\" ejecuta en la primera llamada y luego ignora hasta que pase el periodo de calma, útil cuando se quiere respuesta inmediata pero sin repetir la acción en ráfaga.",
+      "resumen": "Una función que en cada llamada cancela el temporizador pendiente con `clearTimeout` y programa otro: `fn` solo corre tras `delay` ms sin llamadas. Caso típico: un autocompletado mientras escribes.",
       "test": {
         "enunciado": "¿Qué hace un `debounce(fn, delay)` sobre un buscador que se dispara en cada tecla?",
         "correcta": 0,
@@ -266,6 +267,7 @@
         ]
       },
       "respuestaModelo": "`throttle(fn, interval)` garantiza que `fn` se ejecute como máximo una vez cada `interval` milisegundos, sin importar cuántas veces se llame mientras tanto: se puede implementar guardando el timestamp de la última ejecución y, en cada llamada, comparando si ya pasó el intervalo para ejecutar de nuevo o ignorar la llamada. La diferencia con `debounce` es que `debounce` espera a que pare la actividad para ejecutar una sola vez al final, mientras `throttle` sigue ejecutando periódicamente aunque la actividad no pare. El caso de uso típico es un handler de scroll o resize, donde se necesita reaccionar mientras el usuario interactúa, no solo al terminar. La variante \"trailing\" añade que la última llamada dentro de un intervalo también se ejecuta al final de ese intervalo, para no perder el estado más reciente.",
+      "resumen": "`throttle` ejecuta `fn` como mucho una vez cada `interval` ms, recordando cuándo fue la última. `debounce` espera a que pare la actividad; `throttle` ejecuta a ritmo fijo mientras dura (scroll, resize).",
       "test": {
         "enunciado": "¿Qué caso encaja mejor con throttle que con debounce?",
         "correcta": 3,

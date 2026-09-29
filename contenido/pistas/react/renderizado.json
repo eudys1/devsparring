@@ -28,6 +28,28 @@
         ]
       },
       "respuestaModelo": "La reconciliación es el proceso por el que React compara el árbol de elementos que acaba de calcular con el árbol anterior para decidir el mínimo de cambios reales que aplicar al DOM. En vez de hacer una comparación exhaustiva entre árboles (que sería O(n^3)), usa un algoritmo heurístico O(n) que compara nodo a nodo por tipo y posición: si dos elementos son del mismo tipo, React actualiza sus props; si el tipo cambia, desmonta el subárbol antiguo y monta uno nuevo desde cero, perdiendo su estado interno. Para listas, React necesita una forma de identidad estable entre renders y usa la prop `key`: si las keys coinciden entre el render viejo y el nuevo, reutiliza esa instancia (y su estado); si no hay keys o son inestables, cae al orden posicional, lo que puede mezclar el estado de elementos que en realidad son distintos.",
+      "test": {
+        "enunciado": "Si en un render un elemento cambia de tipo (de `<div>` a `<section>`), ¿qué hace React?",
+        "correcta": 1,
+        "opciones": [
+          {
+            "texto": "Actualiza solo las props que cambiaron y conserva el estado.",
+            "porque": "Eso lo hace cuando el tipo es el mismo; con otro tipo no reutiliza nada."
+          },
+          {
+            "texto": "Desmonta el subárbol antiguo y monta uno nuevo, perdiendo su estado.",
+            "porque": "El diffing heurístico O(n) compara por tipo y posición; un tipo nuevo es un árbol nuevo."
+          },
+          {
+            "texto": "Lanza un error: el tipo de un elemento no puede cambiar.",
+            "porque": "Cambiar el tipo es válido; solo implica montar de nuevo."
+          },
+          {
+            "texto": "Compara exhaustivamente los dos árboles, nodo a nodo, para reutilizar todo lo que pueda del subárbol anterior.",
+            "porque": "La comparación exhaustiva sería O(n³); React usa una heurística que no lo hace."
+          }
+        ]
+      },
       "etiquetas": ["renderizado", "reconciliacion", "diffing"],
       "fuentes": [
         {
@@ -65,6 +87,28 @@
         ]
       },
       "respuestaModelo": "El índice de un array cambia cada vez que la lista se reordena, se filtra o se le añade/quita un elemento, así que deja de identificar de forma estable al mismo dato entre un render y el siguiente. React usa la `key` para decidir qué instancia del componente reutilizar; si dos búsquedas distintas producen listas donde el mismo índice apunta a usuarios diferentes, React puede reutilizar el DOM y el estado interno del elemento equivocado: un input no controlado que conserva el texto del usuario anterior, una animación que salta de sitio, o un estado local que se queda pegado a la posición en vez de al dato. Usar el índice solo es seguro cuando la lista es completamente estática (nunca se reordena, filtra, inserta ni borra un elemento en medio), en cuyo caso el índice y la identidad del dato coinciden siempre.",
+      "test": {
+        "enunciado": "¿Cuándo es aceptable usar el índice del array como `key`?",
+        "correcta": 2,
+        "opciones": [
+          {
+            "texto": "Siempre que los elementos tengan inputs no controlados.",
+            "porque": "Es justo el caso peligroso: el input puede quedarse con el texto de otro elemento."
+          },
+          {
+            "texto": "Cuando la lista se filtra según lo que escribe el usuario.",
+            "porque": "Al filtrar, el mismo índice apunta a otro dato y React reutiliza el elemento equivocado."
+          },
+          {
+            "texto": "Cuando la lista es estática: no se reordena, ni se filtra, ni cambia de tamaño.",
+            "porque": "Ahí el índice identifica siempre al mismo elemento, así que no hay confusión."
+          },
+          {
+            "texto": "Nunca: React da error si usas el índice como `key`.",
+            "porque": "No da error; es un antipatrón cuando la lista cambia, no algo prohibido."
+          }
+        ]
+      },
       "etiquetas": ["renderizado", "keys"],
       "fuentes": [
         {
@@ -100,6 +144,29 @@
         ]
       },
       "respuestaModelo": "Antes de Fiber, React recorría el árbol de componentes de forma síncrona y recursiva: una vez empezado el render no se podía pausar, así que un árbol grande bloqueaba el hilo principal y el navegador no podía atender el teclado, el scroll ni las animaciones mientras tanto. Fiber reescribió el reconciler para trabajar en unidades de trabajo pequeñas e interrumpibles, cada una representada por un nodo 'fiber'; React puede pausar el trabajo a mitad, dejar que el navegador atienda algo más urgente (como una pulsación de teclado) y retomarlo después, o incluso descartarlo si ya no hace falta. Esta capacidad de priorizar e interrumpir es la base de lo que hoy se llama Concurrent React: `Suspense`, `useTransition` y `startTransition` existen porque Fiber hizo posible que React decida qué actualización es urgente y cuál puede esperar.",
+      "resumen": "Antes, el render era síncrono y no se podía pausar: un árbol grande bloqueaba el teclado y el scroll. Fiber lo parte en unidades pequeñas e interrumpibles y atiende primero lo urgente.",
+      "test": {
+        "enunciado": "¿Qué problema vino a resolver React Fiber?",
+        "correcta": 0,
+        "opciones": [
+          {
+            "texto": "Que un render grande bloqueaba el hilo y no se podía interrumpir.",
+            "porque": "Fiber trabaja en unidades pequeñas e interrumpibles y atiende antes lo urgente, como una pulsación."
+          },
+          {
+            "texto": "Que React no funcionaba en navegadores móviles.",
+            "porque": "Funcionaba; el problema era la fluidez con árboles grandes."
+          },
+          {
+            "texto": "Que los componentes de clase no podían tener estado propio y había que guardarlo todo en variables globales.",
+            "porque": "Las clases siempre tuvieron estado; Fiber reescribió el reconciler."
+          },
+          {
+            "texto": "Que el JSX se tenía que compilar en el navegador.",
+            "porque": "El JSX se compila en el build; no tiene que ver con Fiber."
+          }
+        ]
+      },
       "etiquetas": ["renderizado", "fiber", "concurrent-react"],
       "fuentes": [
         {
@@ -114,7 +181,7 @@
     },
     {
       "id": "react-renderizado-04",
-      "version": 1,
+      "version": 2,
       "pista": "react",
       "familia": "renderizado",
       "tipo": "definicion",
@@ -122,8 +189,8 @@
       "nivelMinimo": "junior",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Qué hace `key` distinto de una prop normal, y por qué React se queja si falta en un `.map()`?",
-        "en": "What makes `key` different from a normal prop, and why does React warn when it's missing in a `.map()`?"
+        "es": "React avisa \"Each child in a list should have a unique \"key\" prop\" en tu `.map()`. ¿Qué hace `key` distinto de una prop normal, y por qué React se queja si falta?",
+        "en": "React warns \"Each child in a list should have a unique \"key\" prop\" in your `.map()`. What makes `key` different from a regular prop, and why does React complain when it is missing?"
       },
       "rubrica": {
         "junior": [
@@ -137,6 +204,28 @@
         ]
       },
       "respuestaModelo": "`key` es metadata especial que usa el reconciler de React, no una prop que reciba el componente: dentro del componente no existe `props.key`. Su función es dar una identidad estable a cada elemento de una lista para que React sepa, entre un render y el siguiente, qué instancia corresponde a qué dato. Cuando falta, React no tiene forma de distinguir 'este elemento se movió' de 'este elemento es nuevo y el viejo desapareció', así que cae al orden posicional como aproximación; eso funciona bien si la lista nunca cambia de orden, pero produce bugs de estado o DOM mezclado en cuanto se reordena, filtra o inserta algo en medio, motivo por el que React avisa en consola cuando detecta un `.map()` sin `key`.",
+      "test": {
+        "enunciado": "¿Qué es cierto sobre la prop `key`?",
+        "correcta": 3,
+        "opciones": [
+          {
+            "texto": "El componente la recibe en `props.key` como cualquier otra prop.",
+            "porque": "No llega al componente: dentro, `props.key` no existe."
+          },
+          {
+            "texto": "Sirve para dar estilos distintos a cada elemento de la lista.",
+            "porque": "No tiene nada que ver con los estilos; es identidad para el reconciler."
+          },
+          {
+            "texto": "Solo hace falta en componentes de clase.",
+            "porque": "Hace falta en cualquier lista renderizada con `.map()`, sea cual sea el tipo de componente."
+          },
+          {
+            "texto": "La usa React para saber qué elemento es cuál entre renders; no llega al componente.",
+            "porque": "Sin ella, React cae al orden posicional y puede confundir un elemento movido con uno nuevo."
+          }
+        ]
+      },
       "etiquetas": ["renderizado", "keys"],
       "fuentes": [
         {

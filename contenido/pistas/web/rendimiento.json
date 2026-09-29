@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "web-rendimiento-01",
-      "version": 1,
+      "version": 2,
       "pista": "web",
       "familia": "rendimiento",
       "tipo": "definicion",
@@ -12,8 +12,8 @@
       "nivelMinimo": "mid",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Qué son los Core Web Vitals actuales (LCP, INP, CLS) y qué significa cada uno?",
-        "en": "What are the current Core Web Vitals (LCP, INP, CLS) and what does each one mean?"
+        "es": "Search Console marca tu landing como \"necesita mejorar\" en Core Web Vitals. ¿Qué son los Core Web Vitals actuales (LCP, INP, CLS) y qué mide cada uno?",
+        "en": "Search Console flags your landing page as \"needs improvement\" on Core Web Vitals. What are the current Core Web Vitals (LCP, INP, CLS) and what does each measure?"
       },
       "rubrica": {
         "junior": [
@@ -27,6 +27,28 @@
         ]
       },
       "respuestaModelo": "LCP (Largest Contentful Paint) mide cuánto tarda en pintarse el elemento más grande visible en pantalla, como proxy de la velocidad de carga percibida; se considera bueno por debajo de 2.5 segundos. INP (Interaction to Next Paint) mide la latencia de cualquier interacción del usuario durante toda la visita a la página, no solo la primera como hacía la métrica FID a la que sustituyó, y se considera bueno por debajo de 200ms. CLS (Cumulative Layout Shift) mide cuánto se mueve visualmente el contenido de forma inesperada mientras la página carga o el usuario interactúa, con un buen valor por debajo de 0.1. Las tres se evalúan en el percentil 75 de usuarios reales recogido por CrUX (Chrome User Experience Report), no en un único test de laboratorio, porque lo que importa es la experiencia real agregada, no un caso aislado favorable.",
+      "test": {
+        "enunciado": "¿Qué mide INP, que sustituyó a FID en los Core Web Vitals?",
+        "correcta": 3,
+        "opciones": [
+          {
+            "texto": "El tiempo hasta que se pinta el elemento más grande de la pantalla.",
+            "porque": "Eso es LCP, la métrica de carga percibida."
+          },
+          {
+            "texto": "Cuánto se mueve el contenido de forma inesperada.",
+            "porque": "Eso es CLS, la estabilidad visual."
+          },
+          {
+            "texto": "Solo la latencia de la primera interacción de la visita.",
+            "porque": "Eso medía FID, justo la limitación que INP corrige."
+          },
+          {
+            "texto": "La latencia de las interacciones durante toda la visita.",
+            "porque": "No solo la primera; se considera bueno por debajo de 200 ms."
+          }
+        ]
+      },
       "etiquetas": ["rendimiento", "core-web-vitals"],
       "fuentes": [
         {
@@ -61,6 +83,29 @@
         ]
       },
       "respuestaModelo": "La causa más común es cargar imágenes o vídeos sin declarar `width`/`height` (o `aspect-ratio`), de forma que el navegador no reserva espacio para ellos y el contenido de alrededor salta en cuanto el recurso termina de cargar; se arregla declarando siempre esas dimensiones aunque el tamaño final se ajuste por CSS. La segunda causa habitual son las fuentes web sin `font-display` configurado, que provocan un reflow visible cuando la fuente personalizada sustituye a la fuente de respaldo con métricas distintas (FOUT); se mitiga con `font-display: swap` u optando por fuentes de respaldo con métricas similares. La tercera causa es contenido inyectado dinámicamente por encima del pliegue, como banners o anuncios que se cargan después del render inicial y empujan todo lo demás hacia abajo; se arregla reservando de antemano el espacio que ese contenido va a ocupar, aunque todavía no haya llegado.",
+      "resumen": "Imágenes o vídeos sin dimensiones (se arregla con `width`/`height` o `aspect-ratio`), fuentes web que cambian al cargar (`font-display` y fallback ajustado) y contenido que se inyecta arriba sin hueco reservado.",
+      "test": {
+        "enunciado": "¿Cuál es la causa más común de un CLS alto?",
+        "correcta": 1,
+        "opciones": [
+          {
+            "texto": "Un JavaScript demasiado grande que tarda en descargarse y bloquea el pintado de la página.",
+            "porque": "Afecta a la carga y a la interactividad, no a que el contenido salte."
+          },
+          {
+            "texto": "Imágenes o vídeos sin `width`/`height` ni `aspect-ratio`.",
+            "porque": "El navegador no reserva su hueco y todo salta cuando cargan; se arregla declarando las dimensiones."
+          },
+          {
+            "texto": "Un servidor lento que tarda en dar la primera respuesta.",
+            "porque": "Eso retrasa la carga (TTFB, LCP), pero no mueve lo que ya está pintado."
+          },
+          {
+            "texto": "Usar demasiadas clases de CSS en la página.",
+            "porque": "La cantidad de clases no provoca saltos; los provoca contenido que aparece sin espacio reservado."
+          }
+        ]
+      },
       "etiquetas": ["rendimiento", "cls", "core-web-vitals"],
       "fuentes": [
         {
@@ -97,6 +142,7 @@
         ]
       },
       "respuestaModelo": "El primer paso es medir antes de tocar nada: revisar logs con tiempos por etapa, usar `EXPLAIN ANALYZE` en la query si se sospecha de la base de datos, o levantar una traza con una herramienta de APM que desglose dónde se va el tiempo real dentro de esos 3 segundos. Con esos datos se separa el cuello de botella por categoría: ¿es red (latencia entre servicios), es base de datos (falta un índice, hay un N+1 escondido), es serialización (convertir un objeto enorme a JSON), o es el propio cliente esperando algo que no depende del servidor? Cada hipótesis se prueba y se descarta de forma individual con evidencia concreta, en vez de reescribir la query, cambiar el ORM y añadir cache todo a la vez, porque así no se sabe cuál de los cambios fue el que realmente arregló el problema ni si alguno lo empeoró.",
+      "resumen": "Medir antes de tocar: tiempos por etapa en los logs, `EXPLAIN ANALYZE` o una traza de APM. Luego probar una hipótesis cada vez: red, base de datos (índice, N+1), serialización o el cliente.",
       "etiquetas": ["rendimiento", "diagnostico", "backend"],
       "fuentes": [
         {

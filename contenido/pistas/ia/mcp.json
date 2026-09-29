@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "ia-mcp-01",
-      "version": 1,
+      "version": 2,
       "pista": "ia",
       "familia": "mcp",
       "tipo": "definicion",
@@ -12,8 +12,8 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Qué es el Model Context Protocol (MCP) y qué problema resuelve?",
-        "en": "What is the Model Context Protocol (MCP) and what problem does it solve?"
+        "es": "Usas tres asistentes de IA distintos y quieres que todos consulten tu base de datos interna sin escribir tres integraciones. ¿Qué es el Model Context Protocol (MCP) y qué problema resuelve?",
+        "en": "You use three different AI assistants and want all of them to query your internal database without writing three integrations. What is the Model Context Protocol (MCP) and what problem does it solve?"
       },
       "rubrica": {
         "junior": [
@@ -27,6 +27,28 @@
         ]
       },
       "respuestaModelo": "MCP es un estándar abierto, publicado por Anthropic, para conectar asistentes o modelos de IA con fuentes de datos y herramientas externas, como repositorios de código, bases de datos o APIs internas, de forma uniforme. Antes de MCP, cada combinación de modelo y herramienta necesitaba una integración a medida; con MCP se define un protocolo común, así que un mismo servidor MCP puede exponer una fuente de datos a cualquier cliente que hable ese protocolo, sin reescribir la integración por cada asistente de IA distinto que se quiera usar.",
+      "test": {
+        "enunciado": "¿Qué problema resuelve el Model Context Protocol (MCP)?",
+        "correcta": 0,
+        "opciones": [
+          {
+            "texto": "Que cada combinación de asistente y herramienta necesitaba su propia integración.",
+            "porque": "Con un protocolo común, un servidor MCP expone una fuente de datos a cualquier cliente que hable MCP."
+          },
+          {
+            "texto": "Que los modelos no sabían generar código.",
+            "porque": "MCP no trata de generar código: conecta modelos con datos y herramientas externas."
+          },
+          {
+            "texto": "Que las respuestas de los LLM eran demasiado lentas.",
+            "porque": "La latencia no es el problema que ataca; lo es la integración con herramientas."
+          },
+          {
+            "texto": "Que los modelos necesitaban reentrenarse cada vez que había que usar una API nueva.",
+            "porque": "Ni antes ni ahora se reentrena para usar una API; el problema era integrar cada par a mano."
+          }
+        ]
+      },
       "etiquetas": ["mcp", "fundamentos"],
       "fuentes": [
         {
@@ -64,6 +86,28 @@
         ]
       },
       "respuestaModelo": "En MCP, un servidor expone datos o funcionalidad concreta siguiendo el protocolo, por ejemplo acceso a un repositorio Git, a Slack o a una base de datos. Un cliente MCP, integrado dentro de la aplicación de IA (un editor, un agente de terminal), se conecta a uno o varios de esos servidores para darle al modelo acceso a esas capacidades. La ventaja es que la aplicación cliente no tiene que implementar cada integración desde cero: basta con hablar el protocolo MCP y puede conectarse a cualquier servidor existente que ya lo implemente, sea propio o de terceros.",
+      "test": {
+        "enunciado": "En MCP, ¿qué papel tiene el servidor y cuál el cliente?",
+        "correcta": 3,
+        "opciones": [
+          {
+            "texto": "El servidor aloja el modelo de IA y el cliente es el navegador del usuario final.",
+            "porque": "El servidor MCP no aloja el modelo: expone datos o herramientas, como un repositorio o una base de datos."
+          },
+          {
+            "texto": "El cliente expone las herramientas y el servidor las usa.",
+            "porque": "Es al revés: el servidor expone y el cliente, dentro de la app de IA, consume."
+          },
+          {
+            "texto": "Los dos hacen lo mismo y se turnan.",
+            "porque": "Tienen papeles distintos: uno ofrece capacidades y el otro las pone al alcance del modelo."
+          },
+          {
+            "texto": "El servidor expone datos o herramientas; el cliente, en la app de IA, se conecta.",
+            "porque": "Por ejemplo, un editor o un agente de terminal: basta con hablar MCP para usar cualquier servidor existente."
+          }
+        ]
+      },
       "etiquetas": ["mcp", "arquitectura"],
       "fuentes": [
         {
@@ -100,6 +144,28 @@
         ]
       },
       "respuestaModelo": "Tools son acciones que el modelo puede invocar, controladas por el modelo aunque normalmente sujetas a aprobación según las reglas de la aplicación. Resources son datos que la propia aplicación expone como contexto, y esa decisión la controla la app, no el modelo. Prompts son plantillas reutilizables que el usuario puede invocar explícitamente, así que ahí el control lo tiene la persona. Separar estas tres primitivas ayuda a razonar con claridad sobre quién decide qué en el sistema: qué puede iniciar el modelo por su cuenta, qué contexto decide inyectar la aplicación, y qué dispara explícitamente el usuario.",
+      "test": {
+        "enunciado": "En MCP, ¿quién controla cada primitiva: tools, resources y prompts?",
+        "correcta": 1,
+        "opciones": [
+          {
+            "texto": "El modelo controla las tres.",
+            "porque": "Solo las tools las inicia el modelo; resources y prompts los controlan la app y el usuario."
+          },
+          {
+            "texto": "Tools, el modelo; resources, la aplicación; prompts, el usuario.",
+            "porque": "Separarlo aclara quién puede iniciar qué, que es clave para razonar sobre la seguridad del sistema."
+          },
+          {
+            "texto": "Tools, el usuario; resources, el modelo; prompts, la aplicación.",
+            "porque": "Está cruzado: el modelo invoca tools, la app expone resources y el usuario invoca prompts."
+          },
+          {
+            "texto": "Todo lo controla el servidor MCP, sin intervención de nadie más.",
+            "porque": "El servidor ofrece las primitivas, pero quién las activa depende de cuál sea."
+          }
+        ]
+      },
       "etiquetas": ["mcp", "primitivas"],
       "fuentes": [
         {

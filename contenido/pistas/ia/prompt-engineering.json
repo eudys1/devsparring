@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "ia-prompt-engineering-01",
-      "version": 1,
+      "version": 2,
       "pista": "ia",
       "familia": "prompt-engineering",
       "tipo": "definicion",
@@ -12,8 +12,8 @@
       "nivelMinimo": "junior",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Qué es el prompt engineering y por qué no es magia sino una práctica de ingeniería?",
-        "en": "What is prompt engineering and why is it an engineering practice, not magic?"
+        "es": "Un compañero cambia el prompt de producción \"porque así suena mejor\" y nadie sabe si ha mejorado. ¿Qué es el prompt engineering y por qué es una práctica de ingeniería y no magia?",
+        "en": "A teammate changes the production prompt \"because it sounds better\" and nobody knows whether it improved. What is prompt engineering and why is it an engineering practice rather than magic?"
       },
       "rubrica": {
         "junior": [
@@ -27,6 +27,28 @@
         ]
       },
       "respuestaModelo": "El prompt engineering es el diseño deliberado e iterativo de las instrucciones que se dan a un modelo, su estructura, los ejemplos que incluye, las restricciones que fija, para obtener salidas más fiables. No es magia ni una frase mágica que se descubre por casualidad: se trata como cualquier otra pieza de software, se versiona, se prueba contra casos concretos representativos de la tarea real, y se mide su efecto con algún tipo de evaluación antes y después del cambio. Un equipo serio no cambia un prompt en producción por intuición, sino porque midió una mejora en un set de casos de prueba.",
+      "test": {
+        "enunciado": "¿Qué hace del prompt engineering una práctica de ingeniería?",
+        "correcta": 2,
+        "opciones": [
+          {
+            "texto": "Encontrar la frase mágica que hace que el modelo obedezca.",
+            "porque": "Justo lo contrario: no hay frases mágicas, hay iteración medida."
+          },
+          {
+            "texto": "Escribir prompts muy largos con todas las instrucciones posibles para cubrir cualquier caso.",
+            "porque": "La longitud no es rigor; un prompt se juzga por cómo rinde en casos reales."
+          },
+          {
+            "texto": "Que el prompt se versiona, se prueba con casos reales y se mide cada cambio.",
+            "porque": "Se trata como cualquier pieza de software: nadie serio cambia un prompt en producción sin evaluarlo."
+          },
+          {
+            "texto": "Usar siempre el modelo más caro disponible.",
+            "porque": "Elegir modelo es otra decisión; no convierte en ingeniería la forma de escribir y validar prompts."
+          }
+        ]
+      },
       "etiquetas": ["prompting", "fundamentos"],
       "fuentes": [
         {
@@ -64,6 +86,28 @@
         ]
       },
       "respuestaModelo": "Zero-shot es pedirle la tarea al modelo directamente, sin ningún ejemplo de cómo debe responder. Few-shot incluye en el propio prompt un puñado de ejemplos de entrada y salida deseada, para que el modelo infiera el patrón y lo replique. Few-shot suele mejorar la consistencia de formato en tareas concretas, por ejemplo cuando se necesita una salida en un formato estructurado muy específico, pero tiene un coste: cada ejemplo consume tokens, así que en tareas simples donde zero-shot ya funciona bien no compensa añadir ejemplos solo por costumbre.",
+      "test": {
+        "enunciado": "¿Qué diferencia hay entre few-shot y zero-shot prompting?",
+        "correcta": 0,
+        "opciones": [
+          {
+            "texto": "Few-shot pone ejemplos de entrada y salida en el prompt; zero-shot, ninguno.",
+            "porque": "Few-shot ayuda a fijar un formato concreto, a cambio de gastar tokens en cada ejemplo."
+          },
+          {
+            "texto": "Zero-shot usa un modelo sin entrenar.",
+            "porque": "El modelo es el mismo; lo que cambia es si el prompt lleva ejemplos."
+          },
+          {
+            "texto": "Few-shot reentrena el modelo con unos pocos ejemplos.",
+            "porque": "No hay reentrenamiento: los ejemplos van en el propio prompt y se olvidan al terminar."
+          },
+          {
+            "texto": "Zero-shot siempre da mejores resultados porque el prompt es más corto y más claro.",
+            "porque": "Depende de la tarea; en formatos muy específicos few-shot suele ser más consistente."
+          }
+        ]
+      },
       "etiquetas": ["prompting", "few-shot"],
       "fuentes": [
         {
@@ -100,6 +144,28 @@
         ]
       },
       "respuestaModelo": "Chain-of-thought consiste en pedir, o inducir, al modelo a razonar paso a paso antes de dar la respuesta final, en vez de saltar directamente a una conclusión. Ayuda especialmente en tareas que requieren varios pasos lógicos o aritméticos encadenados, donde el modelo tiende a cometer menos errores si expone el razonamiento intermedio. En los modelos de razonamiento más recientes, que ya dedican computación interna a pensar antes de responder, pedirlo explícitamente en el prompt aporta bastante menos que con los modelos anteriores, aunque sigue siendo útil para hacer el razonamiento visible y depurable.",
+      "test": {
+        "enunciado": "¿Cuándo aporta menos pedir chain-of-thought en el prompt?",
+        "correcta": 3,
+        "opciones": [
+          {
+            "texto": "En problemas aritméticos de varios pasos.",
+            "porque": "Ahí es donde más ayuda razonar paso a paso antes de responder."
+          },
+          {
+            "texto": "En tareas lógicas que encadenan varias deducciones.",
+            "porque": "También es su terreno: el modelo se equivoca menos si expone el razonamiento intermedio."
+          },
+          {
+            "texto": "Cuando la respuesta necesita ir justificada paso a paso ante quien la va a leer.",
+            "porque": "Justificar es un motivo para pedir el razonamiento, no para omitirlo."
+          },
+          {
+            "texto": "Con modelos de razonamiento, que ya piensan internamente antes de responder.",
+            "porque": "Esos modelos ya dedican cómputo a razonar; pedirlo explícitamente aporta bastante menos."
+          }
+        ]
+      },
       "etiquetas": ["prompting", "chain-of-thought"],
       "fuentes": [
         {

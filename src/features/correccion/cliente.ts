@@ -1,6 +1,7 @@
 // Llamada desde el navegador al route handler de corrección. La clave viaja en
 // el body por HTTPS, nunca en la URL.
 import type { Correccion } from './esquema-salida';
+import { leerAvance, type Avance } from './parcial';
 import type { EntradaCorreccion } from './prompt';
 
 export type PeticionCorreccion = {
@@ -31,21 +32,67 @@ export const MENSAJES: Record<string, string> = {
   sin_sesion: 'Tu sesión ha caducado. Vuelve a entrar.',
 };
 
-export async function pedirCorreccion(p: PeticionCorreccion): Promise<RespuestaCorreccion> {
+type Final =
+  | { ok: true; correccion: Correccion; modelo: string; versionRubrica: number }
+  | { ok: false; codigo: string };
+
+function fallo(codigo: string): RespuestaCorreccion {
+  return { ok: false, codigo, mensaje: MENSAJES[codigo] ?? MENSAJES.error_api ?? '' };
+}
+
+// La ruta responde en NDJSON mientras la IA escribe (ver route.ts); los errores
+// de antes de empezar llegan como JSON normal con su código.
+export async function pedirCorreccion(
+  p: PeticionCorreccion,
+  alAvanzar?: (a: Avance) => void,
+): Promise<RespuestaCorreccion> {
   const r = await fetch('/api/correccion', {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify(p),
-  });
-  const json = (await r.json().catch(() => null)) as
-    | { ok: true; correccion: Correccion; modelo: string; versionRubrica: number }
-    | { ok: false; codigo: string }
-    | null;
-  if (!json) return { ok: false, codigo: 'error_api', mensaje: MENSAJES.error_api ?? '' };
-  if (json.ok) return json;
-  return {
-    ok: false,
-    codigo: json.codigo,
-    mensaje: MENSAJES[json.codigo] ?? MENSAJES.error_api ?? '',
-  };
+  }).catch(() => null);
+  if (!r) return fallo('error_api');
+  if (!r.headers.get('content-type')?.includes('ndjson') || !r.body) {
+    const json = (await r.json().catch(() => null)) as Final | null;
+    if (!json) return fallo('error_api');
+    return json.ok ? json : fallo(json.codigo);
+  }
+
+  const lector = r.body.pipeThrough(new TextDecoderStream()).getReader();
+  let pendiente = '';
+  let texto = '';
+  let ultimo = '';
+  let final: Final | null = null;
+  for (;;) {
+    const { value, done } = await lector.read().catch(() => ({ value: undefined, done: true }));
+    if (done) break;
+    pendiente += value;
+    const lineas = pendiente.split('\n');
+    pendiente = lineas.pop() ?? '';
+    for (const linea of lineas) {
+      if (!linea) continue;
+      const evento = JSON.parse(linea) as { t: 'delta'; d: string } | ({ t: 'fin' } & Final);
+      if (evento.t === 'delta') {
+        texto += evento.d;
+        const avance = leerAvance(texto);
+        // Solo se avisa cuando cambia algo visible, no en cada token.
+        const clave = `${avance.tramo}:${avance.puntuacion ?? ''}`;
+        if (clave !== ultimo) {
+          ultimo = clave;
+          alAvanzar?.(avance);
+        }
+      } else {
+        final = evento;
+      }
+    }
+  }
+  if (!final) return fallo('error_api');
+  return final.ok
+    ? {
+        ok: true,
+        correccion: final.correccion,
+        modelo: final.modelo,
+        versionRubrica: final.versionRubrica,
+      }
+    : fallo(final.codigo);
 }
