@@ -1,7 +1,7 @@
 'use client';
 
 // Cara a cara: la misma pregunta con las dos varas enfrentadas. La columna que
-// juzga ahora es un bloque de azul tinta; la otra, un panel apagado. Lo que
+// juzga ahora es un bloque (canto azul y sombra dura); la otra, un panel apagado. Lo que
 // solo se le exige al senior se enciende con un barrido en vez de aparecer de
 // golpe. El conmutador está en la cabecera de la sección, no en una barra fija.
 import { enLinea } from '@/components/ui/Markdown';
@@ -16,7 +16,7 @@ export function CaraACara({ preguntas }: { preguntas: Tesis[] }) {
   return (
     <div>
       <p
-        className="text-[1.0625rem] font-medium leading-snug text-[var(--noche-tinta)] sm:text-[1.25rem]"
+        className="text-[1.0625rem] font-medium leading-snug text-[var(--tinta)] sm:text-[1.25rem]"
         dangerouslySetInnerHTML={{ __html: enLinea(p.texto) }}
       />
       <div className="mt-5 grid gap-3 md:grid-cols-2 md:items-start">

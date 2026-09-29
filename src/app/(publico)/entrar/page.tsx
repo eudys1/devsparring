@@ -15,7 +15,7 @@ export default async function Entrar({
       <Link href="/" className="mb-7 inline-block w-max">
         <Marca tamano="grande" />
       </Link>
-      <div id="contenido">
+      <main id="contenido">
         {error === 'enlace' ? (
           <p
             role="alert"
@@ -25,7 +25,7 @@ export default async function Entrar({
           </p>
         ) : null}
         <FormularioAcceso registro={modo === 'registro'} volver={volver ?? '/hoy'} />
-      </div>
+      </main>
     </div>
   );
 }

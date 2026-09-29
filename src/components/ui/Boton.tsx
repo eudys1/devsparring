@@ -6,12 +6,16 @@ import type { ButtonHTMLAttributes } from 'react';
 type Variante = 'esquina' | 'normal' | 'sutil' | 'peligro';
 type Tamano = 'normal' | 'grande' | 'pequeno';
 
+// Principal y normal llevan la sombra dura de globals.css (.boton-pri, .boton-sec):
+// se levantan al pasar el ratón y se hunden al pulsar. Sutil y peligro son
+// acciones secundarias y se quedan planas.
 const VARIANTES: Record<Variante, string> = {
-  esquina:
-    'bg-esquina text-esquina-tinta border-esquina shadow-[inset_0_1px_0_rgb(255_255_255/0.25)] hover:brightness-110 dark:hover:brightness-95',
-  normal: 'bg-papel-2 text-tinta border-linea-fuerte hover:border-tinta-3 hover:bg-papel',
-  sutil: 'bg-transparent text-tinta-2 border-transparent hover:bg-papel-2 hover:text-tinta',
-  peligro: 'bg-transparent text-mal border-mal/40 hover:bg-mal-suave',
+  esquina: 'boton boton-pri',
+  normal: 'boton boton-sec',
+  sutil:
+    'rounded-r border-2 border-transparent bg-transparent text-tinta-2 transition-[background-color,color,transform] duration-[140ms] ease-salida hover:bg-papel-2 hover:text-tinta active:scale-[0.97]',
+  peligro:
+    'rounded-r border-2 border-mal/50 bg-transparent text-mal transition-[background-color,transform] duration-[140ms] ease-salida hover:bg-mal-suave active:scale-[0.97]',
 };
 
 const TAMANOS: Record<Tamano, string> = {
@@ -22,10 +26,8 @@ const TAMANOS: Record<Tamano, string> = {
 
 export function estilosBoton(variante: Variante = 'normal', tamano: Tamano = 'normal'): string {
   return [
-    'inline-flex select-none items-center justify-center rounded-r border font-medium leading-none',
-    // Solo transform y opacidad, y solo las propiedades que cambian.
-    'transition-[transform,background-color,border-color,filter] duration-[140ms] ease-salida',
-    'active:scale-[0.97] disabled:pointer-events-none disabled:opacity-45',
+    'inline-flex select-none items-center justify-center font-semibold leading-none',
+    'disabled:pointer-events-none disabled:opacity-45',
     VARIANTES[variante],
     TAMANOS[tamano],
   ].join(' ');

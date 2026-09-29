@@ -93,7 +93,7 @@ export function Scorecard({ c, modelo }: { c: Correccion; modelo?: string }) {
           <h3 className="rotulo">Lo que diría quien aprueba</h3>
           <p className="mt-1.5 text-[0.875rem] text-tinta-2">{c.respuestaQueAprueba}</p>
           <p className="mt-3 text-[0.9375rem] text-tinta">
-            <span className="font-semibold text-esquina">Siguiente paso. </span>
+            <span className="font-semibold text-punto">Siguiente paso. </span>
             {c.siguientePaso}
           </p>
         </div>

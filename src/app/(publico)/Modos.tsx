@@ -16,12 +16,12 @@ function Linea({
 }) {
   const c =
     tono === 'apagado'
-      ? 'text-[var(--noche-tinta-2)]'
+      ? 'text-[var(--tinta-2)]'
       : tono === 'ok'
         ? 'text-ok'
         : tono === 'mal'
           ? 'text-mal'
-          : 'text-[var(--noche-tinta)]';
+          : 'text-[var(--tinta)]';
   return <span className={`block ${c}`}>{children}</span>;
 }
 
@@ -34,7 +34,7 @@ export function Modos({ conteo }: { conteo: Record<Modo, number> }) {
       cuerpo: (
         <div className="space-y-2 font-mono text-[0.75rem]">
           <Linea tono="apagado">¿Qué es un índice y cuándo empeora el rendimiento?</Linea>
-          <div className="h-px bg-[var(--noche-linea)]" />
+          <div className="h-px bg-[var(--linea)]" />
           <div className="grid grid-cols-[1fr_auto] items-center gap-3">
             <Linea tono="apagado">Corrección técnica</Linea>
             <span className="w-20">
@@ -106,7 +106,7 @@ export function Modos({ conteo }: { conteo: Record<Modo, number> }) {
             {['OFFSET', 'keyset', 'índice', 'cursor'].map((t) => (
               <span
                 key={t}
-                className="rounded-full border border-[var(--noche-linea)] px-2 py-0.5 text-[0.6875rem]"
+                className="rounded-[6px] border border-[var(--linea)] px-2 py-0.5 text-[0.6875rem]"
               >
                 {t}
               </span>
@@ -128,8 +128,8 @@ export function Modos({ conteo }: { conteo: Record<Modo, number> }) {
             ['R', 'Resultado'],
           ].map(([l, n]) => (
             <li key={l} className="grid grid-cols-[1.25rem_1fr] gap-2">
-              <span className="text-esquina">{l}</span>
-              <span className="text-[var(--noche-tinta-2)]">{n}</span>
+              <span className="text-punto">{l}</span>
+              <span className="text-[var(--tinta-2)]">{n}</span>
             </li>
           ))}
         </ul>
@@ -140,19 +140,20 @@ export function Modos({ conteo }: { conteo: Record<Modo, number> }) {
   return (
     <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
       {muestras.map(({ modo, ancho, cuerpo, explica }) => (
-        <article key={modo} className={`ficha-modo panel flex flex-col p-4 ${ancho}`}>
+        <article
+          key={modo}
+          className={`panel franja-modo m-${modo} flex flex-col overflow-hidden p-4 ${ancho}`}
+        >
           <header className="flex items-baseline justify-between gap-3">
-            <h3 className="cartel text-[1.5rem] text-[var(--noche-tinta)]">
+            <h3 className="display text-[1.375rem] text-[var(--tinta)]">
               {NOMBRE_MODO[modo].nombre}
             </h3>
-            <span className="tabular shrink-0 font-mono text-[0.6875rem] text-[var(--noche-tinta-2)]">
+            <span className="tabular shrink-0 font-mono text-[0.6875rem] text-[var(--tinta-2)]">
               {conteo[modo]} preg · {NOMBRE_MODO[modo].minutos}
             </span>
           </header>
-          <p className="mt-1.5 text-[0.875rem] leading-snug text-[var(--noche-tinta-2)]">
-            {explica}
-          </p>
-          <div className="hundido mt-3.5 flex-1 rounded-r border border-[var(--noche-linea)] p-3">
+          <p className="mt-1.5 text-[0.875rem] leading-snug text-[var(--tinta-2)]">{explica}</p>
+          <div className="hundido mt-3.5 flex-1 rounded-r border border-[var(--linea)] p-3">
             {cuerpo}
           </div>
         </article>

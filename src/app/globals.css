@@ -2,45 +2,81 @@
 
 /*
   Sistema de Devsparring. La dirección y el porqué de cada decisión están en
-  docs/diseno.md: metáfora de la tarjeta del juez, un solo acento (azul
-  esquina), neutros con sesgo azul, radios pequeños y movimiento con criterio.
-  Aquí solo viven los tokens y las primitivas que no son de un componente.
+  docs/diseno.md (cuarta vuelta, 29-09-2026): Cielo de día, noche azul con
+  tarjetas de papel, un color por modo, sombra honda en lo que se lee y sombra
+  dura en lo que se pulsa. Aquí solo viven los tokens y las primitivas que no
+  son de un componente.
 */
 
 :root {
-  /* Superficies: lienzo (página), papel (panel), papel-2 (elevado) */
-  --lienzo: #e9ebf0;
-  --papel: #f6f7fa;
-  --papel-2: #ffffff;
+  /* Superficies: lienzo (página), papel (tarjeta), papel-2 (campo, elevado) */
+  --lienzo: #d7eaff;
+  --papel: #ffffff;
+  --papel-2: #f3f8ff;
 
-  /* Tinta */
-  --tinta: #0f131b;
-  --tinta-2: #434b5c;
-  --tinta-3: #767f93;
+  /* Tinta: marino, no negro */
+  --tinta: #0f2140;
+  --tinta-2: #3a4c6a;
+  --tinta-3: #52637f;
 
   /* Líneas */
-  --linea: #d1d6e0;
-  --linea-fuerte: #a7b0c0;
+  --linea: #c5d6ec;
+  --linea-fuerte: #6a81a8;
 
-  /* El único acento */
-  --esquina: #2340ce;
+  /* La tinta de los bordes y de las sombras duras de lo que se pulsa */
+  --ink: #0f2140;
+
+  /* Lo principal (botón, foco) y el punto: el azul que marca lo importante */
+  --esquina: #0f2140;
   --esquina-tinta: #ffffff;
-  --esquina-suave: #dfe4fb;
+  --esquina-suave: #dbe9ff;
+  --punto: #1d5bd0;
+  --celeste: #5eb0ff;
 
   /* Veredicto. No son acento: solo dicen cómo ha ido */
-  --ok: #1c7a4b;
-  --ok-suave: #d9efe3;
-  --aviso: #96650f;
-  --aviso-suave: #f6ead2;
-  --mal: #b02a2a;
-  --mal-suave: #f7e0e0;
+  --ok: #177a4a;
+  --ok-suave: #d8f2e4;
+  --aviso: #8a5a00;
+  --aviso-suave: #fbeccd;
+  --mal: #b3261e;
+  --mal-suave: #fbe1de;
 
   /* Código: la misma superficie en los dos temas, porque es un editor */
-  --codigo-fondo: #161b25;
-  --codigo-tinta: #d7dce6;
+  --codigo-fondo: #10203f;
+  --codigo-tinta: #dbe6f7;
 
-  --radio: 3px;
-  --radio-2: 6px;
+  /* El carril de navegación */
+  --carril: #ffffff;
+  --carril-tinta: #0f2140;
+  --carril-tinta-2: #3a4c6a;
+  --carril-linea: #c5d6ec;
+  --carril-activo: #5eb0ff;
+  --carril-activo-tinta: #0f2140;
+
+  /* Un color por modo. Encima siempre va tinta oscura (--sobre-modo). */
+  --m-flash: oklch(0.74 0.15 245);
+  --m-verbal: oklch(0.78 0.13 170);
+  --m-kata: oklch(0.82 0.15 80);
+  --m-review: oklch(0.73 0.17 350);
+  --m-diseno: oklch(0.72 0.15 295);
+  --m-star: oklch(0.79 0.17 140);
+  --sobre-modo: #0f2140;
+  /* El reloj que se acaba, sobre el color del modo: fijos, no cambian con el tema */
+  --sobre-modo-aviso: #8a5a00;
+  --sobre-modo-mal: #b3261e;
+
+  /* Sombras: honda y suave en lo que se lee, dura en lo que se pulsa */
+  --sombra-tarjeta:
+    inset 0 1px 0 #ffffff, 0 28px 50px -28px rgb(20 60 130 / 0.5),
+    0 6px 14px -8px rgb(20 60 130 / 0.25);
+  --dura: 3px 3px 0 var(--ink);
+  --dura-h: 5px 5px 0 var(--ink);
+  --dura-pri: 3px 3px 0 var(--celeste);
+  --dura-pri-h: 5px 5px 0 var(--celeste);
+
+  /* Esquinas: botones y campos 9 px, tarjetas 16 px */
+  --radio: 9px;
+  --radio-2: 16px;
 
   /* Curvas y tiempos. Nunca rebote, nunca ease-in (docs/diseno.md) */
   --salida: cubic-bezier(0.23, 1, 0.32, 1);
@@ -52,52 +88,127 @@
   color-scheme: light;
 }
 
+/* Noche: el mismo azul, con color en el fondo en vez de grafito. Lo principal
+   pasa a celeste con tinta oscura. Las tarjetas siguen siendo de papel. */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    --lienzo: #0b0e14;
-    --papel: #141822;
-    --papel-2: #1b2130;
-    --tinta: #e8ebf2;
-    --tinta-2: #aab4c6;
-    --tinta-3: #7b8598;
-    --linea: #232b3a;
-    --linea-fuerte: #3a445a;
-    --esquina: #7b96ff;
-    --esquina-tinta: #080c16;
-    --esquina-suave: #1a2447;
-    --ok: #55c98a;
-    --ok-suave: #10301f;
-    --aviso: #dda850;
-    --aviso-suave: #352a12;
-    --mal: #ef7070;
-    --mal-suave: #3a1b1b;
-    --codigo-fondo: #0d1118;
-    --codigo-tinta: #d7dce6;
+    --lienzo: #132a55;
+    --papel: #1d3a6e;
+    --papel-2: #234377;
+    --tinta: #eef4ff;
+    --tinta-2: #b9cbeb;
+    --tinta-3: #97acd4;
+    --linea: #2f4d83;
+    --linea-fuerte: #6283ba;
+    --ink: #06122b;
+    --esquina: #5eb0ff;
+    --esquina-tinta: #06122b;
+    --esquina-suave: #20427a;
+    --punto: #7cc4ff;
+    --ok: #5fe0a0;
+    --ok-suave: #133d3a;
+    --aviso: #ffc861;
+    --aviso-suave: #3d3520;
+    --mal: #ff9a92;
+    --mal-suave: #4a2233;
+    --codigo-fondo: #0b1a38;
+    --carril: #0f2247;
+    --carril-tinta: #ffffff;
+    --carril-tinta-2: #a9bde2;
+    --carril-linea: #1d3566;
+    --carril-activo-tinta: #06122b;
+    --sombra-tarjeta:
+      inset 0 1px 0 #ffffff, 0 30px 60px -24px rgb(0 5 25 / 0.85), 0 6px 14px -6px rgb(0 5 25 / 0.5);
+    --dura-pri: 3px 3px 0 var(--ink);
+    --dura-pri-h: 5px 5px 0 var(--ink);
     color-scheme: dark;
   }
 }
-
 :root[data-theme='dark'] {
-  --lienzo: #0b0e14;
-  --papel: #141822;
-  --papel-2: #1b2130;
-  --tinta: #e8ebf2;
-  --tinta-2: #aab4c6;
-  --tinta-3: #7b8598;
-  --linea: #232b3a;
-  --linea-fuerte: #3a445a;
-  --esquina: #7b96ff;
-  --esquina-tinta: #080c16;
-  --esquina-suave: #1a2447;
-  --ok: #55c98a;
-  --ok-suave: #10301f;
-  --aviso: #dda850;
-  --aviso-suave: #352a12;
-  --mal: #ef7070;
-  --mal-suave: #3a1b1b;
-  --codigo-fondo: #0d1118;
-  --codigo-tinta: #d7dce6;
+  --lienzo: #132a55;
+  --papel: #1d3a6e;
+  --papel-2: #234377;
+  --tinta: #eef4ff;
+  --tinta-2: #b9cbeb;
+  --tinta-3: #97acd4;
+  --linea: #2f4d83;
+  --linea-fuerte: #6283ba;
+  --ink: #06122b;
+  --esquina: #5eb0ff;
+  --esquina-tinta: #06122b;
+  --esquina-suave: #20427a;
+  --punto: #7cc4ff;
+  --ok: #5fe0a0;
+  --ok-suave: #133d3a;
+  --aviso: #ffc861;
+  --aviso-suave: #3d3520;
+  --mal: #ff9a92;
+  --mal-suave: #4a2233;
+  --codigo-fondo: #0b1a38;
+  --carril: #0f2247;
+  --carril-tinta: #ffffff;
+  --carril-tinta-2: #a9bde2;
+  --carril-linea: #1d3566;
+  --carril-activo-tinta: #06122b;
+  --sombra-tarjeta:
+    inset 0 1px 0 #ffffff, 0 30px 60px -24px rgb(0 5 25 / 0.85), 0 6px 14px -6px rgb(0 5 25 / 0.5);
+  --dura-pri: 3px 3px 0 var(--ink);
+  --dura-pri-h: 5px 5px 0 var(--ink);
   color-scheme: dark;
+}
+
+/*
+  Papel. Tarjetas, paneles y bloques son papel claro en los dos temas: de
+  noche se remapean los tokens dentro, así las primitivas (campos, botones,
+  casillas) se pintan con tinta oscura sin saber dónde están.
+*/
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) :is(.tarjeta, .panel, .bloque) {
+    --papel: #f3f8ff;
+    --papel-2: #ffffff;
+    --tinta: #0f2140;
+    --tinta-2: #3a4c6a;
+    --tinta-3: #52637f;
+    --linea: #c5d6ec;
+    --linea-fuerte: #6a81a8;
+    --ink: #0f2140;
+    --esquina: #0f2140;
+    --esquina-tinta: #ffffff;
+    --esquina-suave: #dbe9ff;
+    --punto: #1d5bd0;
+    --ok: #177a4a;
+    --ok-suave: #d8f2e4;
+    --aviso: #8a5a00;
+    --aviso-suave: #fbeccd;
+    --mal: #b3261e;
+    --mal-suave: #fbe1de;
+    --dura-pri: 3px 3px 0 var(--celeste);
+    --dura-pri-h: 5px 5px 0 var(--celeste);
+    color-scheme: light;
+  }
+}
+:root[data-theme='dark'] :is(.tarjeta, .panel, .bloque) {
+  --papel: #f3f8ff;
+  --papel-2: #ffffff;
+  --tinta: #0f2140;
+  --tinta-2: #3a4c6a;
+  --tinta-3: #52637f;
+  --linea: #c5d6ec;
+  --linea-fuerte: #6a81a8;
+  --ink: #0f2140;
+  --esquina: #0f2140;
+  --esquina-tinta: #ffffff;
+  --esquina-suave: #dbe9ff;
+  --punto: #1d5bd0;
+  --ok: #177a4a;
+  --ok-suave: #d8f2e4;
+  --aviso: #8a5a00;
+  --aviso-suave: #fbeccd;
+  --mal: #b3261e;
+  --mal-suave: #fbe1de;
+  --dura-pri: 3px 3px 0 var(--celeste);
+  --dura-pri-h: 5px 5px 0 var(--celeste);
+  color-scheme: light;
 }
 
 @theme inline {
@@ -109,9 +220,12 @@
   --color-tinta-3: var(--tinta-3);
   --color-linea: var(--linea);
   --color-linea-fuerte: var(--linea-fuerte);
+  --color-ink: var(--ink);
   --color-esquina: var(--esquina);
   --color-esquina-tinta: var(--esquina-tinta);
   --color-esquina-suave: var(--esquina-suave);
+  --color-punto: var(--punto);
+  --color-celeste: var(--celeste);
   --color-ok: var(--ok);
   --color-ok-suave: var(--ok-suave);
   --color-aviso: var(--aviso);
@@ -120,8 +234,11 @@
   --color-mal-suave: var(--mal-suave);
   --color-codigo-fondo: var(--codigo-fondo);
   --color-codigo-tinta: var(--codigo-tinta);
+  --color-sobre-modo: var(--sobre-modo);
+  --color-sobre-modo-aviso: var(--sobre-modo-aviso);
+  --color-sobre-modo-mal: var(--sobre-modo-mal);
 
-  --font-display: var(--fuente-display), system-ui, sans-serif;
+  --font-display: var(--fuente-texto), system-ui, sans-serif;
   --font-sans: var(--fuente-texto), system-ui, sans-serif;
   --font-mono: var(--fuente-mono), ui-monospace, monospace;
 
@@ -150,21 +267,31 @@ h3 {
   text-wrap: balance;
 }
 
-/* La display es condensada: solo en titulares grandes, cifras y la marca */
-.display {
-  font-family: var(--fuente-display), system-ui, sans-serif;
-  font-weight: 700;
-  letter-spacing: -0.005em;
-  line-height: 0.95;
-}
+@layer components {
+  /* Titulares y cifras: la misma letra, en negrita cerrada */
+  .display {
+    font-family: var(--fuente-texto), system-ui, sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
 
-/* Etiqueta de dato: versalita monoespaciada. Encabeza bloques de información */
-.rotulo {
-  font-family: var(--fuente-mono), ui-monospace, monospace;
-  font-size: 0.6875rem;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-  color: var(--tinta-3);
+  /* Titular grande de portada y cabeceras */
+  .cartel {
+    font-family: var(--fuente-texto), system-ui, sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 0.98;
+  }
+
+  /* Etiqueta de dato: versalita monoespaciada. Encabeza bloques de información */
+  .rotulo {
+    font-family: var(--fuente-mono), ui-monospace, monospace;
+    font-size: 0.6875rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--tinta-3);
+  }
 }
 
 .tabular {
@@ -181,7 +308,7 @@ select:not(:disabled) {
 
 /* Foco visible en todo lo que se puede enfocar, en los dos temas */
 :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
-  outline: 2px solid var(--esquina);
+  outline: 3px solid var(--punto);
   outline-offset: 2px;
   border-radius: 2px;
 }
@@ -202,6 +329,177 @@ select:not(:disabled) {
   top: 8px;
 }
 
+/* ===========================================================================
+   Superficies
+   =========================================================================== */
+
+@layer components {
+  /* Tarjeta: papel con la sombra honda de la portada de D. Es lo que se lee. */
+  .tarjeta,
+  .panel {
+    border: 1px solid var(--linea);
+    border-radius: var(--radio-2);
+    background: var(--papel);
+    color: var(--tinta);
+    box-shadow: var(--sombra-tarjeta);
+  }
+  /* Superficie hundida donde se escribe o se enseña código */
+  .hundido {
+    background: var(--papel-2);
+    border: 2px solid var(--ink);
+    border-radius: var(--radio);
+  }
+
+  /* Bloque: lo que destaca en una pantalla (lo que toca repasar, el cierre de la
+   portada). Papel con un canto azul a la izquierda y sombra dura: se lee como
+   una ficha que pide que la pulses. */
+  .bloque {
+    background: var(--papel);
+    color: var(--tinta);
+    border: 2px solid var(--ink);
+    border-radius: var(--radio-2);
+    box-shadow:
+      inset 12px 0 0 var(--punto),
+      5px 5px 0 var(--ink);
+  }
+}
+
+/* El carril de la app: ancho por defecto, compacto si el usuario lo pliega */
+:root {
+  --ancho-carril: 248px;
+}
+:root[data-carril='compacto'] {
+  --ancho-carril: 92px;
+}
+.carril {
+  background: var(--carril);
+  color: var(--carril-tinta);
+  border-right: 1px solid var(--carril-linea);
+}
+.solo-compacto {
+  display: none;
+}
+[data-carril='compacto'] .solo-ancho {
+  display: none;
+}
+[data-carril='compacto'] .solo-compacto {
+  display: inline-block;
+}
+[data-carril='compacto'] .carril-cabeza {
+  margin-inline: 0.75rem;
+  text-align: center;
+}
+[data-carril='compacto'] .enlace-carril {
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: 0.5rem 0.125rem;
+  font-size: 0.6875rem;
+  text-align: center;
+}
+[data-carril='compacto'] .enlace-aviso {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.5rem;
+  margin: 0;
+}
+[data-carril='compacto'] .carril-cuenta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.5rem;
+}
+[data-carril='compacto'] .carril-acciones {
+  flex-direction: column;
+}
+[data-carril='compacto'] .carril-acciones > * {
+  flex: none;
+  width: 2.25rem;
+  padding-inline: 0;
+  justify-content: center;
+}
+
+/* Un color por modo: la clase pone --c y las piezas lo usan */
+.m-flash {
+  --c: var(--m-flash);
+}
+.m-verbal {
+  --c: var(--m-verbal);
+}
+.m-kata {
+  --c: var(--m-kata);
+}
+.m-review {
+  --c: var(--m-review);
+}
+.m-diseno {
+  --c: var(--m-diseno);
+}
+.m-star {
+  --c: var(--m-star);
+}
+@layer components {
+  /* Chip de modo: el color entero, tinta oscura y borde de tinta */
+  .chip-modo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.2rem 0.6rem;
+    border: 2px solid var(--ink);
+    border-radius: 8px;
+    background: var(--c, var(--papel-2));
+    color: var(--sobre-modo);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  /* ===========================================================================
+   Botones: sombra dura. Al pasar el ratón se levantan, al pulsar se hunden.
+   =========================================================================== */
+  .boton,
+  .boton-luz,
+  .boton-borde {
+    border: 2px solid var(--ink);
+    border-radius: var(--radio);
+    transition:
+      transform var(--t-pulsar) var(--salida),
+      box-shadow var(--t-pulsar) var(--salida),
+      background-color var(--t-hover) var(--salida);
+  }
+  .boton-pri,
+  .boton-luz {
+    background: var(--esquina);
+    color: var(--esquina-tinta);
+    box-shadow: var(--dura-pri);
+  }
+  .boton-sec,
+  .boton-borde {
+    background: var(--papel);
+    color: var(--tinta);
+    box-shadow: var(--dura);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .boton-pri:hover,
+    .boton-luz:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: var(--dura-pri-h);
+    }
+    .boton-sec:hover,
+    .boton-borde:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: var(--dura-h);
+    }
+  }
+  .boton-pri:active,
+  .boton-sec:active,
+  .boton-luz:active,
+  .boton-borde:active {
+    transform: translate(3px, 3px);
+    box-shadow: none;
+  }
+}
+
 /* Texto largo: preguntas, respuestas modelo, contexto con código */
 .prosa {
   max-width: 68ch;
@@ -216,7 +514,7 @@ select:not(:disabled) {
   background: var(--papel-2);
   border: 1px solid var(--linea);
   padding: 0.05em 0.3em;
-  border-radius: 2px;
+  border-radius: 4px;
   /* El código en línea puede ser largo: parte antes que salirse de la caja */
   white-space: break-spaces;
   overflow-wrap: anywhere;
@@ -297,26 +595,6 @@ select:not(:disabled) {
   }
 }
 
-/*
-  Movimiento reducido: se quita el desplazamiento, se conserva la opacidad,
-  que es la que comunica el cambio de estado.
-*/
-@media (prefers-reduced-motion: reduce) {
-  .revelar,
-  .al-ver {
-    animation: none;
-    transition-property: opacity;
-    transform: none;
-  }
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    scroll-behavior: auto !important;
-  }
-}
-
 /* Barra de desplazamiento discreta dentro de paneles */
 .scroll-fino {
   scrollbar-width: thin;
@@ -338,235 +616,45 @@ select:not(:disabled) {
   transform-origin: left center;
   animation: marcar 200ms var(--salida) both;
 }
-@media (prefers-reduced-motion: reduce) {
-  .casilla {
-    animation: none;
-  }
-}
 
 /* ===========================================================================
-   La noche y el bloque. Tercera vuelta (15-09-2026, ver docs/diseno.md):
-   la landing y el marcador de sesión viven en un mundo de noche donde la
-   profundidad la da la LUZ (un foco cenital detrás de todo, paneles con bisel,
-   brillo solo en lo activo) y la masa la da un BLOQUE de azul tinta que se usa
-   solo a lo grande: media pantalla del héroe, la columna que juzga, el carril
-   de la app. Nunca como detallito, nunca encima de un botón.
+   Portada
    =========================================================================== */
 
-:root {
-  --noche: #090c13;
-  --noche-2: #0f141e;
-  --noche-3: #161d2b;
-  --noche-linea: rgb(255 255 255 / 0.08);
-  --noche-linea-2: rgb(255 255 255 / 0.16);
-  --noche-tinta: #eef1f7;
-  --noche-tinta-2: #aab3c5;
-  --noche-tinta-3: #6f7a90;
-
-  /* El bloque: azul tinta, hondo y poco saturado. Se lee como superficie, no
-     como acento; el acento sigue siendo --esquina. */
-  --bloque: #1c2b74;
-  --bloque-2: #24378f;
-  --bloque-tinta: #eef1ff;
-  --bloque-tinta-2: #b4bfeb;
-  --bloque-linea: rgb(255 255 255 / 0.16);
-
-  /* Bisel de panel: luz arriba, sombra abajo. Distinto por tema. */
-  --bisel: inset 0 1px 0 rgb(255 255 255 / 0.7);
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) {
-    --bisel: inset 0 1px 0 rgb(255 255 255 / 0.06), 0 16px 40px -28px rgb(0 0 0 / 0.9);
+@layer components {
+  /* El "no sea" del titular: una pegatina con borde, sombra dura y algo torcida */
+  .pegatina {
+    display: inline-block;
+    padding: 0 0.14em 0.06em;
+    border: 3px solid var(--ink);
+    border-radius: 12px;
+    background: var(--celeste);
+    color: var(--sobre-modo);
+    box-shadow: 5px 5px 0 var(--ink);
+    transform: rotate(-2deg);
   }
-}
-:root[data-theme='dark'] {
-  --bisel: inset 0 1px 0 rgb(255 255 255 / 0.06), 0 16px 40px -28px rgb(0 0 0 / 0.9);
-}
 
-/*
-  Dentro de la noche, los tokens del tema se remapean a los de la noche: así las
-  primitivas (Peso, Casillas, Ficha, botones) se pintan bien aquí sin saber
-  dónde están, y el tema claro no cuela tinta oscura sobre fondo oscuro.
-*/
-.noche {
-  background: var(--noche);
-  color: var(--noche-tinta);
-  --lienzo: var(--noche);
-  --papel: var(--noche-2);
-  --papel-2: var(--noche-3);
-  --tinta: var(--noche-tinta);
-  --tinta-2: var(--noche-tinta-2);
-  --tinta-3: var(--noche-tinta-3);
-  --linea: var(--noche-linea);
-  --linea-fuerte: var(--noche-linea-2);
-  /* El acento de noche es un azul más claro y brilla; bg-esquina lo hereda */
-  --esquina: #5b86ff;
-  --esquina-tinta: #ffffff;
-  --esquina-suave: rgb(91 134 255 / 0.18);
-  --ok: #55c98a;
-  --ok-suave: #10301f;
-  --aviso: #dda850;
-  --aviso-suave: #352a12;
-  --mal: #ef7070;
-  --mal-suave: #3a1b1b;
-  --bisel: inset 0 1px 0 rgb(255 255 255 / 0.1), 0 24px 60px -30px rgb(0 0 0 / 0.9);
-  color-scheme: dark;
-}
-.noche .rotulo {
-  color: var(--noche-tinta-3);
-}
-
-/* El foco: una luz cálida que cae desde arriba, DETRÁS de todo. No tapa nada */
-.foco {
-  position: relative;
-  isolation: isolate;
-}
-.foco::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background:
-    radial-gradient(60% 40% at 62% -6%, rgb(255 241 214 / 0.14), transparent 70%),
-    radial-gradient(45% 30% at 18% 8%, rgb(91 134 255 / 0.12), transparent 70%);
-}
-
-/* Retícula de puntos que se apaga hacia abajo: papel milimetrado bajo el foco */
-.reticula {
-  background-image: radial-gradient(circle at 1px 1px, rgb(255 255 255 / 0.07) 1px, transparent 0);
-  background-size: 22px 22px;
-}
-.reticula-fundido {
-  -webkit-mask-image: linear-gradient(180deg, #000 0, transparent 900px);
-  mask-image: linear-gradient(180deg, #000 0, transparent 900px);
-}
-
-/* Grano de impresión: fijo y sin eventos, nunca dentro de algo que hace scroll */
-.grano::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: 40;
-  pointer-events: none;
-  opacity: 0.035;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='r'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23r)'/%3E%3C/svg%3E");
-}
-
-/* Panel con bisel: la luz le da arriba y proyecta sombra abajo */
-.panel {
-  border: 1px solid var(--noche-linea);
-  border-radius: var(--radio-2);
-  background: linear-gradient(180deg, var(--noche-3), var(--noche-2));
-  box-shadow: var(--bisel);
-}
-/* Panel hundido: el editor y las superficies donde se escribe */
-.hundido {
-  background: var(--noche);
-  box-shadow: inset 0 2px 12px rgb(0 0 0 / 0.6);
-}
-/* Tarjeta de la app: papel con bisel según el tema */
-.tarjeta {
-  border: 1px solid var(--linea);
-  border-radius: var(--radio);
-  background: var(--papel);
-  box-shadow: var(--bisel);
-}
-
-/* El bloque: masa de color, radio pequeño, luz en el canto de arriba */
-.bloque {
-  background: linear-gradient(180deg, var(--bloque-2), var(--bloque));
-  color: var(--bloque-tinta);
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.22),
-    0 40px 90px -50px rgb(28 43 116 / 0.9);
-  --tinta: var(--bloque-tinta);
-  --tinta-2: var(--bloque-tinta-2);
-  --tinta-3: var(--bloque-tinta-2);
-  --linea: var(--bloque-linea);
-  --linea-fuerte: rgb(255 255 255 / 0.4);
-  --papel: rgb(255 255 255 / 0.06);
-  --papel-2: rgb(255 255 255 / 0.1);
-  --esquina: #ffffff;
-  --esquina-tinta: var(--bloque);
-  --esquina-suave: rgb(255 255 255 / 0.14);
-  color-scheme: dark;
-}
-.bloque .rotulo {
-  color: var(--bloque-tinta-2);
-}
-/* La luna del bloque: un disco de luz en la esquina, detrás del contenido */
-.bloque-luna {
-  position: relative;
-  overflow: hidden;
-}
-.bloque-luna::before {
-  content: '';
-  position: absolute;
-  right: -140px;
-  top: -140px;
-  width: 460px;
-  height: 460px;
-  border-radius: 50%;
-  background: rgb(255 255 255 / 0.06);
-  pointer-events: none;
-}
-.bloque-luna > * {
-  position: relative;
-}
-
-/* Brillo: solo lo activo, y solo en la noche */
-.brillo {
-  box-shadow: 0 0 18px rgb(91 134 255 / 0.55);
-}
-.brillo-texto {
-  text-shadow: 0 0 40px rgb(91 134 255 / 0.55);
-}
-
-/* Botones de la noche. En reposo se ven como botones sin halo; al pasar el
-   ratón se aclaran y suben un píxel; al pulsar se encogen; el foco de teclado
-   lo pinta la regla global de focus-visible. */
-.boton-luz,
-.boton-borde {
-  transition:
-    transform var(--t-pulsar) var(--salida),
-    filter var(--t-hover) var(--salida),
-    background-color var(--t-hover) var(--salida),
-    border-color var(--t-hover) var(--salida);
-}
-.boton-luz {
-  background: linear-gradient(180deg, #5f88ff, #3a63e6);
-  color: #ffffff;
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.3);
-}
-.boton-borde {
-  border: 1px solid var(--noche-linea-2);
-  color: var(--noche-tinta);
-  background: rgb(255 255 255 / 0.03);
-}
-@media (hover: hover) and (pointer: fine) {
-  .boton-luz:hover {
-    filter: brightness(1.12);
-    transform: translateY(-1px);
+  /* El mazo: tarjetas apiladas y algo giradas, con la franja de su modo */
+  .mazo-carta {
+    transform: translateY(var(--y, 0)) rotate(var(--r, 0deg));
   }
-  .boton-borde:hover {
-    background: rgb(255 255 255 / 0.08);
-    border-color: rgb(255 255 255 / 0.3);
-    transform: translateY(-1px);
+  .franja-modo {
+    border-top: 12px solid var(--c);
   }
-}
-.boton-luz:active,
-.boton-borde:active {
-  transform: scale(0.97);
-}
-
-/* Titular de cartel: condensada, enorme, interlineado cerrado */
-.cartel {
-  font-family: var(--fuente-display), system-ui, sans-serif;
-  font-weight: 700;
-  line-height: 0.88;
-  letter-spacing: -0.015em;
-  text-transform: uppercase;
+  .volteo {
+    transform-style: preserve-3d;
+    transition: transform 520ms var(--salida);
+  }
+  .volteo[data-lado='atras'] {
+    transform: rotateY(180deg);
+  }
+  .cara {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+  .cara-atras {
+    transform: rotateY(180deg);
+  }
 }
 
 /* Cinta de datos en movimiento constante: lineal, como manda el caso de uso */
@@ -585,21 +673,21 @@ select:not(:disabled) {
   animation-play-state: paused;
 }
 
-/* Tarjeta que se levanta al pasar el ratón, con el canto encendido */
-.ficha-modo {
-  transition:
-    transform var(--t-hover) var(--salida),
-    border-color var(--t-hover) var(--salida),
-    box-shadow var(--t-hover) var(--salida);
-}
-@media (hover: hover) and (pointer: fine) {
-  .ficha-modo:hover {
-    transform: translateY(-2px);
-    border-color: var(--noche-linea-2);
+@layer components {
+  /* Tarjeta que se levanta al pasar el ratón */
+  .ficha-modo {
+    transition:
+      transform var(--t-hover) var(--salida),
+      box-shadow var(--t-hover) var(--salida);
   }
-}
-.ficha-modo:active {
-  transform: scale(0.995);
+  @media (hover: hover) and (pointer: fine) {
+    .ficha-modo:hover {
+      transform: translateY(-3px);
+    }
+  }
+  .ficha-modo:active {
+    transform: translateY(1px);
+  }
 }
 
 /* Barrido: el titular no aparece, se descubre de izquierda a derecha */
@@ -608,7 +696,7 @@ select:not(:disabled) {
     clip-path: inset(0 100% 0 0);
   }
   to {
-    clip-path: inset(0 0 0 0);
+    clip-path: inset(-20% -10% -20% 0);
   }
 }
 .barrido {
@@ -637,7 +725,7 @@ select:not(:disabled) {
   width: 0.55em;
   height: 1.05em;
   vertical-align: -0.16em;
-  background: var(--esquina);
+  background: var(--punto);
   animation: latir 1.1s steps(1, end) infinite;
 }
 
@@ -656,7 +744,18 @@ select:not(:disabled) {
   animation: encender 320ms var(--salida) both;
 }
 
+/*
+  Movimiento reducido: se quita el desplazamiento, se conserva la opacidad,
+  que es la que comunica el cambio de estado.
+*/
 @media (prefers-reduced-motion: reduce) {
+  .revelar,
+  .al-ver {
+    animation: none;
+    transition-property: opacity;
+    transform: none;
+  }
+  .casilla,
   .cinta-pista,
   .barrido,
   .teselas > * {
@@ -665,5 +764,15 @@ select:not(:disabled) {
   .cursor {
     animation: none;
     opacity: 1;
+  }
+  .volteo {
+    transition: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
   }
 }

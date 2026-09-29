@@ -7,6 +7,7 @@ import { cargarBanco } from '@/features/preguntas/cargar';
 import { NIVELES, PISTAS, type Pista } from '@/features/preguntas/esquema';
 import { publicadas } from '@/features/preguntas/filtrar';
 import { NOMBRE_NIVEL, NOMBRE_PISTA, NOMBRE_TIPO } from '@/features/preguntas/nombres';
+import { ReportarPregunta } from '@/features/preguntas/ReportarPregunta';
 import { rubricaParaNivel } from '@/features/preguntas/rubrica';
 import { obtenerTarjetas } from '@/features/srs/db';
 import { State } from '@/features/srs/scheduler';
@@ -26,7 +27,7 @@ export async function generateMetadata({ params }: { params: Promise<{ pista: st
 const ESTADOS = {
   nueva: { texto: 'Nueva', tono: 'neutro', canto: 'border-l-linea' },
   vista: { texto: 'Vista', tono: 'neutro', canto: 'border-l-linea-fuerte' },
-  repasar: { texto: 'Por repasar', tono: 'esquina', canto: 'border-l-esquina' },
+  repasar: { texto: 'Por repasar', tono: 'esquina', canto: 'border-l-punto' },
   dominada: { texto: 'Dominada', tono: 'ok', canto: 'border-l-ok' },
 } as const;
 
@@ -137,6 +138,11 @@ export default async function PaginaPista({ params }: { params: Promise<{ pista:
                           <Markdown
                             texto={p.respuestaModelo}
                             className="mt-2 text-[0.9375rem] text-tinta-2"
+                          />
+                          <ReportarPregunta
+                            pregunta={p}
+                            donde="el temario"
+                            className="-ml-2 mt-3"
                           />
                         </div>
                         <div className="space-y-4">

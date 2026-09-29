@@ -80,7 +80,7 @@ export default async function Pistas() {
                   <span className="tabular mt-1 block font-mono text-[0.75rem] text-tinta-3">
                     {vistas} vistas
                     {porRepasar ? (
-                      <span className="text-esquina"> · {porRepasar} por repasar</span>
+                      <span className="text-punto"> · {porRepasar} por repasar</span>
                     ) : null}
                   </span>
                 </span>

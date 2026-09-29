@@ -8,16 +8,16 @@ export function Cinta({ textos }: { textos: string[] }) {
   const tira = [...textos, ...textos];
   return (
     <div
-      className="cinta relative overflow-hidden border-y border-[var(--noche-linea)] py-2.5"
+      className="cinta relative overflow-hidden border-y border-[var(--linea)] py-2.5"
       aria-hidden
     >
       <div className="cinta-pista flex w-max gap-8">
         {tira.map((t, i) => (
           <span
             key={i}
-            className="flex shrink-0 items-center gap-8 font-mono text-[0.8125rem] text-[var(--noche-tinta-2)]"
+            className="flex shrink-0 items-center gap-8 font-mono text-[0.8125rem] text-[var(--tinta-2)]"
           >
-            <span className="h-1 w-1 rounded-full bg-esquina" />
+            <span className="h-1 w-1 rounded-full bg-punto" />
             {t}
           </span>
         ))}

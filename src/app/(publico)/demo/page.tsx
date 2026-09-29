@@ -38,7 +38,7 @@ export default async function Demo() {
           </Link>
         </div>
       </header>
-      <div id="contenido">
+      <main id="contenido">
         <Motor
           sesion={{ id: 'demo', modo: 'flash', nivel: 'mid', idioma: 'es' }}
           preguntas={preguntas}
@@ -46,7 +46,7 @@ export default async function Demo() {
           esDueno={false}
           demo
         />
-      </div>
+      </main>
     </div>
   );
 }

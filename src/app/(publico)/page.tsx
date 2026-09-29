@@ -1,11 +1,12 @@
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, BookOpen, ClipboardList, Flame, Route, UserRound } from 'lucide-react';
 import Link from 'next/link';
 import { Marca } from '@/components/Marca';
 import { Revelar } from '@/components/Revelar';
+import { Casillas } from '@/components/ui/Dato';
 import { cargarBanco } from '@/features/preguntas/cargar';
 import { MODOS, PISTAS, type Modo, type Pregunta } from '@/features/preguntas/esquema';
 import { paraModo, publicadas } from '@/features/preguntas/filtrar';
-import { NOMBRE_PISTA } from '@/features/preguntas/nombres';
+import { NOMBRE_MODO, NOMBRE_PISTA } from '@/features/preguntas/nombres';
 import { elegirTesis } from '@/features/preguntas/tesis';
 import { varas } from '@/features/preguntas/varas';
 import { usuarioActual } from '@/lib/supabase/server';
@@ -123,111 +124,236 @@ export default async function Landing() {
 
   const enlaceEntrar = usuario ? '/hoy' : '/entrar';
 
+  const titulo2 = 'cartel mt-2 text-[clamp(1.9rem,4.2vw,3rem)] text-tinta';
+  const cabecera = 'flex flex-wrap items-end justify-between gap-4 border-b border-linea pb-6';
+
   return (
     <VaraProvider>
-      <div className="grano noche">
-        {/* ── El cartel: la noche con su foco, y el bloque a la derecha ──── */}
-        <div className="foco relative">
-          <div className="reticula reticula-fundido pointer-events-none absolute inset-0 -z-10" />
-          <div className="mx-auto max-w-[82rem] px-4 sm:px-6">
-            <header className="flex items-center justify-between gap-4 py-4 sm:py-5">
-              <Link href="/" aria-label="Devsparring, inicio">
-                <Marca />
+      <main className="overflow-x-clip">
+        {/* ── El cartel: el titular a la izquierda y el mazo a la derecha ─── */}
+        <div className="mx-auto max-w-[82rem] px-4 sm:px-6">
+          <header className="flex items-center justify-between gap-4 py-4 sm:py-5">
+            <Link href="/" aria-label="Devsparring, inicio">
+              <Marca />
+            </Link>
+            <nav
+              className="flex items-center gap-4 text-[0.875rem] text-tinta-2 sm:gap-6"
+              aria-label="Secciones"
+            >
+              <a href="#como" className="hidden hover:text-tinta md:inline">
+                Cómo funciona
+              </a>
+              <a href="#modos" className="hidden hover:text-tinta md:inline">
+                Modos
+              </a>
+              <a href="#banco" className="hidden hover:text-tinta md:inline">
+                El banco
+              </a>
+              <Link href="/demo" className="font-medium text-punto hover:text-tinta">
+                Ver la demo
               </Link>
-              <nav
-                className="flex items-center gap-4 font-mono text-[0.6875rem] uppercase tracking-[0.12em] text-[var(--noche-tinta-2)] sm:gap-6"
-                aria-label="Secciones"
+              <Link
+                href={enlaceEntrar}
+                className="boton boton-sec inline-flex min-h-9 items-center px-4 text-[0.875rem] font-semibold"
               >
-                <a href="#modos" className="hidden hover:text-[var(--noche-tinta)] md:inline">
-                  Modos
-                </a>
-                <a href="#banco" className="hidden hover:text-[var(--noche-tinta)] md:inline">
-                  El banco
-                </a>
-                <a href="#vara" className="hidden hover:text-[var(--noche-tinta)] md:inline">
-                  Cómo juzga
-                </a>
-                <Link href="/demo" className="text-esquina hover:text-[var(--noche-tinta)]">
-                  Ver la demo
+                {usuario ? 'Seguir' : 'Entrar'}
+              </Link>
+            </nav>
+          </header>
+
+          <section
+            id="contenido"
+            className="grid items-center gap-10 pb-14 pt-6 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12 lg:pb-20 lg:pt-10"
+            aria-label="Presentación"
+          >
+            <div>
+              <span className="inline-flex w-max items-center gap-2 rounded-[6px] border-2 border-ink bg-papel px-2.5 py-1 font-mono text-[0.6875rem] uppercase tracking-[0.1em] text-tinta shadow-[var(--dura)]">
+                <span className="h-1.5 w-1.5 rounded-full bg-punto" />
+                {lista.length} preguntas · {porPista.length} pistas · español
+              </span>
+
+              <h1 className="cartel mt-7 text-[clamp(2.6rem,6.2vw,4.75rem)] text-tinta">
+                <span className="barrido block">Que la primera</span>
+                <span className="barrido barrido-2 block">entrevista dura</span>
+                <span className="barrido barrido-3 block">
+                  <span className="pegatina">no sea</span> la de verdad
+                </span>
+              </h1>
+
+              <p className="mt-7 max-w-[50ch] text-[1.0625rem] leading-relaxed text-tinta-2">
+                Ya no te preguntan solo teoría. Te hacen escribir código con reloj, revisar código
+                ajeno y defender decisiones delante de alguien. Aquí entrenas las cuatro cosas, y te
+                juzgan con la vara de tu nivel.
+              </p>
+
+              <div className="mt-8 flex flex-wrap items-center gap-3">
+                <Link
+                  href="/demo"
+                  className="boton boton-pri group inline-flex min-h-12 items-center gap-2.5 px-5 text-[1rem] font-semibold"
+                >
+                  Probar sin cuenta
+                  <ArrowRight
+                    className="h-4 w-4 transition-transform duration-[160ms] ease-salida group-hover:translate-x-0.5"
+                    strokeWidth={2.25}
+                    aria-hidden
+                  />
                 </Link>
                 <Link
-                  href={enlaceEntrar}
-                  className="boton-borde inline-flex min-h-9 items-center rounded-full px-4 transition-transform duration-[140ms] ease-salida hover:bg-[var(--noche-2)] active:scale-[0.97]"
+                  href="/entrar?modo=registro"
+                  className="boton boton-sec inline-flex min-h-12 items-center px-5 text-[1rem] font-semibold"
                 >
-                  {usuario ? 'Seguir' : 'Entrar'}
+                  Crear cuenta
                 </Link>
-              </nav>
-            </header>
-
-            <section
-              id="contenido"
-              className="grid items-stretch gap-8 pb-14 pt-6 lg:grid-cols-2 lg:gap-10 lg:pb-20 lg:pt-10"
-              aria-label="Presentación"
-            >
-              <div className="flex flex-col justify-end">
-                <span className="inline-flex w-max items-center gap-2 rounded-full border border-[var(--noche-linea-2)] px-3 py-1 font-mono text-[0.625rem] uppercase tracking-[0.12em] text-[var(--noche-tinta-2)]">
-                  <span className="brillo h-1.5 w-1.5 rounded-full bg-esquina" />
-                  {lista.length} preguntas · {porPista.length} pistas · español · 2026
-                </span>
-
-                <h1 className="cartel mt-6 text-[clamp(3rem,8.5vw,6rem)] text-[var(--noche-tinta)]">
-                  <span className="barrido block">Que la primera</span>
-                  <span className="barrido barrido-2 block">entrevista dura</span>
-                  <span className="barrido barrido-3 block">
-                    <span className="brillo-texto text-esquina">no sea</span> la de verdad
-                  </span>
-                </h1>
-
-                <p className="mt-6 max-w-[50ch] text-[1.0625rem] leading-relaxed text-[var(--noche-tinta-2)]">
-                  Ya no te preguntan solo teoría. Te hacen escribir código con reloj, revisar código
-                  ajeno y defender decisiones delante de alguien. Aquí entrenas las cuatro cosas, y
-                  te juzgan con la vara de tu nivel.
-                </p>
-
-                <div className="mt-8 flex flex-wrap items-center gap-3">
-                  <Link
-                    href="/demo"
-                    className="boton-luz group inline-flex min-h-12 items-center gap-3 rounded-full pl-5 pr-2 text-[1rem] font-medium transition-transform duration-[140ms] ease-salida active:scale-[0.97]"
-                  >
-                    Probar sin cuenta
-                    <span className="grid h-9 w-9 place-items-center rounded-full bg-black/25 transition-transform duration-[160ms] ease-salida group-hover:translate-x-0.5">
-                      <ArrowRight className="h-4 w-4" strokeWidth={2} aria-hidden />
-                    </span>
-                  </Link>
-                  <Link
-                    href="/entrar?modo=registro"
-                    className="boton-borde inline-flex min-h-12 items-center rounded-full px-5 text-[1rem] transition-[transform,background-color] duration-[140ms] ease-salida hover:bg-[var(--noche-2)] active:scale-[0.97]"
-                  >
-                    Crear cuenta
-                  </Link>
-                </div>
               </div>
+            </div>
 
-              <RondaViva guiones={guiones} />
-            </section>
-          </div>
-
-          <Cinta textos={cinta} />
+            <RondaViva guiones={guiones} />
+          </section>
         </div>
 
-        {/* ── Asalto 01: los modos ──────────────────────────────────────── */}
+        <Cinta textos={cinta} />
+
+        {/* ── Asalto 01: cómo funciona, el recorrido y lo que hay dentro ──── */}
         <Revelar
           as="section"
           className="mx-auto max-w-[82rem] scroll-mt-6 px-4 py-16 sm:px-6 sm:py-20"
         >
-          <div
-            id="modos"
-            className="flex flex-wrap items-end justify-between gap-4 border-b border-[var(--noche-linea)] pb-6"
-          >
+          <div id="como" className={cabecera}>
             <div>
               <span className="rotulo">Asalto 01</span>
-              <h2 className="cartel mt-2 text-[clamp(2rem,5vw,3.5rem)] text-[var(--noche-tinta)]">
+              <h2 className={titulo2}>Cómo funciona una sesión</h2>
+            </div>
+            <p className="max-w-[44ch] text-[0.9375rem] text-tinta-2">
+              Cuatro pasos que se repiten. Lo que fallas vuelve antes y lo que dominas, más tarde.
+            </p>
+          </div>
+
+          <ol className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <li className="tarjeta flex flex-col gap-2.5 p-5">
+              <Paso n={1} />
+              <h3 className="text-[1.0625rem] font-bold text-tinta">Eliges modo y nivel</h3>
+              <p className="text-[0.9375rem] leading-snug text-tinta-2">
+                Seis modos y una vara: junior, mid o senior. La vara cambia lo que se te exige.
+              </p>
+              <p className="mt-auto flex flex-wrap gap-1.5 pt-2">
+                {(['flash', 'verbal', 'kata'] as const).map((m) => (
+                  <span key={m} className={`chip-modo m-${m}`}>
+                    {NOMBRE_MODO[m].nombre}
+                  </span>
+                ))}
+              </p>
+            </li>
+            <li className="tarjeta flex flex-col gap-2.5 p-5">
+              <Paso n={2} />
+              <h3 className="text-[1.0625rem] font-bold text-tinta">Respondes a tu manera</h3>
+              <p className="text-[0.9375rem] leading-snug text-tinta-2">
+                Según el modo, escribes una respuesta corta o desarrollada, programas con tests que
+                se ejecutan o buscas lo que falla en código ajeno.
+              </p>
+            </li>
+            <li className="tarjeta flex flex-col gap-2.5 p-5">
+              <Paso n={3} />
+              <h3 className="text-[1.0625rem] font-bold text-tinta">Te corrigen con tu vara</h3>
+              <p className="text-[0.9375rem] leading-snug text-tinta-2">
+                Contra la rúbrica de tu nivel. Con IA y tu propia clave, o marcando tú los criterios
+                que cubriste.
+              </p>
+              <dl className="mt-auto grid gap-1.5 pt-2 text-[0.8125rem] text-tinta-2">
+                {(
+                  [
+                    ['Corrección', 4],
+                    ['Trade-offs', 2],
+                  ] as const
+                ).map(([t, v]) => (
+                  <div key={t} className="grid grid-cols-[6rem_1fr_2rem] items-center gap-2">
+                    <dt>{t}</dt>
+                    <dd>
+                      <Casillas valor={v} de={5} tono="aviso" />
+                    </dd>
+                    <dd className="tabular text-right font-mono text-[0.75rem]">{v}/5</dd>
+                  </div>
+                ))}
+              </dl>
+            </li>
+            <li className="tarjeta flex flex-col gap-2.5 p-5">
+              <Paso n={4} />
+              <h3 className="text-[1.0625rem] font-bold text-tinta">Vuelve cuando toca</h3>
+              <p className="text-[0.9375rem] leading-snug text-tinta-2">
+                Repetición espaciada: cada acierto aleja la próxima vez que te la pregunta.
+              </p>
+              <p
+                role="img"
+                className="mt-auto flex items-center justify-between pt-3 font-mono text-[0.6875rem] text-tinta-3"
+                aria-label="Un ejemplo: vuelve hoy y luego en 1, 3, 8 y 21 días"
+              >
+                {['hoy', '1 d', '3 d', '8 d', '21 d'].map((t) => (
+                  <span key={t} className="flex flex-col items-center gap-1.5" aria-hidden>
+                    <span className="h-3 w-3 rounded-full border-2 border-ink bg-celeste" />
+                    {t}
+                  </span>
+                ))}
+              </p>
+            </li>
+          </ol>
+
+          <h3 className="display mt-12 text-[1.5rem] text-tinta">Qué hay dentro</h3>
+          <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+            {[
+              { Icono: Flame, t: 'Hoy', d: 'Lo que toca repasar, tu racha y cómo vas por pista.' },
+              {
+                Icono: BookOpen,
+                t: 'Practicar',
+                d: 'Eliges modo, nivel y pista, y empiezas una sesión.',
+              },
+              {
+                Icono: Route,
+                t: 'Temario',
+                d: 'Todas las preguntas por tema, con su respuesta y lo que se exige a cada nivel.',
+              },
+              {
+                Icono: ClipboardList,
+                t: 'Entrevistas',
+                d: 'Apuntas lo que te preguntaron en entrevistas reales.',
+              },
+              {
+                Icono: UserRound,
+                t: 'Cuenta',
+                d: 'Tu clave de API, el modelo que corrige y tu perfil.',
+              },
+            ].map(({ Icono, t, d }) => (
+              <li key={t} className="tarjeta flex flex-col gap-2 p-4">
+                <span
+                  className="grid h-9 w-9 place-items-center rounded-[8px] border-2 border-ink bg-papel-2 text-tinta"
+                  aria-hidden
+                >
+                  <Icono className="h-4 w-4" strokeWidth={2} />
+                </span>
+                <span className="text-[1rem] font-bold text-tinta">{t}</span>
+                <span className="text-[0.875rem] leading-snug text-tinta-2">{d}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-6 border-t border-linea pt-4 text-[0.9375rem] text-tinta-2">
+            <span className="font-semibold text-tinta">¿Sin clave de API?</span> También funciona:
+            ves la respuesta que aprueba y marcas tú lo que cubriste.
+          </p>
+        </Revelar>
+
+        {/* ── Asalto 02: los modos ──────────────────────────────────────── */}
+        <Revelar
+          as="section"
+          className="mx-auto max-w-[82rem] scroll-mt-6 px-4 py-16 sm:px-6 sm:py-20"
+        >
+          <div id="modos" className={cabecera}>
+            <div>
+              <span className="rotulo">Asalto 02</span>
+              <h2 className={titulo2}>
                 Seis modos,
                 <br />
                 cuatro entrevistas
               </h2>
             </div>
-            <p className="max-w-[42ch] text-[0.9375rem] text-[var(--noche-tinta-2)]">
+            <p className="max-w-[42ch] text-[0.9375rem] text-tinta-2">
               Cada modo entrena una parte distinta del proceso. Esto es lo que ves de verdad en cada
               uno, con las preguntas que hay hoy en el banco.
             </p>
@@ -237,15 +363,12 @@ export default async function Landing() {
           </div>
         </Revelar>
 
-        {/* ── Asalto 02: la vara ────────────────────────────────────────── */}
+        {/* ── Asalto 03: la vara ────────────────────────────────────────── */}
         <Revelar as="section" className="mx-auto max-w-[82rem] px-4 py-16 sm:px-6 sm:py-20">
-          <div
-            id="vara"
-            className="flex flex-wrap items-end justify-between gap-x-8 gap-y-5 border-b border-[var(--noche-linea)] pb-6"
-          >
+          <div id="vara" className={`${cabecera} gap-x-8 gap-y-5`}>
             <div>
-              <span className="rotulo">Asalto 02</span>
-              <h2 className="cartel mt-2 text-[clamp(2rem,5vw,3.5rem)] text-[var(--noche-tinta)]">
+              <span className="rotulo">Asalto 03</span>
+              <h2 className={titulo2}>
                 La misma pregunta,
                 <br />
                 dos varas
@@ -253,7 +376,7 @@ export default async function Landing() {
             </div>
             <div className="flex flex-col items-start gap-3">
               <ConmutadorVara etiqueta="Júzgala de" />
-              <p className="max-w-[42ch] text-[0.9375rem] text-[var(--noche-tinta-2)]">
+              <p className="max-w-[42ch] text-[0.9375rem] text-tinta-2">
                 Cambia la vara y la pregunta se relee con los criterios del otro nivel. Es lo que
                 hace el producto con tus respuestas.
               </p>
@@ -264,22 +387,25 @@ export default async function Landing() {
             <CaraACara preguntas={tesis} />
           </div>
 
-          <dl className="mt-8 grid gap-px overflow-hidden rounded-r2 border border-[var(--noche-linea)] bg-[var(--noche-linea)] sm:grid-cols-2 lg:grid-cols-4">
+          <dl className="tarjeta mt-8 grid overflow-hidden sm:grid-cols-2 lg:grid-cols-4">
             {[
               { t: 'Criterios de media', j: v.criteriosJunior, s: v.criteriosSenior, u: '' },
               { t: 'Piden complejidad', j: 0, s: v.complejidad, u: '%' },
               { t: 'Piden cómo lo probarías', j: 0, s: v.pruebas, u: '%' },
               { t: 'Piden cómo escala', j: 0, s: v.escala, u: '%' },
             ].map(({ t, j, s, u }) => (
-              <div key={t} className="bg-[var(--noche-2)] px-4 py-5">
-                <dt className="text-[0.8125rem] text-[var(--noche-tinta-2)]">{t}</dt>
+              <div
+                key={t}
+                className="border-b border-linea px-5 py-5 last:border-0 sm:border-r lg:border-b-0"
+              >
+                <dt className="text-[0.8125rem] text-tinta-2">{t}</dt>
                 <dd className="mt-2 flex items-baseline gap-3">
-                  <span className="tabular cartel text-[1.5rem] text-[var(--noche-tinta-3)]">
+                  <span className="tabular display text-[1.5rem] text-tinta-3">
                     {j}
                     {u}
                   </span>
-                  <span className="text-[var(--noche-tinta-3)]">/</span>
-                  <span className="tabular cartel brillo-texto text-[2.5rem] text-esquina">
+                  <span className="text-tinta-3">/</span>
+                  <span className="tabular display text-[2.5rem] text-punto">
                     {s}
                     {u}
                   </span>
@@ -287,22 +413,17 @@ export default async function Landing() {
               </div>
             ))}
           </dl>
-          <p className="mt-3 text-[0.8125rem] text-[var(--noche-tinta-3)]">
+          <p className="mt-3 text-[0.8125rem] text-tinta-3">
             Junior a la izquierda, senior a la derecha. Medido sobre el banco entero.
           </p>
         </Revelar>
 
-        {/* ── Asalto 03: el banco, una muestra y las cifras ─────────────── */}
+        {/* ── Asalto 04: el banco, una muestra y las cifras ─────────────── */}
         <Revelar as="section" className="mx-auto max-w-[82rem] px-4 py-16 sm:px-6 sm:py-20">
-          <div
-            id="banco"
-            className="flex flex-wrap items-end justify-between gap-4 border-b border-[var(--noche-linea)] pb-6"
-          >
+          <div id="banco" className={cabecera}>
             <div>
-              <span className="rotulo">Asalto 03</span>
-              <h2 className="cartel mt-2 text-[clamp(2rem,5vw,3.5rem)] text-[var(--noche-tinta)]">
-                El banco entero
-              </h2>
+              <span className="rotulo">Asalto 04</span>
+              <h2 className={titulo2}>El banco entero</h2>
             </div>
             <dl className="flex flex-wrap gap-x-8 gap-y-3">
               {[
@@ -313,12 +434,8 @@ export default async function Landing() {
                 <div key={t}>
                   <dt className="sr-only">{t}</dt>
                   <dd>
-                    <span className="tabular cartel brillo-texto block text-[2.5rem] leading-none text-esquina">
-                      {n}
-                    </span>
-                    <span className="mt-1 block text-[0.75rem] text-[var(--noche-tinta-2)]">
-                      {t}
-                    </span>
+                    <span className="tabular display block text-[2.5rem] text-punto">{n}</span>
+                    <span className="mt-1 block text-[0.75rem] text-tinta-2">{t}</span>
                   </dd>
                 </div>
               ))}
@@ -329,15 +446,13 @@ export default async function Landing() {
           </div>
         </Revelar>
 
-        {/* ── Asalto 04: lo que no hace ─────────────────────────────────── */}
+        {/* ── Asalto 05: lo que no hace ─────────────────────────────────── */}
         <Revelar as="section" className="mx-auto max-w-[82rem] px-4 py-16 sm:px-6 sm:py-20">
-          <div className="border-b border-[var(--noche-linea)] pb-6">
-            <span className="rotulo">Asalto 04</span>
-            <h2 className="cartel mt-2 text-[clamp(2rem,5vw,3.5rem)] text-[var(--noche-tinta)]">
-              Lo que no hace
-            </h2>
+          <div className="border-b border-linea pb-6">
+            <span className="rotulo">Asalto 05</span>
+            <h2 className={titulo2}>Lo que no hace</h2>
           </div>
-          <div className="mt-8 grid gap-3 md:grid-cols-3">
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
             {[
               {
                 t: 'No te sopla en la entrevista',
@@ -353,41 +468,50 @@ export default async function Landing() {
               },
             ].map(({ t, d }) => (
               <div key={t} className="panel px-5 py-6">
-                <h3 className="text-[1.125rem] font-semibold text-[var(--noche-tinta)]">{t}</h3>
-                <p className="mt-2 text-[0.9375rem] leading-snug text-[var(--noche-tinta-2)]">
-                  {d}
-                </p>
+                <h3 className="text-[1.125rem] font-bold text-tinta">{t}</h3>
+                <p className="mt-2 text-[0.9375rem] leading-snug text-tinta-2">{d}</p>
               </div>
             ))}
           </div>
         </Revelar>
 
-        {/* ── Cierre: el bloque otra vez, a lo grande ───────────────────── */}
+        {/* ── Cierre: el bloque, a lo grande ────────────────────────────── */}
         <Revelar as="section" className="mx-auto max-w-[82rem] px-4 pb-16 sm:px-6 sm:pb-20">
-          <div className="bloque bloque-luna rounded-r2 px-6 py-10 sm:px-10 sm:py-14">
+          <div className="bloque py-10 pl-10 pr-6 sm:py-14 sm:pl-14 sm:pr-10">
             <div className="flex flex-wrap items-end justify-between gap-8">
-              <h2 className="cartel text-[clamp(2.5rem,7vw,5rem)]">
+              <h2 className="cartel text-[clamp(2.1rem,5.5vw,3.75rem)] text-tinta">
                 Cinco minutos
                 <br />y sabes por dónde andas
               </h2>
               <Link
                 href="/demo"
-                className="group inline-flex min-h-14 items-center gap-3 rounded-full bg-white pl-6 pr-2.5 text-[1.0625rem] font-medium text-[var(--bloque)] transition-transform duration-[140ms] ease-salida active:scale-[0.97]"
+                className="boton boton-pri group inline-flex min-h-14 items-center gap-2.5 px-6 text-[1.0625rem] font-semibold"
               >
                 Probar sin cuenta
-                <span className="grid h-10 w-10 place-items-center rounded-full bg-[var(--bloque)]/15 transition-transform duration-[160ms] ease-salida group-hover:translate-x-0.5">
-                  <ArrowRight className="h-4 w-4" strokeWidth={2} aria-hidden />
-                </span>
+                <ArrowRight
+                  className="h-4 w-4 transition-transform duration-[160ms] ease-salida group-hover:translate-x-0.5"
+                  strokeWidth={2.25}
+                  aria-hidden
+                />
               </Link>
             </div>
           </div>
 
-          <footer className="mt-10 flex flex-wrap items-center justify-between gap-4 border-t border-[var(--noche-linea)] pt-6 font-mono text-[0.6875rem] uppercase tracking-[0.1em] text-[var(--noche-tinta-2)]">
+          <footer className="mt-10 flex flex-wrap items-center justify-between gap-4 border-t border-linea pt-6 font-mono text-[0.6875rem] uppercase tracking-[0.1em] text-tinta-2">
             <Marca />
             <p>Proyecto personal de Eudys · Licencia MIT</p>
           </footer>
         </Revelar>
-      </div>
+      </main>
     </VaraProvider>
+  );
+}
+
+// El número de paso: una ficha de tinta con la cifra, que es lo que ordena el recorrido.
+function Paso({ n }: { n: number }) {
+  return (
+    <span className="display grid h-11 w-11 place-items-center rounded-[10px] border-2 border-ink bg-esquina text-[1.375rem] text-esquina-tinta">
+      {n}
+    </span>
   );
 }

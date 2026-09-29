@@ -49,3 +49,26 @@ test('la sesión no ofrece combinaciones sin preguntas', async ({ page }) => {
   await page.goto('/demo');
   await expect(page.getByRole('heading', { level: 1 })).not.toBeEmpty();
 });
+
+test('el tema y el carril elegidos se aplican antes de pintar al recargar', async ({ page }) => {
+  // El guion de cabecera tiene que llegar como texto al HTML: si se exporta
+  // desde un fichero de cliente, el servidor pinta un error y se pierde la
+  // preferencia hasta que hidrata (29-09-2026).
+  await page.addInitScript(() => {
+    localStorage.setItem('devsparring.tema', 'oscuro');
+    localStorage.setItem('devsparring.carril', 'compacto');
+  });
+  await page.goto('/');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await expect(page.locator('html')).toHaveAttribute('data-carril', 'compacto');
+});
+
+test('cada pregunta de la demo se puede reportar como issue del repositorio', async ({ page }) => {
+  await page.goto('/demo');
+  const enlace = page.getByTestId('reportar-pregunta');
+  await expect(enlace).toHaveAttribute('target', '_blank');
+  await expect(enlace).toHaveAttribute(
+    'href',
+    /^https:\/\/github\.com\/eudys1\/devsparring\/issues\/new\?title=Pregunta\+mal%3A\+/,
+  );
+});

@@ -9,6 +9,8 @@ export function CerrarSesion({ className = '' }: { className?: string }) {
   return (
     <button
       type="button"
+      aria-label="Salir"
+      title="Salir"
       className={`inline-flex min-h-9 items-center gap-2 rounded-r border border-linea-fuerte bg-papel-2 px-3 text-[0.8125rem] text-tinta-2 transition-[background-color,border-color,color,transform] duration-[160ms] ease-salida hover:border-tinta-3 hover:text-tinta active:scale-[0.96] ${className}`}
       onClick={async () => {
         await supabaseNavegador().auth.signOut();
@@ -17,7 +19,7 @@ export function CerrarSesion({ className = '' }: { className?: string }) {
       }}
     >
       <LogOut className="h-4 w-4" strokeWidth={1.75} aria-hidden />
-      Salir
+      <span className="solo-ancho">Salir</span>
     </button>
   );
 }

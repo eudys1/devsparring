@@ -2,15 +2,12 @@
 
 import { Moon, Sun } from 'lucide-react';
 import { useSyncExternalStore } from 'react';
+import { LLAVE_TEMA as LLAVE } from './guiones';
 
 // Dos temas y un interruptor. Sin opción "sistema": la primera vez se arranca
 // con lo que prefiera el sistema y, en cuanto el usuario toca el interruptor,
 // manda él. La preferencia se guarda en el navegador.
 type Tema = 'claro' | 'oscuro';
-const LLAVE = 'devsparring.tema';
-
-// Se ejecuta antes de pintar para que no haya un destello del tema contrario.
-export const GUION_TEMA = `(function(){try{var t=localStorage.getItem('${LLAVE}');if(t==='claro')document.documentElement.dataset.theme='light';else if(t==='oscuro')document.documentElement.dataset.theme='dark';}catch(e){}})()`;
 
 const oyentes = new Set<() => void>();
 function suscribir(o: () => void) {

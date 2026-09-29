@@ -39,7 +39,7 @@ export default async function Practicar({
     : undefined;
 
   return (
-    <div className="mx-auto max-w-3xl">
+    <div className="mx-auto max-w-5xl">
       <p className="rotulo">Nueva sesión</p>
       <h1 className="display mt-1 text-[2.5rem] text-tinta">A qué te enfrentas hoy</h1>
       <p className="prosa mt-2 text-tinta-2">

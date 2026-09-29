@@ -47,21 +47,21 @@ export function NavEnlaces({
               key={href}
               href={href}
               aria-current={activa ? 'page' : undefined}
-              className={`flex min-h-[3.5rem] flex-col items-center justify-center gap-1 text-[0.6875rem] transition-colors duration-[140ms] ease-salida active:bg-white/10 ${
-                activa ? 'text-white' : 'text-[var(--bloque-tinta-2)]'
+              className={`flex min-h-[3.5rem] flex-col items-center justify-center gap-1 text-[0.6875rem] transition-colors duration-[140ms] ease-salida active:bg-[var(--esquina-suave)] ${
+                activa ? 'font-semibold text-[var(--carril-tinta)]' : 'text-[var(--carril-tinta-2)]'
               }`}
             >
-              <span className="relative">
+              <span
+                className={`relative grid h-7 w-11 place-items-center rounded-[8px] ${
+                  activa ? 'bg-[var(--carril-activo)] text-[var(--carril-activo-tinta)]' : ''
+                }`}
+              >
                 <Icono className="h-5 w-5" strokeWidth={activa ? 2.25 : 1.75} aria-hidden />
                 {aviso ? (
-                  <span className="absolute -right-1.5 -top-1 h-2 w-2 rounded-full bg-white" />
+                  <span className="absolute right-1 top-0 h-2 w-2 rounded-full border border-[var(--carril)] bg-punto" />
                 ) : null}
               </span>
-              <span className={activa ? 'font-semibold' : ''}>{texto}</span>
-              <span
-                className={`h-0.5 w-6 rounded-full ${activa ? 'bg-white' : 'bg-transparent'}`}
-                aria-hidden
-              />
+              <span>{texto}</span>
             </Link>
           );
         })}
@@ -73,8 +73,8 @@ export function NavEnlaces({
     <>
       {GRUPOS.map((g) => (
         <div key={g.titulo}>
-          <p className="rotulo mb-1.5 px-2.5">{g.titulo}</p>
-          <ul className="flex flex-col gap-0.5">
+          <p className="solo-ancho rotulo mb-1.5 px-2.5">{g.titulo}</p>
+          <ul className="flex flex-col gap-1">
             {g.entradas.map(({ href, texto, Icono }) => {
               const activa = activaEn(href);
               const aviso = href === '/practicar' && porRepasar > 0;
@@ -83,22 +83,21 @@ export function NavEnlaces({
                   <Link
                     href={href}
                     aria-current={activa ? 'page' : undefined}
-                    className={`relative flex min-h-10 items-center gap-2.5 rounded-r px-2.5 text-[0.9375rem] transition-[background-color,color] duration-[160ms] ease-salida ${
+                    title={texto}
+                    className={`enlace-carril relative flex min-h-10 items-center gap-2.5 rounded-r px-2.5 text-[0.9375rem] transition-[background-color,color] duration-[160ms] ease-salida ${
                       activa
-                        ? 'bg-white/15 font-semibold text-white'
-                        : 'text-[var(--bloque-tinta-2)] hover:bg-white/10 hover:text-white'
+                        ? 'bg-[var(--carril-activo)] font-semibold text-[var(--carril-activo-tinta)]'
+                        : 'text-[var(--carril-tinta-2)] hover:bg-[var(--esquina-suave)] hover:text-[var(--carril-tinta)]'
                     }`}
                   >
-                    {activa ? (
-                      <span
-                        className="absolute inset-y-2 -left-3 w-[3px] rounded-r-full bg-white"
-                        aria-hidden
-                      />
-                    ) : null}
-                    <Icono className="h-4 w-4" strokeWidth={activa ? 2.25 : 1.75} aria-hidden />
-                    {texto}
+                    <Icono
+                      className="h-4 w-4 shrink-0"
+                      strokeWidth={activa ? 2.25 : 1.75}
+                      aria-hidden
+                    />
+                    <span className="enlace-texto">{texto}</span>
                     {aviso ? (
-                      <span className="tabular ml-auto rounded-full bg-white px-1.5 py-px font-mono text-[0.6875rem] text-[var(--bloque)]">
+                      <span className="enlace-aviso tabular ml-auto rounded-full bg-[var(--carril-tinta)] px-1.5 py-px font-mono text-[0.6875rem] text-[var(--carril)]">
                         {porRepasar}
                       </span>
                     ) : null}

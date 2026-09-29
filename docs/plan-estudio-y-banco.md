@@ -282,3 +282,39 @@ Lo que no se traslada tal cual: la paleta melocotón, Fredoka y el tono amable.
 Opos-pt es para estudiar una oposición con calma; devsparring es para llegar
 afilado a una entrevista técnica. Una de las direcciones de los croquis puede
 explorar lo "cálido y táctil", pero no todas.
+
+**Hechos el 28-09-2026**, pendientes de que Eudys elija:
+https://claude.ai/artifact/DfCbs1VsRPJm9QDLP68PP2. Cuatro direcciones (Foco con
+color, Ring táctil, Marcador y Mazo) con nueve pantallas cada una: portada, cómo
+funciona, Hoy, Practicar, Tipo test, Explicar, repaso relámpago, Temario y móvil.
+La fuente está en el scratchpad de la sesión, no en el repo.
+
+**Segunda vuelta, 29-09-2026**: https://claude.ai/artifact/1g7dZzfJDctiRnByywJZMe.
+De la primera le gustaron A y D, pero las vio monótonas: casi toda la pantalla
+es un mismo tono oscuro, el color solo vive en chips pequeños y las sombras
+difuminadas no se ven sobre oscuro. Se quedó con: las tarjetas y el giro de D,
+que las tarjetas destaquen del fondo, la sombra dura de B (sin difuminar,
+desplazada) en Tipo test y Explicar, botones con esquina intermedia (ni cuadrados
+ni píldora) y el menú a elegir entre carril ancho, compacto o arriba. Tres
+variantes sobre la base de D, misma letra (Onest + JetBrains Mono): E Canto de
+color (sombra del color de su modo, amarillo para lo que se pulsa), F El modo
+tiñe (el fondo toma el color del modo de la sesión) y G Día táctil (la versión
+clara con borde de tinta). Pendiente de que elija.
+
+**Tercera vuelta, 29-09-2026**: https://claude.ai/artifact/MD4YxBJXdof29V9uyKqhy2. De la
+segunda le gustó la profundidad suave de la portada de D (la sombra dura solo en
+algunos sitios) y lo colorido de A y E, y señaló el problema de fondo: los
+colores predominantes eran oscuros y apagados, "un poco triste". Seis paletas
+sobre la estructura de D con regla de sombras (lo que se lee, sombra honda y
+suave; lo que se pulsa, sombra dura): Cielo, Menta, Limón, Lavanda, Lona azul y
+Noche viva. Pendiente de que elija.
+
+**Cuarta vuelta, 29-09-2026**: https://claude.ai/artifact/2caqYfs5vvq3p6J3hah74Q.
+Eligió Cielo para el tema claro, con dudas sobre el tono; no le gustaron el
+color ni la sombra difuminada del bloque "Toca repasar" ni el subrayador del
+"no sea" de la portada, y preguntó cómo sería el oscuro. Página para comparar
+por ejes y combinar: tono del fondo (Cielo, Hielo, Acero, Agua), bloque (papel
+con canto, marino, por modos, celeste plano; todos con sombra dura), titular
+(solo color, subrayado de línea, pegatina, sin énfasis) y tres oscuros con el
+mismo azul (Noche azul con tarjetas en relieve, la recomendada; Noche con papel;
+Crepúsculo). Pendiente de que elija.

@@ -89,3 +89,10 @@ se refuerza a partir de esta ronda:
 - **Descartado por ahora**: tarjetas de completar huecos y test de opciones
   (entrenan reconocimiento, no recuerdo); notificaciones (público adulto, ya
   ansioso; ver decisión de gamificación del 14-09-2026).
+
+## 29-09-2026: rediseño "Cielo y noche con papel" y aviso de preguntas mal
+
+| Decisión             | Qué                                                                                                                                                                                    | Por qué                                                                                                                                          |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Rediseño             | Cielo de día, noche azul con tarjetas de papel, un color por modo, sombra honda en lo que se lee y dura en lo que se pulsa, carril que se puede compactar. Detalle en `docs/diseno.md` | Eudys veía la versión anterior "monótona, un poco triste": colores oscuros y apagados, y el color encerrado en chips. Eligió cada eje en croquis |
+| "¿Está mal? Avísalo" | Cada pregunta, en la sesión y en el temario, lleva un enlace que abre un issue del repositorio con el id, la versión y dónde se vio ya rellenos                                        | El contenido se revisa por PR en el repo: el aviso va donde se arregla. Sin tabla, sin cuenta y sin moderar nada en la app                       |

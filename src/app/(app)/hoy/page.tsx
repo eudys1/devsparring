@@ -3,7 +3,7 @@ import { estilosBoton } from '@/components/ui/Boton';
 import { Ficha, Progreso } from '@/components/ui/Dato';
 import { obtenerPerfil } from '@/features/cuenta/db';
 import { cargarBanco } from '@/features/preguntas/cargar';
-import { PISTAS, type Pista } from '@/features/preguntas/esquema';
+import { MODOS, PISTAS, type Pista } from '@/features/preguntas/esquema';
 import { publicadas } from '@/features/preguntas/filtrar';
 import { NOMBRE_MODO, NOMBRE_PISTA } from '@/features/preguntas/nombres';
 import {
@@ -53,6 +53,10 @@ export default async function Hoy() {
   const saludo = hora < 13 ? 'Buenos días' : hora < 20 ? 'Buenas tardes' : 'Buenas noches';
   const primeraVencida = vencidas.map((id) => porId.get(id)).find(Boolean);
   const arranque = primeraVencida?.modos[0] ?? 'flash';
+  // Lo que toca, repartido por el modo en el que se repasa cada pregunta.
+  const reparto = MODOS.map(
+    (m) => [m, vencidas.filter((id) => porId.get(id)?.modos[0] === m).length] as const,
+  ).filter(([, n]) => n > 0);
 
   return (
     <div className="mx-auto max-w-4xl">
@@ -66,8 +70,10 @@ export default async function Hoy() {
 
       {/* La sesión que dejaste a medias: lo respondido ya está guardado */}
       {abierta ? (
-        <section className="tarjeta mt-6 grid grid-cols-[3px_1fr] overflow-hidden">
-          <span className="bg-esquina" aria-hidden />
+        <section
+          className={`tarjeta m-${abierta.modo} mt-6 grid grid-cols-[6px_1fr] overflow-hidden`}
+        >
+          <span className="bg-[var(--c)]" aria-hidden />
           <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
             <p className="text-[0.9375rem] text-tinta">
               <span className="rotulo mr-2">Sesión en curso</span>
@@ -82,15 +88,15 @@ export default async function Hoy() {
         </section>
       ) : null}
 
-      {/* La esquina: qué toca ahora, con una sola acción. Es el bloque de la
-          app: la cifra que manda tiene geometría, no solo dígito. */}
-      <section className="bloque bloque-luna mt-6 rounded-r2 px-5 py-5 sm:px-7 sm:py-6">
+      {/* La esquina: qué toca ahora, con una sola acción. La cifra manda y el
+          reparto por modos le da geometría. */}
+      <section className="bloque mt-6 py-5 pl-8 pr-5 sm:py-6 sm:pl-10 sm:pr-7">
         <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-4">
-          <div className="min-w-0 flex-1">
+          <div className="min-w-[min(100%,20rem)] flex-1">
             <p className="rotulo">{vencidas.length ? 'Toca repasar' : 'Sin repasos pendientes'}</p>
             {vencidas.length ? (
               <p className="mt-1 text-[1.125rem] leading-snug">
-                <span className="tabular cartel mr-2 text-[2.75rem] leading-none text-white">
+                <span className="tabular cartel mr-2 text-[3rem] leading-none text-tinta">
                   {vencidas.length}
                 </span>
                 {vencidas.length === 1 ? 'pregunta ha vuelto' : 'preguntas han vuelto'} a tocar.
@@ -103,17 +109,34 @@ export default async function Hoy() {
                   : 'Nada vencido. Buen momento para abrir una pista nueva.'}
               </p>
             )}
+            {reparto.length ? (
+              <>
+                <div className="mt-4 flex h-[18px] max-w-[30rem] gap-1" aria-hidden>
+                  {reparto.map(([m, n]) => (
+                    <span
+                      key={m}
+                      className={`m-${m} rounded-[5px] border-2 border-ink bg-[var(--c)]`}
+                      style={{ flex: n }}
+                    />
+                  ))}
+                </div>
+                <ul className="mt-3 flex flex-wrap gap-2" aria-label="Por modo">
+                  {reparto.map(([m, n]) => (
+                    <li key={m} className={`chip-modo m-${m}`}>
+                      {NOMBRE_MODO[m].nombre} <span className="tabular">{n}</span>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            ) : null}
             {primeraVencida ? (
-              <p className="mt-3 flex flex-wrap items-center gap-2 text-[0.875rem] text-[var(--bloque-tinta-2)]">
+              <p className="mt-3 flex flex-wrap items-center gap-2 text-[0.875rem] text-tinta-2">
                 <Ficha>{NOMBRE_PISTA[primeraVencida.pista]}</Ficha>
                 <span className="line-clamp-1">{primeraVencida.texto.es}</span>
               </p>
             ) : null}
           </div>
-          <Link
-            href={`/practicar?modo=${arranque}`}
-            className={`${estilosBoton('esquina', 'grande')} shadow-[0_12px_30px_-12px_rgb(0_0_0/0.6)]`}
-          >
+          <Link href={`/practicar?modo=${arranque}`} className={estilosBoton('esquina', 'grande')}>
             {vencidas.length ? 'Repasar ahora' : 'Nueva sesión'}
           </Link>
         </div>

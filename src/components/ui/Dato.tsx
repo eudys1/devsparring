@@ -4,7 +4,7 @@ type Nivel = 'junior' | 'mid' | 'senior';
 
 const TONOS = {
   neutro: 'border-linea-fuerte text-tinta-2',
-  esquina: 'border-esquina/50 text-esquina',
+  esquina: 'border-punto/60 text-punto',
   ok: 'border-ok/45 text-ok',
   aviso: 'border-aviso/45 text-aviso',
   mal: 'border-mal/45 text-mal',
@@ -24,7 +24,7 @@ export function Ficha({
 }) {
   return (
     <span
-      className={`inline-flex items-center rounded-full border px-2 py-0.5 font-mono text-[0.6875rem] uppercase leading-[1.4] tracking-[0.07em] ${TONOS[tono]} ${className}`}
+      className={`inline-flex items-center rounded-[6px] border px-2 py-0.5 font-mono text-[0.6875rem] uppercase leading-[1.4] tracking-[0.07em] ${TONOS[tono]} ${className}`}
     >
       {children}
     </span>
@@ -92,7 +92,7 @@ export function Casillas({
       {Array.from({ length: de }, (_, i) => (
         <span
           key={i}
-          className={`block h-2.5 flex-1 rounded-[1px] ${i < valor ? relleno : 'bg-linea'} ${
+          className={`block h-2.5 flex-1 rounded-[3px] ${i < valor ? relleno : 'bg-linea'} ${
             anima && i < valor ? 'casilla' : ''
           }`}
           style={anima && i < valor ? { animationDelay: `${i * 45}ms` } : undefined}
@@ -117,12 +117,12 @@ export function Progreso({
   const pct = (n: number) => `${total ? Math.round((n / total) * 100) : 0}%`;
   return (
     <span
-      className="relative block h-2.5 overflow-hidden rounded-[1px] bg-linea"
+      className="relative block h-2.5 overflow-hidden rounded-[3px] bg-linea"
       role="img"
       aria-label={`${etiqueta}: ${vistas} de ${total} vistas, ${dominadas} dominadas`}
     >
       <span className="absolute inset-y-0 left-0 bg-linea-fuerte" style={{ width: pct(vistas) }} />
-      <span className="absolute inset-y-0 left-0 bg-esquina" style={{ width: pct(dominadas) }} />
+      <span className="absolute inset-y-0 left-0 bg-punto" style={{ width: pct(dominadas) }} />
     </span>
   );
 }

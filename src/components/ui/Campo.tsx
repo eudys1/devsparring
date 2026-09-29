@@ -3,7 +3,7 @@ import type { InputHTMLAttributes, SelectHTMLAttributes, TextareaHTMLAttributes 
 // Los controles se ven como controles en reposo: fondo propio, borde de 1px con
 // contraste suficiente y un cambio claro al enfocar. Nada depende solo del color.
 const base =
-  'w-full rounded-r border border-linea-fuerte bg-papel-2 px-3 text-[0.9375rem] text-tinta placeholder:text-tinta-3 transition-[border-color,background-color] duration-[160ms] ease-salida hover:border-tinta-3 focus:border-esquina disabled:opacity-50';
+  'w-full rounded-r border-2 border-linea-fuerte bg-papel-2 px-3 text-[0.9375rem] text-tinta placeholder:text-tinta-3 transition-[border-color,background-color] duration-[160ms] ease-salida hover:border-ink focus:border-punto disabled:opacity-50';
 
 export function Rotulo({
   children,

@@ -1,23 +1,17 @@
 import type { Metadata } from 'next';
-import { Big_Shoulders, IBM_Plex_Mono, IBM_Plex_Sans } from 'next/font/google';
-import { GUION_TEMA } from '@/components/Tema';
+import { JetBrains_Mono, Onest } from 'next/font/google';
+import { GUIONES_CABECERA } from '@/components/guiones';
 import './globals.css';
 
-// Display condensada de cartel para titulares y cifras; Plex Sans y Plex Mono
-// son hermanas, así que el conjunto es una familia. Ver docs/diseno.md.
-const display = Big_Shoulders({
+// Onest para todo, del texto corrido a las cifras grandes (en negrita cerrada);
+// JetBrains Mono para los datos: reloj, asalto, puntuaciones. Ver docs/diseno.md.
+const texto = Onest({
   subsets: ['latin'],
-  weight: ['600', '700'],
-  variable: '--fuente-display',
-  display: 'swap',
-});
-const texto = IBM_Plex_Sans({
-  subsets: ['latin'],
-  weight: ['400', '500', '600'],
+  weight: ['400', '500', '600', '700', '800'],
   variable: '--fuente-texto',
   display: 'swap',
 });
-const mono = IBM_Plex_Mono({
+const mono = JetBrains_Mono({
   subsets: ['latin'],
   weight: ['400', '500'],
   variable: '--fuente-mono',
@@ -34,13 +28,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="es"
-      className={`${display.variable} ${texto.variable} ${mono.variable}`}
-      // El guion del tema escribe data-theme antes de que React hidrate.
+      className={`${texto.variable} ${mono.variable}`}
+      // Los guiones de cabecera escriben data-theme y data-carril antes de hidratar.
       suppressHydrationWarning
     >
       <head>
         {/* Antes de pintar, para que no haya destello del tema contrario */}
-        <script dangerouslySetInnerHTML={{ __html: GUION_TEMA }} />
+        <script dangerouslySetInnerHTML={{ __html: GUIONES_CABECERA }} />
       </head>
       <body>
         <a href="#contenido" className="saltar">

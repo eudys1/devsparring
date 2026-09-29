@@ -24,9 +24,9 @@ export function VaraProvider({ children }: { children: React.ReactNode }) {
 const PESOS: Record<Nivel, number> = { junior: 1, senior: 3 };
 
 /**
- * Conmutador junior / senior. Hereda los colores de donde se pinta: sobre la
- * noche, el activo es el acento; dentro de un bloque, el activo es blanco
- * (las variables --esquina las redefine cada superficie en globals.css).
+ * Conmutador junior / senior. Hereda los colores de donde se pinta: las
+ * tarjetas de papel remapean --esquina en globals.css, así que el activo se lee
+ * igual sobre el fondo y dentro de una tarjeta.
  */
 export function ConmutadorVara({ etiqueta = 'Se juzga de' }: { etiqueta?: string }) {
   const { vara, cambiar } = useVara();
@@ -34,7 +34,7 @@ export function ConmutadorVara({ etiqueta = 'Se juzga de' }: { etiqueta?: string
     <span
       role="group"
       aria-label={`${etiqueta}: junior o senior`}
-      className="inline-flex shrink-0 items-center gap-0.5 rounded-full border border-current/20 bg-black/20 p-0.5"
+      className="inline-flex shrink-0 items-center gap-0.5 rounded-r border-2 border-ink bg-papel-2 p-0.5 text-tinta shadow-[var(--dura)]"
     >
       <span className="hidden px-2.5 font-mono text-[0.625rem] uppercase tracking-[0.12em] opacity-70 sm:inline">
         {etiqueta}
@@ -47,9 +47,9 @@ export function ConmutadorVara({ etiqueta = 'Se juzga de' }: { etiqueta?: string
             type="button"
             onClick={() => cambiar(n)}
             aria-pressed={activo}
-            className={`flex min-h-9 items-center gap-2 rounded-full px-3.5 text-[0.8125rem] transition-[transform,background-color,color,box-shadow] duration-[140ms] ease-salida active:scale-[0.97] ${
+            className={`flex min-h-9 items-center gap-2 rounded-[6px] px-3.5 text-[0.8125rem] transition-[transform,background-color,color,box-shadow] duration-[140ms] ease-salida active:scale-[0.97] ${
               activo
-                ? 'brillo bg-esquina font-medium text-esquina-tinta'
+                ? 'bg-esquina font-semibold text-esquina-tinta'
                 : 'opacity-75 hover:opacity-100'
             }`}
           >

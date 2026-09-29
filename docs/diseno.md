@@ -175,3 +175,54 @@ lienzo (Foco, Prensa, Consola, Bloques y la mezcla) y eligió la mezcla de dos:
   estrechas, la cifra gigante y los titulares van con `clamp`, el cara a cara
   y el mosaico apilan, y en móvil el carril se vuelve barra inferior con
   respeto al área segura del sistema.
+
+## Cuarta vuelta (29-09-2026): Cielo y noche con papel
+
+**Esta es la dirección vigente. Donde choque con lo de arriba, manda esto.**
+
+La tercera vuelta programada le siguió pareciendo a Eudys "monótona, color
+plano, un poco triste". Se hicieron cuatro rondas de croquis en artefactos
+(direcciones sueltas, síntesis sobre D, seis paletas y por último Cielo
+afinado por ejes) y el diagnóstico fue claro: no era la forma, eran los
+colores predominantes, oscuros y apagados, con el color encerrado en chips
+pequeños y sombras difuminadas que sobre oscuro no se ven. Elecciones:
+
+| Eje          | Elegido                                                                  |
+| ------------ | ------------------------------------------------------------------------ |
+| Tema claro   | Cielo: fondo `#D7EAFF`, tarjetas blancas, tinta marino `#0F2140`         |
+| Tema oscuro  | Noche con papel: fondo `#132A55` y las tarjetas siguen siendo de papel   |
+| Toca repasar | Papel con canto: franja azul a la izquierda, borde de tinta, sombra dura |
+| Titular      | Pegatina: "no sea" en celeste con borde, sombra dura y algo torcida      |
+| Menú         | Carril ancho, que cada usuario puede compactar (solo iconos)             |
+| Letra        | Onest para todo (texto y titulares en 800) y JetBrains Mono para datos   |
+
+Reglas que salen de ahí:
+
+- **Dos sombras con regla.** Lo que se lee (`.tarjeta`, `.panel`) lleva la
+  sombra honda y suave de la portada de D. Lo que se pulsa (`.boton-pri`,
+  `.boton-sec`, opciones, chips) lleva sombra dura: sube al pasar el ratón y se
+  hunde al pulsar. El `.bloque` es la excepción elegida: destaca, así que va con
+  canto y sombra dura.
+- **Un color por modo** (`--m-flash`, `--m-verbal`, `--m-kata`, `--m-review`,
+  `--m-diseno`, `--m-star`) definido una vez; la clase `.m-<modo>` pone `--c` y
+  las piezas lo usan: la franja de la tarjeta de modo, el chip, el reparto de lo
+  que toca repasar y la barra del asalto, que va entera del color del modo para
+  que sepas en qué modo estás sin leer. Encima del color siempre va tinta oscura
+  (`--sobre-modo`).
+- **Dos azules con papel distinto.** `--esquina` es lo principal (marino de día,
+  celeste de noche, con su tinta). `--punto` es el azul que marca lo importante
+  en texto, barras y foco. `--celeste` es el de la pegatina y el canto de los
+  botones principales.
+- **De noche las tarjetas son papel.** El fondo tiene color (no grafito) y
+  dentro de `.tarjeta`, `.panel` y `.bloque` se remapean los tokens a los del
+  papel, así las primitivas se pintan con tinta oscura sin saber dónde están.
+- **Esquinas con regla:** tarjetas 16 px, opciones 10, botones y campos 9, chips
+  8, etiquetas 6. Nada de píldoras en botones.
+- **Capas.** Las primitivas viven en `@layer components`, así una utilidad de
+  Tailwind en el mismo elemento (una sombra, un color) les gana. Las reglas del
+  carril compacto van fuera de la capa a propósito, para ganar a las utilidades.
+- **La portada** mantiene la ronda en directo, ahora como la carta de delante de
+  un mazo, y suma "Cómo funciona" (los cuatro pasos, las pestañas y el uso sin
+  clave). Desaparecen la noche fija, el foco, la retícula, el grano y el brillo.
+
+Croquis de referencia: https://claude.ai/artifact/2caqYfs5vvq3p6J3hah74Q.

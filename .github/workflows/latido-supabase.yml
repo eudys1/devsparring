@@ -1,0 +1,48 @@
+# Latido de Supabase: evita que el proyecto gratuito se pause.
+#
+# Por qué: Supabase pausa los proyectos gratuitos tras una semana sin actividad
+# ("Free projects are paused after 1 week of inactivity", supabase.com/pricing,
+# 29-09-2026). Le pasó a devsparring y el login dejó de funcionar.
+#
+# Qué hace: cada tres días llama a la función public.latido() (migración
+# 20260929120000_latido.sql), que solo devuelve la hora del servidor. Es una
+# consulta real a la base de datos, sin leer ni escribir datos.
+#
+# Necesita dos secretos del repositorio (Settings > Secrets and variables >
+# Actions): SUPABASE_URL y SUPABASE_PUBLISHABLE_KEY, los mismos valores que
+# NEXT_PUBLIC_SUPABASE_URL y NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY de .env.local.
+#
+# Ojo: GitHub desactiva los workflows programados de un repositorio público
+# tras 60 días sin actividad en el repo (docs.github.com, "Events that trigger
+# workflows", 29-09-2026). Si el repo se queda quieto dos meses, hay que
+# reactivarlo desde la pestaña Actions.
+#
+# A mano: pestaña Actions > Latido de Supabase > Run workflow.
+name: Latido de Supabase
+
+on:
+  schedule:
+    - cron: '23 5 */3 * *' # cada tres días, minuto raro para esquivar el pico
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  latido:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Consulta mínima a la base de datos
+        env:
+          URL: ${{ secrets.SUPABASE_URL }}
+          CLAVE: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
+        run: |
+          if [ -z "$URL" ] || [ -z "$CLAVE" ]; then
+            echo "::error::Faltan los secretos SUPABASE_URL y SUPABASE_PUBLISHABLE_KEY"
+            exit 1
+          fi
+          # Las claves sb_publishable_ van solo en la cabecera apikey.
+          respuesta=$(curl -sS --fail-with-body --retry 3 --retry-delay 20 \
+            -X POST "$URL/rest/v1/rpc/latido" \
+            -H "apikey: $CLAVE" -H "Content-Type: application/json" -d '{}')
+          echo "Supabase responde: $respuesta"

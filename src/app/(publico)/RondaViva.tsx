@@ -1,7 +1,7 @@
 'use client';
 
-// La mitad derecha del héroe: un bloque de azul tinta con una ronda que se
-// juega sola. La pregunta se escribe, aparece una respuesta de ejemplo, el juez
+// La mitad derecha del héroe: un mazo de tarjetas y, en la de delante, una
+// ronda que se juega sola. La pregunta se escribe, aparece una respuesta de ejemplo, el juez
 // marca la tarjeta y cae el veredicto. La pregunta y las dimensiones son las
 // reales del banco; la respuesta va rotulada como simulación. La tarjeta
 // reserva sitio para el texto antes de que se escriba: nada de la página se
@@ -45,36 +45,49 @@ export function RondaViva({ guiones }: { guiones: Guion[] }) {
   const g = guiones[n]!;
 
   return (
-    <div className="bloque bloque-luna flex flex-col rounded-r2 px-5 pb-5 pt-5 sm:px-7 sm:pb-6 sm:pt-6">
-      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
-        <div className="min-w-0">
-          <p className="rotulo">Simulación · pregunta real de {g.pista}</p>
-          <p className="mt-1.5 flex items-center gap-2 font-mono text-[0.75rem] text-[var(--bloque-tinta-2)]">
-            <span className="relative flex h-2 w-2" aria-hidden>
-              <span className="absolute inset-0 animate-ping rounded-full bg-white/60" />
-              <span className="relative h-2 w-2 rounded-full bg-white" />
-            </span>
-            En directo · asalto {n + 1} de {guiones.length}
-          </p>
-        </div>
-        <ConmutadorVara />
-      </div>
-
-      {/* La clave reinicia el asalto: cada uno monta su estado limpio */}
-      <Asalto
-        key={indice}
-        g={g}
-        quieto={quieto}
-        onFin={() => setIndice((x) => (x + 1) % guiones.length)}
+    <div className="relative pb-4">
+      {/* Las dos de detrás son del mazo: solo asoman, con la franja de su modo */}
+      <div
+        aria-hidden
+        className="tarjeta franja-modo m-kata mazo-carta absolute inset-x-2 bottom-0 top-3"
+        style={{ '--r': '-5deg', '--y': '12px' } as React.CSSProperties}
       />
+      <div
+        aria-hidden
+        className="tarjeta franja-modo m-verbal mazo-carta absolute inset-x-1 bottom-1 top-1.5"
+        style={{ '--r': '3deg', '--y': '6px' } as React.CSSProperties}
+      />
+      <div className="tarjeta franja-modo m-flash relative flex flex-col px-5 pb-5 pt-5 sm:px-7 sm:pb-6 sm:pt-6">
+        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
+          <div className="min-w-0">
+            <p className="rotulo">Simulación · pregunta real de {g.pista}</p>
+            <p className="mt-1.5 flex items-center gap-2 font-mono text-[0.75rem] text-tinta-2">
+              <span className="relative flex h-2 w-2" aria-hidden>
+                <span className="absolute inset-0 animate-ping rounded-full bg-punto/60" />
+                <span className="relative h-2 w-2 rounded-full bg-punto" />
+              </span>
+              En directo · asalto {n + 1} de {guiones.length}
+            </p>
+          </div>
+          <ConmutadorVara />
+        </div>
 
-      <div className="mt-auto flex gap-1.5 pt-4" aria-hidden>
-        {guiones.map((x, i) => (
-          <span
-            key={`${x.pista}-${i}`}
-            className={`h-0.5 flex-1 rounded-full ${i === n ? 'bg-white' : 'bg-white/25'}`}
-          />
-        ))}
+        {/* La clave reinicia el asalto: cada uno monta su estado limpio */}
+        <Asalto
+          key={indice}
+          g={g}
+          quieto={quieto}
+          onFin={() => setIndice((x) => (x + 1) % guiones.length)}
+        />
+
+        <div className="mt-auto flex gap-1.5 pt-4" aria-hidden>
+          {guiones.map((x, i) => (
+            <span
+              key={`${x.pista}-${i}`}
+              className={`h-1 flex-1 rounded-full ${i === n ? 'bg-tinta' : 'bg-linea'}`}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -114,38 +127,30 @@ function Asalto({ g, quieto, onFin }: { g: Guion; quieto: boolean; onFin: () => 
   const tono = puntuacion >= 7 ? 'ok' : puntuacion >= 4 ? 'aviso' : 'mal';
 
   return (
-    <div className="noche panel mt-5 px-4 py-4 sm:px-5" aria-hidden>
+    <div className="mt-5 rounded-r border border-linea bg-papel-2 px-4 py-4 sm:px-5" aria-hidden>
       {/* Tres líneas reservadas: la pregunta se escribe sin empujar nada */}
-      <p className="line-clamp-3 min-h-[3.3em] text-[1.0625rem] font-medium leading-[1.1] text-[var(--noche-tinta)]">
+      <p className="line-clamp-3 min-h-[3.3em] text-[1.0625rem] font-medium leading-[1.1] text-[var(--tinta)]">
         {g.pregunta.slice(0, letras)}
         {fase === 'escribiendo' ? <span className="cursor" /> : null}
       </p>
 
-      <div
-        className={`mt-4 border-l-2 border-[var(--noche-linea-2)] pl-3 transition-opacity duration-[260ms] ease-salida ${
-          fase === 'escribiendo' ? 'opacity-30' : 'opacity-100'
-        }`}
-      >
+      <div className="mt-4 border-l-2 border-[var(--linea-fuerte)] pl-3">
         <span className="rotulo">Tu respuesta</span>
-        <p className="line-clamp-2 mt-1 min-h-[2.6em] text-[0.875rem] leading-[1.3] text-[var(--noche-tinta-2)]">
+        <p className="line-clamp-2 mt-1 min-h-[2.6em] text-[0.875rem] leading-[1.3] text-[var(--tinta-2)]">
           {fase === 'escribiendo' ? 'Escribiendo…' : g.respuesta}
         </p>
       </div>
 
-      <dl
-        className={`mt-5 space-y-2 transition-opacity duration-[260ms] ease-salida ${
-          marcando ? 'opacity-100' : 'opacity-30'
-        }`}
-      >
+      <dl className="mt-5 space-y-2">
         {g.dimensiones.map((d) => {
           const valor = vara === 'senior' ? Math.max(0, d.valor - 1) : d.valor;
           return (
             <div key={d.nombre} className="grid grid-cols-[1fr_5.5rem_1.75rem] items-center gap-3">
-              <dt className="text-[0.8125rem] text-[var(--noche-tinta-2)]">{d.nombre}</dt>
+              <dt className="text-[0.8125rem] text-[var(--tinta-2)]">{d.nombre}</dt>
               <dd>
                 <Casillas valor={marcando ? valor : 0} de={5} tono={tono} anima={marcando} />
               </dd>
-              <dd className="tabular text-right font-mono text-[0.75rem] text-[var(--noche-tinta-2)]">
+              <dd className="tabular text-right font-mono text-[0.75rem] text-[var(--tinta-2)]">
                 {valor}/5
               </dd>
             </div>
@@ -154,11 +159,11 @@ function Asalto({ g, quieto, onFin }: { g: Guion; quieto: boolean; onFin: () => 
       </dl>
 
       <div
-        className={`mt-5 flex items-end justify-between gap-4 border-t border-[var(--noche-linea)] pt-3.5 transition-opacity duration-[300ms] ease-salida ${
-          fase === 'veredicto' ? 'opacity-100' : 'opacity-25'
+        className={`mt-5 flex items-end justify-between gap-4 border-t border-[var(--linea)] pt-3.5 transition-opacity duration-[300ms] ease-salida ${
+          fase === 'veredicto' ? 'opacity-100' : 'invisible opacity-0'
         }`}
       >
-        <p className="line-clamp-3 min-h-[3.6em] max-w-[30ch] text-[0.8125rem] leading-[1.2] text-[var(--noche-tinta-2)]">
+        <p className="line-clamp-3 min-h-[3.6em] max-w-[30ch] text-[0.8125rem] leading-[1.2] text-[var(--tinta-2)]">
           <span className="font-semibold text-mal">Lo que faltó. </span>
           {g.fallo}
         </p>
@@ -168,7 +173,7 @@ function Asalto({ g, quieto, onFin }: { g: Guion; quieto: boolean; onFin: () => 
           }`}
         >
           {puntuacion}
-          <span className="text-[1.125rem] text-[var(--noche-tinta-2)]">/10</span>
+          <span className="text-[1.125rem] text-[var(--tinta-2)]">/10</span>
         </p>
       </div>
     </div>

@@ -127,5 +127,7 @@ function traducir(m: string): string {
   if (/already registered/i.test(m)) return 'Ese correo ya tiene cuenta. Entra con tu contraseña.';
   if (/password/i.test(m)) return 'La contraseña necesita al menos 8 caracteres.';
   if (/rate limit/i.test(m)) return 'Demasiados intentos. Espera un minuto y vuelve a probar.';
+  if (/fetch|network|connection/i.test(m))
+    return 'No hay conexión con el servidor de cuentas. Comprueba tu conexión y vuelve a probar en unos minutos.';
   return `No se pudo completar: ${m}`;
 }

@@ -66,3 +66,9 @@ algo falló.
   experiencias en español se recogen a mano o con el registro de entrevistas.
 - Next 16: `params`, `cookies()` y `headers()` son async; `middleware.ts` es
   ahora `proxy.ts`; `next lint` no existe, se invoca ESLint directamente.
+- Un texto exportado desde un fichero `'use client'` llega al servidor como
+  referencia de cliente, no como texto. El guion del tema vivía en `Tema.tsx`
+  y el `<head>` pintaba un error: el tema no se recordaba al recargar
+  (29-09-2026). Los guiones de cabecera van en `components/guiones.ts`.
+- Si el e2e con sesión falla con `fetch failed` y el host de Supabase da
+  NXDOMAIN, el proyecto gratuito está pausado: se reactiva desde su panel.

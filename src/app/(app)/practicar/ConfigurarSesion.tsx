@@ -4,7 +4,7 @@
 // nunca deja elegir una combinación vacía: la cuenta se recalcula al vuelo y lo
 // que no tiene preguntas se deshabilita con su motivo, en vez de dejarte
 // empezar una sesión de cero preguntas.
-import { Check } from 'lucide-react';
+import { Boxes, Check, Code, GitPullRequest, MessageSquareText, Users, Zap } from 'lucide-react';
 import { useState } from 'react';
 import { Boton } from '@/components/ui/Boton';
 import { Peso } from '@/components/ui/Dato';
@@ -19,6 +19,15 @@ import {
 } from '@/features/preguntas/esquema';
 import type { Disponibilidad } from '@/features/preguntas/filtrar';
 import { NOMBRE_MODO, NOMBRE_NIVEL, NOMBRE_PISTA } from '@/features/preguntas/nombres';
+
+const ICONO: Record<Modo, typeof Zap> = {
+  flash: Zap,
+  verbal: MessageSquareText,
+  kata: Code,
+  review: GitPullRequest,
+  diseno: Boxes,
+  star: Users,
+};
 
 export function ConfigurarSesion({
   disponibilidad,
@@ -49,11 +58,14 @@ export function ConfigurarSesion({
 
       <fieldset>
         <legend className="rotulo mb-2">Modo</legend>
-        <ul className="divide-y divide-linea border-y border-linea">
+        {/* Cada modo es una tarjeta con la franja de su color; la elegida se
+            levanta y se rodea de ese color. */}
+        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {MODOS.map((m) => {
             const n = disponibilidad[m][nivel].total;
             const activo = modo === m;
             const vacio = n === 0;
+            const Icono = ICONO[m];
             return (
               <li key={m}>
                 <button
@@ -61,38 +73,37 @@ export function ConfigurarSesion({
                   onClick={() => setModo(m)}
                   disabled={vacio}
                   aria-pressed={activo}
-                  className={`grid w-full grid-cols-[3px_1fr_auto] items-center gap-3 rounded-r py-3 pr-3 text-left transition-[background-color] duration-[160ms] ease-salida active:bg-linea/40 disabled:pointer-events-none disabled:opacity-40 ${
-                    activo ? 'bg-esquina-suave' : 'hover:bg-papel-2'
+                  className={`tarjeta ficha-modo m-${m} relative flex h-full w-full flex-col items-start gap-1 overflow-hidden px-4 pb-4 pt-7 text-left disabled:pointer-events-none disabled:opacity-40 ${
+                    activo
+                      ? '-translate-y-1.5 shadow-[0_0_0_3px_var(--c),var(--sombra-tarjeta)]'
+                      : ''
                   }`}
                 >
-                  <span
-                    className={`h-full min-h-10 w-[3px] rounded-[1px] ${activo ? 'bg-esquina' : 'bg-transparent'}`}
-                    aria-hidden
-                  />
-                  <span>
+                  <span className="absolute inset-x-0 top-0 h-3 bg-[var(--c)]" aria-hidden />
+                  <span className="flex w-full items-start justify-between">
                     <span
-                      className={`block text-[1.0625rem] ${activo ? 'font-semibold text-tinta' : 'font-medium text-tinta-2'}`}
-                    >
-                      {NOMBRE_MODO[m].nombre}
-                    </span>
-                    <span className="block text-[0.8125rem] text-tinta-3">
-                      {NOMBRE_MODO[m].frase}
-                    </span>
-                  </span>
-                  <span className="flex items-center gap-3">
-                    <span className="tabular whitespace-nowrap text-right font-mono text-[0.75rem] text-tinta-3">
-                      {NOMBRE_MODO[m].minutos}
-                      <br />
-                      {vacio ? 'sin preguntas' : `${n} preg.`}
-                    </span>
-                    <span
-                      className={`grid h-6 w-6 place-items-center rounded-full ${
-                        activo ? 'bg-esquina text-esquina-tinta' : 'border border-linea-fuerte'
-                      }`}
+                      className="grid h-9 w-9 place-items-center rounded-[8px] border-2 border-ink bg-[var(--c)] text-sobre-modo"
                       aria-hidden
                     >
-                      {activo ? <Check className="h-3.5 w-3.5" strokeWidth={2.5} /> : null}
+                      <Icono className="h-4 w-4" strokeWidth={2} />
                     </span>
+                    {activo ? (
+                      <span
+                        className="grid h-7 w-7 place-items-center rounded-full border-2 border-ink bg-[var(--c)] text-sobre-modo"
+                        aria-hidden
+                      >
+                        <Check className="h-4 w-4" strokeWidth={2.5} />
+                      </span>
+                    ) : null}
+                  </span>
+                  <span className="display mt-2 text-[1.5rem] text-tinta">
+                    {NOMBRE_MODO[m].nombre}
+                  </span>
+                  <span className="text-[0.875rem] leading-snug text-tinta-2">
+                    {NOMBRE_MODO[m].frase}
+                  </span>
+                  <span className="tabular mt-auto pt-2 font-mono text-[0.75rem] text-tinta-3">
+                    {NOMBRE_MODO[m].minutos} · {vacio ? 'sin preguntas' : `${n} preg.`}
                   </span>
                 </button>
               </li>
@@ -106,14 +117,14 @@ export function ConfigurarSesion({
           <legend className="mb-1.5 text-[0.8125rem] font-medium text-tinta">
             Nivel al que aplicas
           </legend>
-          <div className="flex rounded-r border border-linea-fuerte bg-papel-2 p-0.5">
+          <div className="flex rounded-r border-2 border-ink bg-papel-2 p-0.5 shadow-[var(--dura)]">
             {NIVELES.map((n) => (
               <button
                 key={n}
                 type="button"
                 onClick={() => setNivel(n)}
                 aria-pressed={nivel === n}
-                className={`flex min-h-10 flex-1 items-center justify-center gap-1.5 rounded-[2px] text-[0.875rem] transition-[transform,background-color,color] duration-[140ms] ease-salida active:scale-[0.97] ${
+                className={`flex min-h-10 flex-1 items-center justify-center gap-1.5 rounded-[6px] text-[0.875rem] transition-[transform,background-color,color] duration-[140ms] ease-salida active:scale-[0.97] ${
                   nivel === n
                     ? 'bg-esquina text-esquina-tinta'
                     : 'text-tinta-2 hover:bg-papel hover:text-tinta'

@@ -16,9 +16,9 @@ export type Tesela = {
 };
 
 const TONO: Record<Tesela['nivel'], string> = {
-  junior: 'bg-esquina/30',
-  mid: 'bg-esquina/60',
-  senior: 'brillo bg-esquina',
+  junior: 'bg-punto/30',
+  mid: 'bg-punto/60',
+  senior: 'bg-punto',
 };
 
 export function Mosaico({
@@ -47,9 +47,9 @@ export function Mosaico({
               <article
                 key={t.id}
                 style={{ animationDelay: `${Math.min(i * 12, 400)}ms` }}
-                className="noche flex min-h-24 basis-full flex-col justify-between rounded-r border border-[var(--noche-linea-2)] bg-[var(--noche)] p-3 sm:basis-[calc(50%-0.1875rem)] lg:basis-[calc(33.333%-0.25rem)]"
+                className="flex min-h-24 basis-full flex-col justify-between rounded-r border-2 border-linea bg-papel-2 p-3 sm:basis-[calc(50%-0.1875rem)] lg:basis-[calc(33.333%-0.25rem)]"
               >
-                <p className="text-[0.8125rem] leading-snug text-[var(--noche-tinta)]">{t.texto}</p>
+                <p className="text-[0.8125rem] leading-snug text-[var(--tinta)]">{t.texto}</p>
                 <p className="mt-2 flex items-center justify-between gap-2">
                   <span className="rotulo">{t.pista}</span>
                   <Peso nivel={t.nivel} conNombre={false} />
@@ -71,7 +71,7 @@ export function Mosaico({
         </div>
 
         <p
-          className="mt-4 min-h-[2.75rem] border-t border-[var(--noche-linea)] pt-3 text-[0.875rem] leading-snug text-[var(--noche-tinta-2)]"
+          className="mt-4 min-h-[2.75rem] border-t border-[var(--linea)] pt-3 text-[0.875rem] leading-snug text-[var(--tinta-2)]"
           aria-live="polite"
         >
           {activa ? (
@@ -88,7 +88,7 @@ export function Mosaico({
         </p>
       </div>
 
-      <dl className="bloque rounded-r2 px-5 py-4 sm:px-6 sm:py-5">
+      <dl className="bloque py-4 pl-8 pr-5 sm:py-5 sm:pl-9 sm:pr-6">
         {porPista.map(([nombre, n]) => (
           <div
             key={nombre}

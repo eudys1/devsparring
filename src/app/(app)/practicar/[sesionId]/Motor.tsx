@@ -5,6 +5,7 @@
 // siguiente y todo se puede hacer con el teclado. Por eso el cambio de pregunta
 // NO se anima: es una acción de teclado que se repite decenas de veces y
 // animarla haría la app lenta (docs/diseno.md).
+import { ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -21,6 +22,7 @@ import { EditorKata, ResultadoTests, textoResultado } from '@/features/editor/Ed
 import type { ResultadoEjecucion } from '@/features/editor/runner/casos';
 import type { Modo, Nivel, Pregunta } from '@/features/preguntas/esquema';
 import { NOMBRE_MODO, NOMBRE_PISTA, NOMBRE_TIPO } from '@/features/preguntas/nombres';
+import { ReportarPregunta } from '@/features/preguntas/ReportarPregunta';
 import { rubricaParaNivel } from '@/features/preguntas/rubrica';
 import { notaDesdePuntuacion, type Nota } from '@/features/srs/scheduler';
 import { cerrarSesion, guardarYRepasar } from './acciones';
@@ -251,31 +253,36 @@ export function Motor({
   return (
     <div className="mx-auto max-w-6xl">
       {/*
-        Marcador de la velada: el asalto y el reloj mandan, como en la pantalla
-        de una retransmisión. Es la única pieza de noche dentro de la app, y por
-        eso separa "estoy en una sesión" de "estoy mirando la app".
+        Marcador del asalto: el número y el reloj mandan, como en la pantalla de
+        una retransmisión. Va del color del modo, así sabes en qué modo estás
+        sin leer, y separa "estoy en una sesión" de "estoy mirando la app".
       */}
-      <header className="noche panel overflow-hidden">
+      <section
+        aria-label="Marcador del asalto"
+        className={`m-${sesion.modo} overflow-hidden rounded-r2 border-2 border-ink bg-[var(--c)] text-sobre-modo shadow-[4px_4px_0_var(--ink)]`}
+      >
         <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 px-4 py-3.5 md:px-5">
           <div className="flex items-baseline gap-4">
-            <span className="tabular cartel text-[2.25rem] leading-none text-[var(--noche-tinta)]">
+            <span className="tabular cartel text-[2.25rem] leading-none">
               R{hechas + 1}
-              <span className="text-[1.125rem] text-[var(--noche-tinta-2)]">/{total}</span>
+              <span className="text-[1.125rem]">/{total}</span>
             </span>
             <span className="flex items-center gap-3">
-              <span className="text-[0.9375rem] text-[var(--noche-tinta-2)]">
+              <span className="rounded-[8px] border-2 border-sobre-modo bg-white px-2 py-0.5 text-[0.8125rem] font-semibold">
                 {NOMBRE_MODO[sesion.modo].nombre}
               </span>
-              <Peso nivel={sesion.nivel} />
+              <span className="[--tinta-2:var(--sobre-modo)] [--linea:color-mix(in_oklab,var(--sobre-modo)_25%,transparent)]">
+                <Peso nivel={sesion.nivel} />
+              </span>
             </span>
           </div>
           <span
             className={`tabular font-mono text-[1.75rem] leading-none ${
               restante !== null && restante < 0
-                ? 'text-mal'
+                ? 'rounded-[6px] bg-white px-1.5 text-sobre-modo-mal'
                 : restante !== null && restante < 120
-                  ? 'text-aviso'
-                  : 'text-[var(--noche-tinta)]'
+                  ? 'rounded-[6px] bg-white px-1.5 text-sobre-modo-aviso'
+                  : ''
             }`}
           >
             {restante !== null ? formatear(restante) : formatear(segundos)}
@@ -291,18 +298,18 @@ export function Motor({
             return (
               <li
                 key={i}
-                className={`h-1.5 flex-1 ${
+                className={`h-1.5 flex-1 rounded-full ${
                   estado === 'actual'
-                    ? 'bg-esquina'
+                    ? 'bg-sobre-modo'
                     : estado === 'hecho'
-                      ? 'bg-[var(--noche-tinta-2)]'
-                      : 'bg-[var(--noche-linea)]'
+                      ? 'bg-sobre-modo/45'
+                      : 'bg-sobre-modo/15'
                 }`}
               />
             );
           })}
         </ol>
-      </header>
+      </section>
       <p className="mt-2 flex items-center justify-between gap-3 text-[0.8125rem] text-tinta-3">
         <span>
           {demo ? 'Demo: no se guarda nada.' : 'Cada asalto se guarda al pasar al siguiente.'}
@@ -323,6 +330,11 @@ export function Motor({
             <Ficha>{NOMBRE_PISTA[pregunta.pista]}</Ficha>
             <Ficha>{NOMBRE_TIPO[pregunta.tipo]}</Ficha>
             {pregunta.frecuencia === 'alta' ? <Ficha tono="esquina">Cae mucho</Ficha> : null}
+            <ReportarPregunta
+              pregunta={pregunta}
+              donde={demo ? 'la demo' : `una sesión de ${NOMBRE_MODO[sesion.modo].nombre}`}
+              className="ml-auto"
+            />
           </div>
           <h1
             className="prosa mt-3 text-[1.375rem] font-semibold leading-snug text-tinta md:text-[1.625rem]"
@@ -399,8 +411,8 @@ export function Motor({
           ) : null}
 
           {evaluando ? (
-            <section className="mt-5 grid grid-cols-[3px_1fr] overflow-hidden tarjeta">
-              <span className="bg-esquina" aria-hidden />
+            <section className="tarjeta mt-5 grid grid-cols-[6px_1fr] overflow-hidden">
+              <span className="bg-punto" aria-hidden />
               <div className="px-4 py-3.5">
                 <h2 className="rotulo">La respuesta que aprueba</h2>
                 <Markdown
@@ -409,7 +421,7 @@ export function Motor({
                 />
                 {repregunta ? (
                   <div className="mt-4 border-t border-linea pt-3">
-                    <h2 className="rotulo text-esquina">Te repreguntarían</h2>
+                    <h2 className="rotulo text-punto">Te repreguntarían</h2>
                     <p
                       className="prosa mt-1.5 text-[0.9375rem] text-tinta"
                       dangerouslySetInnerHTML={{ __html: enLinea(repregunta) }}
@@ -459,7 +471,7 @@ export function Motor({
         </div>
 
         <aside className="space-y-4">
-          <section className={`tarjeta px-4 py-3.5 ${autoevaluacion ? 'border-esquina/40' : ''}`}>
+          <section className={`tarjeta px-4 py-3.5 ${autoevaluacion ? 'border-punto/50' : ''}`}>
             <h2 className="rotulo">
               {autoevaluacion
                 ? 'Marca lo que has cubierto'
@@ -477,7 +489,7 @@ export function Motor({
                     <label className="grid cursor-pointer grid-cols-[1.25rem_1fr] items-start gap-2 text-[0.875rem] leading-snug text-tinta-2 has-[:checked]:text-tinta">
                       <input
                         type="checkbox"
-                        className="mt-0.5 h-4 w-4 accent-[var(--esquina)]"
+                        className="mt-0.5 h-4 w-4 accent-[var(--punto)]"
                         checked={cubiertos.includes(i)}
                         onChange={() => marcar(i)}
                       />
@@ -506,7 +518,7 @@ export function Motor({
             <>
               {correccion ? <Scorecard c={correccion.c} modelo={correccion.modelo} /> : null}
 
-              <section className="rounded-r border border-esquina/40 bg-papel px-4 py-3.5">
+              <section className="tarjeta px-4 py-3.5">
                 <h2 className="text-[0.875rem] font-semibold text-tinta">
                   ¿Cómo ha ido? Decides cuándo vuelve
                 </h2>
@@ -554,8 +566,13 @@ export function Motor({
           ) : null}
 
           <details className="group tarjeta px-4 py-2.5">
-            <summary className="cursor-pointer list-none text-[0.75rem] text-tinta-3 marker:content-none">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-2 text-[0.8125rem] text-tinta-2 transition-colors duration-[160ms] ease-salida marker:content-none hover:text-tinta">
               De dónde sale esta pregunta
+              <ChevronDown
+                className="h-4 w-4 transition-transform duration-[160ms] ease-salida group-open:rotate-180"
+                strokeWidth={2}
+                aria-hidden
+              />
             </summary>
             <ul className="mt-2 space-y-1 text-[0.75rem] text-tinta-3">
               <li>

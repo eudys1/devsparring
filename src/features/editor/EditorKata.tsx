@@ -122,7 +122,7 @@ export function EditorKata({
           type="button"
           onClick={() => void ejecutar()}
           disabled={ejecutando || deshabilitado}
-          className="inline-flex min-h-8 items-center gap-1.5 rounded-[3px] border border-esquina/50 px-2.5 text-esquina transition-[transform,background-color] duration-[140ms] ease-salida hover:bg-esquina-suave active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50"
+          className="inline-flex min-h-8 items-center gap-1.5 rounded-[3px] border border-esquina/50 px-2.5 text-punto transition-[transform,background-color] duration-[140ms] ease-salida hover:bg-esquina-suave active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50"
         >
           {ejecutando ? 'Ejecutando…' : 'Ejecutar tests'} <kbd className="opacity-70">Ctrl+↵</kbd>
         </button>
