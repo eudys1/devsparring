@@ -26,6 +26,28 @@
         ]
       },
       "respuestaModelo": "Con `content-box`, que es el valor por defecto del navegador, las propiedades `width` y `height` miden solo el área de contenido: el padding y el border se suman por encima, así que una caja con `width: 200px` y `padding: 20px` ocupa en realidad 240px de ancho total. Con `border-box`, `width` y `height` incluyen el padding y el border dentro de esa medida, así que la caja con `width: 200px` sigue midiendo 200px de ancho total, y el padding le resta espacio al contenido en vez de sumarse por fuera. Por eso muchos resets globales aplican `* { box-sizing: border-box; }` al principio del proyecto: hace que el tamaño declarado sea el tamaño real en pantalla, evitando el cálculo mental constante de sumar padding y border cada vez que se ajusta un layout.",
+      "test": {
+        "enunciado": "Con `box-sizing: content-box`, `width: 200px` y `padding: 20px`, ¿cuánto mide la caja de ancho, sin contar el borde?",
+        "correcta": 3,
+        "opciones": [
+          {
+            "texto": "200px",
+            "porque": "Eso pasaría con `border-box`, donde el padding va dentro del `width`."
+          },
+          {
+            "texto": "220px",
+            "porque": "El padding se suma a los dos lados: 20 a la izquierda y 20 a la derecha."
+          },
+          {
+            "texto": "180px",
+            "porque": "En `content-box` el padding no resta del contenido: se suma por fuera."
+          },
+          {
+            "texto": "240px",
+            "porque": "En `content-box` el `width` mide solo el contenido: 200 más 20 de padding a cada lado."
+          }
+        ]
+      },
       "etiquetas": ["css", "box-model"],
       "fuentes": [
         {
@@ -100,6 +122,28 @@
         ]
       },
       "respuestaModelo": "La especificidad se calcula por capas de peso, de mayor a menor: un estilo inline en el propio elemento gana siempre, después los selectores por id, después clases, atributos y pseudoclases, y por último elementos y pseudoelementos; dentro de una misma regla, ese peso se suma por cada selector que aparece. `!important` rompe deliberadamente esa jerarquía: una declaración marcada así gana sin importar la especificidad normal del selector que la contiene. El problema es que, una vez que un equipo empieza a usarlo para 'ganar' una guerra de especificidad puntual, la única forma de sobreescribir esa regla más adelante es con otro `!important` todavía más específico, y ese patrón se repite en cascada hasta que el CSS se vuelve imposible de razonar o mantener sin buscar en todo el proyecto quién puso el último `!important`.",
+      "test": {
+        "enunciado": "¿Por qué da problemas abusar de `!important`?",
+        "correcta": 1,
+        "opciones": [
+          {
+            "texto": "Porque ralentiza mucho el renderizado.",
+            "porque": "El coste de rendimiento es despreciable; el problema es de mantenimiento."
+          },
+          {
+            "texto": "Porque se salta la especificidad y solo se le gana con otro `!important`.",
+            "porque": "Acaba en una escalada de `!important` donde nadie sabe qué regla manda."
+          },
+          {
+            "texto": "Porque no funciona en los navegadores modernos.",
+            "porque": "Funciona en todos, y justo por eso es tan fácil abusar de él."
+          },
+          {
+            "texto": "Porque obliga a usar selectores por id para poder sobrescribir la regla después.",
+            "porque": "No obliga a nada; al contrario, se impone a cualquier selector, id incluido."
+          }
+        ]
+      },
       "etiquetas": ["css", "especificidad"],
       "fuentes": [
         {

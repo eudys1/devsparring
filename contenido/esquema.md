@@ -52,6 +52,25 @@ cuando se espera excepción. Solo tipos serializables en JSON (sin funciones,
 fechas ni Map en los casos; si el ejercicio los necesita, se describen en
 `contexto` y se comprueban con `lanza` o con un resultado derivado).
 
+## Tipo test
+
+El modo `flash` se llama Tipo test en pantalla y **solo ofrece preguntas con
+bloque `test`**. Condición innegociable: ninguna entra sin el porqué de cada
+opción, también de las falsas; sin eso el modo enseña el error. Si una
+pregunta no tiene buenos distractores, se queda fuera del modo.
+
+- Solo para `tipo` `definicion` o `fundamento`, y la pregunta tiene que estar en
+  `modos` con `flash`. Nunca katas, diseño ni comportamental.
+- `test.enunciado` (opcional): la pregunta concreta a la que responden las
+  opciones, cuando `texto.es` pide varias cosas o un ejemplo propio.
+- `test.opciones`: exactamente cuatro, distintas, de hasta 140 caracteres, cada
+  una con su `porque` (20 a 320). Los distractores son errores que la gente
+  comete de verdad, no rellenos absurdos.
+- `test.correcta`: índice de 0 a 3. El test de coherencia exige que la correcta
+  se reparta entre las cuatro letras y que no sea la opción más larga en más del
+  40 % del banco: son las dos pistas por las que se acierta sin saber.
+- Se escriben una vez, se guardan aquí y entran por PR. No se generan al vuelo.
+
 ## Ejemplo mínimo
 
 ```json

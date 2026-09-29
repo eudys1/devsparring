@@ -196,6 +196,28 @@
         ]
       },
       "respuestaModelo": "Definiría una interfaz con `children?: React.ReactNode` para marcarlo opcional y aceptar cualquier contenido renderizable válido, y `onSelect: (id: string) => void` para documentar exactamente qué argumento recibe el callback y que no devuelve nada útil. Tipar el callback con su firma completa, en vez de dejarlo como `Function` genérico, hace que TypeScript avise si alguien lo llama con el tipo de argumento equivocado, y sirve como documentación del contrato sin tener que leer la implementación. Exportar ese tipo de props (`export interface Props { ... }`) permite reutilizarlo directamente en los tests del componente para construir props válidas sin duplicar la definición.",
+      "test": {
+        "enunciado": "¿Qué tipado de props es el correcto para `children` opcionales y un callback `onSelect(id: string): void`?",
+        "correcta": 1,
+        "opciones": [
+          {
+            "texto": "`{ children: any; onSelect: Function; [clave: string]: unknown }`",
+            "porque": "`any`, `Function` y la firma de índice apagan el compilador: no avisaría si llamas a `onSelect` con un número ni si pasas props que no existen."
+          },
+          {
+            "texto": "`{ children?: React.ReactNode; onSelect: (id: string) => void }`",
+            "porque": "`children` opcional con cualquier contenido que React sabe pintar, y el callback con su firma exacta."
+          },
+          {
+            "texto": "`{ children?: string; onSelect: (id: string) => void }`",
+            "porque": "`string` se queda corto: `children` suele ser JSX, y `React.ReactNode` acepta las dos cosas."
+          },
+          {
+            "texto": "`{ children: React.ReactNode; onSelect(id): void }`",
+            "porque": "`children` no es opcional y `id` queda sin tipo, un `any` implícito que `strict` marca como error."
+          }
+        ]
+      },
       "etiquetas": ["genericos", "typescript"],
       "fuentes": [
         {

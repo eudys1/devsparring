@@ -108,6 +108,13 @@ export default async function Landing() {
     return { ...g, pregunta: sinCodigo(p.texto.es), pista: NOMBRE_PISTA[p.pista] };
   });
 
+  // Muestra de Tipo test: la primera pregunta con opciones cortas, que caben
+  // en la ficha sin cortarse.
+  const conTest = lista.find((p) => p.test && p.test.opciones.every((o) => o.texto.length <= 34));
+  const muestraTest = conTest?.test
+    ? { enunciado: conTest.test.enunciado ?? conTest.texto.es, test: conTest.test }
+    : undefined;
+
   const teselas = muestraDelBanco(lista);
   const porPista = PISTAS.map(
     (p) => [NOMBRE_PISTA[p], lista.filter((q) => q.pista === p).length] as [string, number],
@@ -359,7 +366,7 @@ export default async function Landing() {
             </p>
           </div>
           <div className="mt-8">
-            <Modos conteo={conteo} />
+            <Modos conteo={conteo} test={muestraTest} />
           </div>
         </Revelar>
 

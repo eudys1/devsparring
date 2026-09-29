@@ -23,7 +23,8 @@
     "contenido:validar": "node scripts/validar-contenido.mjs",
     "detector": "node scripts/detector-diseno.mjs",
     "capturas": "node scripts/capturas.mjs",
-    "revisar": "node scripts/revisar.mjs"
+    "revisar": "node scripts/revisar.mjs",
+    "capturas:app": "node scripts/capturas-app.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "latest",

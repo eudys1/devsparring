@@ -26,6 +26,28 @@
         ]
       },
       "respuestaModelo": "La validación tiene que ocurrir en el borde de entrada del servidor, en un middleware o al inicio del propio handler, usando una librería de esquemas como Zod, Joi, o la validación integrada de JSON Schema en Fastify, y siempre antes de que el dato llegue a tocar la base de datos. La validación en el frontend mejora la experiencia de usuario (feedback inmediato, sin esperar a un viaje de red), pero no es una barrera de seguridad: cualquiera puede saltarse por completo el formulario y mandar la petición directamente con curl o Postman con cualquier body que quiera, así que si el servidor no valida por su cuenta, esa validación de frontend no protege nada. La regla práctica es que el frontend valida para UX, el backend valida porque es la única barrera real.",
+      "test": {
+        "enunciado": "¿Por qué no basta con validar el body de un POST en el frontend?",
+        "correcta": 2,
+        "opciones": [
+          {
+            "texto": "Porque el navegador no sabe validar formularios.",
+            "porque": "El navegador valida perfectamente; el problema es que esa validación no protege al servidor."
+          },
+          {
+            "texto": "Porque validar en el frontend es más lento.",
+            "porque": "Es más rápido para el usuario, sin viaje de red. Por eso se valida también ahí, como experiencia."
+          },
+          {
+            "texto": "Porque cualquiera puede llamar a la API sin pasar por tu frontend.",
+            "porque": "Con curl o Postman el formulario se salta: la validación que protege es la del servidor, antes de tocar la base de datos."
+          },
+          {
+            "texto": "Porque los tipos de TypeScript ya validan en el servidor.",
+            "porque": "Los tipos desaparecen al compilar y no validan nada de lo que llega por la red; para eso está Zod o similar."
+          }
+        ]
+      },
       "etiquetas": ["errores-validacion", "validacion-de-input"],
       "fuentes": [
         {

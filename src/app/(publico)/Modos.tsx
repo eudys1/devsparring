@@ -1,8 +1,8 @@
 // Los seis modos con una muestra real de cada uno: no se cuenta lo que hace,
 // se enseña. Cada muestra está construida con contenido del banco o con la
 // misma pieza que usa la app (la tarjeta del juez, el editor, la rúbrica).
-import { Casillas } from '@/components/ui/Dato';
-import type { Modo } from '@/features/preguntas/esquema';
+import { enLinea } from '@/components/ui/Markdown';
+import type { Modo, Test } from '@/features/preguntas/esquema';
 import { NOMBRE_MODO } from '@/features/preguntas/nombres';
 
 type Muestra = { modo: Modo; ancho: string; cuerpo: React.ReactNode; explica: string };
@@ -25,29 +25,54 @@ function Linea({
   return <span className={`block ${c}`}>{children}</span>;
 }
 
-export function Modos({ conteo }: { conteo: Record<Modo, number> }) {
+// La muestra de Tipo test es una pregunta real del banco con sus opciones: se
+// enseña respondida con un fallo, que es donde el modo aporta (el porqué).
+export function Modos({
+  conteo,
+  test,
+}: {
+  conteo: Record<Modo, number>;
+  test?: { enunciado: string; test: Test };
+}) {
+  const fallo = test ? (test.test.correcta + 1) % 4 : 0;
   const muestras: Muestra[] = [
     {
       modo: 'flash',
       ancho: 'sm:col-span-2',
-      explica: 'Diez preguntas cortas de teoría. Escribes, te puntúan, sigues.',
-      cuerpo: (
-        <div className="space-y-2 font-mono text-[0.75rem]">
-          <Linea tono="apagado">¿Qué es un índice y cuándo empeora el rendimiento?</Linea>
-          <div className="h-px bg-[var(--linea)]" />
-          <div className="grid grid-cols-[1fr_auto] items-center gap-3">
-            <Linea tono="apagado">Corrección técnica</Linea>
-            <span className="w-20">
-              <Casillas valor={4} de={5} tono="ok" />
-            </span>
-          </div>
-          <div className="grid grid-cols-[1fr_auto] items-center gap-3">
-            <Linea tono="apagado">Complejidad</Linea>
-            <span className="w-20">
-              <Casillas valor={2} de={5} tono="aviso" />
-            </span>
-          </div>
+      explica: 'Cuatro opciones, y al responder ves por qué vale o no cada una, no solo la tuya.',
+      cuerpo: test ? (
+        <div className="space-y-1.5 text-[0.8125rem]">
+          <p
+            className="prosa font-medium text-[var(--tinta)]"
+            dangerouslySetInnerHTML={{ __html: enLinea(test.enunciado) }}
+          />
+          <ol className="grid gap-1 sm:grid-cols-2">
+            {test.test.opciones.map((o, i) => (
+              <li
+                key={i}
+                className={`flex items-center gap-2 rounded-[7px] border-2 px-2 py-1 ${
+                  i === test.test.correcta
+                    ? 'border-ok bg-ok-suave'
+                    : i === fallo
+                      ? 'border-mal bg-mal-suave'
+                      : 'border-[var(--linea)]'
+                }`}
+              >
+                <span className="font-mono text-[0.6875rem] font-semibold">{'ABCD'[i]}</span>
+                <span className="prosa" dangerouslySetInnerHTML={{ __html: enLinea(o.texto) }} />
+              </li>
+            ))}
+          </ol>
+          <p className="text-[0.75rem] text-[var(--tinta-2)]">
+            <span className="font-semibold text-mal">Por qué no la {'ABCD'[fallo]}: </span>
+            <span
+              className="prosa"
+              dangerouslySetInnerHTML={{ __html: enLinea(test.test.opciones[fallo]?.porque ?? '') }}
+            />
+          </p>
         </div>
+      ) : (
+        <Linea tono="apagado">Pronto, con opciones revisadas.</Linea>
       ),
     },
     {

@@ -41,17 +41,25 @@ test('el temario abre una ficha con la respuesta que aprueba', async ({ page }) 
 
 test('una sesión se responde, se autoevalúa por criterios y se puede dejar a medias', async ({
   page,
+  context,
 }) => {
-  await page.goto('/practicar?modo=flash&pista=typescript');
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  await page.goto('/practicar?modo=verbal&pista=typescript');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('A qué te enfrentas');
-  await expect(page.getByRole('button', { name: 'Flash', exact: false })).toHaveAttribute(
+  await expect(page.getByRole('button', { name: 'Explicar', exact: false })).toHaveAttribute(
     'aria-pressed',
     'true',
   );
   await capturar(page, 'practicar');
   await page.getByRole('button', { name: 'Empezar' }).click();
   await expect(page.getByLabel(/Asalto 1 de/)).toBeVisible();
-  await page.getByLabel('Tu respuesta').fill('Respuesta de prueba del e2e.');
+  await page.getByLabel('Tu explicación').fill('Respuesta de prueba del e2e.');
+  // Sin clave, la respuesta se puede corregir fuera: el prompt lleva la rúbrica y la respuesta.
+  await page.getByTestId('copiar').click();
+  await expect(page.getByTestId('copiar')).toHaveText(/Copiado/);
+  const prompt = await page.evaluate(() => navigator.clipboard.readText());
+  expect(prompt).toContain('entrevistador técnico');
+  expect(prompt).toContain('Respuesta de prueba del e2e.');
   await page.getByTestId('autoevaluar').click();
   await expect(page.getByRole('heading', { name: 'La respuesta que aprueba' })).toBeVisible();
   // Marcar un criterio propone la nota "A medias" y cuenta 1 de N.

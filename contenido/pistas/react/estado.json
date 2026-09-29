@@ -63,6 +63,28 @@
         ]
       },
       "respuestaModelo": "Cuando cambia el valor que pasa un `<Context.Provider>`, React re-renderiza a todos los componentes que consumen ese contexto, incluso a los que solo leen una propiedad del objeto que no cambió. Esto se agrava si el valor del Provider es un objeto literal creado en cada render (`{ user, setUser }`), porque React lo trata como un valor nuevo aunque el contenido sea igual. Las mitigaciones habituales son dividir un contexto grande en varios más pequeños y específicos (para que cambiar uno no afecte a consumidores de otro), memoizar el valor del Provider con `useMemo`, o directamente mover ese estado a una librería con selectores como Zustand, donde cada componente solo se suscribe a la porción de estado que realmente usa.",
+      "test": {
+        "enunciado": "¿Cuál es el problema de rendimiento clásico con `Context`?",
+        "correcta": 3,
+        "opciones": [
+          {
+            "texto": "Solo funciona con componentes de clase.",
+            "porque": "Funciona con cualquier componente; con hooks se lee con `useContext`."
+          },
+          {
+            "texto": "Guarda los datos en `localStorage` y es lento.",
+            "porque": "`Context` vive en la memoria del árbol de React y no toca el storage."
+          },
+          {
+            "texto": "Cuando cambia el valor, solo se re-renderiza el Provider.",
+            "porque": "Es al revés: cuando cambia el valor, se re-renderizan todos los consumidores."
+          },
+          {
+            "texto": "Cuando cambia el valor, se re-renderizan todos los consumidores, aunque su parte no cambie.",
+            "porque": "Se agrava si el valor es un objeto literal nuevo en cada render. Se mitiga dividiendo el contexto y memorizando el valor."
+          }
+        ]
+      },
       "etiquetas": ["estado", "context", "rendimiento"],
       "fuentes": [
         {

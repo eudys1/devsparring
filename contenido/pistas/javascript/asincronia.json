@@ -28,6 +28,28 @@
         ]
       },
       "respuestaModelo": "Una Promise representa el resultado eventual de una operación asíncrona y tiene tres estados: pending (aún no resuelta), fulfilled (resuelta con éxito) y rejected (falló). Una vez que pasa de pending a fulfilled o rejected, queda fija en ese estado para siempre. Si una promesa se rechaza y no hay ningún `.catch()` (ni un `try/catch` alrededor de un `await`) que maneje ese rechazo, el entorno lo reporta como una excepción no capturada: en el navegador dispara el evento `unhandledrejection` y lo muestra en consola, en Node puede incluso terminar el proceso según la configuración. Un `.catch()` al final de una cadena de `.then()` captura el error de cualquier paso anterior de la cadena, no solo del último.",
+      "test": {
+        "enunciado": "¿Cuáles son los tres estados de una Promise?",
+        "correcta": 2,
+        "opciones": [
+          {
+            "texto": "waiting, done y error",
+            "porque": "Son nombres inventados; los estados oficiales son pending, fulfilled y rejected."
+          },
+          {
+            "texto": "pending, resolved y cancelled",
+            "porque": "Una promesa estándar no se puede cancelar; para abortar la operación se usa un `AbortController`."
+          },
+          {
+            "texto": "pending, fulfilled y rejected",
+            "porque": "Empieza en pending y pasa una sola vez a fulfilled o rejected, donde queda fija para siempre."
+          },
+          {
+            "texto": "sync, async y await",
+            "porque": "Mezcla palabras clave del lenguaje; no son estados de una promesa."
+          }
+        ]
+      },
       "etiquetas": ["promesas", "asincronia"],
       "fuentes": [
         {
@@ -66,6 +88,28 @@
         ]
       },
       "respuestaModelo": "`async/await` es azúcar sintáctico sobre las promesas: por debajo sigue siendo el mismo mecanismo, no bloquea el hilo principal ni convierte el código en síncrono. La diferencia es de legibilidad: encadenar varios `.then()` para pasos secuenciales se vuelve difícil de leer, mientras que con `await` el código secuencial se lee de arriba a abajo como si fuera síncrono. Una función `async` siempre devuelve una promesa, y los errores se capturan con `try/catch` alrededor del `await` en vez de un `.catch()` en la cadena. Aun así, `.then()` sigue siendo útil cuando se quieren lanzar varias promesas en paralelo sin esperar cada una en su propia línea con `await` (para eso normalmente se combina con `Promise.all`).",
+      "test": {
+        "enunciado": "¿Qué es cierto sobre el código que usa `await`?",
+        "correcta": 3,
+        "opciones": [
+          {
+            "texto": "Vuelve síncrona la función y bloquea el hilo hasta que termina.",
+            "porque": "No bloquea: la función se suspende en el `await` y el hilo sigue atendiendo otras tareas."
+          },
+          {
+            "texto": "Solo funciona con `fetch`.",
+            "porque": "`await` funciona con cualquier promesa, y con valores que no lo son, que envuelve."
+          },
+          {
+            "texto": "Una función `async` devuelve el valor directamente, sin promesa.",
+            "porque": "Una función `async` siempre devuelve una promesa, aunque dentro hagas `return` de un valor normal."
+          },
+          {
+            "texto": "Sigue siendo asíncrono: es otra forma de escribir promesas.",
+            "porque": "`async/await` es azúcar sintáctico sobre las promesas: cambia la legibilidad, no el mecanismo."
+          }
+        ]
+      },
       "etiquetas": ["asincronia", "promesas"],
       "fuentes": [
         {
@@ -103,6 +147,28 @@
         ]
       },
       "respuestaModelo": "`Promise.all` espera a que todas las promesas se resuelvan y devuelve sus valores en orden, pero rechaza inmediatamente en cuanto una falla, útil cuando todas las peticiones son necesarias para continuar. `Promise.race` se resuelve o rechaza en cuanto la primera promesa termina, se usa por ejemplo para implementar un timeout corriendo la petición real contra una promesa que rechaza pasado cierto tiempo. `Promise.allSettled` espera a todas sin fallar por una rechazada, devolviendo el estado de cada una; útil para cargar varios widgets independientes de un dashboard donde el fallo de uno no debe tumbar los demás. `Promise.any` se resuelve con la primera que tenga éxito e ignora los rechazos salvo que todas fallen; útil para pedir el mismo dato a varios servidores espejo y quedarse con el primero que responda bien.",
+      "test": {
+        "enunciado": "Cargas tres widgets independientes y quieres pintar los que funcionen aunque alguno falle. ¿Qué usas?",
+        "correcta": 1,
+        "opciones": [
+          {
+            "texto": "`Promise.all`",
+            "porque": "Rechaza en cuanto una falla y pierdes los resultados de las que sí funcionaron."
+          },
+          {
+            "texto": "`Promise.allSettled`",
+            "porque": "Espera a todas y te da el resultado de cada una, fulfilled o rejected, así pintas las que fueron bien."
+          },
+          {
+            "texto": "`Promise.race`",
+            "porque": "Se queda con la primera que termine, sea éxito o fallo; las demás se ignoran."
+          },
+          {
+            "texto": "`Promise.any`",
+            "porque": "Se resuelve con la primera que tenga éxito y no te da los resultados de las otras."
+          }
+        ]
+      },
       "etiquetas": ["asincronia", "promesas"],
       "fuentes": [
         {
@@ -140,6 +206,28 @@
         ]
       },
       "respuestaModelo": "`debounce(fn, delay)` devuelve una función que, cada vez que se llama, cancela el temporizador pendiente con `clearTimeout` y programa uno nuevo con `setTimeout` para ejecutar `fn` pasados `delay` milisegundos; si llega otra llamada antes de que se cumpla el plazo, el ciclo se reinicia. El resultado es que `fn` solo se ejecuta cuando ha pasado `delay` ms sin nuevas llamadas. El caso de uso típico es un autocompletado de búsqueda o una validación de formulario mientras se escribe: sin debounce se dispararía una petición o un cálculo costoso en cada tecla pulsada. La variante \"leading\" ejecuta en la primera llamada y luego ignora hasta que pase el periodo de calma, útil cuando se quiere respuesta inmediata pero sin repetir la acción en ráfaga.",
+      "test": {
+        "enunciado": "¿Qué hace un `debounce(fn, delay)` sobre un buscador que se dispara en cada tecla?",
+        "correcta": 0,
+        "opciones": [
+          {
+            "texto": "Ejecuta `fn` solo cuando pasan `delay` ms sin nuevas pulsaciones.",
+            "porque": "Cada llamada cancela el temporizador pendiente y programa uno nuevo: solo sobrevive el último."
+          },
+          {
+            "texto": "Ejecuta `fn` como máximo una vez cada `delay` ms mientras se escribe.",
+            "porque": "Eso es throttle: ejecuta de forma periódica durante la actividad, no al final."
+          },
+          {
+            "texto": "Ejecuta `fn` en cada tecla, pero con `delay` ms de retraso.",
+            "porque": "Retrasaría todas las llamadas sin quitar ninguna: seguirías haciendo una petición por tecla."
+          },
+          {
+            "texto": "Cancela `fn` si el usuario escribe demasiado rápido.",
+            "porque": "No se cancela: se pospone hasta que la actividad para, y entonces se ejecuta una vez."
+          }
+        ]
+      },
       "etiquetas": ["asincronia", "rendimiento"],
       "fuentes": [
         {
@@ -178,6 +266,28 @@
         ]
       },
       "respuestaModelo": "`throttle(fn, interval)` garantiza que `fn` se ejecute como máximo una vez cada `interval` milisegundos, sin importar cuántas veces se llame mientras tanto: se puede implementar guardando el timestamp de la última ejecución y, en cada llamada, comparando si ya pasó el intervalo para ejecutar de nuevo o ignorar la llamada. La diferencia con `debounce` es que `debounce` espera a que pare la actividad para ejecutar una sola vez al final, mientras `throttle` sigue ejecutando periódicamente aunque la actividad no pare. El caso de uso típico es un handler de scroll o resize, donde se necesita reaccionar mientras el usuario interactúa, no solo al terminar. La variante \"trailing\" añade que la última llamada dentro de un intervalo también se ejecuta al final de ese intervalo, para no perder el estado más reciente.",
+      "test": {
+        "enunciado": "¿Qué caso encaja mejor con throttle que con debounce?",
+        "correcta": 3,
+        "opciones": [
+          {
+            "texto": "Un buscador que consulta al terminar de escribir.",
+            "porque": "Ahí quieres esperar a que pare la actividad: es el caso de libro de debounce."
+          },
+          {
+            "texto": "Guardar un borrador cuando el usuario deja de teclear.",
+            "porque": "También es esperar al final de la actividad, así que encaja con debounce."
+          },
+          {
+            "texto": "Validar un email al salir del campo.",
+            "porque": "Es un evento único (`blur`): no hace falta ni debounce ni throttle."
+          },
+          {
+            "texto": "Actualizar un indicador de posición mientras se hace scroll.",
+            "porque": "Quieres actualizaciones periódicas durante la actividad, no solo al final: throttle limita a una por intervalo."
+          }
+        ]
+      },
       "etiquetas": ["asincronia", "rendimiento"],
       "fuentes": [
         {

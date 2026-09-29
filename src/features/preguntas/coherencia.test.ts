@@ -8,6 +8,7 @@ import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { MODOS, NIVELES, PISTAS } from './esquema';
+import { NOMBRE_FAMILIA } from './nombres';
 
 const RAIZ = path.join(process.cwd(), 'contenido', 'pistas');
 const RUTA_COBERTURA = path.join(process.cwd(), 'contenido', 'COBERTURA.md');
@@ -49,6 +50,7 @@ type PreguntaRaw = {
   rubrica: { junior: string[]; senior: string[] };
   respuestaModelo: string;
   kata?: KataRaw;
+  test?: { correcta: number; opciones: { texto: string; porque: string }[] };
   fuentes: FuenteRaw[];
   estado: string;
   __ruta: string;
@@ -465,4 +467,45 @@ describe('10. cobertura modo × nivel', () => {
       });
     }
   }
+});
+
+// --- 10. cada familia tiene su nombre para pantalla --------------------------
+// Sin él, el temario pinta el identificador ("configuracion", sin tilde).
+describe('10. nombres de familia', () => {
+  const familias = [...new Set(banco.map((p) => (p as { familia?: string }).familia ?? ''))];
+  for (const familia of familias) {
+    it(`"${familia}" tiene nombre en NOMBRE_FAMILIA (nombres.ts)`, () => {
+      expect(NOMBRE_FAMILIA[familia], `familia sin nombre: ${familia}`).toBeTruthy();
+    });
+  }
+});
+
+// --- 11. Tipo test sin pistas involuntarias ----------------------------------
+// Un test mal hecho se acierta sin saber: la correcta es casi siempre la opción
+// más larga o cae casi siempre en la misma letra. Por azar, cada cosa ronda el
+// 25 %; se exige que se quede cerca de ahí.
+describe('11. Tipo test', () => {
+  const conTest = banco.filter((p) => p.test);
+  it.skipIf(conTest.length < 20)(
+    'la correcta no es la opción más larga en más del 40 % de las preguntas',
+    () => {
+      const larga = conTest.filter((p) => {
+        const l = p.test!.opciones.map((o) => o.texto.length);
+        const max = Math.max(...l);
+        return l[p.test!.correcta] === max && l.filter((x) => x === max).length === 1;
+      });
+      expect(
+        larga.length / conTest.length,
+        `la correcta es la más larga en: ${larga.map((p) => p.id).join(', ')}`,
+      ).toBeLessThanOrEqual(0.4);
+    },
+  );
+  it.skipIf(conTest.length < 20)('la correcta se reparte entre las cuatro letras', () => {
+    const porLetra = [0, 1, 2, 3].map((i) => conTest.filter((p) => p.test!.correcta === i).length);
+    for (const n of porLetra) {
+      expect(n / conTest.length, `reparto A-D: ${porLetra.join(', ')}`).toBeGreaterThanOrEqual(
+        0.15,
+      );
+    }
+  });
 });

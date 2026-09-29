@@ -28,6 +28,28 @@
         ]
       },
       "respuestaModelo": "Big O describe cómo crece el tiempo (o memoria) de un algoritmo a medida que crece el tamaño de la entrada, ignorando constantes. Buscar un valor en un array recorriéndolo es O(n): en el peor caso hay que mirar todos los elementos. Buscar por clave en un objeto o un `Map` es O(1) amortizado, porque internamente usan una tabla hash con acceso casi directo. Ordenar con `Array.prototype.sort` es O(n log n) en el caso general en motores como V8, que usa una variante de Timsort.",
+      "test": {
+        "enunciado": "¿Qué complejidad tiene buscar un valor recorriendo un array sin ordenar?",
+        "correcta": 3,
+        "opciones": [
+          {
+            "texto": "O(1)",
+            "porque": "O(1) es el acceso por índice o por clave en un `Map`. Buscar un valor sin saber dónde está obliga a mirar los elementos uno a uno."
+          },
+          {
+            "texto": "O(log n)",
+            "porque": "O(log n) es la búsqueda binaria, que solo funciona si el array está ordenado."
+          },
+          {
+            "texto": "O(n log n)",
+            "porque": "Es el coste típico de ordenar, no de buscar. Ordenar para buscar una sola vez sería más caro que recorrer."
+          },
+          {
+            "texto": "O(n)",
+            "porque": "En el peor caso hay que mirar todos los elementos, así que el tiempo crece en proporción al tamaño del array."
+          }
+        ]
+      },
       "etiquetas": ["algoritmos", "complejidad"],
       "fuentes": [
         {
@@ -65,6 +87,28 @@
         ]
       },
       "respuestaModelo": "Un `Map` conviene cuando las claves no son siempre strings (pueden ser objetos), cuando necesito el orden de inserción garantizado, o cuando hay muchas inserciones y borrados frecuentes, porque además expone `.size` directamente sin contar propiedades a mano. Un objeto plano sigue siendo cómodo para estructuras fijas conocidas en tiempo de escritura. Un `Set` conviene cuando necesito garantizar unicidad y comprobar pertenencia muchas veces: `set.has(x)` es O(1) frente a `array.includes(x)` que es O(n), lo que importa mucho al trabajar con colecciones grandes, por ejemplo para deduplicar ids.",
+      "test": {
+        "enunciado": "¿Cuándo conviene un `Set` en vez de un array?",
+        "correcta": 2,
+        "opciones": [
+          {
+            "texto": "Cuando necesitas acceder por índice, como al tercero o al último.",
+            "porque": "Un `Set` no tiene índices; para eso el array es la estructura natural."
+          },
+          {
+            "texto": "Cuando necesitas guardar elementos repetidos.",
+            "porque": "Un `Set` elimina los duplicados: si necesitas repetidos, es justo lo contrario de lo que ofrece."
+          },
+          {
+            "texto": "Cuando necesitas valores únicos y comprobar rápido si uno está.",
+            "porque": "Un `Set` garantiza unicidad y `has()` es O(1) de media, frente a `includes()` de un array, que es O(n)."
+          },
+          {
+            "texto": "Cuando vas a serializarlo a JSON tal cual.",
+            "porque": "`JSON.stringify` de un `Set` devuelve `{}`: hay que convertirlo antes a array. Es un inconveniente, no una razón para usarlo."
+          }
+        ]
+      },
       "etiquetas": ["algoritmos", "estructuras-de-datos"],
       "fuentes": [
         {

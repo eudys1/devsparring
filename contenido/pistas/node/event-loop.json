@@ -24,6 +24,28 @@
         ]
       },
       "respuestaModelo": "Node ejecuta el código JavaScript de usuario en un único hilo. Lo de 'no bloqueante' se refiere específicamente a las operaciones de I/O (leer un fichero, hacer una petición de red, consultar una base de datos): esas operaciones se delegan a libuv y su pool de hilos internos, así que mientras esperan, el hilo principal queda libre para atender otras peticiones. Pero eso no aplica al trabajo intensivo de CPU ejecutado directamente en JavaScript: un `while(true)` corre en el mismo y único hilo que atiende todas las peticiones HTTP, así que mientras ese bucle no termine, el event loop no puede procesar ningún otro callback, ninguna otra petición entrante, porque no hay ningún otro hilo disponible para atenderlas en paralelo. La confusión típica es pensar que 'no bloqueante' significa 'todo corre en paralelo', cuando en realidad solo el I/O delegado se beneficia de esa concurrencia.",
+      "test": {
+        "enunciado": "¿Por qué un `while(true)` dentro de un handler bloquea todas las peticiones en Node?",
+        "correcta": 1,
+        "opciones": [
+          {
+            "texto": "Porque Node usa un hilo por petición y, con el bucle, se queda sin hilos libres.",
+            "porque": "Node no usa un hilo por petición; ese es el modelo de otros servidores."
+          },
+          {
+            "texto": "Porque tu JavaScript corre en un solo hilo y el bucle nunca lo suelta.",
+            "porque": "Lo no bloqueante es la I/O que se delega a libuv. El trabajo de CPU en tu código ocupa el único hilo y el event loop no puede atender nada más."
+          },
+          {
+            "texto": "Porque libuv solo atiende una petición a la vez.",
+            "porque": "libuv gestiona la I/O en paralelo; el cuello de botella es tu bucle en el hilo principal."
+          },
+          {
+            "texto": "Porque el recolector de basura se detiene.",
+            "porque": "El recolector de basura no tiene que ver: el bloqueo es el bucle ocupando el hilo."
+          }
+        ]
+      },
       "etiquetas": ["event-loop", "concurrencia"],
       "fuentes": [
         {

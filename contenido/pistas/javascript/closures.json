@@ -28,6 +28,28 @@
         ]
       },
       "respuestaModelo": "Un closure es una función que recuerda las variables del ámbito donde se definió aunque se ejecute fuera de él. Un `crearContador()` que devuelve `() => ++n` es el ejemplo típico: `n` no es accesible desde fuera pero sigue viva. Sirve para estado privado, memoización y callbacks. El fallo clásico es `for (var i…)` con un `setTimeout`: todas las funciones ven el mismo `i`; con `let` cada iteración tiene su propio enlace. Un senior menciona que las referencias retenidas por closures pueden impedir liberar memoria y que en React una función capturada en un `useEffect` ve el estado del render en que se creó (stale closure).",
+      "test": {
+        "enunciado": "¿Qué es un closure?",
+        "correcta": 2,
+        "opciones": [
+          {
+            "texto": "Una función que se ejecuta nada más definirse, envuelta entre paréntesis.",
+            "porque": "Eso es una IIFE. Puede crear un closure, pero no es lo que lo define."
+          },
+          {
+            "texto": "Una forma de cerrar una conexión o un recurso.",
+            "porque": "El nombre despista: no tiene nada que ver con cerrar recursos."
+          },
+          {
+            "texto": "Una función que recuerda las variables del ámbito donde se creó.",
+            "porque": "Aunque se ejecute fuera de ese ámbito: por eso un `crearContador()` puede devolver una función que sigue viendo su `n` privada."
+          },
+          {
+            "texto": "Una función declarada dentro de una clase.",
+            "porque": "Eso es un método. El closure va de ámbitos y funciona igual sin clases."
+          }
+        ]
+      },
       "etiquetas": ["scope", "memoria"],
       "fuentes": [
         {

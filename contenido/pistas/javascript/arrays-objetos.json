@@ -89,6 +89,28 @@
         ]
       },
       "respuestaModelo": "JSON es un formato de texto para representar datos estructurados. `JSON.stringify(valor)` convierte un valor de JavaScript a su representación en texto JSON, y `JSON.parse(texto)` hace lo contrario. JSON solo soporta un subconjunto de tipos: objetos, arrays, strings, números, booleanos y `null`. Por eso `JSON.stringify` omite silenciosamente las propiedades cuyo valor es una función o `undefined`, en vez de lanzar error. Un `Date` se convierte a un string en formato ISO al serializar, pero `JSON.parse` no lo reconstruye como `Date` automáticamente: queda como string y hay que convertirlo a mano de vuelta. Y si el objeto tiene una referencia circular (un objeto que se referencia a sí mismo), `JSON.stringify` lanza un `TypeError`.",
+      "test": {
+        "enunciado": "¿Qué hace `JSON.stringify` con una propiedad de un objeto cuyo valor es una función?",
+        "correcta": 1,
+        "opciones": [
+          {
+            "texto": "Lanza un error.",
+            "porque": "No lanza nada: la omite en silencio, y por eso el fallo suele pasar desapercibido."
+          },
+          {
+            "texto": "La omite en silencio.",
+            "porque": "JSON no tiene funciones ni `undefined`, así que esas propiedades desaparecen del resultado sin avisar."
+          },
+          {
+            "texto": "La convierte en su código fuente como string.",
+            "porque": "Eso lo haría `fn.toString()`; `JSON.stringify` no serializa funciones."
+          },
+          {
+            "texto": "La convierte en `null`.",
+            "porque": "Solo dentro de un array una función o `undefined` se convierten en `null`; como propiedad de un objeto, se omiten."
+          }
+        ]
+      },
       "etiquetas": ["arrays-objetos", "json"],
       "fuentes": [
         {
@@ -127,6 +149,28 @@
         ]
       },
       "respuestaModelo": "`slice(inicio, fin)` no modifica el array original: devuelve una copia superficial de la porción indicada, sin incluir el índice `fin`. `splice(inicio, cantidadABorrar, ...nuevos)` sí modifica el array original en el sitio: elimina `cantidadABorrar` elementos desde `inicio` y opcionalmente inserta nuevos elementos ahí mismo, devolviendo los elementos eliminados. La confusión típica es usar `splice` esperando el comportamiento no destructivo de `slice`: como `splice` muta el array original, si ese array se comparte con otra parte del código (por ejemplo, viene de props o de un estado compartido), se puede introducir un bug sutil por mutación inesperada.",
+      "test": {
+        "enunciado": "¿Qué diferencia hay entre `slice` y `splice`?",
+        "correcta": 2,
+        "opciones": [
+          {
+            "texto": "Ninguna: son dos nombres para lo mismo.",
+            "porque": "Uno copia sin tocar el array y el otro lo modifica en el sitio."
+          },
+          {
+            "texto": "`slice` modifica el array original y `splice` devuelve una copia.",
+            "porque": "Es exactamente al revés, y es la confusión típica."
+          },
+          {
+            "texto": "`slice` copia una porción sin tocar el original; `splice` modifica el original.",
+            "porque": "`splice(inicio, n, ...nuevos)` borra e inserta en el sitio y devuelve lo borrado; `slice(inicio, fin)` solo copia."
+          },
+          {
+            "texto": "`splice` solo funciona con strings.",
+            "porque": "`splice` es de arrays; los strings tienen `slice`, pero no `splice`."
+          }
+        ]
+      },
       "etiquetas": ["arrays"],
       "fuentes": [
         {
@@ -382,6 +426,28 @@
         ]
       },
       "respuestaModelo": "`forEach` recorre el array ejecutando una función por cada elemento pero siempre devuelve `undefined`; se usa por sus efectos secundarios, como loguear o acumular algo en una variable externa. `map` recorre el array y devuelve un array nuevo con el resultado de aplicar la función a cada elemento, sin mutar el original; se usa para transformar datos, no para efectos secundarios. Un antipatrón común es usar `map` solo para iterar sin usar el array resultante, cuando `forEach` (o un `for...of`) comunica mejor la intención de no producir un resultado nuevo. Ninguno de los dos se puede cortar a mitad de camino con `break` como un `for` clásico; para eso haría falta `for...of` con `break`, o `some`/`every` si la condición de parada encaja con su semántica.",
+      "test": {
+        "enunciado": "¿Qué diferencia hay entre `forEach` y `map`?",
+        "correcta": 0,
+        "opciones": [
+          {
+            "texto": "`map` devuelve un array nuevo con cada resultado; `forEach` devuelve `undefined`.",
+            "porque": "Por eso `map` es para transformar datos y `forEach` para efectos secundarios, como loguear."
+          },
+          {
+            "texto": "`forEach` es mucho más rápido porque no crea un array.",
+            "porque": "La diferencia de velocidad es irrelevante en casi todos los casos; lo que cambia es para qué sirve cada uno."
+          },
+          {
+            "texto": "`map` modifica el array original.",
+            "porque": "`map` no muta el original: devuelve uno nuevo. Si la función que le pasas muta los elementos, eso ya es cosa tuya."
+          },
+          {
+            "texto": "`forEach` se puede cortar con `break`.",
+            "porque": "`forEach` no admite `break` ni `continue`; si necesitas cortar, usa `for...of`, `some` o `every`."
+          }
+        ]
+      },
       "etiquetas": ["arrays"],
       "fuentes": [
         {

@@ -64,6 +64,22 @@ const Fuente = z.object({
   nota: z.string().optional(),
 });
 
+// Tipo test: cuatro opciones cortas, una correcta, y el porqué de CADA una. Sin
+// el porqué de los distractores el modo enseña el error (plan-estudio-y-banco.md,
+// fase 1, condición innegociable). Se generan una vez y se revisan por PR.
+const OpcionTest = z.object({
+  texto: z.string().min(1).max(140),
+  porque: z.string().min(20).max(320),
+});
+const Test = z.object({
+  // La pregunta concreta a la que responden las opciones, cuando la original pide
+  // varias cosas o un ejemplo propio. Sin él se usa el texto de la pregunta.
+  enunciado: z.string().min(10).max(220).optional(),
+  opciones: z.array(OpcionTest).length(4),
+  correcta: z.number().int().min(0).max(3),
+});
+export type Test = z.infer<typeof Test>;
+
 const Rubrica = z.object({
   junior: z.array(z.string().min(1)).min(1),
   senior: z.array(z.string().min(1)).min(1),
@@ -84,6 +100,7 @@ export const Pregunta = z
     rubrica: Rubrica,
     respuestaModelo: z.string().min(1),
     kata: Kata.optional(),
+    test: Test.optional(),
     etiquetas: z.array(z.string()).default([]),
     fuentes: z.array(Fuente).min(1),
     origen: z.enum(ORIGENES),
@@ -107,6 +124,27 @@ export const Pregunta = z
     }
     if (p.modos.includes('kata') && p.tipo !== 'kata') {
       ctx.addIssue({ code: 'custom', path: ['modos'], message: 'El modo kata exige tipo kata.' });
+    }
+    if (p.test && p.tipo !== 'definicion' && p.tipo !== 'fundamento') {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['test'],
+        message: 'Tipo test solo para preguntas de definición o fundamento.',
+      });
+    }
+    if (p.test && !p.modos.includes('flash')) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['modos'],
+        message: 'Una pregunta con opciones de test tiene que estar en el modo flash (Tipo test).',
+      });
+    }
+    if (p.test && new Set(p.test.opciones.map((o) => o.texto.trim())).size < 4) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['test'],
+        message: 'Las cuatro opciones son distintas.',
+      });
     }
     if (p.estado === 'obsoleta' && !p.motivoObsoleta) {
       ctx.addIssue({

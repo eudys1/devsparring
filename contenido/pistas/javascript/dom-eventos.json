@@ -28,6 +28,28 @@
         ]
       },
       "respuestaModelo": "Cuando ocurre un evento en un elemento del DOM, por defecto recorre dos fases: primero capturing, donde el evento baja desde el `document` hasta el elemento donde realmente ocurrió, y luego bubbling, donde sube de vuelta desde ese elemento hasta sus ancestros. La mayoría de los listeners escuchan en la fase de bubbling por defecto. Event delegation aprovecha el bubbling: en vez de poner un listener en cada elemento hijo, se pone uno solo en un ancestro común, y dentro del listener se comprueba `event.target` para saber en qué hijo concreto ocurrió el clic. Esto es más eficiente (un listener en vez de miles) y funciona automáticamente con elementos añadidos dinámicamente después, sin tener que registrar un listener nuevo cada vez.",
+      "test": {
+        "enunciado": "¿En qué se apoya la delegación de eventos?",
+        "correcta": 1,
+        "opciones": [
+          {
+            "texto": "En la fase de capturing, que va del elemento al `document`.",
+            "porque": "Capturing va al revés, del `document` al elemento, y la delegación clásica usa bubbling."
+          },
+          {
+            "texto": "En que el evento sube a los ancestros y un listener en el padre atiende a los hijos.",
+            "porque": "Pones un solo listener en el contenedor y miras `event.target`; sirve también para los hijos que se añaden después."
+          },
+          {
+            "texto": "En poner un listener en cada uno de los elementos hijos para que gestionen su propio evento.",
+            "porque": "Es justo lo que la delegación evita: un listener por elemento cuesta memoria y no cubre los que se añaden después."
+          },
+          {
+            "texto": "En llamar a `stopPropagation` en cada hijo.",
+            "porque": "`stopPropagation` corta la subida: con él, el padre nunca se enteraría del evento."
+          }
+        ]
+      },
       "etiquetas": ["dom", "eventos"],
       "fuentes": [
         {
@@ -65,6 +87,28 @@
         ]
       },
       "respuestaModelo": "El atributo es lo que está escrito literalmente en el HTML (`<input value=\"hola\">`), mientras que la propiedad es el valor actual del objeto DOM en JavaScript (`elemento.value`), y ambos pueden desincronizarse: si el usuario escribe en el input, `elemento.value` refleja lo que escribió, pero `elemento.getAttribute('value')` sigue devolviendo el valor original del HTML. La mayoría de atributos generan una propiedad correspondiente automáticamente, aunque no siempre con el mismo nombre (el atributo `class` corresponde a la propiedad `className`) ni el mismo tipo (un atributo booleano como `disabled` se refleja como propiedad `true`/`false`, no como el string `\"disabled\"`). `getAttribute`/`setAttribute` acceden siempre al atributo tal cual, útil cuando se necesita el valor original del HTML en vez del estado actual.",
+      "test": {
+        "enunciado": "El usuario escribe en un `<input value=\"hola\">`. ¿Qué devuelve después `getAttribute('value')`?",
+        "correcta": 0,
+        "opciones": [
+          {
+            "texto": "`\"hola\"`, el valor original del HTML.",
+            "porque": "El atributo refleja lo escrito en el HTML; lo que teclea el usuario vive en la propiedad `input.value`."
+          },
+          {
+            "texto": "Lo que ha escrito el usuario.",
+            "porque": "Eso es `input.value`, la propiedad: atributo y propiedad se desincronizan en cuanto el usuario escribe."
+          },
+          {
+            "texto": "`undefined`.",
+            "porque": "El atributo existe en el HTML, así que devuelve su valor; `getAttribute` devuelve `null` solo si no existe."
+          },
+          {
+            "texto": "Un error, porque `value` es de solo lectura.",
+            "porque": "Ni el atributo ni la propiedad `value` son de solo lectura en un input de texto."
+          }
+        ]
+      },
       "etiquetas": ["dom"],
       "fuentes": [
         {
@@ -103,6 +147,28 @@
         ]
       },
       "respuestaModelo": "`localStorage` guarda datos por origen que persisten indefinidamente hasta que se borran explícitamente, con un límite de varios megabytes. `sessionStorage` guarda datos solo durante la vida de esa pestaña concreta: se borra al cerrarla, y no se comparte ni siquiera con otra pestaña del mismo sitio. Las cookies tienen un límite mucho menor (unos 4KB) y, a diferencia del storage, se envían automáticamente al servidor en cada petición HTTP a ese dominio, lo que las hace las únicas de las tres pensadas también para comunicación con el backend. Las cookies pueden marcarse `HttpOnly` (inaccesibles desde JavaScript, reduciendo el riesgo de robo por XSS) y `Secure` (solo se envían por HTTPS), mientras que tanto `localStorage` como `sessionStorage` son siempre accesibles desde cualquier script que corra en esa página.",
+      "test": {
+        "enunciado": "¿Qué diferencia a las cookies de `localStorage` y `sessionStorage`?",
+        "correcta": 3,
+        "opciones": [
+          {
+            "texto": "`localStorage` se borra al cerrar la pestaña.",
+            "porque": "Esa es `sessionStorage`. `localStorage` persiste hasta que se borra explícitamente."
+          },
+          {
+            "texto": "Las cookies pueden guardar varios megabytes.",
+            "porque": "Tienen un límite de unos 4 KB; el storage sí llega a varios megabytes."
+          },
+          {
+            "texto": "`localStorage` se envía al servidor en cada petición.",
+            "porque": "El storage nunca viaja solo: tendrías que leerlo y mandarlo tú."
+          },
+          {
+            "texto": "Las cookies viajan al servidor en cada petición; el storage no.",
+            "porque": "Por eso las cookies sirven para la sesión y conviene que sean pequeñas: pesan en cada petición."
+          }
+        ]
+      },
       "etiquetas": ["dom", "almacenamiento"],
       "fuentes": [
         {

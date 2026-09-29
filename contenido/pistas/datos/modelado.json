@@ -28,6 +28,28 @@
         ]
       },
       "respuestaModelo": "Normalizar es dividir los datos en tablas relacionadas para eliminar redundancia y evitar anomalías de actualización (1NF, 2NF, 3NF son los pasos habituales de ese proceso). Desnormalizar es hacer lo contrario a propósito: duplicar un dato o guardar un campo ya calculado en vez de recalcularlo con un JOIN cada vez. Tiene sentido cuando las lecturas dominan brutalmente sobre las escrituras y el JOIN repetido es el cuello de botella real medido, por ejemplo guardar `total_spent` en la tabla de clientes en vez de sumar `order_items` en cada request. El coste que se asume es mantener esa duplicación consistente, normalmente con un trigger, un job o aceptando una ventana de inconsistencia eventual.",
+      "test": {
+        "enunciado": "¿Cuándo tiene sentido desnormalizar a propósito una base de datos?",
+        "correcta": 2,
+        "opciones": [
+          {
+            "texto": "Siempre que la base de datos pase de cierto tamaño.",
+            "porque": "El tamaño por sí solo no decide nada; lo que pesa es la relación entre lecturas y escrituras y cuánto cuesta el JOIN que se repite."
+          },
+          {
+            "texto": "Nunca: una base de datos normalizada siempre es más rápida que una desnormalizada.",
+            "porque": "Normalizar evita redundancia y anomalías, pero obliga a hacer JOINs; cuando ese JOIN es el cuello de botella en lecturas muy frecuentes, duplicar un dato puede ser más rápido."
+          },
+          {
+            "texto": "Cuando un JOIN repetido en lecturas muy frecuentes es el cuello de botella.",
+            "porque": "Es el trade-off: ganas lecturas rápidas a cambio de duplicar un dato y tener que mantener la copia coherente en cada escritura."
+          },
+          {
+            "texto": "Para evitar las anomalías de actualización.",
+            "porque": "Es al revés: las anomalías de actualización son lo que evita normalizar. Desnormalizar las reintroduce y hay que controlarlas."
+          }
+        ]
+      },
       "etiquetas": ["sql", "modelado", "normalizacion"],
       "fuentes": [
         {
@@ -66,6 +88,28 @@
         ]
       },
       "respuestaModelo": "Las migraciones son scripts versionados (en git, junto al código) que llevan el esquema de la base de datos de un estado a otro de forma reproducible y auditable en cualquier entorno. Editar el esquema de producción a mano desde un cliente SQL rompe eso de varias formas: crea drift entre entornos (producción deja de coincidir con lo que dicen las migraciones en el repo), el cambio no queda registrado en ningún sitio salvo la memoria de quien lo hizo, no pasa por revisión de código, y no se puede revertir de forma fiable si algo sale mal. Herramientas como Prisma Migrate o Drizzle Kit generan y aplican esos scripts de forma controlada.",
+      "test": {
+        "enunciado": "¿Por qué no se debe cambiar el esquema de producción a mano desde un cliente SQL?",
+        "correcta": 0,
+        "opciones": [
+          {
+            "texto": "Porque el cambio no queda versionado y producción deja de coincidir con las migraciones.",
+            "porque": "Es el problema principal: se pierde la trazabilidad y aparece drift entre entornos, y el siguiente despliegue puede chocar con un esquema que nadie sabe que cambió."
+          },
+          {
+            "texto": "Porque desde un cliente SQL no se puede ejecutar `ALTER TABLE`.",
+            "porque": "Se puede perfectamente. El problema no es técnico sino de control: el cambio no queda registrado ni se reproduce en otros entornos."
+          },
+          {
+            "texto": "Porque una migración siempre se ejecuta más rápido.",
+            "porque": "La velocidad da igual: una migración ejecuta el mismo SQL. Lo que aporta es que el cambio sea versionado, revisable y reproducible."
+          },
+          {
+            "texto": "Porque las migraciones van en una transacción que impide cualquier pérdida de datos.",
+            "porque": "Una migración mal escrita también puede borrar datos, y no todas las bases de datos envuelven los cambios de esquema en una transacción. Lo que da es un cambio revisado y repetible."
+          }
+        ]
+      },
       "etiquetas": ["sql", "modelado", "migraciones"],
       "fuentes": [
         {

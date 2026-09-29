@@ -28,6 +28,28 @@
         ]
       },
       "respuestaModelo": "El motor de JavaScript ejecuta el código en un único hilo, pero delega las operaciones de I/O (peticiones de red, temporizadores, lectura de archivos) al entorno que lo rodea: el navegador o, en Node, libuv, que sí puede usar hilos internos para eso. Cuando esas operaciones terminan, su callback o la resolución de la promesa se coloca en una cola de tareas, y el event loop la ejecuta solo cuando el call stack del hilo principal está vacío. Así el hilo de JavaScript nunca se queda bloqueado esperando una respuesta de red: sigue procesando otro código mientras tanto.",
+      "test": {
+        "enunciado": "Si JavaScript tiene un solo hilo, ¿cómo espera a una petición de red sin congelar la interfaz?",
+        "correcta": 0,
+        "opciones": [
+          {
+            "texto": "Delega la espera al entorno y el event loop ejecuta el callback cuando el hilo queda libre.",
+            "porque": "El hilo de JavaScript no espera: el navegador o libuv hacen la I/O y, al terminar, dejan el callback en una cola que el event loop atiende cuando el call stack está vacío."
+          },
+          {
+            "texto": "Crea un hilo nuevo de JavaScript por cada petición.",
+            "porque": "Tu código sigue en un solo hilo; los hilos internos son del entorno (por ejemplo, el pool de libuv) y no ejecutan tu JavaScript."
+          },
+          {
+            "texto": "Pausa la interfaz unos milisegundos mientras llega la respuesta.",
+            "porque": "Si la pausara, la interfaz se congelaría: justo lo que evita delegar la espera."
+          },
+          {
+            "texto": "Las promesas se ejecutan en paralelo en otro núcleo del procesador y luego avisan al hilo principal.",
+            "porque": "Una promesa no crea paralelismo: solo representa un resultado futuro. Un cálculo pesado dentro de ella seguiría bloqueando el hilo."
+          }
+        ]
+      },
       "etiquetas": ["concurrencia", "event-loop"],
       "fuentes": [
         {

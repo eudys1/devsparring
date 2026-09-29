@@ -27,6 +27,28 @@
         ]
       },
       "respuestaModelo": "`strict: true` activa de golpe un conjunto de flags de comprobación más estrictos en vez de tener que activarlos uno a uno. Entre ellos, `strictNullChecks` obliga a manejar explícitamente `null` y `undefined` (sin él, cualquier tipo admite `null` implícitamente, una fuente clásica de errores en tiempo de ejecución). `noImplicitAny` prohíbe que una variable o parámetro termine con tipo `any` de forma implícita cuando TypeScript no puede inferir nada mejor, obligando a anotarlo explícitamente. `strictFunctionTypes` hace más estricta la comprobación de compatibilidad entre firmas de funciones. Activar `strict` desde el inicio de un proyecto es mucho más fácil que migrar un proyecto grande después, porque cada flag adicional suele destapar decenas o cientos de errores que había pasado por alto un tipado más laxo.",
+      "test": {
+        "enunciado": "¿Qué flag de los que activa `strict: true` obliga a manejar `null` y `undefined`?",
+        "correcta": 0,
+        "opciones": [
+          {
+            "texto": "`strictNullChecks`",
+            "porque": "Sin él, cualquier tipo admite `null` de forma implícita, una fuente clásica de errores en ejecución."
+          },
+          {
+            "texto": "`noImplicitAny`",
+            "porque": "Prohíbe el `any` implícito. También lo activa `strict`, pero no trata `null`."
+          },
+          {
+            "texto": "`noUnusedLocals`",
+            "porque": "Avisa de variables sin usar, y ni siquiera forma parte de `strict`."
+          },
+          {
+            "texto": "`esModuleInterop`",
+            "porque": "Tiene que ver con importar módulos CommonJS, no con `null`."
+          }
+        ]
+      },
       "etiquetas": ["configuracion"],
       "fuentes": [
         {
@@ -135,6 +157,28 @@
         ]
       },
       "respuestaModelo": "El compilador de TypeScript (`tsc`, o herramientas más rápidas como esbuild o SWC que reimplementan la transpilación) convierte los archivos `.ts` en `.js` quitando las anotaciones de tipo y transformando sintaxis que el entorno objetivo no soporte. El `target` en `tsconfig.json` decide a qué versión de ECMAScript se transpila la sintaxis moderna: con `target: 'ES2015'`, una arrow function o una clase se convierten en su equivalente con funciones tradicionales para navegadores antiguos; con un `target` más moderno como `ES2020`, se preserva más sintaxis nativa, generando código más compacto pero menos compatible con entornos viejos. Herramientas como esbuild o SWC hacen esta transpilación mucho más rápido que `tsc`, pero no comprueban tipos: por eso en un pipeline moderno suele haber un paso separado de `tsc --noEmit` solo para el chequeo de tipos, y esbuild/SWC solo para generar el JavaScript final.",
+      "test": {
+        "enunciado": "¿Qué decide el `target` de `tsconfig.json`?",
+        "correcta": 2,
+        "opciones": [
+          {
+            "texto": "Qué archivos `.ts` se compilan.",
+            "porque": "Eso lo deciden `include`, `exclude` y `files`."
+          },
+          {
+            "texto": "Si el compilador comprueba o no los tipos antes de generar el JavaScript.",
+            "porque": "La comprobación de tipos no depende del `target`; la endurecen flags como `strict`."
+          },
+          {
+            "texto": "A qué versión de ECMAScript se transpila la sintaxis.",
+            "porque": "Con un `target` antiguo, las arrow functions o las clases se reescriben para entornos que no las soportan."
+          },
+          {
+            "texto": "La carpeta donde se escribe el JavaScript.",
+            "porque": "Eso es `outDir`, la carpeta de salida."
+          }
+        ]
+      },
       "etiquetas": ["configuracion"],
       "fuentes": [
         {

@@ -219,7 +219,7 @@ export default async function Hoy() {
                         href={`/pistas/${p.pista}#${p.id}`}
                         className="block truncate text-[0.9375rem] text-tinta underline decoration-linea-fuerte underline-offset-2 hover:decoration-tinta-3"
                       >
-                        {p.texto.es}
+                        {p.texto.es.replace(/`/g, '')}
                       </Link>
                     ) : (
                       <span className="block truncate text-[0.9375rem] text-tinta">

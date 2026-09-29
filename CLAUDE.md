@@ -35,6 +35,7 @@ pnpm contenido:validar   # valida contenido/ contra el esquema zod
 pnpm revisar             # el bucle entero: checks + build + detector + capturas
 pnpm detector            # anti-patrones de diseño contra el listón de dev
 pnpm capturas            # pantallas públicas en dos temas y dos tamaños
+pnpm capturas:app        # pantallas con sesión (servidor levantado y e2e hecho antes)
 ```
 
 Nada está terminado hasta que `pnpm verify` está en verde, y se dice tal cual si

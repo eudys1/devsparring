@@ -24,7 +24,7 @@ export function Concha({
       <aside className="carril hidden md:sticky md:top-0 md:flex md:h-dvh md:flex-col">
         <Link
           href="/hoy"
-          aria-label="Devsparring, hoy"
+          aria-label="Devsparring"
           className="carril-cabeza mx-5 border-b border-[var(--carril-linea)] py-5"
         >
           <span className="solo-ancho">
@@ -69,7 +69,7 @@ export function Concha({
 
       <div className="pb-[4.5rem] md:pb-0">
         <header className="carril flex items-center justify-between border-b border-[var(--carril-linea)] px-4 py-3 md:hidden">
-          <Link href="/hoy" aria-label="Devsparring, hoy">
+          <Link href="/hoy" aria-label="Devsparring">
             <Marca />
           </Link>
           <div className="flex items-center gap-2">
@@ -90,7 +90,7 @@ export function Concha({
 
       <nav
         className="carril fixed inset-x-0 bottom-0 z-20 grid grid-cols-5 border-t border-[var(--carril-linea)] pb-[env(safe-area-inset-bottom)] md:hidden"
-        aria-label="Principal"
+        aria-label="Principal, barra inferior"
       >
         <NavEnlaces porRepasar={porRepasar} variante="barra" />
       </nav>

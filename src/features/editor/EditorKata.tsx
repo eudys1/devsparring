@@ -181,7 +181,7 @@ export function ResultadoTests({ r }: { r: ResultadoEjecucion }) {
           ))}
         </ul>
         {r.consola.length ? (
-          <pre className="scroll-fino mt-2 max-h-40 overflow-auto rounded-[3px] bg-codigo-fondo p-2 text-codigo-tinta">
+          <pre className="scroll-fino mt-2 max-h-40 overflow-auto whitespace-pre-wrap break-words rounded-[6px] bg-codigo-fondo p-2 text-codigo-tinta">
             {r.consola.join('\n')}
           </pre>
         ) : null}

@@ -24,6 +24,7 @@ import type { Modo, Nivel, Pregunta } from '@/features/preguntas/esquema';
 import { NOMBRE_MODO, NOMBRE_PISTA, NOMBRE_TIPO } from '@/features/preguntas/nombres';
 import { ReportarPregunta } from '@/features/preguntas/ReportarPregunta';
 import { rubricaParaNivel } from '@/features/preguntas/rubrica';
+import { TipoTest } from '@/features/preguntas/TipoTest';
 import { notaDesdePuntuacion, type Nota } from '@/features/srs/scheduler';
 import { cerrarSesion, guardarYRepasar } from './acciones';
 
@@ -70,6 +71,8 @@ export function Motor({
   const [copiado, setCopiado] = useState(false);
   // Autoevaluación sin IA: marcar qué criterios de la rúbrica has cubierto.
   const [cubiertos, setCubiertos] = useState<number[]>([]);
+  // Tipo test: la opción elegida (null mientras no se ha respondido).
+  const [elegida, setElegida] = useState<number | null>(null);
   const [segundos, setSegundos] = useState(0);
   const inicio = useRef(0);
   const hechas = yaRespondidas.length + indice;
@@ -78,6 +81,9 @@ export function Motor({
   const esKata = sesion.modo === 'kata';
   // Explicar: respuesta desarrollada; al terminar se enseña además la repregunta.
   const esVerbal = sesion.modo === 'verbal';
+  // Tipo test es el modo flash con opciones. Una sesión antigua de flash que
+  // caiga en una pregunta sin opciones se responde escribiendo, como antes.
+  const esTest = sesion.modo === 'flash' && !!pregunta?.test;
 
   useEffect(() => {
     inicio.current = Date.now();
@@ -121,6 +127,21 @@ export function Motor({
     setNota(tests ? (tests.ok ? 'good' : 'hard') : null);
     setFase('evaluando');
   }, [fase, tests]);
+
+  // Elegir es responder: se revela el porqué de las cuatro y la nota de repaso
+  // se propone sola (acierto, bien; fallo, fallé). Se puede cambiar.
+  const elegir = useCallback(
+    (i: number) => {
+      const t = pregunta?.test;
+      if (!t || fase !== 'respondiendo') return;
+      setElegida(i);
+      setRespuesta(`${'ABCD'[i]}) ${t.opciones[i]?.texto ?? ''}`);
+      setNota(i === t.correcta ? 'good' : 'again');
+      setError(null);
+      setFase('evaluando');
+    },
+    [fase, pregunta],
+  );
 
   const copiarPrompt = useCallback(async () => {
     if (!pregunta) return;
@@ -178,6 +199,7 @@ export function Motor({
     setTests(null);
     setNota(null);
     setCubiertos([]);
+    setElegida(null);
     setError(null);
     setSegundos(0);
     setFase('respondiendo');
@@ -202,6 +224,17 @@ export function Motor({
         destino?.tagName === 'TEXTAREA' ||
         destino?.tagName === 'INPUT' ||
         !!destino?.closest('.monaco-editor');
+      if (esTest && fase === 'respondiendo' && !enCampo && !e.ctrlKey && !e.metaKey) {
+        const i =
+          ['1', '2', '3', '4'].indexOf(e.key) >= 0
+            ? ['1', '2', '3', '4'].indexOf(e.key)
+            : ['a', 'b', 'c', 'd'].indexOf(e.key.toLowerCase());
+        if (i >= 0) {
+          e.preventDefault();
+          elegir(i);
+          return;
+        }
+      }
       if (e.key === 'Enter' && (e.ctrlKey || e.metaKey) && fase === 'respondiendo' && !esKata) {
         e.preventDefault();
         void (puedeCorregir ? corregir() : autoevaluar());
@@ -214,7 +247,7 @@ export function Motor({
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [autoevaluar, corregir, esKata, fase, guardar, puedeCorregir]);
+  }, [autoevaluar, corregir, elegir, esKata, esTest, fase, guardar, puedeCorregir]);
 
   if (!pregunta) {
     return (
@@ -248,7 +281,7 @@ export function Motor({
   const tiempoLimite = pregunta.kata ? pregunta.kata.tiempoMin * 60 : null;
   const restante = tiempoLimite !== null ? tiempoLimite - segundos : null;
   const evaluando = fase === 'evaluando' || fase === 'guardando';
-  const autoevaluacion = evaluando && !correccion;
+  const autoevaluacion = evaluando && !correccion && !esTest;
 
   return (
     <div className="mx-auto max-w-6xl">
@@ -323,7 +356,7 @@ export function Motor({
       </p>
 
       <div
-        className={`mt-6 grid gap-6 ${esKata ? 'xl:grid-cols-[1.3fr_0.7fr]' : 'lg:grid-cols-[1.1fr_0.9fr]'}`}
+        className={`mt-6 grid gap-6 ${esKata ? 'xl:grid-cols-[minmax(0,1.3fr)_minmax(18rem,0.7fr)]' : 'lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]'}`}
       >
         <div>
           <div className="flex flex-wrap items-center gap-2">
@@ -336,19 +369,29 @@ export function Motor({
               className="ml-auto"
             />
           </div>
+          {/* En Tipo test manda la pregunta concreta a la que responden las
+              opciones; la original, si pide más cosas, va debajo. */}
           <h1
             className="prosa mt-3 text-[1.375rem] font-semibold leading-snug text-tinta md:text-[1.625rem]"
             dangerouslySetInnerHTML={{
-              __html: enLinea(sesion.idioma === 'en' ? pregunta.texto.en : pregunta.texto.es),
+              __html: enLinea(
+                esTest && pregunta.test?.enunciado
+                  ? pregunta.test.enunciado
+                  : sesion.idioma === 'en'
+                    ? pregunta.texto.en
+                    : pregunta.texto.es,
+              ),
             }}
           />
           <p
             className="prosa mt-1.5 text-[0.875rem] text-tinta-3"
             dangerouslySetInnerHTML={{
               __html: enLinea(
-                sesion.idioma === 'en'
-                  ? `En español: ${pregunta.texto.es}`
-                  : `En inglés: ${pregunta.texto.en}`,
+                esTest && pregunta.test?.enunciado
+                  ? `De la pregunta: ${pregunta.texto.es}`
+                  : sesion.idioma === 'en'
+                    ? `En español: ${pregunta.texto.es}`
+                    : `En inglés: ${pregunta.texto.en}`,
               ),
             }}
           />
@@ -357,7 +400,9 @@ export function Motor({
           ) : null}
 
           <div className="mt-5">
-            {esKata && pregunta.kata ? (
+            {esTest && pregunta.test ? (
+              <TipoTest test={pregunta.test} elegida={elegida} onElegir={elegir} />
+            ) : esKata && pregunta.kata ? (
               <EditorKata
                 codigoInicial={pregunta.kata.codigoInicial}
                 funcion={pregunta.kata.funcion}
@@ -410,7 +455,24 @@ export function Motor({
             </p>
           ) : null}
 
-          {evaluando ? (
+          {evaluando && esTest ? (
+            <details className="group tarjeta mt-5 px-4 py-3">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-2 text-[0.875rem] font-medium text-tinta-2 transition-colors duration-[160ms] ease-salida marker:content-none hover:text-tinta">
+                Ver la respuesta completa
+                <ChevronDown
+                  className="h-4 w-4 transition-transform duration-[160ms] ease-salida group-open:rotate-180"
+                  strokeWidth={2}
+                  aria-hidden
+                />
+              </summary>
+              <Markdown
+                texto={pregunta.respuestaModelo}
+                className="mt-2 text-[0.9375rem] text-tinta-2"
+              />
+            </details>
+          ) : null}
+
+          {evaluando && !esTest ? (
             <section className="tarjeta mt-5 grid grid-cols-[6px_1fr] overflow-hidden">
               <span className="bg-punto" aria-hidden />
               <div className="px-4 py-3.5">
@@ -436,7 +498,7 @@ export function Motor({
             </section>
           ) : null}
 
-          {!evaluando ? (
+          {!evaluando && !esTest ? (
             <div className="mt-4 flex flex-wrap items-center gap-2">
               {puedeCorregir ? (
                 <Boton
@@ -471,7 +533,9 @@ export function Motor({
         </div>
 
         <aside className="space-y-4">
-          <section className={`tarjeta px-4 py-3.5 ${autoevaluacion ? 'border-punto/50' : ''}`}>
+          <section
+            className={`tarjeta px-4 py-3.5 ${autoevaluacion ? 'border-punto/50' : ''} ${esTest ? 'hidden' : ''}`}
+          >
             <h2 className="rotulo">
               {autoevaluacion
                 ? 'Marca lo que has cubierto'
@@ -523,11 +587,15 @@ export function Motor({
                   ¿Cómo ha ido? Decides cuándo vuelve
                 </h2>
                 <p className="mt-0.5 text-[0.8125rem] text-tinta-3">
-                  {correccion
-                    ? `La IA propone "${NOTAS.find((n) => n.nota === nota)?.texto.toLowerCase()}". Cámbialo si no estás de acuerdo.`
-                    : cubiertos.length
-                      ? `Con ${cubiertos.length} de ${rubrica.length} criterios, propongo "${NOTAS.find((n) => n.nota === nota)?.texto.toLowerCase()}". Cámbialo si no estás de acuerdo.`
-                      : 'Marca arriba los criterios que has cubierto, o elige directamente.'}
+                  {esTest
+                    ? elegida === pregunta.test?.correcta
+                      ? 'Acertaste: propongo "bien". Si fue a suerte, cámbialo a "a medias".'
+                      : 'Fallaste: propongo "fallé", así vuelve pronto.'
+                    : correccion
+                      ? `La IA propone "${NOTAS.find((n) => n.nota === nota)?.texto.toLowerCase()}". Cámbialo si no estás de acuerdo.`
+                      : cubiertos.length
+                        ? `Con ${cubiertos.length} de ${rubrica.length} criterios, propongo "${NOTAS.find((n) => n.nota === nota)?.texto.toLowerCase()}". Cámbialo si no estás de acuerdo.`
+                        : 'Marca arriba los criterios que has cubierto, o elige directamente.'}
                 </p>
                 <div className="mt-2.5 grid grid-cols-2 gap-1.5 sm:grid-cols-4">
                   {NOTAS.map((n) => (

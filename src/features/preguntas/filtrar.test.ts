@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { barajar, paraNivel, seleccionar } from './filtrar';
+import { barajar, paraModo, paraNivel, seleccionar } from './filtrar';
 import type { Pregunta } from './esquema';
 
 const base: Omit<Pregunta, 'id' | 'nivelMinimo' | 'modos' | 'estado'> = {
@@ -16,8 +16,16 @@ const base: Omit<Pregunta, 'id' | 'nivelMinimo' | 'modos' | 'estado'> = {
   origen: 'curada',
 };
 
+// Las del ejemplo van a Tipo test (flash), así que llevan sus opciones.
+const test: Pregunta['test'] = {
+  correcta: 0,
+  opciones: ['A', 'B', 'C', 'D'].map((t) => ({
+    texto: t,
+    porque: `Por qué la opción ${t} vale o no.`,
+  })),
+};
 const p = (id: string, nivel: Pregunta['nivelMinimo'], modos: Pregunta['modos'] = ['flash']) =>
-  ({ ...base, id, nivelMinimo: nivel, modos, estado: 'publicada' }) as Pregunta;
+  ({ ...base, id, nivelMinimo: nivel, modos, estado: 'publicada', test }) as Pregunta;
 
 describe('paraNivel', () => {
   it('a junior solo le llegan preguntas junior; a senior, todas', () => {
@@ -58,5 +66,16 @@ describe('seleccionar', () => {
     expect(sel[0]?.id).toBe('e');
     expect(sel.map((x) => x.id)).not.toContain('c');
     expect(sel.map((x) => x.id)).not.toContain('d');
+  });
+});
+
+describe('paraModo', () => {
+  it('Tipo test solo ofrece las preguntas que ya tienen sus opciones con el porqué', () => {
+    const conOpciones = p('a', 'junior');
+    const sinOpciones = { ...p('b', 'junior'), test: undefined } as Pregunta;
+    expect(paraModo([conOpciones, sinOpciones], 'flash').map((x) => x.id)).toEqual(['a']);
+    // En el resto de modos las opciones no cuentan.
+    const explicar = { ...sinOpciones, modos: ['verbal'] } as Pregunta;
+    expect(paraModo([explicar], 'verbal').map((x) => x.id)).toEqual(['b']);
   });
 });

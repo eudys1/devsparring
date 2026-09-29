@@ -28,6 +28,28 @@
         ]
       },
       "respuestaModelo": "`INNER JOIN` solo trae filas que tienen coincidencia en ambas tablas. `LEFT JOIN` trae todas las filas de la tabla izquierda aunque no haya coincidencia en la derecha, rellenando con NULL. `RIGHT JOIN` es el espejo del LEFT pero casi nadie lo usa, se prefiere reescribir como LEFT cambiando el orden. `FULL OUTER JOIN` combina ambos lados: trae todo, con NULL donde falte. Ejemplo típico: `usuarios LEFT JOIN pedidos` para ver todos los usuarios y sus pedidos si tienen, frente a `usuarios INNER JOIN pedidos` para quedarte solo con los que sí compraron.",
+      "test": {
+        "enunciado": "Quieres listar todos los usuarios, tengan o no pedidos. ¿Qué JOIN usas entre `usuarios` y `pedidos`?",
+        "correcta": 1,
+        "opciones": [
+          {
+            "texto": "`usuarios INNER JOIN pedidos`",
+            "porque": "Solo devuelve usuarios con al menos un pedido: los que no tienen ninguno desaparecen del listado."
+          },
+          {
+            "texto": "`usuarios LEFT JOIN pedidos`",
+            "porque": "Trae todas las filas de usuarios y rellena con NULL las columnas de pedidos cuando no hay coincidencia, que es justo lo que pides."
+          },
+          {
+            "texto": "`usuarios RIGHT JOIN pedidos`",
+            "porque": "Conserva todas las filas de pedidos, no de usuarios, así que los usuarios sin pedidos se pierden. Sería equivalente si invirtieras el orden de las tablas."
+          },
+          {
+            "texto": "`usuarios CROSS JOIN pedidos`",
+            "porque": "Combina cada usuario con cada pedido (producto cartesiano) sin relacionarlos por la clave: el resultado no tiene sentido y crece muchísimo."
+          }
+        ]
+      },
       "etiquetas": ["sql", "joins"],
       "fuentes": [
         {

@@ -13,8 +13,10 @@ export function paraNivel(preguntas: Pregunta[], nivel: Nivel): Pregunta[] {
   return preguntas.filter((p) => ORDEN_NIVEL[p.nivelMinimo] <= ORDEN_NIVEL[nivel]);
 }
 
+// Tipo test (el modo flash) solo ofrece preguntas que ya tienen sus opciones
+// revisadas: sin el porqué de cada opción, la pregunta se queda fuera del modo.
 export function paraModo(preguntas: Pregunta[], modo: Modo): Pregunta[] {
-  return preguntas.filter((p) => p.modos.includes(modo));
+  return preguntas.filter((p) => p.modos.includes(modo) && (modo !== 'flash' || !!p.test));
 }
 
 export function dePista(preguntas: Pregunta[], pista: Pista): Pregunta[] {

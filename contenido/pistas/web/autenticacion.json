@@ -63,6 +63,28 @@
         ]
       },
       "respuestaModelo": "Autenticación responde a '¿quién eres?': verificar la identidad de alguien. Autorización responde a '¿qué puedes hacer?': decidir qué recursos o acciones tiene permitidas esa identidad ya verificada. OAuth 2.0 es, estrictamente, un protocolo de autorización: permite que una aplicación acceda a recursos de un usuario en otro servicio sin que ese usuario tenga que compartir su contraseña con la aplicación, delegando el acceso mediante tokens con un alcance concreto. Define tres roles claros: el authorization server (quien emite los tokens tras verificar al usuario), el resource server (quien guarda el dato protegido y valida el token) y el client (la aplicación que quiere acceder). La parte de autenticación propiamente dicha, como en 'iniciar sesión con Google', la aporta OpenID Connect, una capa construida encima de OAuth 2.0 específicamente para identificar al usuario, no solo para autorizar acceso a recursos.",
+      "test": {
+        "enunciado": "¿Qué diferencia hay entre autenticación y autorización?",
+        "correcta": 0,
+        "opciones": [
+          {
+            "texto": "Autenticación: quién eres. Autorización: qué puedes hacer.",
+            "porque": "Primero se verifica la identidad y después se decide qué recursos o acciones tiene permitidas."
+          },
+          {
+            "texto": "Son sinónimos.",
+            "porque": "Son pasos distintos: puedes estar autenticado y aun así no tener permiso para algo."
+          },
+          {
+            "texto": "Autenticación es con contraseña y autorización, con token.",
+            "porque": "El mecanismo no las define: las dos pueden usar tokens. Lo que cambia es la pregunta que responden."
+          },
+          {
+            "texto": "OAuth 2.0 es el protocolo estándar de autenticación.",
+            "porque": "OAuth 2.0 es de autorización, para dar acceso delegado. La capa de identidad encima es OpenID Connect."
+          }
+        ]
+      },
       "etiquetas": ["autenticacion", "oauth", "autorizacion"],
       "fuentes": [
         {
@@ -99,6 +121,28 @@
         ]
       },
       "respuestaModelo": "El atributo `SameSite` de una cookie controla en qué peticiones el navegador la incluye automáticamente cuando el origen que hace la petición es distinto del origen que la emitió. `Strict` nunca la envía en peticiones cross-site, ni siquiera al navegar desde un enlace externo; `Lax`, el valor por defecto en navegadores modernos, la envía solo en navegación de nivel superior de tipo GET (como hacer clic en un enlace), pero no en peticiones disparadas por un formulario o script de otro sitio; `None` la envía siempre en cualquier contexto cross-site, pero exige además el atributo `Secure`. Esto mitiga CSRF (cross-site request forgery) porque un sitio malicioso que intente disparar una petición automática hacia la app legítima ya no consigue que el navegador adjunte la cookie de sesión de la víctima, rompiendo el ataque en el punto donde antes 'se montaba' sobre la sesión ya autenticada.",
+      "test": {
+        "enunciado": "¿Qué ataque previene sobre todo el atributo `SameSite` de las cookies?",
+        "correcta": 2,
+        "opciones": [
+          {
+            "texto": "XSS",
+            "porque": "XSS es inyectar script en tu página y `SameSite` no lo evita. Contra eso: escapar la salida, CSP y `HttpOnly`."
+          },
+          {
+            "texto": "Inyección SQL",
+            "porque": "Ocurre en el servidor al construir consultas y se evita parametrizándolas, no con cookies."
+          },
+          {
+            "texto": "CSRF",
+            "porque": "Impide que otro sitio haga que tu navegador envíe la cookie de sesión en peticiones cross-site."
+          },
+          {
+            "texto": "Fuerza bruta de contraseñas",
+            "porque": "Se frena con límites de intentos y bloqueos; la cookie no interviene."
+          }
+        ]
+      },
       "etiquetas": ["autenticacion", "cookies", "csrf"],
       "fuentes": [
         {

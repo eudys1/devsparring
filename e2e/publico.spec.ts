@@ -21,26 +21,24 @@ test('las rutas de la app sin sesión redirigen a entrar', async ({ page }) => {
   await expect(page).toHaveURL(/\/entrar\?volver=%2Fhoy/);
 });
 
-test('la demo permite responder, autoevaluar y avanzar con el teclado', async ({ page }) => {
+test('la demo es un Tipo test: se elige con el teclado, se explica cada opción y se avanza', async ({
+  page,
+}) => {
   await page.goto('/demo');
   await expect(page.getByLabel(/Asalto 1 de 3/)).toBeVisible();
-  await page.getByLabel('Tu respuesta').fill('Una función que recuerda el ámbito donde se creó.');
-  await page.getByTestId('autoevaluar').click();
-  await expect(page.getByRole('heading', { name: 'La respuesta que aprueba' })).toBeVisible();
-  await page.keyboard.press('3');
+  await page.keyboard.press('b');
+  // Al responder, las cuatro opciones dicen si valen o no, no solo la elegida.
+  for (const i of [0, 1, 2, 3]) {
+    await expect(page.getByTestId(`opcion-${i}`)).toHaveAttribute('data-estado', /ok|mal|resto/);
+  }
+  await expect(page.locator('[data-estado="ok"]')).toHaveCount(1);
+  await expect(
+    page.getByText(/^(Correcto\.|Elegiste la B\. La correcta es la [ACD]\.)/),
+  ).toBeVisible();
+  // La nota de repaso se propone sola: bien si aciertas, fallé si no.
+  await expect(page.getByRole('button', { name: /Bien|Fallé/, pressed: true })).toBeVisible();
   await page.keyboard.press('Enter');
   await expect(page.getByLabel(/Asalto 2 de 3/)).toBeVisible();
-});
-
-test('la demo copia el prompt de corrección al portapapeles', async ({ page, context }) => {
-  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
-  await page.goto('/demo');
-  await page.getByLabel('Tu respuesta').fill('respuesta de prueba');
-  await page.getByTestId('copiar').click();
-  await expect(page.getByTestId('copiar')).toHaveText(/Copiado/);
-  const texto = await page.evaluate(() => navigator.clipboard.readText());
-  expect(texto).toContain('entrevistador técnico');
-  expect(texto).toContain('respuesta de prueba');
 });
 
 test('la sesión no ofrece combinaciones sin preguntas', async ({ page }) => {

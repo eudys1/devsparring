@@ -28,6 +28,28 @@
         ]
       },
       "respuestaModelo": "Una función limpia hace una sola cosa, su nombre lo dice sin necesidad de leer el cuerpo, y opera a un solo nivel de abstracción (no mezcla validar, calcular y loguear en la misma función). Tres reglas prácticas: usar verbos para funciones (`calcularTotal`, no `total`), evitar abreviaturas ambiguas (`usr` en vez de `usuario`), y que el nombre refleje qué hace, no cómo lo hace por dentro (`obtenerUsuarioActivo`, no `filtrarArrayPorFlag`). Esto importa porque una función con un nombre preciso y una sola responsabilidad es mucho más fácil de testear y de reutilizar en otro contexto.",
+      "test": {
+        "enunciado": "¿Qué nombre de función sigue mejor las reglas de código limpio?",
+        "correcta": 0,
+        "opciones": [
+          {
+            "texto": "`obtenerUsuarioActivo()`",
+            "porque": "Es un verbo, no abrevia y dice qué devuelve sin tener que leer el cuerpo."
+          },
+          {
+            "texto": "`usrAct()`",
+            "porque": "Las abreviaturas obligan a adivinar: ¿usuario activo, actualizado, actual? El nombre tiene que leerse sin contexto."
+          },
+          {
+            "texto": "`datos()`",
+            "porque": "Es un sustantivo genérico que no dice qué hace ni qué devuelve: casi cualquier función devuelve datos."
+          },
+          {
+            "texto": "`buscarConForYFiltrar()`",
+            "porque": "Describe cómo lo hace por dentro, no qué hace. Si cambias la implementación, el nombre miente."
+          }
+        ]
+      },
       "etiquetas": ["clean-code"],
       "fuentes": [
         {
@@ -62,6 +84,28 @@
         ]
       },
       "respuestaModelo": "DRY (Don't Repeat Yourself) evita duplicar la misma lógica en varios sitios; KISS (Keep It Simple) prefiere la solución más simple que funcione; YAGNI (You Aren't Gonna Need It) evita construir flexibilidad para casos hipotéticos. Aplicar DRY demasiado pronto es contraproducente cuando dos piezas de código se parecen hoy por casualidad pero representan conceptos distintos: unificarlas crea una abstracción con parámetros y condicionales para cubrir ambos casos, y cuando uno cambia por su cuenta, esa abstracción compartida se vuelve más frágil que tener las dos copias separadas. La heurística práctica es esperar a la tercera repetición real antes de extraer una abstracción común.",
+      "test": {
+        "enunciado": "¿Cuándo es contraproducente aplicar DRY demasiado pronto?",
+        "correcta": 3,
+        "opciones": [
+          {
+            "texto": "Cuando el código repetido está en el mismo archivo.",
+            "porque": "Que esté en el mismo archivo no cambia nada; lo que importa es si las dos piezas representan el mismo concepto."
+          },
+          {
+            "texto": "Nunca: duplicar código siempre es un error y hay que extraerlo en cuanto aparece.",
+            "porque": "La duplicación accidental es más barata que la abstracción equivocada: unificar lo que solo se parece por casualidad acopla cosas distintas."
+          },
+          {
+            "texto": "Cuando la lógica repetida ya tiene tests.",
+            "porque": "Tener tests no hace mala la abstracción; al contrario, facilita extraerla cuando de verdad es el mismo concepto."
+          },
+          {
+            "texto": "Cuando dos piezas se parecen hoy por casualidad pero son conceptos distintos.",
+            "porque": "Unificarlas crea una abstracción llena de parámetros y condiciones que se rompe en cuanto cada una evoluciona por su lado."
+          }
+        ]
+      },
       "etiquetas": ["clean-code"],
       "fuentes": [
         {
@@ -99,6 +143,28 @@
         ]
       },
       "respuestaModelo": "Bajo acoplamiento significa que los módulos dependen poco entre sí, así que cambiar uno no obliga a tocar muchos otros. Alta cohesión significa que un módulo agrupa responsabilidades relacionadas entre sí, no una mezcla arbitraria. Una señal de alto acoplamiento en revisión de código es que un cambio pequeño en un módulo dispara cambios en cascada en varios archivos no relacionados directamente. Una señal de baja cohesión es una clase \"utilidades\" con métodos que no comparten ni datos ni propósito. Ambos se relacionan directamente con SRP: una clase con alta cohesión suele tener una sola razón para cambiar.",
+      "test": {
+        "enunciado": "En una revisión de código, ¿qué señal apunta a un acoplamiento alto?",
+        "correcta": 1,
+        "opciones": [
+          {
+            "texto": "Un módulo que agrupa en un mismo archivo todas las funciones relacionadas con un tema.",
+            "porque": "Eso es alta cohesión, que es lo deseable, no acoplamiento."
+          },
+          {
+            "texto": "Un cambio pequeño en un módulo obliga a tocar varios archivos no relacionados.",
+            "porque": "Es la señal típica: los módulos dependen tanto entre sí que un cambio se propaga en cascada."
+          },
+          {
+            "texto": "Un archivo de más de 200 líneas.",
+            "porque": "El tamaño no mide acoplamiento: un archivo grande puede ser muy cohesivo y no depender de nadie."
+          },
+          {
+            "texto": "Funciones con nombres largos y descriptivos.",
+            "porque": "Un nombre largo pero claro es buena práctica; no dice nada de cuánto dependen los módulos entre sí."
+          }
+        ]
+      },
       "etiquetas": ["clean-code", "diseno"],
       "fuentes": [
         {
@@ -136,6 +202,28 @@
         ]
       },
       "respuestaModelo": "Un comentario que explica *qué* hace un bloque de código (\"suma el IVA al total\") suele ser una señal de que ese bloque debería extraerse a una función con un nombre que lo diga (`sumarIVA(total)`), en vez de comentarse. Los comentarios útiles explican el *por qué* de una decisión no obvia (por ejemplo, un workaround necesario por un bug de una librería, con un enlace al issue), no el qué. El riesgo de los comentarios explicativos del qué es que el código cambia y el comentario se queda desactualizado, mintiendo sobre lo que realmente hace el código.",
+      "test": {
+        "enunciado": "¿Qué comentario indica que el código debería reescribirse en vez de comentarse?",
+        "correcta": 2,
+        "opciones": [
+          {
+            "texto": "`// Workaround del bug #123 de la librería: quitar al pasar a la v3`",
+            "porque": "Explica un porqué que el código no puede contar, con su referencia: es un comentario útil."
+          },
+          {
+            "texto": "`// Cola en vez de reintentar al momento, para no saturar la API externa`",
+            "porque": "Cuenta una decisión no obvia y su motivo: es de los comentarios que valen."
+          },
+          {
+            "texto": "`// suma el IVA al total`",
+            "porque": "Explica qué hace el bloque: mejor extraerlo a una función `sumarIVA(total)` cuyo nombre lo diga y que no se desincronice."
+          },
+          {
+            "texto": "`// TODO: borrar tras migrar los usuarios antiguos (ticket 88)`",
+            "porque": "Un TODO con motivo y referencia deja constancia de una deuda; no sustituye a un nombre que falte."
+          }
+        ]
+      },
       "etiquetas": ["clean-code"],
       "fuentes": [
         {

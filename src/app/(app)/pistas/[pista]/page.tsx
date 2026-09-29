@@ -6,7 +6,12 @@ import { enLinea, Markdown } from '@/components/ui/Markdown';
 import { cargarBanco } from '@/features/preguntas/cargar';
 import { NIVELES, PISTAS, type Pista } from '@/features/preguntas/esquema';
 import { publicadas } from '@/features/preguntas/filtrar';
-import { NOMBRE_NIVEL, NOMBRE_PISTA, NOMBRE_TIPO } from '@/features/preguntas/nombres';
+import {
+  NOMBRE_NIVEL,
+  NOMBRE_PISTA,
+  NOMBRE_TIPO,
+  nombreFamilia,
+} from '@/features/preguntas/nombres';
 import { ReportarPregunta } from '@/features/preguntas/ReportarPregunta';
 import { rubricaParaNivel } from '@/features/preguntas/rubrica';
 import { obtenerTarjetas } from '@/features/srs/db';
@@ -42,7 +47,9 @@ export default async function PaginaPista({ params }: { params: Promise<{ pista:
   const db = await supabaseServidor();
   const [banco, tarjetas] = await Promise.all([cargarBanco(), obtenerTarjetas(db, usuario.id)]);
   const preguntas = publicadas(banco).filter((p) => p.pista === pista);
-  const familias = [...new Set(preguntas.map((p) => p.familia))].sort();
+  const familias = [...new Set(preguntas.map((p) => p.familia))].sort((a, b) =>
+    nombreFamilia(a).localeCompare(nombreFamilia(b), 'es'),
+  );
   const ahoraMs = ahora().getTime();
 
   const estadoDe = (id: string): keyof typeof ESTADOS => {
@@ -92,9 +99,7 @@ export default async function PaginaPista({ params }: { params: Promise<{ pista:
         return (
           <section key={familia} className="mt-8">
             <h2 className="flex items-baseline justify-between gap-3 border-b border-linea pb-2">
-              <span className="display text-[1.375rem] capitalize text-tinta">
-                {familia.replace(/-/g, ' ')}
-              </span>
+              <span className="display text-[1.375rem] text-tinta">{nombreFamilia(familia)}</span>
               <span className="tabular font-mono text-[0.75rem] text-tinta-3">
                 {lista.length} preguntas
               </span>
