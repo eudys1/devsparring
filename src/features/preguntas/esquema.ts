@@ -99,6 +99,9 @@ export const Pregunta = z
     contexto: z.string().optional(),
     rubrica: Rubrica,
     respuestaModelo: z.string().min(1),
+    // La idea en una frase: la cara de atrás del repaso relámpago. Opcional; sin
+    // ella se usa la primera frase de respuestaModelo (idea.ts).
+    resumen: z.string().min(20).max(240).optional(),
     kata: Kata.optional(),
     test: Test.optional(),
     etiquetas: z.array(z.string()).default([]),

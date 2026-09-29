@@ -51,4 +51,4 @@ jobs:
           claude_args: |
             --max-turns 40
             --model claude-sonnet-5
-            --allowedTools "Bash(node scripts/validar-contenido.mjs),Bash(git *),Bash(gh pr create *),Bash(curl *),Read,Write,Edit,Glob,Grep,WebFetch,WebSearch"
+            --allowedTools "Bash(node scripts/validar-contenido.mjs),Bash(pnpm exec vitest run src/features/preguntas/coherencia.test.ts),Bash(git *),Bash(gh pr create *),Bash(curl *),Read,Write,Edit,Glob,Grep,WebFetch,WebSearch"

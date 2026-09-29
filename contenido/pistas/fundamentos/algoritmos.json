@@ -198,7 +198,7 @@
     },
     {
       "id": "fund-algoritmos-kata-unicos",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "algoritmos",
       "tipo": "kata",
@@ -213,9 +213,9 @@
         "junior": ["Pasa todos los casos de prueba", "Preserva el orden de la primera aparición"],
         "senior": [
           "Lo anterior",
-          "Usa un `Set` (o `Map`) en vez de `includes` dentro del bucle, y explica por qué eso importa a partir de cierto tamaño de array",
-          "Explica la complejidad de su solución (O(n)) frente a la ingenua con `includes` (O(n²))",
-          "Comenta cómo extendería la solución a objetos con un campo `id`"
+          "Comprueba si ya ha visto un valor con un `Set` o un `Map`, no con `includes` dentro del bucle (O(n) frente a O(n²))",
+          "No muta el array de entrada",
+          "Los nombres dicen qué guardan (`vistos`, `resultado`), sin variables de una letra salvo el índice"
         ]
       },
       "respuestaModelo": "Recorro el array una sola vez llevando un `Set` con los valores ya vistos: si el valor no está en el `Set`, lo añado al resultado y al `Set`; si ya está, lo salto. Cada comprobación `set.has(valor)` es O(1), así que el algoritmo completo es O(n), a diferencia de usar `resultado.includes(valor)` dentro del bucle, que sería O(n²) porque cada `includes` recorre el resultado acumulado hasta ese momento. Con arrays de decenas de miles de elementos esa diferencia es la que separa una función instantánea de una que tarda segundos.",
@@ -256,7 +256,7 @@
     },
     {
       "id": "fund-algoritmos-kata-texto-enriquecido",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "algoritmos",
       "tipo": "kata",
@@ -275,8 +275,8 @@
         "senior": [
           "Lo anterior",
           "Maneja varios rangos no solapados en el mismo texto sin desordenar el resultado",
-          "Explica cómo estructuraría la solución (recorrer los rangos ordenados por `inicio` e ir concatenando trozos de texto plano y trozos envueltos)",
-          "Comenta qué cambiaría si los rangos pudieran solaparse (negrita + cursiva a la vez)"
+          "Recorre los rangos ordenados por `inicio` concatenando trozos de texto plano y trozos envueltos, sin reemplazos de texto que puedan caer en el sitio equivocado",
+          "Ordena una copia de `estilos`, sin mutar el array recibido"
         ]
       },
       "respuestaModelo": "Ordeno los rangos por `inicio` y recorro el texto una vez, alternando entre copiar el trozo de texto plano anterior al siguiente rango y envolver el trozo del rango con la etiqueta correspondiente (`<b>` para negrita, `<i>` para cursiva) usando `slice`. Al terminar los rangos, copio el resto del texto plano que quede. Si los rangos pudieran solaparse, la estructura de datos tendría que representar estilos por carácter o por segmento (una lista de estilos activos por posición) en vez de rangos independientes, porque envolver etiquetas que se cruzan (`<b><i>...</b></i>`) no es HTML válido.",

@@ -19,6 +19,12 @@ import {
 } from '@/features/preguntas/esquema';
 import type { Disponibilidad } from '@/features/preguntas/filtrar';
 import { NOMBRE_MODO, NOMBRE_NIVEL, NOMBRE_PISTA } from '@/features/preguntas/nombres';
+import {
+  guardarRelampago,
+  guardarSinTema,
+  useRelampago,
+  useSinTema,
+} from '@/features/sesion/preferencias';
 
 const ICONO: Record<Modo, typeof Zap> = {
   flash: Zap,
@@ -42,7 +48,11 @@ export function ConfigurarSesion({
 }) {
   const [modo, setModo] = useState<Modo>(inicial.modo);
   const [nivel, setNivel] = useState<Nivel>(inicial.nivel);
-  const [pista, setPista] = useState<Pista | ''>(inicial.pista ?? '');
+  const [pistaElegida, setPista] = useState<Pista | ''>(inicial.pista ?? '');
+  // Sin decir el tema, la sesión mezcla pistas: elegir una delataría el tema.
+  const sinTema = useSinTema();
+  const pista = sinTema ? '' : pistaElegida;
+  const relampago = useRelampago();
 
   const delNivel = disponibilidad[modo][nivel];
   const disponibles = pista ? (delNivel.pistas[pista] ?? 0) : delNivel.total;
@@ -110,6 +120,21 @@ export function ConfigurarSesion({
             );
           })}
         </ul>
+        {modo === 'verbal' ? (
+          <label className="mt-4 flex max-w-xl cursor-pointer items-start gap-2 text-[0.875rem] leading-snug text-tinta-2">
+            <input
+              type="checkbox"
+              data-prueba="relampago"
+              className="mt-0.5 h-4 w-4 accent-[var(--punto)]"
+              checked={relampago}
+              onChange={(e) => guardarRelampago(e.target.checked)}
+            />
+            <span>
+              <span className="font-medium text-tinta">Relámpago, sin escribir.</span> Ves la
+              pregunta, la piensas, giras la tarjeta con la idea en una frase y te puntúas.
+            </span>
+          </label>
+        ) : null}
       </fieldset>
 
       <div className="mt-6 grid gap-5 sm:grid-cols-3">
@@ -142,6 +167,7 @@ export function ConfigurarSesion({
           <Selector
             id="pista"
             value={pista}
+            disabled={sinTema}
             onChange={(e) => setPista(e.target.value as Pista | '')}
           >
             <option value="">Todas ({delNivel.total})</option>
@@ -152,6 +178,19 @@ export function ConfigurarSesion({
               </option>
             ))}
           </Selector>
+          <label className="mt-2 flex cursor-pointer items-start gap-2 text-[0.8125rem] leading-snug text-tinta-2">
+            <input
+              type="checkbox"
+              data-prueba="sin-tema"
+              className="mt-0.5 h-4 w-4 accent-[var(--punto)]"
+              checked={sinTema}
+              onChange={(e) => guardarSinTema(e.target.checked)}
+            />
+            <span>
+              <span className="font-medium text-tinta">Sin decir el tema.</span> Mezcla pistas y no
+              te dice de qué va cada pregunta hasta que respondes, como en una entrevista.
+            </span>
+          </label>
         </div>
 
         <div>

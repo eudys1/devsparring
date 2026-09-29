@@ -22,7 +22,10 @@ import { EditorKata, ResultadoTests, textoResultado } from '@/features/editor/Ed
 import type { ResultadoEjecucion } from '@/features/editor/runner/casos';
 import type { Modo, Nivel, Pregunta } from '@/features/preguntas/esquema';
 import { NOMBRE_MODO, NOMBRE_PISTA, NOMBRE_TIPO } from '@/features/preguntas/nombres';
+import { ideaEnUnaFrase } from '@/features/preguntas/idea';
 import { ReportarPregunta } from '@/features/preguntas/ReportarPregunta';
+import { TarjetaRelampago } from '@/features/preguntas/TarjetaRelampago';
+import { useRelampago, useSinTema } from '@/features/sesion/preferencias';
 import { rubricaParaNivel } from '@/features/preguntas/rubrica';
 import { TipoTest } from '@/features/preguntas/TipoTest';
 import { notaDesdePuntuacion, type Nota } from '@/features/srs/scheduler';
@@ -71,6 +74,13 @@ export function Motor({
   const [copiado, setCopiado] = useState(false);
   // Autoevaluación sin IA: marcar qué criterios de la rúbrica has cubierto.
   const [cubiertos, setCubiertos] = useState<number[]>([]);
+  // Pistas graduales: cuántos criterios de la rúbrica ha pedido ver antes de
+  // responder. Recordar sin ayuda es lo que fija (plan-estudio-y-banco.md).
+  const [pistas, setPistas] = useState(0);
+  // Sin decir el tema: la pista y el tipo se destapan al responder.
+  const sinTema = useSinTema() && !demo;
+  // Repaso relámpago: Explicar sin escribir; se gira la tarjeta y se puntúa.
+  const relampago = useRelampago();
   // Tipo test: la opción elegida (null mientras no se ha respondido).
   const [elegida, setElegida] = useState<number | null>(null);
   const [segundos, setSegundos] = useState(0);
@@ -127,6 +137,16 @@ export function Motor({
     setNota(tests ? (tests.ok ? 'good' : 'hard') : null);
     setFase('evaluando');
   }, [fase, tests]);
+
+  const esRelampago = esVerbal && relampago && !demo;
+  // Girar es responder: no hay texto, la nota la pones tú por lo que recordabas.
+  const girar = useCallback(() => {
+    if (fase !== 'respondiendo') return;
+    setRespuesta('(repaso relámpago, sin escribir)');
+    setNota(null);
+    setError(null);
+    setFase('evaluando');
+  }, [fase]);
 
   // Elegir es responder: se revela el porqué de las cuatro y la nota de repaso
   // se propone sola (acierto, bien; fallo, fallé). Se puede cambiar.
@@ -200,6 +220,7 @@ export function Motor({
     setNota(null);
     setCubiertos([]);
     setElegida(null);
+    setPistas(0);
     setError(null);
     setSegundos(0);
     setFase('respondiendo');
@@ -224,6 +245,11 @@ export function Motor({
         destino?.tagName === 'TEXTAREA' ||
         destino?.tagName === 'INPUT' ||
         !!destino?.closest('.monaco-editor');
+      if (esRelampago && fase === 'respondiendo' && !enCampo && e.key === ' ') {
+        e.preventDefault();
+        girar();
+        return;
+      }
       if (esTest && fase === 'respondiendo' && !enCampo && !e.ctrlKey && !e.metaKey) {
         const i =
           ['1', '2', '3', '4'].indexOf(e.key) >= 0
@@ -247,7 +273,18 @@ export function Motor({
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [autoevaluar, corregir, elegir, esKata, esTest, fase, guardar, puedeCorregir]);
+  }, [
+    autoevaluar,
+    corregir,
+    elegir,
+    esKata,
+    esRelampago,
+    esTest,
+    fase,
+    girar,
+    guardar,
+    puedeCorregir,
+  ]);
 
   if (!pregunta) {
     return (
@@ -281,7 +318,7 @@ export function Motor({
   const tiempoLimite = pregunta.kata ? pregunta.kata.tiempoMin * 60 : null;
   const restante = tiempoLimite !== null ? tiempoLimite - segundos : null;
   const evaluando = fase === 'evaluando' || fase === 'guardando';
-  const autoevaluacion = evaluando && !correccion && !esTest;
+  const autoevaluacion = evaluando && !correccion && !esTest && !esRelampago;
 
   return (
     <div className="mx-auto max-w-6xl">
@@ -303,6 +340,7 @@ export function Motor({
             <span className="flex items-center gap-3">
               <span className="rounded-[8px] border-2 border-sobre-modo bg-white px-2 py-0.5 text-[0.8125rem] font-semibold">
                 {NOMBRE_MODO[sesion.modo].nombre}
+                {esRelampago ? ' · relámpago' : ''}
               </span>
               <span className="[--tinta-2:var(--sobre-modo)] [--linea:color-mix(in_oklab,var(--sobre-modo)_25%,transparent)]">
                 <Peso nivel={sesion.nivel} />
@@ -360,8 +398,14 @@ export function Motor({
       >
         <div>
           <div className="flex flex-wrap items-center gap-2">
-            <Ficha>{NOMBRE_PISTA[pregunta.pista]}</Ficha>
-            <Ficha>{NOMBRE_TIPO[pregunta.tipo]}</Ficha>
+            {sinTema && !evaluando ? (
+              <Ficha>Tema sin desvelar</Ficha>
+            ) : (
+              <>
+                <Ficha>{NOMBRE_PISTA[pregunta.pista]}</Ficha>
+                <Ficha>{NOMBRE_TIPO[pregunta.tipo]}</Ficha>
+              </>
+            )}
             {pregunta.frecuencia === 'alta' ? <Ficha tono="esquina">Cae mucho</Ficha> : null}
             <ReportarPregunta
               pregunta={pregunta}
@@ -402,6 +446,12 @@ export function Motor({
           <div className="mt-5">
             {esTest && pregunta.test ? (
               <TipoTest test={pregunta.test} elegida={elegida} onElegir={elegir} />
+            ) : esRelampago ? (
+              <TarjetaRelampago
+                idea={ideaEnUnaFrase(pregunta)}
+                girada={evaluando}
+                onGirar={girar}
+              />
             ) : esKata && pregunta.kata ? (
               <EditorKata
                 codigoInicial={pregunta.kata.codigoInicial}
@@ -455,7 +505,7 @@ export function Motor({
             </p>
           ) : null}
 
-          {evaluando && esTest ? (
+          {evaluando && (esTest || esRelampago) ? (
             <details className="group tarjeta mt-5 px-4 py-3">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-2 text-[0.875rem] font-medium text-tinta-2 transition-colors duration-[160ms] ease-salida marker:content-none hover:text-tinta">
                 Ver la respuesta completa
@@ -472,7 +522,7 @@ export function Motor({
             </details>
           ) : null}
 
-          {evaluando && !esTest ? (
+          {evaluando && !esTest && !esRelampago ? (
             <section className="tarjeta mt-5 grid grid-cols-[6px_1fr] overflow-hidden">
               <span className="bg-punto" aria-hidden />
               <div className="px-4 py-3.5">
@@ -498,7 +548,7 @@ export function Motor({
             </section>
           ) : null}
 
-          {!evaluando && !esTest ? (
+          {!evaluando && !esTest && !esRelampago ? (
             <div className="mt-4 flex flex-wrap items-center gap-2">
               {puedeCorregir ? (
                 <Boton
@@ -534,20 +584,29 @@ export function Motor({
 
         <aside className="space-y-4">
           <section
-            className={`tarjeta px-4 py-3.5 ${autoevaluacion ? 'border-punto/50' : ''} ${esTest ? 'hidden' : ''}`}
+            className={`tarjeta px-4 py-3.5 ${autoevaluacion ? 'border-punto/50' : ''} ${esTest || esRelampago ? 'hidden' : ''}`}
           >
             <h2 className="rotulo">
               {autoevaluacion
                 ? 'Marca lo que has cubierto'
-                : `Qué te van a exigir de ${sesion.nivel}`}
+                : evaluando
+                  ? `Qué te van a exigir de ${sesion.nivel}`
+                  : 'Pistas'}
             </h2>
+            {!evaluando ? (
+              <p className="mt-0.5 text-[0.8125rem] text-tinta-3">
+                {pistas === 0
+                  ? `Intenta responder sin ellas: recordar cuesta y es lo que fija. Cada pista es uno de los ${rubrica.length} criterios que se exigen de ${sesion.nivel}.`
+                  : `Llevas ${pistas} de ${rubrica.length}. Al corregir las verás todas.`}
+              </p>
+            ) : null}
             {autoevaluacion ? (
               <p className="mt-0.5 text-[0.8125rem] text-tinta-3">
                 Compara con la respuesta que aprueba y sé honesto: de esto sale la nota de repaso.
               </p>
             ) : null}
             <ol className="mt-2.5 space-y-2">
-              {rubrica.map((c, i) =>
+              {(evaluando ? rubrica : rubrica.slice(0, pistas)).map((c, i) =>
                 autoevaluacion ? (
                   <li key={i}>
                     <label className="grid cursor-pointer grid-cols-[1.25rem_1fr] items-start gap-2 text-[0.875rem] leading-snug text-tinta-2 has-[:checked]:text-tinta">
@@ -571,6 +630,17 @@ export function Motor({
                 ),
               )}
             </ol>
+            {!evaluando && pistas < rubrica.length ? (
+              <Boton
+                variante="normal"
+                tamano="pequeno"
+                data-prueba="pista"
+                className="mt-3"
+                onClick={() => setPistas(pistas + 1)}
+              >
+                {pistas === 0 ? 'Ver una pista' : 'Otra pista'}
+              </Boton>
+            ) : null}
             {autoevaluacion ? (
               <p className="tabular mt-2.5 border-t border-linea pt-2 font-mono text-[0.75rem] text-tinta-3">
                 {cubiertos.length} de {rubrica.length} criterios
@@ -587,15 +657,17 @@ export function Motor({
                   ¿Cómo ha ido? Decides cuándo vuelve
                 </h2>
                 <p className="mt-0.5 text-[0.8125rem] text-tinta-3">
-                  {esTest
-                    ? elegida === pregunta.test?.correcta
-                      ? 'Acertaste: propongo "bien". Si fue a suerte, cámbialo a "a medias".'
-                      : 'Fallaste: propongo "fallé", así vuelve pronto.'
-                    : correccion
-                      ? `La IA propone "${NOTAS.find((n) => n.nota === nota)?.texto.toLowerCase()}". Cámbialo si no estás de acuerdo.`
-                      : cubiertos.length
-                        ? `Con ${cubiertos.length} de ${rubrica.length} criterios, propongo "${NOTAS.find((n) => n.nota === nota)?.texto.toLowerCase()}". Cámbialo si no estás de acuerdo.`
-                        : 'Marca arriba los criterios que has cubierto, o elige directamente.'}
+                  {esRelampago
+                    ? 'Sin escribir: puntúate por lo que recordabas antes de girar. Si no te salía, "fallé" y vuelve pronto.'
+                    : esTest
+                      ? elegida === pregunta.test?.correcta
+                        ? 'Acertaste: propongo "bien". Si fue a suerte, cámbialo a "a medias".'
+                        : 'Fallaste: propongo "fallé", así vuelve pronto.'
+                      : correccion
+                        ? `La IA propone "${NOTAS.find((n) => n.nota === nota)?.texto.toLowerCase()}". Cámbialo si no estás de acuerdo.`
+                        : cubiertos.length
+                          ? `Con ${cubiertos.length} de ${rubrica.length} criterios, propongo "${NOTAS.find((n) => n.nota === nota)?.texto.toLowerCase()}". Cámbialo si no estás de acuerdo.`
+                          : 'Marca arriba los criterios que has cubierto, o elige directamente.'}
                 </p>
                 <div className="mt-2.5 grid grid-cols-2 gap-1.5 sm:grid-cols-4">
                   {NOTAS.map((n) => (

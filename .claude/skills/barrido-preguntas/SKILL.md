@@ -20,6 +20,24 @@ una pull request para que una persona la revise. Nunca fusionas.
 4. **El validador manda:** `node scripts/validar-contenido.mjs` en verde antes
    de abrir la PR.
 5. LinkedIn y Glassdoor están fuera: sus condiciones prohíben la lectura automatizada.
+6. **Preguntas de entrevista, no de examen.** Antes que "¿qué es X?", una
+   situación real donde X importa ("tu listado tarda 4 s con 1 M de filas…").
+   Orden de preferencia: comportamental, luego hipotética con datos concretos,
+   luego definición (taxonomía de Jacob Kaplan-Moss, ver
+   `docs/plan-estudio-y-banco.md`).
+7. **Tipo test.** Una pregunta nueva de `tipo` `definicion` o `fundamento` con
+   el modo `flash` lleva su bloque `test` según `contenido/esquema.md`: cuatro
+   opciones, el porqué de cada una (también de las falsas) y, si la pregunta
+   pide varias cosas, un `enunciado` concreto. Los distractores son errores
+   que la gente comete de verdad. La correcta no es la más larga ni cae siempre
+   en la misma letra. Si no hay buenos distractores, quita `flash` de `modos`
+   en vez de rellenar.
+8. **Resumen.** Si la primera frase de `respuestaModelo` no dice la idea en
+   menos de 240 caracteres, añade `resumen` (ver `contenido/esquema.md`).
+9. **Katas: rúbrica que se vea en el código.** Nada de "Explica…",
+   "Comenta…" o "Menciona…": una kata se corrige solo por el código. Criterios
+   como la estructura usada, la complejidad, los casos límite, no mutar la
+   entrada o tipos sin `any` ni aserciones.
 
 ## Fuentes, en dos capas
 
@@ -45,7 +63,9 @@ una pull request para que una persona la revise. Nunca fusionas.
 4. Aplica cambios: marca obsoletas (con motivo y fuente), añade borradores
    (máximo 15 por barrido, con `origen: "generada-revisada"` y fuentes).
 5. Escribe la fecha de hoy en `.github/last-question-sweep`.
-6. Ejecuta el validador. Corrige hasta verde.
+6. Ejecuta el validador y los tests de coherencia del banco
+   (`pnpm exec vitest run src/features/preguntas/coherencia.test.ts`), que
+   comprueban las reglas 7 y 9. Corrige hasta verde.
 7. Crea una rama `barrido/AAAA-MM-DD`, haz commit y abre la PR con `gh pr create`.
    El cuerpo de la PR lista cada hallazgo con enlace y fecha, separando
    "obsoletas" de "nuevas" y explicando lo que revisaste y no cambió.

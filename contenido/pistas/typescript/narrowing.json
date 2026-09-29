@@ -41,7 +41,7 @@
     },
     {
       "id": "ts-narrowing-kata-discriminated-union",
-      "version": 1,
+      "version": 2,
       "pista": "typescript",
       "familia": "narrowing",
       "tipo": "kata",
@@ -49,8 +49,8 @@
       "nivelMinimo": "mid",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Qué es un \"discriminated union\" (unión discriminada) en TypeScript? Modela una forma (`Circle`, `Rectangle`) con este patrón y una función `area(shape)` que use un `switch` exhaustivo.",
-        "en": "What is a \"discriminated union\" in TypeScript? Model a shape (`Circle`, `Rectangle`) using this pattern and an `area` function that uses an exhaustive `switch`."
+        "es": "Modela una forma (`Circle`, `Rectangle`) como unión discriminada (discriminated union) y escribe una función `area(shape)` que use un `switch` exhaustivo.",
+        "en": "Model a shape (`Circle`, `Rectangle`) as a discriminated union and write an `area(shape)` function that uses an exhaustive `switch`."
       },
       "rubrica": {
         "junior": [
@@ -59,9 +59,8 @@
         ],
         "senior": [
           "Lo anterior",
-          "Explica que la propiedad discriminante permite a TypeScript estrechar el tipo dentro de cada rama del `switch`",
-          "Menciona el patrón de \"exhaustiveness checking\" con una función `assertNever` en el `default`",
-          "Explica qué pasaría si se añade un tercer tipo (`Triangle`) sin actualizar `area`: el `default` con `assertNever` lo detectaría en compilación"
+          "En cada rama del `switch` usa las propiedades de esa variante sin aserciones (`as`), gracias al estrechamiento",
+          "Cierra el `switch` con un `default` que asigna a `never` (por ejemplo, `assertNever`), así una variante nueva falla en compilación"
         ]
       },
       "respuestaModelo": "Un discriminated union es una unión de varios tipos que comparten una propiedad literal común (el \"discriminante\", aquí `kind`) con un valor distinto en cada variante. Gracias a esa propiedad, TypeScript puede estrechar el tipo dentro de cada `case` de un `switch` sin necesitar un cast: dentro de `case 'circle'` sabe que la forma tiene `radius`, dentro de `case 'rectangle'` sabe que tiene `width` y `height`. El patrón de exhaustividad usa una función `assertNever(valor: never)` en el `default` del `switch`: si en el futuro se añade una tercera variante (`Triangle`) sin actualizar `area`, el compilador se queja en el `default` porque ese caso ya no sería `never`, avisando en tiempo de compilación de que falta manejarlo, en vez de descubrirlo en producción.",

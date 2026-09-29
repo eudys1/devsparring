@@ -509,3 +509,16 @@ describe('11. Tipo test', () => {
     }
   });
 });
+
+// --- 12. las katas se corrigen solo por el código ------------------------------
+// Decisión del 17-09-2026: en una kata no se pide prosa. Un criterio que pide
+// explicar o comentar no se puede cumplir con código y baja la nota sin motivo.
+describe('12. rúbrica de kata observable en el código', () => {
+  const VERBOS = /^(Explica|Comenta|Menciona|Discute|Da un|Compara|Reconoce|Describe|Justifica)\b/;
+  for (const p of banco.filter((x) => x.tipo === 'kata')) {
+    it(`${p.id}: ningún criterio pide explicar`, () => {
+      const malos = [...p.rubrica.junior, ...p.rubrica.senior].filter((c) => VERBOS.test(c));
+      expect(malos, `criterios que piden prosa en una kata`).toEqual([]);
+    });
+  }
+});

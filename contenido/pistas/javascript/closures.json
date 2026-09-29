@@ -64,7 +64,7 @@
     },
     {
       "id": "js-closures-kata-contador",
-      "version": 1,
+      "version": 2,
       "pista": "javascript",
       "familia": "closures",
       "tipo": "kata",
@@ -82,8 +82,8 @@
         ],
         "senior": [
           "Lo anterior",
-          "Explica por qué esto es un closure y qué alternativas hay (clase con campo privado #)",
-          "Comenta qué pasa si se crean dos contadores: cada uno tiene su propio estado"
+          "Dos contadores creados por separado no comparten estado",
+          "El objeto devuelto no expone el estado interno por ninguna propiedad"
         ]
       },
       "respuestaModelo": "Una función externa guarda `let n = inicial` y devuelve tres funciones que la leen y modifican. Como `n` solo existe en ese ámbito, nadie puede tocarla desde fuera. Cada llamada a `crearContador` crea un ámbito nuevo, así que dos contadores son independientes.",

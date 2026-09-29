@@ -79,7 +79,7 @@
     },
     {
       "id": "js-es-moderno-kata-destructuring-spread",
-      "version": 1,
+      "version": 2,
       "pista": "javascript",
       "familia": "es-moderno",
       "tipo": "kata",
@@ -97,9 +97,8 @@
         ],
         "senior": [
           "Lo anterior",
-          "Explica que el spread hace copia superficial, igual que `slice`/`concat`",
-          "Da un ejemplo de destructuring de objeto además del de array (aunque no se pida en el código) para mostrar que domina ambos",
-          "Comenta un caso donde el spread no basta (objetos anidados que hay que combinar profundamente)"
+          "Devuelve un array nuevo con `[...a, ...b]`, sin `push` sobre los arrays de entrada",
+          "Una sola expresión, sin bucles ni variables intermedias"
         ]
       },
       "respuestaModelo": "`[...a, ...b]` expande los elementos de `a` y de `b` dentro de un array literal nuevo, sin mutar ninguno de los dos originales, resultado equivalente a `a.concat(b)` pero con una sintaxis más flexible que también sirve para insertar elementos sueltos en medio (`[...a, x, ...b]`). El spread hace copia superficial, igual que `slice`: si los elementos son objetos, las referencias internas se comparten entre el array combinado y los originales. Destructuring es la operación inversa: extraer valores de un array o de un objeto a variables sueltas, como `const [primero, ...resto] = arr` o `const { nombre, ...otros } = obj`. Para combinar objetos anidados de forma profunda, el spread superficial no basta y hace falta una fusión recursiva o una utilidad como `structuredClone` combinada con la lógica de merge.",
@@ -139,7 +138,7 @@
     },
     {
       "id": "js-es-moderno-kata-tagged-template",
-      "version": 1,
+      "version": 2,
       "pista": "javascript",
       "familia": "es-moderno",
       "tipo": "kata",
@@ -157,9 +156,8 @@
         ],
         "senior": [
           "Lo anterior",
-          "Explica que una tagged template recibe el array de strings literales y los valores interpolados por separado",
-          "Explica el orden: siempre hay un string literal más que valores interpolados (el primero y el último trozo)",
-          "Da un caso de uso real de tagged templates (sanitizar HTML, i18n, `styled-components`)"
+          "La etiqueta intercala `strings` y valores en un bucle o un `reduce`, sin depender de cuántas interpolaciones haya",
+          "No pierde el último trozo literal: siempre hay un string más que valores"
         ]
       },
       "respuestaModelo": "Una tagged template es una función que se coloca justo antes de un template literal (`miFuncion\\`texto ${valor}\\``) y recibe dos cosas: un array con los trozos de texto literal entre las interpolaciones, y los valores interpolados como argumentos sueltos. Siempre hay un string literal más que valores, porque el primer y el último trozo de texto rodean todas las interpolaciones. Aquí la función de etiqueta reconstruye el string uniendo cada trozo literal con su valor interpolado envuelto en `**`. Un caso de uso real de esta técnica es sanitizar HTML antes de insertarlo (escapando los valores interpolados automáticamente) o librerías como `styled-components`, que usan tagged templates para procesar CSS.",
@@ -200,7 +198,7 @@
     },
     {
       "id": "js-es-moderno-kata-rest-parameters",
-      "version": 1,
+      "version": 2,
       "pista": "javascript",
       "familia": "es-moderno",
       "tipo": "kata",
@@ -215,9 +213,8 @@
         "junior": ["Pasa el caso de prueba (`typeof args === 'object'`)"],
         "senior": [
           "Lo anterior",
-          "Explica que un rest parameter agrupa el resto de argumentos en un array real, no en un objeto `arguments` como antes de ES6",
-          "Explica que `Array.isArray(args)` sería `true`, aunque `typeof` diga `'object'` (porque los arrays son objetos)",
-          "Compara brevemente con el objeto `arguments` clásico, que no tiene los métodos de array"
+          "Usa el rest parameter `...args` y no el objeto `arguments`",
+          "Devuelve `typeof args` sin convertir ni envolver el resultado"
         ]
       },
       "respuestaModelo": "`...args` en la firma de una función agrupa cualquier número de argumentos sobrantes en un array real. Por eso `typeof args` da `'object'`, igual que con cualquier array, aunque `Array.isArray(args)` confirmaría específicamente que es un array. Esto es una mejora frente al objeto `arguments` clásico disponible en funciones normales antes de los rest parameters: `arguments` se parece a un array pero no tiene sus métodos (`map`, `filter`, etc.) sin convertirlo antes, mientras que un rest parameter ya es un array de verdad, usable directamente con cualquier método de array.",
@@ -258,7 +255,7 @@
     },
     {
       "id": "js-es-moderno-kata-generators",
-      "version": 1,
+      "version": 2,
       "pista": "javascript",
       "familia": "es-moderno",
       "tipo": "kata",
@@ -276,9 +273,9 @@
         ],
         "senior": [
           "Lo anterior",
-          "Explica que un generator pausa su ejecución en cada `yield` y la retoma en la siguiente llamada a `.next()`",
-          "Explica por qué `tomarN` puede consumir una secuencia infinita sin colgarse: corta el bucle manualmente tras `n` valores",
-          "Da un caso de uso real de generators (iterar estructuras grandes de forma perezosa sin cargarlas enteras en memoria)"
+          "`tomarN` para tras `n` valores (con `next()` o con un `for...of` y `break`), sin intentar recorrer la secuencia entera",
+          "`tomarN` funciona con cualquier iterable, no solo con `contador()`",
+          "Devuelve un array nuevo con los valores tomados"
         ]
       },
       "respuestaModelo": "`function* contador()` es un generator: al llamarlo no ejecuta el cuerpo, devuelve un objeto iterador. Cada llamada a `.next()` ejecuta el cuerpo hasta el siguiente `yield`, devuelve ese valor, y pausa la ejecución ahí hasta la próxima llamada a `.next()`. Dentro de `contador` un `while (true) { yield i++; }` genera una secuencia infinita sin colgar el programa, porque no se ejecuta toda de una vez: solo avanza un paso por cada `.next()`. `tomarN(n)` crea el iterador con `contador()` y hace un bucle `for` que llama `.next()` exactamente `n` veces, cortando ahí, sin necesidad de que la secuencia termine por sí sola. El caso de uso real es recorrer una fuente de datos muy grande (o infinita, como un stream) de forma perezosa, consumiendo solo lo que hace falta sin cargarlo todo en memoria de golpe.",

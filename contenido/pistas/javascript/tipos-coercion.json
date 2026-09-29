@@ -40,7 +40,7 @@
     },
     {
       "id": "js-tipos-coercion-kata-suma",
-      "version": 1,
+      "version": 2,
       "pista": "javascript",
       "familia": "tipos-coercion",
       "tipo": "kata",
@@ -48,19 +48,17 @@
       "nivelMinimo": "junior",
       "frecuencia": "alta",
       "texto": {
-        "es": "Implementa `sumar(a, b)` que simplemente devuelva `a + b` tal cual lo haría JavaScript, sin ninguna conversión propia. El objetivo es predecir el resultado de la coerción de tipos del operador `+` en varios casos: arrays, objetos y strings numéricos.",
-        "en": "Implement `sumar(a, b)` that simply returns `a + b` as plain JavaScript would, with no conversion of your own. The goal is to predict the result of `+` operator coercion across arrays, objects, and numeric strings."
+        "es": "Implementa `sumar(a, b)` que devuelva `a + b` tal cual lo haría JavaScript, sin ninguna conversión propia. Los casos de prueba comprueban la coerción del operador `+` con arrays, objetos y strings numéricos.",
+        "en": "Implement `sumar(a, b)` that returns `a + b` exactly as plain JavaScript would, with no conversion of your own. The test cases check `+` operator coercion with arrays, objects, and numeric strings."
       },
       "rubrica": {
         "junior": [
-          "Predice correctamente `1 + '1'` como `'11'` (concatenación cuando hay un string)",
-          "Predice correctamente `[] + []` como `''`"
+          "Pasa todos los casos de prueba",
+          "Devuelve `a + b` sin convertir los operandos ni comprobar tipos"
         ],
         "senior": [
           "Lo anterior",
-          "Predice `[] + {}` como `'[object Object]'` y explica el porqué (ambos se convierten a string antes de concatenar)",
-          "Explica la regla general: si alguno de los dos operandos se convierte a string, `+` concatena; si ambos son numéricos, suma",
-          "Menciona `Symbol.toPrimitive`/`valueOf`/`toString` como el mecanismo real detrás de la conversión de objetos"
+          "No añade casos especiales para arrays u objetos: el resultado sale de la coerción nativa de `+`"
         ]
       },
       "respuestaModelo": "El operador `+` primero convierte ambos operandos a un tipo primitivo (usando `valueOf`/`toString` o `Symbol.toPrimitive`), y si el resultado de cualquiera de los dos es un string, concatena; si ambos terminan siendo numéricos, suma. `1 + '1'` da `'11'` porque el número se convierte a string y se concatena. `[] + []` da `''` porque un array se convierte a string uniendo sus elementos, y un array vacío se convierte en `''`, así que es `'' + ''`. `[] + {}` da `'[object Object]'` porque el array se convierte en `''` y el objeto plano en `'[object Object]'`, y se concatenan. Entender esto evita depender de memoria y permite razonar cualquier caso nuevo a partir de la regla general.",

@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "js-arrays-objetos-kata-map-filter",
-      "version": 1,
+      "version": 2,
       "pista": "javascript",
       "familia": "arrays-objetos",
       "tipo": "kata",
@@ -22,9 +22,9 @@
         ],
         "senior": [
           "Lo anterior",
-          "Explica que `map`, `filter` y `reduce` son casos particulares de \"fold\", y `reduce` es el más general de los tres",
-          "Explica cómo expresaría también un `groupBy` con `reduce`",
-          "Comenta la diferencia de legibilidad entre usar `reduce` para todo y usar el método específico cuando existe"
+          "El acumulador de `reduce` empieza en un array nuevo (`[]`) y no muta el array de entrada",
+          "Pasa a `fn` el elemento y el índice, como hacen `map` y `filter` nativos",
+          "Una expresión de `reduce` por función, sin variables auxiliares innecesarias"
         ]
       },
       "respuestaModelo": "`miMap` usa `reduce` acumulando un array nuevo, empujando `fn(elemento)` en cada paso; `miFiltro` hace lo mismo pero solo empuja el elemento original cuando `fn(elemento)` es verdadero. Esto funciona porque `reduce` es la operación más general de las tres: puede expresar cualquier transformación que recorra el array acumulando un resultado, incluidos `map`, `filter`, o algo más complejo como `groupBy` (acumulando un objeto en vez de un array). En código de producción se prefiere `map`/`filter` cuando existen porque comunican mejor la intención; `reduce` se reserva para transformaciones que de verdad no encajan en ningún método específico.",
@@ -185,7 +185,7 @@
     },
     {
       "id": "js-arrays-objetos-kata-deep-clone",
-      "version": 1,
+      "version": 2,
       "pista": "javascript",
       "familia": "arrays-objetos",
       "tipo": "kata",
@@ -203,9 +203,9 @@
         ],
         "senior": [
           "Lo anterior",
-          "Explica por qué el spread (`{...obj}`) o `Object.assign` solo hacen copia superficial",
-          "Discute qué pasaría con fechas, funciones o referencias circulares, y por qué esta implementación no las cubre",
-          "Menciona `structuredClone` (nativo desde 2022) como alternativa de producción para la mayoría de estos casos"
+          "Distingue arrays de objetos con `Array.isArray` y devuelve el mismo tipo",
+          "Devuelve los primitivos y `null` tal cual, sin intentar recorrerlos",
+          "No recurre a `JSON.parse(JSON.stringify(...))`, que pierde fechas y `undefined`"
         ]
       },
       "respuestaModelo": "`deepClone` recorre recursivamente el valor: si es un array, crea un array nuevo clonando cada elemento; si es un objeto, crea un objeto nuevo clonando cada propiedad; si es un primitivo, lo devuelve tal cual porque los primitivos ya son inmutables. El spread (`{...obj}`) o `Object.assign` solo copian el primer nivel: si una propiedad es a su vez un objeto, ambas copias siguen compartiendo la misma referencia interna, así que mutar el objeto anidado en la copia también afecta al original. Esta implementación no cubre fechas (se clonarían como objeto plano, perdiendo su prototipo `Date`), funciones (no son serializables ni clonables de forma genérica) ni referencias circulares (entraría en recursión infinita). Para esos casos, `structuredClone`, nativo desde 2022, resuelve la mayoría sin depender de una librería como lodash `cloneDeep`.",
@@ -284,7 +284,7 @@
     },
     {
       "id": "js-arrays-objetos-kata-dedupe-por-id",
-      "version": 1,
+      "version": 2,
       "pista": "javascript",
       "familia": "arrays-objetos",
       "tipo": "kata",
@@ -302,9 +302,9 @@
         ],
         "senior": [
           "Lo anterior",
-          "Usa un `Set`/`Map` para trackear ids vistos en O(n), no `find`/`some` dentro de un bucle (O(n²))",
-          "Explica cómo extendería la solución a una clave compuesta por varios campos, no solo `id`",
-          "Comenta el caso de objetos con el mismo `id` pero otros campos distintos: ¿cuál se queda? (la primera aparición)"
+          "Registra los ids vistos en un `Set` o un `Map` (O(n)), no con `find`/`some` dentro de un bucle (O(n²))",
+          "Se queda con la primera aparición de cada id",
+          "No muta el array de entrada"
         ]
       },
       "respuestaModelo": "Recorro el array una sola vez llevando un `Set` con los ids ya vistos: si el id no está en el `Set`, añado el objeto al resultado y el id al `Set`; si ya está, lo salto. Esto es O(n) porque `set.has(id)` es O(1), frente a usar `resultado.some(o => o.id === item.id)` dentro del bucle, que sería O(n²). Si dos objetos comparten el mismo `id` pero tienen otros campos distintos, se queda el primero que aparece, porque es el que ya está en el resultado cuando llega el segundo. Para deduplicar por una clave compuesta (varios campos), bastaría con construir esa clave como string antes de comprobarla en el `Set`.",
@@ -345,7 +345,7 @@
     },
     {
       "id": "js-arrays-objetos-kata-flat-map",
-      "version": 1,
+      "version": 2,
       "pista": "javascript",
       "familia": "arrays-objetos",
       "tipo": "kata",
@@ -363,9 +363,9 @@
         ],
         "senior": [
           "Lo anterior",
-          "Explica que `flat()` aplana un nivel de anidamiento de arrays, y acepta un argumento de profundidad",
-          "Explica que `flatMap` ahorra crear un array intermedio de arrays antes de aplanarlo",
-          "Maneja frases con espacios múltiples sin generar strings vacíos en el resultado"
+          "Maneja frases con espacios múltiples o en los extremos sin generar strings vacíos",
+          "Parte con una expresión regular (`/\\s+/`) o descarta los vacíos, no con `split(' ')` a secas",
+          "Una sola pasada con `flatMap`, sin arrays intermedios"
         ]
       },
       "respuestaModelo": "`Array.prototype.flat()` aplana un nivel de arrays anidados (o más, si se le pasa un número de profundidad). `flatMap(fn)` aplica `fn` a cada elemento, que debe devolver un array, y aplana el resultado en un solo paso, ahorrando crear el array intermedio de arrays que se generaría con `map(fn).flat()`. Para dividir frases en palabras, cada frase se separa con `.split(' ')` y se filtran los strings vacíos que puedan quedar por espacios múltiples, todo dentro del callback de `flatMap`, que ya aplana el resultado en un único array de palabras.",

@@ -116,7 +116,7 @@
     },
     {
       "id": "fund-patrones-kata-event-emitter",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "patrones",
       "tipo": "kata",
@@ -134,9 +134,9 @@
         ],
         "senior": [
           "Lo anterior",
-          "Explica la relación con el patrón Observer (sujeto/observadores desacoplados)",
-          "Comenta qué pasaría con listeners que lanzan una excepción (¿debería frenar a los demás?)",
-          "Menciona el riesgo de fuga de memoria si nunca se llama `off`"
+          "Guarda los listeners en un `Map` de evento a lista (o `Set`), no en un objeto con claves mezcladas",
+          "`off` elimina solo ese listener",
+          "Emitir un evento sin listeners no lanza ningún error"
         ]
       },
       "respuestaModelo": "Un `EventEmitter` guarda un mapa de evento a lista de listeners. `on` añade un listener a la lista de ese evento, `off` lo quita buscando por `id`, y `emit` recorre la lista del evento y ejecuta cada listener con el dato recibido, devolviendo un registro de qué se ejecutó. Es la base del patrón Observer: el emisor no conoce a sus suscriptores, solo los invoca cuando ocurre el evento. El riesgo real en producción es no des-suscribir listeners que ya no se usan, lo que retiene referencias y produce fugas de memoria.",

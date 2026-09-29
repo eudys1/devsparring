@@ -42,7 +42,7 @@
     },
     {
       "id": "js-funciones-avanzadas-kata-curry",
-      "version": 1,
+      "version": 2,
       "pista": "javascript",
       "familia": "funciones-avanzadas",
       "tipo": "kata",
@@ -60,9 +60,8 @@
         ],
         "senior": [
           "Lo anterior",
-          "Explica cómo sabe cuándo ya tiene suficientes argumentos para ejecutar la función original (comparando con `fn.length`)",
-          "Explica currying como transformar una función de varios argumentos en una cadena de funciones de un argumento",
-          "Menciona un caso de uso real (pre-configurar parte de los argumentos de una función para reutilizarla, similar a `bind` parcial)"
+          "Decide si ejecutar comparando los argumentos acumulados con `fn.length`",
+          "Cada llamada parcial es independiente: reutilizar `c(1)` dos veces no mezcla argumentos, porque no se muta un array compartido"
         ]
       },
       "respuestaModelo": "`curry(fn)` devuelve una función que va acumulando los argumentos recibidos en llamadas sucesivas; en cada llamada compara cuántos argumentos ha acumulado contra `fn.length` (el número de parámetros declarados de la función original). Si ya tiene suficientes, ejecuta `fn` con todos ellos; si no, devuelve una nueva función que sigue acumulando. Esto permite tanto `curried(1)(2)(3)` como `curried(1, 2)(3)` o `curried(1, 2, 3)`, porque cada llamada intermedia solo comprueba si ya se alcanzó el total, sin importar en qué grupos llegaron los argumentos. El caso de uso real es pre-configurar parte de los argumentos de una función para reutilizarla después con el resto, similar a lo que hace `bind` pero de forma genérica para cualquier número de argumentos.",
@@ -92,7 +91,7 @@
     },
     {
       "id": "js-funciones-avanzadas-kata-memoize",
-      "version": 1,
+      "version": 2,
       "pista": "javascript",
       "familia": "funciones-avanzadas",
       "tipo": "kata",
@@ -110,9 +109,9 @@
         ],
         "senior": [
           "Lo anterior",
-          "Explica cómo construye la clave de caché (serializando los argumentos, por ejemplo con `JSON.stringify`)",
-          "Comenta el trade-off memoria vs velocidad: el caché crece sin límite si no se gestiona",
-          "Discute cómo manejaría argumentos que son objetos, donde la igualdad por referencia falla y `JSON.stringify` puede no ser suficiente (por ejemplo, orden de claves distinto)"
+          "La clave de caché sale de todos los argumentos (por ejemplo, `JSON.stringify(args)`), no solo del primero",
+          "La caché es un `Map` cerrado dentro de la función devuelta, no una variable global",
+          "Distingue un resultado guardado que vale `undefined` de una clave que no está (usa `has`, no `if (cache.get(clave))`)"
         ]
       },
       "respuestaModelo": "`memoize(fn)` devuelve una función que, en cada llamada, construye una clave a partir de los argumentos (por ejemplo con `JSON.stringify(args)`) y comprueba si ya existe en un `Map` interno: si existe, devuelve el resultado guardado sin ejecutar `fn`; si no, la ejecuta, guarda el resultado bajo esa clave, y lo devuelve. El trade-off es memoria por velocidad: el caché crece con cada combinación distinta de argumentos vista, así que no es apto para funciones llamadas con argumentos casi siempre distintos, ni para funciones con efectos secundarios (memoizar solo tiene sentido si el resultado depende únicamente de los argumentos). Con argumentos que son objetos, `JSON.stringify` puede fallar si dos objetos equivalentes tienen las claves en distinto orden; una solución más robusta ordenaría las claves antes de serializar, o usaría una estructura de caché anidada por cada argumento en vez de una clave string única.",

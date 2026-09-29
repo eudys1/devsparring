@@ -51,8 +51,15 @@ test('una sesión se responde, se autoevalúa por criterios y se puede dejar a m
     'true',
   );
   await capturar(page, 'practicar');
+  // Sin decir el tema, la pista no se puede elegir; se deja como estaba.
+  await page.getByTestId('sin-tema').check();
+  await expect(page.getByLabel('Pista', { exact: true })).toBeDisabled();
+  await page.getByTestId('sin-tema').uncheck();
   await page.getByRole('button', { name: 'Empezar' }).click();
   await expect(page.getByLabel(/Asalto 1 de/)).toBeVisible();
+  // Las pistas se destapan de una en una, solo si se piden.
+  await page.getByTestId('pista').click();
+  await expect(page.getByText(/^Llevas 1 de \d+\./)).toBeVisible();
   await page.getByLabel('Tu explicación').fill('Respuesta de prueba del e2e.');
   // Sin clave, la respuesta se puede corregir fuera: el prompt lleva la rúbrica y la respuesta.
   await page.getByTestId('copiar').click();
@@ -105,4 +112,19 @@ test('una entrevista se apunta y se borra', async ({ page }) => {
     .click();
   await page.getByRole('button', { name: 'Sí, borrar' }).click();
   await expect(page.getByText('Empresa de prueba e2e')).toHaveCount(0);
+});
+
+test('el repaso relámpago se hace sin escribir: girar, puntuarse y seguir', async ({ page }) => {
+  await page.goto('/practicar?modo=verbal');
+  await page.getByTestId('relampago').check();
+  await page.getByRole('button', { name: 'Empezar' }).click();
+  await expect(page.getByLabel(/Asalto 1 de/)).toBeVisible();
+  await expect(page.getByLabel('Tu explicación')).toHaveCount(0);
+  await page.keyboard.press(' ');
+  await expect(page.getByText('La idea en una frase', { exact: true })).toBeVisible();
+  await page.waitForTimeout(600); // el giro dura 520 ms: se captura girada
+  await capturar(page, 'relampago');
+  await page.keyboard.press('3');
+  await page.keyboard.press('Enter');
+  await expect(page.getByLabel(/Asalto 2 de/)).toBeVisible();
 });

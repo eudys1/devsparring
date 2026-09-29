@@ -71,6 +71,14 @@ pregunta no tiene buenos distractores, se queda fuera del modo.
   40 % del banco: son las dos pistas por las que se acierta sin saber.
 - Se escriben una vez, se guardan aquí y entran por PR. No se generan al vuelo.
 
+## Resumen (la idea en una frase)
+
+`resumen` (opcional, 20 a 240 caracteres) es la cara de atrás de la tarjeta del
+repaso relámpago: lo que intentas recordar antes de girar. No es un texto para
+leer. Sin él se usa la primera frase de `respuestaModelo`, que en las
+definiciones suele bastar; en las de razonamiento esa frase es larga y se
+recorta, así que ahí conviene escribirlo.
+
 ## Ejemplo mínimo
 
 ```json

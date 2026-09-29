@@ -51,9 +51,10 @@ comparte el token de refresco entre pestañas y Supabase revoca la sesión.
    Primera tanda de 41 preguntas con opciones (junior y mid, siete pistas), para
    revisar por PR. Quedan 137 candidatas para tandas siguientes (IA, Next.js,
    DevOps, Arquitectura y el resto de JavaScript y Fundamentos).
-7. Resumen de una frase y repaso relámpago.
-8. Research: pistas graduales, ronda sin tema, criterio de mentor, salvar la racha.
+7. ~~Resumen de una frase y repaso relámpago~~ hecho (variante de Explicar).
+   Falta contenido: `resumen` escrito a mano en las ~90 preguntas de Explicar
+   cuya primera frase pasa de 240 caracteres (sobre todo las de razonamiento).
+8. ~~Research: pistas graduales, ronda sin tema, criterio de mentor, salvar la racha~~ hecho.
 9. Pista de IA 2026 y buenas prácticas de vibe coding.
-10. Sanear y ampliar el banco por PR. **Lo primero:** las 23 katas tienen en su
-    rúbrica criterios de "Explica…"/"Menciona…", pero las katas se corrigen solo
-    por el código: esos criterios no se pueden cumplir y bajan la nota.
+10. Sanear y ampliar el banco por PR. ~~Rúbricas de las 23 katas~~ hechas, con
+    test que lo vigila. Queda reescribir definiciones secas como situaciones reales.

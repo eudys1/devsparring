@@ -258,7 +258,7 @@
     },
     {
       "id": "ts-tipos-interfaces-kata-as-const",
-      "version": 1,
+      "version": 2,
       "pista": "typescript",
       "familia": "tipos-interfaces",
       "tipo": "kata",
@@ -273,9 +273,8 @@
         "junior": ["Pasa todos los casos de prueba", "Usa `as const` en el array de colores"],
         "senior": [
           "Lo anterior",
-          "Explica que `as const` hace el array de solo lectura y cada elemento se infiere como su literal exacto, no como `string`",
-          "Explica cómo derivaría un tipo unión (`'rojo' | 'verde' | 'azul'`) a partir del array con `typeof` e indexado",
-          "Comenta que `as const` no cambia nada en tiempo de ejecución, es una anotación que solo afecta al tipo"
+          "Deriva el tipo unión de los colores del propio array (`typeof colores[number]`), sin repetir los literales",
+          "`esColorValido` es un type guard (`valor is Color`), no solo un booleano"
         ]
       },
       "respuestaModelo": "`as const` sobre un array literal lo convierte en de solo lectura (`readonly`) y hace que TypeScript infiera cada elemento como su valor literal exacto (`'rojo'`) en vez de ensancharlo a `string`. Con eso, se puede derivar el tipo unión de colores válidos con `(typeof coloresValidos())[number]`, sin tener que escribirlo por duplicado. `esColorValido` comprueba en tiempo de ejecución con `includes` si el valor recibido está en ese array. Es importante notar que `as const` no cambia nada en tiempo de ejecución: el array sigue siendo el mismo array de JavaScript, la diferencia es puramente de tipos en tiempo de compilación.",

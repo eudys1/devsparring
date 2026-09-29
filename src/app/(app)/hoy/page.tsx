@@ -13,7 +13,7 @@ import {
   ultimasRespuestas,
 } from '@/features/sesion/db';
 import { idsVencidas, obtenerTarjetas } from '@/features/srs/db';
-import { racha } from '@/features/srs/racha';
+import { rachaConRespiro } from '@/features/srs/racha';
 import { State } from '@/features/srs/scheduler';
 import { ahora } from '@/lib/reloj';
 import { supabaseServidor, usuarioActual } from '@/lib/supabase/server';
@@ -36,7 +36,8 @@ export default async function Hoy() {
   const lista = publicadas(banco);
   const porId = new Map(lista.map((p) => [p.id, p]));
   const hoy = ahora();
-  const diasSeguidos = racha(dias, hoy);
+  // Un día suelto sin práctica no rompe la racha (una vez por semana).
+  const { dias: diasSeguidos, respiros } = rachaConRespiro(dias, hoy);
 
   const pistas = PISTAS.map((pista) => {
     const preguntas = lista.filter((p) => p.pista === pista);
@@ -152,14 +153,18 @@ export default async function Hoy() {
                 : diasSeguidos === 0
                   ? 'días seguidos: hoy se empieza'
                   : 'días seguidos practicando',
+            nota: respiros
+              ? 'Contando un día de respiro: se te escapó uno y no rompe la racha.'
+              : undefined,
           },
           { n: total, t: 'respuestas corregidas' },
           { n: tarjetas.size, t: `preguntas vistas de ${lista.length}` },
           { n: dominadasTotal, t: 'dominadas (vuelven en 3 semanas o más)' },
-        ].map(({ n, t }) => (
+        ].map(({ n, t, nota }: { n: number; t: string; nota?: string }) => (
           <div key={t}>
             <p className="tabular display text-[2.25rem] leading-none text-tinta">{n}</p>
             <p className="mt-1 text-[0.8125rem] leading-snug text-tinta-2">{t}</p>
+            {nota ? <p className="mt-1 text-[0.75rem] leading-snug text-tinta-3">{nota}</p> : null}
           </div>
         ))}
       </section>

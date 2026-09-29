@@ -102,7 +102,7 @@
     },
     {
       "id": "fund-funcional-kata-compose",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "funcional",
       "tipo": "kata",
@@ -120,9 +120,9 @@
         ],
         "senior": [
           "Lo anterior",
-          "Explica composición de funciones como construir una nueva función a partir de otras más pequeñas",
-          "Comenta la diferencia entre `compose` (derecha a izquierda) y `pipe` (izquierda a derecha)",
-          "Reconoce el caso trivial: `compose()` sin argumentos debería devolver la identidad"
+          "`compose()` sin argumentos devuelve la identidad",
+          "Se apoya en `reduceRight` o equivalente, sin bucles con índices manuales",
+          "No ejecuta ninguna función hasta que se llama a la función compuesta"
         ]
       },
       "respuestaModelo": "`compose(...fns)` devuelve una nueva función que, al recibir un valor, aplica las funciones de `fns` de derecha a izquierda: primero la última, y el resultado se lo pasa a la anterior, y así hasta la primera. Se puede implementar con `reduceRight` sobre el array de funciones, o construyendo el encadenado manualmente. `pipe` es el mismo concepto pero aplicando de izquierda a derecha, que suele ser más intuitivo de leer para pipelines de datos. Con cero funciones, `compose()` debería devolver la función identidad (`x => x`) para que componer con nada no rompa el pipeline.",
