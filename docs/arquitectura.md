@@ -23,8 +23,8 @@ salvo que se indique otra. Lo de producto está en `docs/decisiones.md`.
    suelo `Hard` si fallan tests; se guarda la puntuación cruda y la versión de rúbrica.
 9. Tests: Vitest en modo Node para la lógica pura (80 %), jsdom para pocos
    componentes, Playwright en Chromium contra el build de producción.
-10. Barrido de preguntas: GitHub Actions semanal con puerta de 21 días, Claude
-    Code con token de suscripción, salida siempre como pull request.
+10. Barrido de preguntas: GitHub Actions el día 1 de cada mes, Claude Code con
+    token de suscripción; pull request solo si hay cambios en el banco.
 
 ## Por qué no la estructura por capas de Dossicar y banco-ideas
 
@@ -248,14 +248,14 @@ las reglas concretas de este proyecto.
 
 ## Barrido de preguntas
 
-Workflow `barrido-preguntas.yml`: cron `17 6 * * 1` con puerta de 21 días,
+Workflow `barrido-preguntas.yml`: cron `17 6 1 * *` (día 1 de cada mes),
 `workflow_dispatch`, `claude-code-action@v1` con `CLAUDE_CODE_OAUTH_TOKEN` (la
 suscripción del dueño, no crédito de API), prompt en
 `.claude/skills/barrido-preguntas/SKILL.md`, `--max-turns 80`, timeout 30 min.
-La fecha del último barrido es una etiqueta de git `barrido-AAAA-MM-DD` que el
-workflow pone al terminar bien (05-10-2026: antes era un fichero y obligaba a
-abrir una PR solo para cambiar la fecha). Sin hallazgos no hay PR: el resumen
-queda en la pestaña del run. Fuentes: Hacker News API, GitHub API sobre repos
+Mira el último mes y no guarda estado (05-10-2026: antes era cada 21 días con
+la fecha en un fichero, que obligaba a abrir una PR solo para cambiarla). Si un
+run falla, se relanza a mano. Sin hallazgos no hay PR: el resumen queda en la
+pestaña del run. Fuentes: Hacker News API, GitHub API sobre repos
 de preguntas, RSS de blogs oficiales (Next, TypeScript, React, Supabase). Reglas:
 detectar y proponer, no copiar texto; cada hallazgo con enlace y fecha; nunca
 auto-merge. Excluidos LinkedIn y Glassdoor por sus condiciones.

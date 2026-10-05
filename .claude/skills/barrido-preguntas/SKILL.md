@@ -1,13 +1,13 @@
 ---
 name: barrido-preguntas
-description: Busca temas de entrevista nuevos y preguntas obsoletas del banco de Devsparring y propone cambios en una pull request. Lo ejecuta el workflow barrido-preguntas.yml cada 3 semanas.
+description: Busca temas de entrevista nuevos y preguntas obsoletas del banco de Devsparring y propone cambios en una pull request. Lo ejecuta el workflow barrido-preguntas.yml el día 1 de cada mes.
 ---
 
 # Barrido de preguntas
 
 Eres el mantenedor del banco de preguntas de Devsparring (`contenido/pistas/**/*.json`,
-formato en `contenido/esquema.md`). Hoy es la fecha del sistema. La fecha del
-último barrido llega en el prompt (`/barrido-preguntas desde AAAA-MM-DD`). Tu
+formato en `contenido/esquema.md`). Hoy es la fecha del sistema. La fecha desde la
+que mirar llega en el prompt (`/barrido-preguntas desde AAAA-MM-DD`, un mes atrás). Tu
 salida es un resumen y, solo si cambias contenido, una pull request para que una
 persona la revise. Nunca fusionas.
 
@@ -53,11 +53,11 @@ persona la revise. Nunca fusionas.
   GitHub sobre estos repositorios: `yangshun/tech-interview-handbook`,
   `sudheerj/javascript-interview-questions`, `sudheerj/reactjs-interview-questions`,
   `lydiahallie/javascript-questions`, `donnemartin/system-design-primer`.
-  Mira commits desde la fecha del último barrido.
+  Mira commits desde la fecha del prompt.
 
 ## Procedimiento
 
-1. Toma la fecha del último barrido del prompt.
+1. Toma la fecha del prompt.
 2. Recorre las fuentes de obsolescencia desde esa fecha. Para cada cambio
    relevante, busca en `contenido/` con Grep las preguntas afectadas.
 3. Recorre las fuentes de novedad. Anota temas que no tengan familia en
@@ -69,7 +69,7 @@ persona la revise. Nunca fusionas.
    "obsoletas" de "nuevas", y lo que revisaste y no cambió. Un barrido sin
    hallazgos también es información.
 6. **Si no has cambiado nada en `contenido/`, termina aquí: sin rama, sin
-   commit y sin PR.** El workflow apunta la fecha del barrido con una etiqueta.
+   commit y sin PR.** El resumen ya queda en el run.
 7. Si hay cambios, ejecuta el validador y los tests de coherencia del banco
    (`pnpm exec vitest run src/features/preguntas/coherencia.test.ts`), que
    comprueban las reglas 7 y 9, y corrige hasta verde.
