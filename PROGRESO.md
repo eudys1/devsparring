@@ -49,4 +49,8 @@ Verificación de esta tanda: `pnpm verify`, `pnpm test:e2e` (con sesión),
 
 - Calibrar FSRS cuando haya unos 1000 repasos (`docs/arquitectura.md`, deuda 2).
 - Candidata a Tipo test propuesta y sin respuesta: `js-tipos-coercion-kata-suma`.
-- El barrido del lunes 5 de octubre abrirá su primera PR con las reglas nuevas.
+- Primer barrido (05-10-2026): PR #1 sin hallazgos y bien argumentada; el run
+  salió en rojo solo por pasarse de turnos (50 de 40). Arreglado: tope 80,
+  comandos de solo lectura permitidos, acciones a v5 y la fecha pasa a ser una
+  etiqueta de git (sin hallazgos ya no hay PR). Para Eudys: cerrar la PR #1 sin
+  fusionar, borrar su rama y crear una vez la etiqueta `barrido-2026-10-05`.

@@ -6,8 +6,10 @@ description: Busca temas de entrevista nuevos y preguntas obsoletas del banco de
 # Barrido de preguntas
 
 Eres el mantenedor del banco de preguntas de Devsparring (`contenido/pistas/**/*.json`,
-formato en `contenido/esquema.md`). Hoy es la fecha del sistema. Tu salida es
-una pull request para que una persona la revise. Nunca fusionas.
+formato en `contenido/esquema.md`). Hoy es la fecha del sistema. La fecha del
+último barrido llega en el prompt (`/barrido-preguntas desde AAAA-MM-DD`). Tu
+salida es un resumen y, solo si cambias contenido, una pull request para que una
+persona la revise. Nunca fusionas.
 
 ## Reglas que no se negocian
 
@@ -51,24 +53,25 @@ una pull request para que una persona la revise. Nunca fusionas.
   GitHub sobre estos repositorios: `yangshun/tech-interview-handbook`,
   `sudheerj/javascript-interview-questions`, `sudheerj/reactjs-interview-questions`,
   `lydiahallie/javascript-questions`, `donnemartin/system-design-primer`.
-  Mira commits desde la fecha de `.github/last-question-sweep`.
+  Mira commits desde la fecha del último barrido.
 
 ## Procedimiento
 
-1. Lee `.github/last-question-sweep` (fecha del último barrido).
+1. Toma la fecha del último barrido del prompt.
 2. Recorre las fuentes de obsolescencia desde esa fecha. Para cada cambio
    relevante, busca en `contenido/` con Grep las preguntas afectadas.
 3. Recorre las fuentes de novedad. Anota temas que no tengan familia en
    `contenido/` o que tengan menos de 3 preguntas.
 4. Aplica cambios: marca obsoletas (con motivo y fuente), añade borradores
    (máximo 15 por barrido, con `origen: "generada-revisada"` y fuentes).
-5. Escribe la fecha de hoy en `.github/last-question-sweep`.
-6. Ejecuta el validador y los tests de coherencia del banco
+5. Escribe `barrido-resumen.md` en la raíz (no se commitea: el workflow lo
+   copia al resumen del run). Lista cada hallazgo con enlace y fecha, separando
+   "obsoletas" de "nuevas", y lo que revisaste y no cambió. Un barrido sin
+   hallazgos también es información.
+6. **Si no has cambiado nada en `contenido/`, termina aquí: sin rama, sin
+   commit y sin PR.** El workflow apunta la fecha del barrido con una etiqueta.
+7. Si hay cambios, ejecuta el validador y los tests de coherencia del banco
    (`pnpm exec vitest run src/features/preguntas/coherencia.test.ts`), que
-   comprueban las reglas 7 y 9. Corrige hasta verde.
-7. Crea una rama `barrido/AAAA-MM-DD`, haz commit y abre la PR con `gh pr create`.
-   El cuerpo de la PR lista cada hallazgo con enlace y fecha, separando
-   "obsoletas" de "nuevas" y explicando lo que revisaste y no cambió.
-
-Si no hay nada que cambiar, actualiza solo la fecha y abre la PR igualmente
-diciendo qué fuentes revisaste. Un barrido sin hallazgos también es información.
+   comprueban las reglas 7 y 9, y corrige hasta verde.
+8. Crea una rama `barrido/AAAA-MM-DD`, haz commit solo de `contenido/` y abre
+   la PR con `gh pr create`, con el contenido de `barrido-resumen.md` como cuerpo.

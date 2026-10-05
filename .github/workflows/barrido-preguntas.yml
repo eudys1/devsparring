@@ -1,8 +1,12 @@
 # Barrido de preguntas: cada lunes se comprueba si han pasado 21 días desde el
 # último barrido efectivo; si sí, Claude Code (con el token de suscripción del
-# dueño, no crédito de API) busca temas nuevos y preguntas obsoletas y abre una
-# pull request. Nunca se fusiona sola. El prompt vive en
-# .claude/skills/barrido-preguntas/SKILL.md para revisarlo por PR.
+# dueño, no crédito de API) busca temas nuevos y preguntas obsoletas. Si hay
+# cambios abre una pull request, que nunca se fusiona sola; si no, solo deja el
+# resumen en el run. El prompt vive en .claude/skills/barrido-preguntas/SKILL.md.
+#
+# La fecha del último barrido es una etiqueta de git (barrido-AAAA-MM-DD) que
+# este workflow pone al terminar bien: así no hace falta un commit ni una PR
+# solo para apuntar la fecha.
 name: Barrido de preguntas
 on:
   schedule:
@@ -22,21 +26,23 @@ jobs:
       id-token: write
       actions: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Puerta de 21 días
         id: puerta
         run: |
-          ULTIMO=$(cat .github/last-question-sweep 2>/dev/null || echo 1970-01-01)
+          ULTIMO=$(git ls-remote --tags origin 'refs/tags/barrido-*' | sed 's#.*refs/tags/barrido-##' | sort | tail -1)
+          ULTIMO=${ULTIMO:-1970-01-01}
           DIAS=$(( ( $(date -u +%s) - $(date -u -d "$ULTIMO" +%s) ) / 86400 ))
           echo "Último barrido: $ULTIMO ($DIAS días)"
+          echo "ultimo=$ULTIMO" >> "$GITHUB_OUTPUT"
           if [ "${{ github.event_name }}" != "workflow_dispatch" ] && [ "$DIAS" -lt 21 ]; then
             echo "skip=true" >> "$GITHUB_OUTPUT"
           else
             echo "skip=false" >> "$GITHUB_OUTPUT"
           fi
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v5
         if: steps.puerta.outputs.skip != 'true'
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         if: steps.puerta.outputs.skip != 'true'
         with:
           node-version: 22
@@ -47,8 +53,24 @@ jobs:
         if: steps.puerta.outputs.skip != 'true'
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          prompt: '/barrido-preguntas'
+          prompt: '/barrido-preguntas desde ${{ steps.puerta.outputs.ultimo }}'
           claude_args: |
-            --max-turns 40
+            --max-turns 80
             --model claude-sonnet-5
-            --allowedTools "Bash(node scripts/validar-contenido.mjs),Bash(pnpm exec vitest run src/features/preguntas/coherencia.test.ts),Bash(git *),Bash(gh pr create *),Bash(curl *),Read,Write,Edit,Glob,Grep,WebFetch,WebSearch"
+            --allowedTools "Bash(ls *),Bash(cat *),Bash(head *),Bash(wc *),Bash(date *),Bash(jq *),Bash(node scripts/validar-contenido.mjs),Bash(pnpm exec vitest run src/features/preguntas/coherencia.test.ts),Bash(git *),Bash(gh pr create *),Bash(curl *),Read,Write,Edit,Glob,Grep,WebFetch,WebSearch"
+      # El resumen (qué fuentes se revisaron y qué se encontró) queda en la
+      # pestaña del run, haya PR o no.
+      - name: Resumen en el run
+        if: steps.puerta.outputs.skip != 'true' && always()
+        run: |
+          if [ -f barrido-resumen.md ]; then cat barrido-resumen.md >> "$GITHUB_STEP_SUMMARY"; fi
+      # Solo si el barrido terminó bien: un barrido fallido no cuenta y el
+      # lunes siguiente se reintenta.
+      - name: Marcar la fecha del barrido
+        if: steps.puerta.outputs.skip != 'true' && success()
+        run: |
+          ETIQUETA="barrido-$(date -u +%F)"
+          # Dos barridos a mano el mismo día: la etiqueta ya está y basta.
+          if git ls-remote --exit-code --tags origin "refs/tags/$ETIQUETA" >/dev/null; then exit 0; fi
+          git tag "$ETIQUETA" "$GITHUB_SHA"
+          git push origin "$ETIQUETA"

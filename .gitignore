@@ -52,3 +52,4 @@ next-env.d.ts
 
 # Monaco servido en local: lo copia scripts/copiar-monaco.mjs
 /public/monaco/
+barrido-resumen.md

@@ -248,10 +248,14 @@ las reglas concretas de este proyecto.
 
 ## Barrido de preguntas
 
-Workflow `barrido-preguntas.yml`: cron `17 6 * * 1` con puerta de 21 días en
-`.github/last-question-sweep`, `workflow_dispatch`, `claude-code-action@v1` con
-`CLAUDE_CODE_OAUTH_TOKEN`, prompt en `.claude/skills/barrido-preguntas/SKILL.md`,
-`--max-turns 40`, timeout 30 min. Fuentes: Hacker News API, GitHub API sobre repos
+Workflow `barrido-preguntas.yml`: cron `17 6 * * 1` con puerta de 21 días,
+`workflow_dispatch`, `claude-code-action@v1` con `CLAUDE_CODE_OAUTH_TOKEN` (la
+suscripción del dueño, no crédito de API), prompt en
+`.claude/skills/barrido-preguntas/SKILL.md`, `--max-turns 80`, timeout 30 min.
+La fecha del último barrido es una etiqueta de git `barrido-AAAA-MM-DD` que el
+workflow pone al terminar bien (05-10-2026: antes era un fichero y obligaba a
+abrir una PR solo para cambiar la fecha). Sin hallazgos no hay PR: el resumen
+queda en la pestaña del run. Fuentes: Hacker News API, GitHub API sobre repos
 de preguntas, RSS de blogs oficiales (Next, TypeScript, React, Supabase). Reglas:
 detectar y proponer, no copiar texto; cada hallazgo con enlace y fecha; nunca
 auto-merge. Excluidos LinkedIn y Glassdoor por sus condiciones.
