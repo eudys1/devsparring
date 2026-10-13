@@ -4,9 +4,16 @@
 # ("Free projects are paused after 1 week of inactivity", supabase.com/pricing,
 # 29-09-2026). Le pasó a devsparring y el login dejó de funcionar.
 #
-# Qué hace: cada tres días llama a la función public.latido() (migración
-# 20260929120000_latido.sql), que solo devuelve la hora del servidor. Es una
-# consulta real a la base de datos, sin leer ni escribir datos.
+# Qué hace: cada día llama a la función public.latido() (migración
+# 20260929120000_latido.sql), que solo devuelve la hora del servidor, y lee una
+# fila de una tabla real. Sin leer ni escribir datos de nadie.
+#
+# Por qué diario y con tabla (13-10-2026): con una llamada cada tres días y solo
+# now(), Supabase pausó el proyecto igualmente, tres días después de un latido
+# correcto. Su documentación pide "sufficient user database activity over the
+# past week" y habla de "a few user requests to the database each day"
+# (supabase.com/docs/guides/platform/free-project-pausing). Esto no lo garantiza:
+# solo un plan de pago lo hace.
 #
 # Necesita dos secretos del repositorio (Settings > Secrets and variables >
 # Actions): SUPABASE_URL y SUPABASE_PUBLISHABLE_KEY, los mismos valores que
@@ -22,7 +29,7 @@ name: Latido de Supabase
 
 on:
   schedule:
-    - cron: '23 5 */3 * *' # cada tres días, minuto raro para esquivar el pico
+    - cron: '23 5 * * *' # cada día, minuto raro para esquivar el pico
   workflow_dispatch:
 
 permissions: {}
@@ -46,3 +53,6 @@ jobs:
             -X POST "$URL/rest/v1/rpc/latido" \
             -H "apikey: $CLAVE" -H "Content-Type: application/json" -d '{}')
           echo "Supabase responde: $respuesta"
+          # Una lectura de tabla real: pasa por RLS y devuelve [] para el rol anónimo.
+          tabla=$(curl -sS --fail-with-body --retry 3 --retry-delay 20             "$URL/rest/v1/perfiles?select=user_id&limit=1"             -H "apikey: $CLAVE")
+          echo "Tabla responde: $tabla"
