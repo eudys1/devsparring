@@ -24,7 +24,14 @@ export const TITULAR = {
 
 // Rutas que exigen sesión. El proxy manda a entrar solo desde aquí; cualquier
 // otra ruta desconocida llega a not-found con su 404, no a una redirección.
-export const RUTAS_PRIVADAS = ['/inicio', '/practicar', '/pistas', '/cuenta', '/entrevistas'];
+export const RUTAS_PRIVADAS = [
+  '/inicio',
+  '/practicar',
+  '/pistas',
+  '/cuenta',
+  '/entrevistas',
+  '/historial',
+];
 
 // Open Graph se hereda por sustitución, no por mezcla: una página que declara
 // openGraph pierde lo del layout. Por eso cada una parte de esta base.

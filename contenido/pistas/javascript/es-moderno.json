@@ -123,7 +123,7 @@
     },
     {
       "id": "js-es-moderno-kata-destructuring-spread",
-      "version": 2,
+      "version": 3,
       "pista": "javascript",
       "familia": "es-moderno",
       "tipo": "kata",
@@ -145,7 +145,7 @@
           "Una sola expresión, sin bucles ni variables intermedias"
         ]
       },
-      "respuestaModelo": "`[...a, ...b]` expande los elementos de `a` y de `b` dentro de un array literal nuevo, sin mutar ninguno de los dos originales, resultado equivalente a `a.concat(b)` pero con una sintaxis más flexible que también sirve para insertar elementos sueltos en medio (`[...a, x, ...b]`). El spread hace copia superficial, igual que `slice`: si los elementos son objetos, las referencias internas se comparten entre el array combinado y los originales. Destructuring es la operación inversa: extraer valores de un array o de un objeto a variables sueltas, como `const [primero, ...resto] = arr` o `const { nombre, ...otros } = obj`. Para combinar objetos anidados de forma profunda, el spread superficial no basta y hace falta una fusión recursiva o una utilidad como `structuredClone` combinada con la lógica de merge.",
+      "respuestaModelo": "`[...a, ...b]` saca los elementos de `a` y de `b` y los mete en un array nuevo, sin tocar los originales. Es como `a.concat(b)`, pero además te deja meter cosas en medio: `[...a, x, ...b]`. Ojo con un detalle que suelen preguntar: la copia es superficial. Si los elementos son objetos, el array nuevo y los viejos comparten esos mismos objetos. El destructuring es el camino contrario: sacar valores a variables, como `const [primero, ...resto] = lista` o `const { nombre, ...otros } = usuario`.",
       "kata": {
         "funcion": "combinarConSpread",
         "codigoInicial": "export function combinarConSpread<T>(a: T[], b: T[]): T[] {\n  // tu código: usa el operador spread\n}\n",
@@ -183,7 +183,7 @@
     },
     {
       "id": "js-es-moderno-kata-tagged-template",
-      "version": 2,
+      "version": 3,
       "pista": "javascript",
       "familia": "es-moderno",
       "tipo": "kata",
@@ -205,7 +205,7 @@
           "No pierde el último trozo literal: siempre hay un string más que valores"
         ]
       },
-      "respuestaModelo": "Una tagged template es una función que se coloca justo antes de un template literal (`miFuncion\\`texto ${valor}\\``) y recibe dos cosas: un array con los trozos de texto literal entre las interpolaciones, y los valores interpolados como argumentos sueltos. Siempre hay un string literal más que valores, porque el primer y el último trozo de texto rodean todas las interpolaciones. Aquí la función de etiqueta reconstruye el string uniendo cada trozo literal con su valor interpolado envuelto en `**`. Un caso de uso real de esta técnica es sanitizar HTML antes de insertarlo (escapando los valores interpolados automáticamente) o librerías como `styled-components`, que usan tagged templates para procesar CSS.",
+      "respuestaModelo": "Si pones una función justo delante de un template literal (`resaltar\\`Hola ${nombre}\\``), JavaScript no monta el texto: llama a tu función con dos cosas, los trozos de texto fijo y los valores que iban en los `${}`. Siempre hay un trozo de texto más que valores, porque los textos rodean a los valores. Aquí la función vuelve a juntar cada trozo con su valor envuelto en `**`. Para qué sirve en la vida real: escapar automáticamente lo que mete el usuario antes de pintarlo como HTML, o librerías como `styled-components`, que leen CSS así.",
       "kata": {
         "funcion": "formatearMensaje",
         "codigoInicial": "function resaltar(strings: TemplateStringsArray, ...valores: unknown[]): string {\n  // tu código: reconstruye el string envolviendo cada valor en **\n  return '';\n}\n\nexport function formatearMensaje(nombre: string, puntos: number): string {\n  return resaltar`Hola ${nombre}, tienes ${puntos} puntos`;\n}\n",
@@ -244,7 +244,7 @@
     },
     {
       "id": "js-es-moderno-kata-rest-parameters",
-      "version": 2,
+      "version": 3,
       "pista": "javascript",
       "familia": "es-moderno",
       "tipo": "kata",
@@ -263,7 +263,7 @@
           "Devuelve `typeof args` sin convertir ni envolver el resultado"
         ]
       },
-      "respuestaModelo": "`...args` en la firma de una función agrupa cualquier número de argumentos sobrantes en un array real. Por eso `typeof args` da `'object'`, igual que con cualquier array, aunque `Array.isArray(args)` confirmaría específicamente que es un array. Esto es una mejora frente al objeto `arguments` clásico disponible en funciones normales antes de los rest parameters: `arguments` se parece a un array pero no tiene sus métodos (`map`, `filter`, etc.) sin convertirlo antes, mientras que un rest parameter ya es un array de verdad, usable directamente con cualquier método de array.",
+      "respuestaModelo": "Si escribes `...args` en los parámetros, todos los argumentos que sobren llegan juntos en un array de verdad. Por eso `typeof args` dice `'object'`, como cualquier array (`Array.isArray(args)` te lo confirmaría). La ventaja frente al `arguments` de toda la vida es que `arguments` parece un array pero no lo es: no tiene `map` ni `filter` hasta que lo conviertes. Con `...args` los usas directamente.",
       "kata": {
         "funcion": "tipoDeResto",
         "codigoInicial": "export function tipoDeResto(...args: unknown[]): string {\n  // tu código\n}\n",
@@ -302,7 +302,7 @@
     },
     {
       "id": "js-es-moderno-kata-generators",
-      "version": 2,
+      "version": 3,
       "pista": "javascript",
       "familia": "es-moderno",
       "tipo": "kata",
@@ -325,7 +325,7 @@
           "Devuelve un array nuevo con los valores tomados"
         ]
       },
-      "respuestaModelo": "`function* contador()` es un generator: al llamarlo no ejecuta el cuerpo, devuelve un objeto iterador. Cada llamada a `.next()` ejecuta el cuerpo hasta el siguiente `yield`, devuelve ese valor, y pausa la ejecución ahí hasta la próxima llamada a `.next()`. Dentro de `contador` un `while (true) { yield i++; }` genera una secuencia infinita sin colgar el programa, porque no se ejecuta toda de una vez: solo avanza un paso por cada `.next()`. `tomarN(n)` crea el iterador con `contador()` y hace un bucle `for` que llama `.next()` exactamente `n` veces, cortando ahí, sin necesidad de que la secuencia termine por sí sola. El caso de uso real es recorrer una fuente de datos muy grande (o infinita, como un stream) de forma perezosa, consumiendo solo lo que hace falta sin cargarlo todo en memoria de golpe.",
+      "respuestaModelo": "Una función con asterisco (`function*`) es un generador: al llamarla no se ejecuta, te devuelve algo a lo que vas pidiendo valores con `.next()`. Cada `.next()` avanza hasta el siguiente `yield`, te da ese valor y se queda en pausa ahí. Por eso `while (true) { yield i++; }` no cuelga el programa: solo da un paso cada vez que se lo pides. `tomarN(n)` pide exactamente `n` valores y para. En la vida real sirve para recorrer algo enorme o sin fin (un stream, una paginación) cogiendo solo lo que necesitas, sin cargarlo todo en memoria.",
       "kata": {
         "funcion": "tomarN",
         "codigoInicial": "export function* contador(): Generator<number> {\n  // tu código: yield 0, 1, 2, 3... para siempre\n}\n\nexport function tomarN(n: number): number[] {\n  const resultado: number[] = [];\n  const iterador = contador();\n  // tu código: toma exactamente n valores del iterador y páralo ahí\n  return resultado;\n}\n",

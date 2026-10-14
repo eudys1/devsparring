@@ -200,7 +200,7 @@
     },
     {
       "id": "fund-algoritmos-kata-unicos",
-      "version": 2,
+      "version": 3,
       "pista": "fundamentos",
       "familia": "algoritmos",
       "tipo": "kata",
@@ -220,7 +220,7 @@
           "Los nombres dicen qué guardan (`vistos`, `resultado`), sin variables de una letra salvo el índice"
         ]
       },
-      "respuestaModelo": "Recorro el array una sola vez llevando un `Set` con los valores ya vistos: si el valor no está en el `Set`, lo añado al resultado y al `Set`; si ya está, lo salto. Cada comprobación `set.has(valor)` es O(1), así que el algoritmo completo es O(n), a diferencia de usar `resultado.includes(valor)` dentro del bucle, que sería O(n²) porque cada `includes` recorre el resultado acumulado hasta ese momento. Con arrays de decenas de miles de elementos esa diferencia es la que separa una función instantánea de una que tarda segundos.",
+      "respuestaModelo": "Vas recorriendo el array una vez y apuntas en un `Set` lo que ya has visto. Si un valor no está apuntado, lo guardas en el resultado y lo apuntas; si ya estaba, lo saltas. La gracia está en que preguntarle a un `Set` si tiene algo es instantáneo. Si en vez de eso usas `resultado.includes(valor)` dentro del bucle, cada vuelta repasa todo el resultado acumulado: con diez elementos no lo notas, con cincuenta mil la función pasa de tardar nada a tardar segundos. En la entrevista eso se dice así: con el `Set` es O(n), con `includes` es O(n²).",
       "kata": {
         "funcion": "unicos",
         "codigoInicial": "export function unicos(arr: number[]): number[] {\n  // tu código\n}\n",
@@ -259,7 +259,7 @@
     },
     {
       "id": "fund-algoritmos-kata-texto-enriquecido",
-      "version": 2,
+      "version": 3,
       "pista": "fundamentos",
       "familia": "algoritmos",
       "tipo": "kata",
@@ -282,7 +282,7 @@
           "Ordena una copia de `estilos`, sin mutar el array recibido"
         ]
       },
-      "respuestaModelo": "Ordeno los rangos por `inicio` y recorro el texto una vez, alternando entre copiar el trozo de texto plano anterior al siguiente rango y envolver el trozo del rango con la etiqueta correspondiente (`<b>` para negrita, `<i>` para cursiva) usando `slice`. Al terminar los rangos, copio el resto del texto plano que quede. Si los rangos pudieran solaparse, la estructura de datos tendría que representar estilos por carácter o por segmento (una lista de estilos activos por posición) en vez de rangos independientes, porque envolver etiquetas que se cruzan (`<b><i>...</b></i>`) no es HTML válido.",
+      "respuestaModelo": "Ordenas los rangos por donde empiezan y vas avanzando por el texto: copias el trozo normal que hay hasta el siguiente rango, luego el trozo del rango envuelto en su etiqueta (`<b>` o `<i>`), y así hasta el final, donde copias lo que sobre. Con `slice` sacas cada trozo sin complicarte. Si te preguntan qué pasa cuando dos rangos se pisan, la respuesta honrada es que así no vale: saldría algo como `<b><i>...</b></i>`, que no es HTML válido. Para eso tendrías que pensar letra a letra qué estilos tiene cada posición y cortar el texto donde cambian.",
       "kata": {
         "funcion": "renderizarTexto",
         "codigoInicial": "type Estilo = { inicio: number; fin: number; tipo: 'negrita' | 'cursiva' };\n\nexport function renderizarTexto(texto: string, estilos: Estilo[]): string {\n  // tu código\n}\n",

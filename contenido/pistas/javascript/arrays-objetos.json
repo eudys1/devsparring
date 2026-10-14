@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "js-arrays-objetos-kata-map-filter",
-      "version": 2,
+      "version": 3,
       "pista": "javascript",
       "familia": "arrays-objetos",
       "tipo": "kata",
@@ -27,7 +27,7 @@
           "Una expresión de `reduce` por función, sin variables auxiliares innecesarias"
         ]
       },
-      "respuestaModelo": "`miMap` usa `reduce` acumulando un array nuevo, empujando `fn(elemento)` en cada paso; `miFiltro` hace lo mismo pero solo empuja el elemento original cuando `fn(elemento)` es verdadero. Esto funciona porque `reduce` es la operación más general de las tres: puede expresar cualquier transformación que recorra el array acumulando un resultado, incluidos `map`, `filter`, o algo más complejo como `groupBy` (acumulando un objeto en vez de un array). En código de producción se prefiere `map`/`filter` cuando existen porque comunican mejor la intención; `reduce` se reserva para transformaciones que de verdad no encajan en ningún método específico.",
+      "respuestaModelo": "Con `reduce` vas construyendo un array nuevo paso a paso. Para `miMap` metes `fn(elemento)` en cada vuelta; para `miFiltro` metes el elemento solo cuando `fn(elemento)` dice que sí. Funciona porque `reduce` es la herramienta más general de las tres: con ella puedes hacer `map`, `filter` y cosas como agrupar por una clave. Aun así, en tu código de verdad usa `map` y `filter` cuando encajen, porque se entiende a la primera qué hacen; guarda `reduce` para lo que no encaje en ninguna otra.",
       "kata": {
         "funcion": "probarMapFiltro",
         "codigoInicial": "export function miMap<T, R>(arr: T[], fn: (item: T) => R): R[] {\n  // tu código: usa reduce, no map\n}\n\nexport function miFiltro<T>(arr: T[], fn: (item: T) => boolean): T[] {\n  // tu código: usa reduce, no filter\n}\n\n// probarMapFiltro la usa el runner: aplica ambas funciones sobre el mismo array.\nexport function probarMapFiltro(arr: number[]): { mapeado: number[]; filtrado: number[] } {\n  return {\n    mapeado: miMap(arr, (x) => x * 2),\n    filtrado: miFiltro(arr, (x) => x % 2 === 0),\n  };\n}\n",
@@ -186,7 +186,7 @@
     },
     {
       "id": "js-arrays-objetos-kata-deep-clone",
-      "version": 2,
+      "version": 3,
       "pista": "javascript",
       "familia": "arrays-objetos",
       "tipo": "kata",
@@ -209,7 +209,7 @@
           "No recurre a `JSON.parse(JSON.stringify(...))`, que pierde fechas y `undefined`"
         ]
       },
-      "respuestaModelo": "`deepClone` recorre recursivamente el valor: si es un array, crea un array nuevo clonando cada elemento; si es un objeto, crea un objeto nuevo clonando cada propiedad; si es un primitivo, lo devuelve tal cual porque los primitivos ya son inmutables. El spread (`{...obj}`) o `Object.assign` solo copian el primer nivel: si una propiedad es a su vez un objeto, ambas copias siguen compartiendo la misma referencia interna, así que mutar el objeto anidado en la copia también afecta al original. Esta implementación no cubre fechas (se clonarían como objeto plano, perdiendo su prototipo `Date`), funciones (no son serializables ni clonables de forma genérica) ni referencias circulares (entraría en recursión infinita). Para esos casos, `structuredClone`, nativo desde 2022, resuelve la mayoría sin depender de una librería como lodash `cloneDeep`.",
+      "respuestaModelo": "Vas entrando en el valor por capas: si es un array, creas uno nuevo y clonas cada elemento; si es un objeto, creas uno nuevo y clonas cada propiedad; si es un número, un texto o similar, lo devuelves tal cual porque no se puede modificar. ¿Por qué no basta con `{...obj}`? Porque solo copia la primera capa: si dentro hay otro objeto, la copia y el original siguen compartiéndolo, y al cambiarlo en uno cambia en los dos. Esta versión no sirve para fechas (perderían su tipo), funciones ni objetos que se apuntan a sí mismos (se quedaría en bucle). Para todo eso, el navegador ya trae `structuredClone`.",
       "kata": {
         "funcion": "deepClone",
         "codigoInicial": "export function deepClone<T>(obj: T): T {\n  // tu código\n}\n",
@@ -309,7 +309,7 @@
     },
     {
       "id": "js-arrays-objetos-kata-dedupe-por-id",
-      "version": 2,
+      "version": 3,
       "pista": "javascript",
       "familia": "arrays-objetos",
       "tipo": "kata",
@@ -332,7 +332,7 @@
           "No muta el array de entrada"
         ]
       },
-      "respuestaModelo": "Recorro el array una sola vez llevando un `Set` con los ids ya vistos: si el id no está en el `Set`, añado el objeto al resultado y el id al `Set`; si ya está, lo salto. Esto es O(n) porque `set.has(id)` es O(1), frente a usar `resultado.some(o => o.id === item.id)` dentro del bucle, que sería O(n²). Si dos objetos comparten el mismo `id` pero tienen otros campos distintos, se queda el primero que aparece, porque es el que ya está en el resultado cuando llega el segundo. Para deduplicar por una clave compuesta (varios campos), bastaría con construir esa clave como string antes de comprobarla en el `Set`.",
+      "respuestaModelo": "Igual que quitar repetidos, pero mirando solo el `id`: recorres el array una vez, apuntas en un `Set` los ids que ya has visto y te quedas con el objeto solo si su id es nuevo. Preguntar al `Set` es instantáneo; usar `resultado.some(...)` dentro del bucle obligaría a repasar el resultado en cada vuelta y se haría lento con muchos datos. Si dos objetos tienen el mismo id y distinto contenido, gana el primero que aparece. Y si el \"id\" fueran varios campos, basta con juntarlos en un texto (`${a}-${b}`) y apuntar eso.",
       "kata": {
         "funcion": "removerDuplicadosPorId",
         "codigoInicial": "type ConId = { id: number; [clave: string]: unknown };\n\nexport function removerDuplicadosPorId(arr: ConId[]): ConId[] {\n  // tu código\n}\n",
@@ -371,7 +371,7 @@
     },
     {
       "id": "js-arrays-objetos-kata-flat-map",
-      "version": 2,
+      "version": 3,
       "pista": "javascript",
       "familia": "arrays-objetos",
       "tipo": "kata",
@@ -394,7 +394,7 @@
           "Una sola pasada con `flatMap`, sin arrays intermedios"
         ]
       },
-      "respuestaModelo": "`Array.prototype.flat()` aplana un nivel de arrays anidados (o más, si se le pasa un número de profundidad). `flatMap(fn)` aplica `fn` a cada elemento, que debe devolver un array, y aplana el resultado en un solo paso, ahorrando crear el array intermedio de arrays que se generaría con `map(fn).flat()`. Para dividir frases en palabras, cada frase se separa con `.split(' ')` y se filtran los strings vacíos que puedan quedar por espacios múltiples, todo dentro del callback de `flatMap`, que ya aplana el resultado en un único array de palabras.",
+      "respuestaModelo": "`flat()` quita un nivel de arrays dentro de arrays: `[[1, 2], [3]]` pasa a `[1, 2, 3]`. `flatMap(fn)` hace un `map` y ese aplanado de una vez, sin crear el array intermedio. Para sacar las palabras de varias frases, dentro de `flatMap` partes cada frase con `split(' ')` y quitas los huecos vacíos que salen cuando hay dos espacios seguidos. El resultado ya sale como una sola lista de palabras.",
       "kata": {
         "funcion": "dividirEnPalabras",
         "codigoInicial": "export function dividirEnPalabras(frases: string[]): string[] {\n  // tu código: usa flatMap\n}\n",

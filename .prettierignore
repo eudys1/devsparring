@@ -9,3 +9,6 @@ playwright-report
 
 # Lo regenera el test de coherencia en cada pasada
 contenido/COBERTURA.md
+
+# Lo genera la CLI de Supabase (workflow migraciones-supabase.yml)
+src/lib/supabase/tipos.ts

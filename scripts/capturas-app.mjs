@@ -1,5 +1,5 @@
-// Capturas de las pantallas con sesión (Inicio, Practicar, Temario, Cuenta y
-// Entrevistas) en escritorio y móvil, claro y oscuro. Complementa a
+// Capturas de las pantallas con sesión (Inicio, Practicar, Temario, Cuenta,
+// Entrevistas e Historial) en escritorio y móvil, claro y oscuro. Complementa a
 // capturas.mjs, que solo cubre lo público. En móvil van a página completa; en
 // escritorio, la primera pantalla. Salida en capturas/, fuera de git.
 //
@@ -15,7 +15,15 @@ import { chromium } from '@playwright/test';
 
 const base = process.argv[2] ?? 'http://localhost:3456';
 const salida = 'capturas';
-const rutas = ['/inicio', '/practicar', '/pistas', '/pistas/typescript', '/cuenta', '/entrevistas'];
+const rutas = [
+  '/inicio',
+  '/practicar',
+  '/pistas',
+  '/pistas/typescript',
+  '/cuenta',
+  '/entrevistas',
+  '/historial',
+];
 
 await mkdir(salida, { recursive: true });
 const navegador = await chromium.launch();

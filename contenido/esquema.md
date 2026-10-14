@@ -27,6 +27,15 @@ validador y sin revisión humana en una pull request.
 - `texto.es` es la pregunta tal como la haría un entrevistador en España.
   `texto.en` es cómo se preguntaría en inglés, no una traducción literal.
 - Términos técnicos en inglés como se usan en la industria (closure, event loop).
+- **Lenguaje llano, como se lo contarías a un compañero** (pedido el 15-10-2026).
+  Segunda persona, frases cortas, palabras de todos los días. Primero qué pasa
+  o qué hace la solución, con un ejemplo si ayuda; después el porqué. El
+  término técnico se usa solo cuando lo vas a oír en la entrevista, y la
+  primera vez se explica ("a eso se le llama closure: …"). Notaciones como
+  O(n²) van acompañadas de lo que significan en la práctica ("con cincuenta
+  mil elementos tarda segundos"). Nada de "cabe destacar", "es importante
+  notar" ni frases de manual. La rúbrica es la excepción: son criterios para
+  corregir y pueden ser precisos.
 - `rubrica.junior` y `rubrica.senior` son listas de criterios observables, en
   infinitivo o en tercera persona ("Define…", "Menciona…", "Da la complejidad").
   La senior incluye siempre lo de la junior y añade profundidad: complejidad,

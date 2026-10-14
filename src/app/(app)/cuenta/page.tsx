@@ -65,7 +65,7 @@ export default async function Cuenta() {
             </div>
           </section>
 
-          <BorrarDatos />
+          <BorrarDatos email={usuario.email ?? ''} />
         </div>
       </div>
     </div>

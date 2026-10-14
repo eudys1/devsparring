@@ -64,7 +64,7 @@
     },
     {
       "id": "js-closures-kata-contador",
-      "version": 2,
+      "version": 3,
       "pista": "javascript",
       "familia": "closures",
       "tipo": "kata",
@@ -86,7 +86,7 @@
           "El objeto devuelto no expone el estado interno por ninguna propiedad"
         ]
       },
-      "respuestaModelo": "Una función externa guarda `let n = inicial` y devuelve tres funciones que la leen y modifican. Como `n` solo existe en ese ámbito, nadie puede tocarla desde fuera. Cada llamada a `crearContador` crea un ámbito nuevo, así que dos contadores son independientes.",
+      "respuestaModelo": "Una función de fuera guarda `let n = inicial` y devuelve tres funciones que leen y cambian esa `n`. Como `n` solo existe dentro de esa función, nadie puede tocarla desde fuera: es una variable privada sin necesidad de clases. Y cada vez que llamas a `crearContador` se crea una `n` nueva, así que dos contadores no se pisan. A eso se le llama closure: una función que se lleva consigo las variables del sitio donde nació.",
       "kata": {
         "funcion": "probarContador",
         "codigoInicial": "// Implementa crearContador. La función probarContador la usa el runner:\n// recibe una lista de operaciones y devuelve el valor final.\nexport function crearContador(inicial: number) {\n  // tu código\n}\n\nexport function probarContador(inicial: number, operaciones: string[]): number {\n  const c = crearContador(inicial) as { incrementar(): void; decrementar(): void; valor(): number };\n  for (const op of operaciones) {\n    if (op === '+') c.incrementar();\n    if (op === '-') c.decrementar();\n  }\n  return c.valor();\n}\n",

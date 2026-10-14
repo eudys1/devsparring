@@ -96,8 +96,8 @@ export function ClaveApi({ esDueno }: { esDueno: boolean }) {
           </Form>
         )}
         <p className="mt-3 text-[0.8125rem] leading-relaxed text-tinta-3">
-          Cada corrección cuesta alrededor de un céntimo con el modelo estándar. Conviene rotar la
-          clave cada tres meses.
+          Cada corrección te cuesta alrededor de un céntimo con el modelo de serie. Por seguridad,
+          cámbiala por una nueva cada tres meses.
         </p>
       </div>
 

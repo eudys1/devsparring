@@ -182,7 +182,7 @@
     },
     {
       "id": "fund-patrones-kata-event-emitter",
-      "version": 2,
+      "version": 3,
       "pista": "fundamentos",
       "familia": "patrones",
       "tipo": "kata",
@@ -205,7 +205,7 @@
           "Emitir un evento sin listeners no lanza ningún error"
         ]
       },
-      "respuestaModelo": "Un `EventEmitter` guarda un mapa de evento a lista de listeners. `on` añade un listener a la lista de ese evento, `off` lo quita buscando por `id`, y `emit` recorre la lista del evento y ejecuta cada listener con el dato recibido, devolviendo un registro de qué se ejecutó. Es la base del patrón Observer: el emisor no conoce a sus suscriptores, solo los invoca cuando ocurre el evento. El riesgo real en producción es no des-suscribir listeners que ya no se usan, lo que retiene referencias y produce fugas de memoria.",
+      "respuestaModelo": "Guardas una lista de funciones por cada nombre de evento. `on` mete una función en la lista de ese evento, `off` la saca y `emit` recorre la lista y llama a cada función con el dato. Esto es el patrón Observer: quien emite no sabe quién le escucha, solo avisa cuando pasa algo. El fallo típico en la vida real es suscribirse y no darse de baja nunca: esas funciones se quedan vivas en memoria aunque ya no sirvan, y la aplicación va gastando más y más.",
       "kata": {
         "funcion": "probarEventEmitter",
         "codigoInicial": "type Operacion =\n  | { op: 'on'; evento: string; id: string }\n  | { op: 'off'; evento: string; id: string }\n  | { op: 'emit'; evento: string; dato: unknown };\n\nexport class EventEmitter {\n  // tu código: on, off, emit\n  on(evento: string, id: string, escuchador: (dato: unknown) => void) {\n    // tu código\n  }\n  off(evento: string, id: string) {\n    // tu código\n  }\n  emit(evento: string, dato: unknown) {\n    // tu código\n  }\n}\n\n// La función probarEventEmitter la usa el runner: aplica una lista de\n// operaciones sobre un único EventEmitter y devuelve el registro de\n// disparos { id, dato } en el orden en que ocurrieron.\nexport function probarEventEmitter(operaciones: Operacion[]): { id: string; dato: unknown }[] {\n  const emisor = new EventEmitter();\n  const registro: { id: string; dato: unknown }[] = [];\n  for (const operacion of operaciones) {\n    if (operacion.op === 'on') {\n      emisor.on(operacion.evento, operacion.id, (dato) => registro.push({ id: operacion.id, dato }));\n    } else if (operacion.op === 'off') {\n      emisor.off(operacion.evento, operacion.id);\n    } else {\n      emisor.emit(operacion.evento, operacion.dato);\n    }\n  }\n  return registro;\n}\n",

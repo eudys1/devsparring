@@ -75,8 +75,8 @@ export default function Privacidad() {
 
       <h2>Cuánto tiempo</h2>
       <p>
-        Mientras tengas cuenta. Si pides borrarla, se borran contigo el perfil, la práctica, el
-        repaso y el registro de entrevistas.
+        Mientras tengas cuenta. Puedes borrarla tú mismo en Cuenta, «Borrar mi cuenta», y se borran
+        con ella el perfil, la práctica, el repaso y el registro de entrevistas, al momento.
       </p>
 
       <h2>Tus derechos</h2>

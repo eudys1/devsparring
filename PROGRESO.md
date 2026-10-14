@@ -28,10 +28,10 @@ Verificación de esta tanda: `pnpm verify`, `pnpm test:e2e` (con sesión),
 ## Hecho el 14-10-2026: lista grande de Eudys
 
 Sin commit todavía (lo hace Eudys). Porqués en `docs/decisiones.md`, sección
-"14-10-2026". **Antes de probar en producción, la migración
-`20261014090000_niveles_stack_latido.sql` tiene que estar aplicada** (sale
-sola con el push a `main`): sin ella fallan guardar el perfil con stack, las
-sesiones de nivel intermedio y el latido.
+"14-10-2026". La migración `20261014090000_niveles_stack_latido.sql` ya está en producción:
+la aplicó el workflow `migraciones-supabase.yml`, que desde el 14-10-2026 aplica
+cada migración nueva con el push a `main`. Las URL de auth de Supabase ya están
+puestas en el panel.
 
 1. ~~Espacios y anchos~~: `--ancho-contenido` (88rem) y la clase `.pagina`.
 2. ~~Campos con React Aria~~, ver/ocultar contraseña, zod compartido.
@@ -50,30 +50,38 @@ sesiones de nivel intermedio y el latido.
 Verificación: `pnpm verify` (246 tests), `pnpm test:e2e` (18, con sesión),
 capturas revisadas y palpa (un HIGH falso: la ronda de la portada cambia sola).
 
+## Hecho el 15-10-2026
+
+- **Historial** (`/historial`): cada sesión terminada con su informe, enlazado
+  desde el carril, Inicio y el propio informe.
+- **Lenguaje llano:** regla en `contenido/esquema.md` (la sigue el barrido) y en
+  el prompt de corrección; las 23 explicaciones de kata reescritas.
+- **Publicadas** las 8 preguntas de "Programar con agentes".
+- **Borrar la cuenta** desde Cuenta, con la función `borrar_mi_cuenta()`
+  (migración `20261015090000`, sale con el push).
+- **Tipos de Supabase:** el workflow de migraciones los regenera y abre una PR
+  si cambian.
+- Palpa: icono para la pantalla de inicio, texto de 14 px en móvil, canonical
+  en `/entrar`.
+
 ## Bloqueos (dependen de Eudys)
 
-- **Revisar las 8 preguntas en borrador** de `contenido/pistas/ia/programar-con-agentes.json`
-  y pasar a `publicada` las que valgan.
 - **Aviso legal y privacidad:** el contacto es el canal de incidencias del
   repositorio. Decidir si se pone un correo y el nombre completo
   (`TITULAR` en `src/lib/sitio.ts`); para ejercer derechos de datos, un canal
   público no es lo ideal.
 - **Revisar las 13 preguntas de .NET** (`contenido/pistas/dotnet/`): entran
   publicadas con fuentes leídas, como decidimos el 14-09; se revisan usándolas.
-- **Supabase, URL de producción:** comprobar en el panel (Authentication → URL
-  Configuration) que el Site URL es `https://devsparring.vercel.app` y que
-  `https://devsparring.vercel.app/auth/confirmar` y `/auth/recuperar` están en las
-  redirecciones (la segunda es nueva: recuperar contraseña).
-  `supabase/config.toml` ya la lista, pero la integración de GitHub aplica
-  migraciones, no la configuración de auth.
-- **Tipos de Supabase:** `npx supabase login` con la cuenta dueña y luego
-  `pnpm tipos:supabase`. Después, pasar `<Database>` a los clientes y quitar
-  los tipos a mano.
-- **Borrar una cuenta:** la privacidad dice que se puede pedir y que se borra
-  todo (las tablas tienen `on delete cascade`), pero hoy se hace a mano desde el
-  panel de Supabase. Si se abre a más gente, merece un botón en Cuenta.
+- **Aprobar el tono** de las 23 katas antes de pasar el resto del banco
+  (unas 375 preguntas) a lenguaje llano.
 
 ## Pendiente
+
+- Banco en lenguaje llano por tandas, empezando por tu stack (JavaScript,
+  TypeScript, React, Node, .NET). Con `aplicar-texto`: solo cambia el texto y la
+  versión, el diff se lee pregunta a pregunta.
+- Cuando llegue la primera PR de tipos de Supabase: fusionarla y pasar
+  `<Database>` a los clientes, quitando los tipos escritos a mano en cada `db.ts`.
 
 - Calibrar FSRS cuando haya unos 1000 repasos (`docs/arquitectura.md`, deuda 2).
 - Candidata a Tipo test propuesta y sin respuesta: `js-tipos-coercion-kata-suma`.

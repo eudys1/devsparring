@@ -41,7 +41,7 @@ export function Modos({
       ancho: 'sm:col-span-2',
       explica: 'Cuatro opciones, y al responder ves por qué vale o no cada una, no solo la tuya.',
       cuerpo: test ? (
-        <div className="space-y-1.5 text-[0.8125rem]">
+        <div className="space-y-1.5 text-[0.875rem] sm:text-[0.8125rem]">
           <p
             className="prosa font-medium text-[var(--tinta)]"
             dangerouslySetInnerHTML={{ __html: enLinea(test.enunciado) }}

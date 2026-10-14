@@ -413,7 +413,7 @@
     },
     {
       "id": "ts-tipos-interfaces-kata-as-const",
-      "version": 2,
+      "version": 3,
       "pista": "typescript",
       "familia": "tipos-interfaces",
       "tipo": "kata",
@@ -432,7 +432,7 @@
           "`esColorValido` es un type guard (`valor is Color`), no solo un booleano"
         ]
       },
-      "respuestaModelo": "`as const` sobre un array literal lo convierte en de solo lectura (`readonly`) y hace que TypeScript infiera cada elemento como su valor literal exacto (`'rojo'`) en vez de ensancharlo a `string`. Con eso, se puede derivar el tipo unión de colores válidos con `(typeof coloresValidos())[number]`, sin tener que escribirlo por duplicado. `esColorValido` comprueba en tiempo de ejecución con `includes` si el valor recibido está en ese array. Es importante notar que `as const` no cambia nada en tiempo de ejecución: el array sigue siendo el mismo array de JavaScript, la diferencia es puramente de tipos en tiempo de compilación.",
+      "respuestaModelo": "Sin `as const`, TypeScript ve `['rojo', 'verde', 'azul']` como \"una lista de textos cualquiera\". Con `as const` la ve como \"exactamente estos textos y no se pueden cambiar\". Eso te permite sacar de la propia lista el tipo `'rojo' | 'verde' | 'azul'` con `ReturnType<typeof coloresValidos>[number]`, sin escribirlo dos veces y sin que se desincronicen. `esColorValido` comprueba con `includes` si lo que llega está en la lista. Y ojo: `as const` no cambia nada al ejecutar, el array es el mismo; solo cambia lo que sabe TypeScript.",
       "kata": {
         "funcion": "esColorValido",
         "codigoInicial": "export function coloresValidos() {\n  return ['rojo', 'verde', 'azul'] as const;\n}\n\ntype Color = (ReturnType<typeof coloresValidos>)[number];\n\nexport function esColorValido(valor: string): valor is Color {\n  // tu código\n}\n",

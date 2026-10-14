@@ -49,6 +49,9 @@ export function promptSistema(): string {
     'El siguiente paso es una sola acción pequeña y concreta que pueda hacer hoy (repasar un concepto que nombras, reescribir una parte), nunca un consejo genérico como "practica más".',
     'El campo respuestaQueAprueba contiene lo que diría, en dos o tres frases, un candidato de ese nivel que aprueba; no repitas la respuesta modelo literalmente.',
     'Responde siempre en el idioma indicado. Términos técnicos en inglés tal como se usan en la industria.',
+    // Lenguaje llano (15-10-2026): la corrección se lee como la explicación de
+    // un compañero, no como un manual.
+    'Escribe en lenguaje llano, en segunda persona y con frases cortas, como un compañero que te lo explica en persona. Usa un término técnico solo si hace falta para la entrevista y, si puede no conocerlo, explícalo en pocas palabras.',
   ].join('\n');
 }
 

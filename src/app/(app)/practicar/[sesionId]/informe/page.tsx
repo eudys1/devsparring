@@ -74,6 +74,9 @@ export default async function InformeDeSesion({
           <Link href="/inicio" className={estilosBoton('normal')}>
             Ir a Inicio
           </Link>
+          <Link href="/historial" className={estilosBoton('sutil')}>
+            Ver el historial
+          </Link>
         </>
       }
     />

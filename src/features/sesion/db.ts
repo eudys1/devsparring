@@ -168,6 +168,37 @@ export async function sesionesAbiertas(
   );
 }
 
+export type SesionTerminada = Sesion & { notas: { pregunta_id: string; nota: 1 | 2 | 3 | 4 }[] };
+
+// Las sesiones terminadas, de la más reciente a la más antigua, con la nota de
+// cada respuesta: el historial pinta con eso el resumen de cada informe sin
+// abrirlo. El informe entero se rehace al entrar en él.
+export async function sesionesTerminadas(
+  db: SupabaseClient,
+  userId: string,
+  limite = 60,
+): Promise<SesionTerminada[]> {
+  const { data, error } = await db
+    .from('sesiones')
+    .select('*, respuestas(pregunta_id, repasos(nota))')
+    .eq('user_id', userId)
+    .not('terminada_en', 'is', null)
+    .order('terminada_en', { ascending: false })
+    .limit(limite);
+  if (error) registrarErrorDb('sesionesTerminadas', error);
+  return (
+    (data ?? []) as (Sesion & {
+      respuestas: { pregunta_id: string; repasos: { nota: 1 | 2 | 3 | 4 }[] }[];
+    })[]
+  ).map(({ respuestas, ...s }) => ({
+    ...s,
+    pistas: s.pistas ?? null,
+    notas: respuestas.flatMap((r) =>
+      r.repasos[0] ? [{ pregunta_id: r.pregunta_id, nota: r.repasos[0].nota }] : [],
+    ),
+  }));
+}
+
 export type RespuestaDeSesion = {
   pregunta_id: string;
   puntuacion: number | null;

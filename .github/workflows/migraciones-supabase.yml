@@ -23,6 +23,11 @@
 # Las migraciones se escriben repetibles (if not exists, create or replace): si
 # algo se aplicó a mano antes, volver a aplicarlo no rompe.
 #
+# Después regenera los tipos de TypeScript de la base (src/lib/supabase/tipos.ts)
+# y, si han cambiado, abre una PR con ellos: los commits a main los hace Eudys,
+# así que el workflow propone y no empuja. Las PR que abre GITHUB_TOKEN no lanzan
+# el CI por sí solas (límite de GitHub); se comprueba al fusionarla.
+#
 # A mano: pestaña Actions > Migraciones de Supabase > Run workflow.
 name: Migraciones de Supabase
 
@@ -34,7 +39,8 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write # la rama de la PR de tipos
+  pull-requests: write
 
 # Dos pushes seguidos no aplican migraciones a la vez: el segundo espera.
 concurrency:
@@ -74,3 +80,26 @@ jobs:
 
       - name: Aplicar las pendientes
         run: supabase db push
+
+      - name: Regenerar los tipos de la base
+        run: supabase gen types typescript --linked --schema public > src/lib/supabase/tipos.ts
+
+      - name: Proponer los tipos si han cambiado
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ -z "$(git status --porcelain -- src/lib/supabase/tipos.ts)" ]; then
+            echo "Los tipos ya estaban al día."
+            exit 0
+          fi
+          rama="tipos-supabase-${GITHUB_SHA::7}"
+          git switch -c "$rama"
+          git add src/lib/supabase/tipos.ts
+          git -c user.name="github-actions[bot]" \
+            -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -m "chore: tipos de Supabase al día tras las migraciones"
+          git push origin "$rama"
+          gh pr create --base main --head "$rama" \
+            --title "Tipos de Supabase al día" \
+            --body "Generados con supabase gen types después de aplicar las migraciones de ${GITHUB_SHA::7}. Revísalos y fusiona." \
+            || echo "::warning::No se pudo abrir la PR (Settings > Actions > General > Allow GitHub Actions to create pull requests). Los tipos están en la rama $rama."

@@ -62,7 +62,7 @@
     },
     {
       "id": "js-tipos-coercion-kata-suma",
-      "version": 2,
+      "version": 3,
       "pista": "javascript",
       "familia": "tipos-coercion",
       "tipo": "kata",
@@ -83,7 +83,7 @@
           "No añade casos especiales para arrays u objetos: el resultado sale de la coerción nativa de `+`"
         ]
       },
-      "respuestaModelo": "El operador `+` primero convierte ambos operandos a un tipo primitivo (usando `valueOf`/`toString` o `Symbol.toPrimitive`), y si el resultado de cualquiera de los dos es un string, concatena; si ambos terminan siendo numéricos, suma. `1 + '1'` da `'11'` porque el número se convierte a string y se concatena. `[] + []` da `''` porque un array se convierte a string uniendo sus elementos, y un array vacío se convierte en `''`, así que es `'' + ''`. `[] + {}` da `'[object Object]'` porque el array se convierte en `''` y el objeto plano en `'[object Object]'`, y se concatenan. Entender esto evita depender de memoria y permite razonar cualquier caso nuevo a partir de la regla general.",
+      "respuestaModelo": "La regla de `+` es corta: convierte los dos lados a algo simple y, si alguno acaba siendo texto, pega; si los dos son números, suma. Con eso salen todos los casos raros. `1 + '1'` da `'11'` porque hay un texto y el 1 se pega como texto. `[] + []` da `''` porque un array vacío convertido a texto es `''`. `[] + {}` da `'[object Object]'` porque el array se queda en `''` y el objeto se convierte en ese texto tan feo. En la entrevista no se trata de memorizar la tabla, sino de razonar cada caso con esta regla.",
       "kata": {
         "funcion": "sumar",
         "codigoInicial": "export function sumar(a: unknown, b: unknown): unknown {\n  // tu código: exactamente lo que hace + en JavaScript\n}\n",

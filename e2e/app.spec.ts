@@ -151,8 +151,14 @@ test('al terminar una sesión sale el informe con la barra y qué hacer ahora', 
     const asalto = page.getByLabel(new RegExp(`Asalto ${i} de (\\d+)`));
     await expect(asalto).toBeVisible();
     const total = Number((await asalto.getAttribute('aria-label'))?.match(/de (\d+)/)?.[1]);
-    await page.keyboard.press(' ');
-    await expect(page.getByText('La idea en una frase', { exact: true })).toBeVisible();
+    // La cara de atrás siempre está en el DOM: se espera al giro de verdad. Con
+    // los tests en paralelo, el primer espacio puede llegar antes de que la
+    // página escuche el teclado, así que se reintenta.
+    const volteo = page.locator('.volteo');
+    await expect(async () => {
+      if ((await volteo.getAttribute('data-lado')) !== 'atras') await page.keyboard.press(' ');
+      await expect(volteo).toHaveAttribute('data-lado', 'atras', { timeout: 1000 });
+    }).toPass();
     await page.keyboard.press(i % 2 ? '3' : '1');
     await page.keyboard.press('Enter');
     if (i >= total) break;
@@ -162,6 +168,16 @@ test('al terminar una sesión sale el informe con la barra y qué hacer ahora', 
   await expect(page.getByRole('img', { name: /bien, \d+ a medias, \d+ falladas/ })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Qué hacer ahora' })).toBeVisible();
   await capturar(page, 'informe');
+});
+
+test('el historial lista las sesiones terminadas y abre su informe', async ({ page }) => {
+  // La cuenta de pruebas ya tiene sesiones terminadas de pasadas anteriores.
+  await page.goto('/historial');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Historial');
+  await page.locator('a[href$="/informe"]').first().click();
+  await expect(page).toHaveURL(/\/informe$/);
+  await expect(page.getByRole('heading', { name: 'Cómo ha ido' })).toBeVisible();
+  await capturar(page, 'historial');
 });
 
 test('una kata carga Monaco desde el propio dominio y ejecuta los tests', async ({ page }) => {

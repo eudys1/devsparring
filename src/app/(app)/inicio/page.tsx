@@ -107,7 +107,7 @@ export default async function Inicio({
                   <p className="mt-1 max-w-[40ch] text-[1.125rem] leading-snug">
                     {total === 0
                       ? 'Empieza por una sesión de Tipo test: cinco minutos y sabes por dónde andas.'
-                      : 'Nada vencido. Buen momento para abrir una pista nueva.'}
+                      : 'No tienes nada pendiente. Buen momento para probar un tema nuevo.'}
                   </p>
                 )}
                 {reparto.length ? (
@@ -216,9 +216,17 @@ export default async function Inicio({
 
           {ultimas.length ? (
             <section aria-labelledby="ultimos">
-              <h2 id="ultimos" className="text-[1.125rem] font-semibold text-tinta">
-                Últimos asaltos
-              </h2>
+              <div className="flex flex-wrap items-baseline justify-between gap-x-4">
+                <h2 id="ultimos" className="text-[1.125rem] font-semibold text-tinta">
+                  Últimas respuestas
+                </h2>
+                <Link
+                  href="/historial"
+                  className="text-[0.875rem] text-tinta-2 underline decoration-linea-fuerte underline-offset-2 hover:text-tinta hover:decoration-tinta-3"
+                >
+                  Ver los informes de tus sesiones
+                </Link>
+              </div>
               <ul className="mt-3 divide-y divide-linea border-y border-linea">
                 {ultimas.map((r) => {
                   const p = porId.get(r.pregunta_id);

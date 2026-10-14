@@ -64,7 +64,7 @@
     },
     {
       "id": "js-funciones-avanzadas-kata-curry",
-      "version": 2,
+      "version": 3,
       "pista": "javascript",
       "familia": "funciones-avanzadas",
       "tipo": "kata",
@@ -86,7 +86,7 @@
           "Cada llamada parcial es independiente: reutilizar `c(1)` dos veces no mezcla argumentos, porque no se muta un array compartido"
         ]
       },
-      "respuestaModelo": "`curry(fn)` devuelve una función que va acumulando los argumentos recibidos en llamadas sucesivas; en cada llamada compara cuántos argumentos ha acumulado contra `fn.length` (el número de parámetros declarados de la función original). Si ya tiene suficientes, ejecuta `fn` con todos ellos; si no, devuelve una nueva función que sigue acumulando. Esto permite tanto `curried(1)(2)(3)` como `curried(1, 2)(3)` o `curried(1, 2, 3)`, porque cada llamada intermedia solo comprueba si ya se alcanzó el total, sin importar en qué grupos llegaron los argumentos. El caso de uso real es pre-configurar parte de los argumentos de una función para reutilizarla después con el resto, similar a lo que hace `bind` pero de forma genérica para cualquier número de argumentos.",
+      "respuestaModelo": "`curry(fn)` te devuelve una función que va guardando los argumentos que le das, llamada a llamada. En cada llamada mira si ya tiene tantos como pide `fn` (eso lo dice `fn.length`): si los tiene, ejecuta `fn`; si no, te devuelve otra función que sigue esperando el resto. Por eso valen igual `sumar(1)(2)(3)`, `sumar(1, 2)(3)` y `sumar(1, 2, 3)`. Para qué sirve: dejar fijados algunos argumentos y reutilizar la función con el resto, como un `bind` que funciona con cualquier número de argumentos.",
       "kata": {
         "funcion": "probarCurry",
         "codigoInicial": "function sumar3(a: number, b: number, c: number): number {\n  return a + b + c;\n}\n\nexport function curry(fn: (...args: number[]) => number): (...args: number[]) => unknown {\n  // tu código\n}\n\n// probarCurry la usa el runner: aplica los grupos de argumentos en orden\n// sobre curry(sumar3) hasta obtener el resultado numérico final.\nexport function probarCurry(gruposDeArgumentos: number[][]): number {\n  let actual: unknown = curry(sumar3);\n  for (const grupo of gruposDeArgumentos) {\n    actual = (actual as (...args: number[]) => unknown)(...grupo);\n  }\n  return actual as number;\n}\n",
@@ -114,7 +114,7 @@
     },
     {
       "id": "js-funciones-avanzadas-kata-memoize",
-      "version": 2,
+      "version": 3,
       "pista": "javascript",
       "familia": "funciones-avanzadas",
       "tipo": "kata",
@@ -137,7 +137,7 @@
           "Distingue un resultado guardado que vale `undefined` de una clave que no está (usa `has`, no `if (cache.get(clave))`)"
         ]
       },
-      "respuestaModelo": "`memoize(fn)` devuelve una función que, en cada llamada, construye una clave a partir de los argumentos (por ejemplo con `JSON.stringify(args)`) y comprueba si ya existe en un `Map` interno: si existe, devuelve el resultado guardado sin ejecutar `fn`; si no, la ejecuta, guarda el resultado bajo esa clave, y lo devuelve. El trade-off es memoria por velocidad: el caché crece con cada combinación distinta de argumentos vista, así que no es apto para funciones llamadas con argumentos casi siempre distintos, ni para funciones con efectos secundarios (memoizar solo tiene sentido si el resultado depende únicamente de los argumentos). Con argumentos que son objetos, `JSON.stringify` puede fallar si dos objetos equivalentes tienen las claves en distinto orden; una solución más robusta ordenaría las claves antes de serializar, o usaría una estructura de caché anidada por cada argumento en vez de una clave string única.",
+      "respuestaModelo": "`memoize(fn)` envuelve la función con una libreta: antes de calcular, mira si ya hizo esa misma cuenta con esos mismos argumentos. Si la tiene apuntada, devuelve el resultado guardado; si no, calcula, lo apunta y lo devuelve. Para apuntar usas un `Map` con los argumentos convertidos en texto (`JSON.stringify(args)`). El precio es memoria: la libreta crece con cada combinación nueva. Así que solo merece la pena si los argumentos se repiten, y nunca con funciones que hacen algo más que calcular (guardar, enviar), porque la segunda vez no lo harían.",
       "kata": {
         "funcion": "probarMemoize",
         "codigoInicial": "let vecesEjecutado = 0;\n\nfunction costosa(a: number, b: number): number {\n  vecesEjecutado++;\n  return a + b;\n}\n\nexport function memoize<F extends (...args: number[]) => number>(fn: F): F {\n  // tu código\n}\n\n// probarMemoize la usa el runner: llama a memoize(costosa) con cada grupo\n// de argumentos y devuelve los resultados junto con el contador real de ejecuciones.\nexport function probarMemoize(llamadas: number[][]): { resultados: number[]; vecesEjecutado: number } {\n  vecesEjecutado = 0;\n  const memoizada = memoize(costosa);\n  const resultados = llamadas.map((args) => memoizada(...(args as [number, number])));\n  return { resultados, vecesEjecutado };\n}\n",

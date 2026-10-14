@@ -443,7 +443,7 @@ export function Motor({
           })}
         </ol>
       </section>
-      <p className="mt-2 flex items-center justify-between gap-3 text-[0.8125rem] text-tinta-3">
+      <p className="mt-2 flex items-center justify-between gap-3 text-[0.875rem] text-tinta-3">
         <span>
           {demo ? 'Demo: no se guarda nada.' : 'Cada asalto se guarda al pasar al siguiente.'}
         </span>

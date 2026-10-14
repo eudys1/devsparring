@@ -124,7 +124,7 @@
     },
     {
       "id": "fund-funcional-kata-compose",
-      "version": 2,
+      "version": 3,
       "pista": "fundamentos",
       "familia": "funcional",
       "tipo": "kata",
@@ -147,7 +147,7 @@
           "No ejecuta ninguna función hasta que se llama a la función compuesta"
         ]
       },
-      "respuestaModelo": "`compose(...fns)` devuelve una nueva función que, al recibir un valor, aplica las funciones de `fns` de derecha a izquierda: primero la última, y el resultado se lo pasa a la anterior, y así hasta la primera. Se puede implementar con `reduceRight` sobre el array de funciones, o construyendo el encadenado manualmente. `pipe` es el mismo concepto pero aplicando de izquierda a derecha, que suele ser más intuitivo de leer para pipelines de datos. Con cero funciones, `compose()` debería devolver la función identidad (`x => x`) para que componer con nada no rompa el pipeline.",
+      "respuestaModelo": "`compose` recibe varias funciones y te devuelve una nueva que las aplica en cadena, empezando por la última: el resultado de una pasa a la anterior, como una tubería que se lee de derecha a izquierda. Con `reduceRight` sale en una línea. `pipe` es lo mismo pero de izquierda a derecha, y por eso suele leerse mejor. Un detalle que suma puntos: si llamas a `compose()` sin funciones, lo sensato es devolver una función que devuelve lo que recibe (`x => x`), para que componer con nada no rompa nada.",
       "kata": {
         "funcion": "probarCompose",
         "codigoInicial": "type NombreFuncion = 'duplicar' | 'incrementar' | 'cuadrado';\n\nconst funcionesDisponibles: Record<NombreFuncion, (x: number) => number> = {\n  duplicar: (x) => x * 2,\n  incrementar: (x) => x + 1,\n  cuadrado: (x) => x * x,\n};\n\nexport function compose(...fns: Array<(x: number) => number>): (x: number) => number {\n  // tu código: aplica fns de derecha a izquierda\n}\n\n// probarCompose la usa el runner: compone por nombre y aplica al valor inicial.\nexport function probarCompose(nombres: NombreFuncion[], valorInicial: number): number {\n  const fns = nombres.map((n) => funcionesDisponibles[n]);\n  return compose(...fns)(valorInicial);\n}\n",

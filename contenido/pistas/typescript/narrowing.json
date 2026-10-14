@@ -63,7 +63,7 @@
     },
     {
       "id": "ts-narrowing-kata-discriminated-union",
-      "version": 2,
+      "version": 3,
       "pista": "typescript",
       "familia": "narrowing",
       "tipo": "kata",
@@ -85,7 +85,7 @@
           "Cierra el `switch` con un `default` que asigna a `never` (por ejemplo, `assertNever`), así una variante nueva falla en compilación"
         ]
       },
-      "respuestaModelo": "Un discriminated union es una unión de varios tipos que comparten una propiedad literal común (el \"discriminante\", aquí `kind`) con un valor distinto en cada variante. Gracias a esa propiedad, TypeScript puede estrechar el tipo dentro de cada `case` de un `switch` sin necesitar un cast: dentro de `case 'circle'` sabe que la forma tiene `radius`, dentro de `case 'rectangle'` sabe que tiene `width` y `height`. El patrón de exhaustividad usa una función `assertNever(valor: never)` en el `default` del `switch`: si en el futuro se añade una tercera variante (`Triangle`) sin actualizar `area`, el compilador se queja en el `default` porque ese caso ya no sería `never`, avisando en tiempo de compilación de que falta manejarlo, en vez de descubrirlo en producción.",
+      "respuestaModelo": "Todas las formas tienen un campo `kind` con un valor distinto (`'circle'`, `'rectangle'`). Gracias a eso, dentro de cada `case` del `switch` TypeScript ya sabe qué forma tienes: en `'circle'` te deja usar `radius` y en `'rectangle'` te deja usar `width` y `height`, sin conversiones. A esto se le llama discriminated union. El remate es el `default` con `assertNever`: si mañana alguien añade un triángulo y se olvida de esta función, TypeScript se queja al compilar, en vez de que lo descubras en producción.",
       "kata": {
         "funcion": "area",
         "codigoInicial": "type Shape =\n  | { kind: 'circle'; radius: number }\n  | { kind: 'rectangle'; width: number; height: number };\n\nfunction assertNever(valor: never): never {\n  throw new Error('Caso no manejado: ' + JSON.stringify(valor));\n}\n\nexport function area(shape: Shape): number {\n  switch (shape.kind) {\n    // tu código: un case por variante, y un default con assertNever\n    default:\n      return assertNever(shape as never);\n  }\n}\n",

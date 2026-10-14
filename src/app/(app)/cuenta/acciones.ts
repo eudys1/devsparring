@@ -1,8 +1,10 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 import { actualizarPerfil, borrarPractica } from '@/features/cuenta/db';
-import { EsquemaBorrar, EsquemaPerfil } from '@/features/cuenta/perfil';
+import { EsquemaBorrar, EsquemaBorrarCuenta, EsquemaPerfil } from '@/features/cuenta/perfil';
+import { registrarErrorDb } from '@/lib/supabase/errores';
 import { supabaseServidor, usuarioActual } from '@/lib/supabase/server';
 import { deFormulario, validar, type ResultadoForm } from '@/lib/validacion';
 
@@ -41,4 +43,27 @@ export async function borrarDatos(_: ResultadoForm, form: FormData): Promise<Res
     };
   revalidatePath('/', 'layout');
   return { ok: true, aviso: 'Datos borrados. Empiezas de cero.' };
+}
+
+export async function borrarCuenta(_: ResultadoForm, form: FormData): Promise<ResultadoForm> {
+  const usuario = await usuarioActual();
+  if (!usuario) return { ok: false, error: 'Tu sesión ha caducado. Vuelve a entrar.' };
+  const v = validar(EsquemaBorrarCuenta, deFormulario(form));
+  if (!v.ok) return { ok: false, errores: v.errores };
+  if (v.datos.confirmacion.toLowerCase() !== (usuario.email ?? '').toLowerCase()) {
+    return {
+      ok: false,
+      errores: { confirmacion: 'No coincide con el correo de tu cuenta. Escríbelo tal cual.' },
+    };
+  }
+  const db = await supabaseServidor();
+  // La función solo borra al usuario de la sesión (migración 20261015090000).
+  const { error } = await db.rpc('borrar_mi_cuenta');
+  if (error) {
+    registrarErrorDb('borrarCuenta', error);
+    return { ok: false, error: 'No se pudo borrar la cuenta. Vuelve a probar en un momento.' };
+  }
+  // El usuario ya no existe: se limpian las cookies de esta sesión y fuera.
+  await db.auth.signOut({ scope: 'local' }).catch(() => undefined);
+  redirect('/entrar?cuenta=borrada');
 }

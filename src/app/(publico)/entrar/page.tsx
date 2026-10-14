@@ -3,14 +3,18 @@ import Link from 'next/link';
 import { Marca } from '@/components/Marca';
 import { FormularioAcceso, type ModoAcceso } from './FormularioAcceso';
 
-export const metadata: Metadata = { title: 'Entrar', robots: { index: false, follow: true } };
+export const metadata: Metadata = {
+  title: 'Entrar',
+  robots: { index: false, follow: true },
+  alternates: { canonical: '/entrar' },
+};
 
 export default async function Entrar({
   searchParams,
 }: {
-  searchParams: Promise<{ modo?: string; volver?: string; error?: string }>;
+  searchParams: Promise<{ modo?: string; volver?: string; error?: string; cuenta?: string }>;
 }) {
-  const { modo, volver, error } = await searchParams;
+  const { modo, volver, error, cuenta } = await searchParams;
   const elegido: ModoAcceso = modo === 'registro' || modo === 'olvido' ? modo : 'entrar';
   return (
     <div className="mx-auto flex min-h-dvh max-w-md flex-col justify-center px-5 py-10">
@@ -24,6 +28,15 @@ export default async function Entrar({
             className="mb-4 rounded-r border border-aviso/40 bg-aviso-suave px-3 py-2 text-[0.875rem] text-aviso"
           >
             Ese enlace ya no vale. Pide otro entrando con tu correo.
+          </p>
+        ) : null}
+        {cuenta === 'borrada' ? (
+          <p
+            role="status"
+            className="mb-4 rounded-r border border-ok/40 bg-ok-suave px-3 py-2 text-[0.875rem] text-ok"
+          >
+            Tu cuenta y todo lo que había en ella se han borrado. Si algún día vuelves, crea una
+            nueva.
           </p>
         ) : null}
         <FormularioAcceso key={elegido} modo={elegido} volver={volver ?? '/inicio'} />

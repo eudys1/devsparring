@@ -4,7 +4,7 @@
 // aparte de la concha porque necesita la ruta del navegador (cliente) y la
 // concha es un componente de servidor. Los iconos son funciones y por eso las
 // entradas se definen aquí, no en la concha.
-import { BookOpen, ClipboardList, Flame, Route, UserRound } from 'lucide-react';
+import { BookOpen, ClipboardList, Flame, History, Route, UserRound } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -20,6 +20,7 @@ const GRUPOS = [
   {
     titulo: 'Lo tuyo',
     entradas: [
+      { href: '/historial', texto: 'Historial', Icono: History, soloCarril: true },
       { href: '/entrevistas', texto: 'Entrevistas', Icono: ClipboardList },
       { href: '/cuenta', texto: 'Cuenta', Icono: UserRound },
     ],
@@ -39,32 +40,37 @@ export function NavEnlaces({
   if (variante === 'barra') {
     return (
       <>
-        {GRUPOS.flatMap((g) => g.entradas).map(({ href, texto, Icono }) => {
-          const activa = activaEn(href);
-          const aviso = href === '/practicar' && porRepasar > 0;
-          return (
-            <Link
-              key={href}
-              href={href}
-              aria-current={activa ? 'page' : undefined}
-              className={`flex min-h-[3.5rem] flex-col items-center justify-center gap-1 text-[0.6875rem] transition-colors duration-[140ms] ease-salida active:bg-[var(--esquina-suave)] ${
-                activa ? 'font-semibold text-[var(--carril-tinta)]' : 'text-[var(--carril-tinta-2)]'
-              }`}
-            >
-              <span
-                className={`relative grid h-7 w-11 place-items-center rounded-[8px] ${
-                  activa ? 'bg-[var(--carril-activo)] text-[var(--carril-activo-tinta)]' : ''
+        {/* En la barra del móvil caben cinco: el historial se abre desde Inicio. */}
+        {GRUPOS.flatMap((g) => g.entradas)
+          .filter((e) => !('soloCarril' in e))
+          .map(({ href, texto, Icono }) => {
+            const activa = activaEn(href);
+            const aviso = href === '/practicar' && porRepasar > 0;
+            return (
+              <Link
+                key={href}
+                href={href}
+                aria-current={activa ? 'page' : undefined}
+                className={`flex min-h-[3.5rem] flex-col items-center justify-center gap-1 text-[0.6875rem] transition-colors duration-[140ms] ease-salida active:bg-[var(--esquina-suave)] ${
+                  activa
+                    ? 'font-semibold text-[var(--carril-tinta)]'
+                    : 'text-[var(--carril-tinta-2)]'
                 }`}
               >
-                <Icono className="h-5 w-5" strokeWidth={activa ? 2.25 : 1.75} aria-hidden />
-                {aviso ? (
-                  <span className="absolute right-1 top-0 h-2 w-2 rounded-full border border-[var(--carril)] bg-punto" />
-                ) : null}
-              </span>
-              <span>{texto}</span>
-            </Link>
-          );
-        })}
+                <span
+                  className={`relative grid h-7 w-11 place-items-center rounded-[8px] ${
+                    activa ? 'bg-[var(--carril-activo)] text-[var(--carril-activo-tinta)]' : ''
+                  }`}
+                >
+                  <Icono className="h-5 w-5" strokeWidth={activa ? 2.25 : 1.75} aria-hidden />
+                  {aviso ? (
+                    <span className="absolute right-1 top-0 h-2 w-2 rounded-full border border-[var(--carril)] bg-punto" />
+                  ) : null}
+                </span>
+                <span>{texto}</span>
+              </Link>
+            );
+          })}
       </>
     );
   }

@@ -13,8 +13,9 @@ import { Dialogo } from '@/components/ui/Dialogo';
 import { PALABRA_BORRAR } from '@/features/cuenta/perfil';
 import type { ResultadoForm } from '@/lib/validacion';
 import { borrarDatos } from './acciones';
+import { BorrarCuenta } from './BorrarCuenta';
 
-export function BorrarDatos() {
+export function BorrarDatos({ email }: { email: string }) {
   const router = useRouter();
   const [abierto, setAbierto] = useState(false);
   const [entrevistas, setEntrevistas] = useState(false);
@@ -33,7 +34,7 @@ export function BorrarDatos() {
 
   return (
     <section className="tarjeta border-mal/40 px-6 py-6">
-      <h2 className="text-[1.25rem] font-semibold text-tinta">Empezar de cero</h2>
+      <h2 className="text-[1.25rem] font-semibold text-tinta">Borrar tus datos</h2>
       <p className="mt-1 text-[0.875rem] text-tinta-2">
         Borra lo que has practicado y vuelve a empezar con el banco entero por delante. Tu cuenta,
         tu perfil y tu clave se quedan.
@@ -107,6 +108,8 @@ export function BorrarDatos() {
           </div>
         </Form>
       </Dialogo>
+
+      <BorrarCuenta email={email} />
     </section>
   );
 }

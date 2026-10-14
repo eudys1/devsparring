@@ -29,3 +29,9 @@ export const EsquemaBorrar = z.object({
     }),
   entrevistas: z.enum(['si', 'no']).default('no'),
 });
+
+// Borrar la cuenta entera se confirma escribiendo tu correo: más difícil de
+// teclear sin querer que una palabra fija. El servidor compara con el de la sesión.
+export const EsquemaBorrarCuenta = z.object({
+  confirmacion: z.string().trim().min(1, 'Escribe tu correo para confirmar.'),
+});
