@@ -39,7 +39,7 @@ export default async function Practicar({
     : undefined;
 
   return (
-    <div className="mx-auto max-w-5xl">
+    <div className="pagina">
       <p className="rotulo">Nueva sesión</p>
       <h1 className="display mt-1 text-[2.5rem] text-tinta">A qué te enfrentas hoy</h1>
       <p className="prosa mt-2 text-tinta-2">
@@ -47,6 +47,14 @@ export default async function Practicar({
         repaso entra primero en la sesión.
       </p>
 
+      {error === 'datos' ? (
+        <p
+          role="alert"
+          className="mt-5 rounded-r border border-aviso/40 bg-aviso-suave px-3 py-2.5 text-[0.9375rem] text-aviso"
+        >
+          Esa combinación no es válida. Elige el modo, el nivel y la pista de nuevo.
+        </p>
+      ) : null}
       {error === 'db' ? (
         <p
           role="alert"
@@ -66,6 +74,7 @@ export default async function Practicar({
           pista: pistaInicial,
         }}
         vencidasPorPista={vencidasPorPista}
+        foco={perfil.pistas_foco}
         accion={empezarSesion}
       />
     </div>

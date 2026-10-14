@@ -317,7 +317,7 @@
     },
     {
       "id": "react-patrones-review-nota-autoguardado",
-      "version": 1,
+      "version": 2,
       "pista": "react",
       "familia": "patrones",
       "tipo": "review",
@@ -325,23 +325,23 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "Revisa este componente de nota con auto-guardado. Tiene al menos 3 problemas: una fuga/bug de closures, un fallo de seguridad y un fallo de diseño en el guardado. Encuéntralos.",
-        "en": "Review this auto-saving note component. It has at least 3 problems: a memory-leak/closure bug, a security flaw and a save-flow design flaw. Find them."
+        "es": "Revisa este componente de nota que se guarda sola cada 5 segundos. Los usuarios dicen que a veces se guarda texto antiguo. ¿Qué falla?",
+        "en": "Review this note component that auto-saves every 5 seconds. Users say it sometimes saves old text. What is wrong?"
       },
-      "contexto": "```tsx\nfunction AutoSaveNote({ noteId, initialHtml }) {\n  const [html, setHtml] = useState(initialHtml);\n\n  useEffect(() => {\n    const interval = setInterval(() => {\n      fetch(`/api/notes/${noteId}`, {\n        method: 'PUT',\n        body: JSON.stringify({ html }),\n      });\n    }, 5000);\n  }, [noteId]);\n\n  return (\n    <div>\n      <textarea value={html} onChange={e => setHtml(e.target.value)} />\n      <div\n        className=\"preview\"\n        dangerouslySetInnerHTML={{ __html: html }}\n      />\n    </div>\n  );\n}\n```",
+      "contexto": "```tsx\nfunction NotaAutoguardada({ notaId, textoInicial }) {\n  const [texto, setTexto] = useState(textoInicial);\n\n  useEffect(() => {\n    setInterval(() => {\n      fetch(`/api/notas/${notaId}`, {\n        method: 'PUT',\n        body: JSON.stringify({ texto }),\n      });\n    }, 5000);\n  }, [notaId]);\n\n  return <textarea value={texto} onChange={(e) => setTexto(e.target.value)} />;\n}\n```",
       "rubrica": {
         "junior": [
-          "Detecta que el `useEffect` no devuelve función de limpieza: el `setInterval` sigue vivo tras desmontar el componente",
-          "Detecta que `dangerouslySetInnerHTML` renderiza HTML del usuario sin sanitizar, abriendo la puerta a XSS"
+          "Explica que el intervalo se crea una vez y su función captura el texto de ese momento (closure obsoleta), así que siempre guarda el texto inicial",
+          "Detecta que el efecto no devuelve limpieza: el intervalo sigue vivo al desmontar o al cambiar de nota"
         ],
         "senior": [
           "Lo anterior",
-          "Explica que la closure del intervalo captura el `html` del momento en que se creó el efecto (solo se recrea si cambia `noteId`), así que guarda siempre texto antiguo, no el actual",
-          "Detecta que el `fetch` de guardado no maneja errores de red ni evita que dos guardados se pisen si uno tarda más que el intervalo",
-          "Propone la solución completa: `clearInterval` en la limpieza, sanitizar con DOMPurify antes de `dangerouslySetInnerHTML`, y manejar el resultado del fetch (o mover el guardado a un patrón de debounce sobre el cambio real, no un intervalo fijo)"
+          "Propone devolver () => clearInterval(id) en el efecto",
+          "Propone leer el texto actual sin recrear el intervalo (un ref actualizado en cada render) o guardar con debounce cuando cambia el texto en vez de un intervalo fijo"
         ]
       },
-      "respuestaModelo": "El primer bug es una fuga de memoria: el `useEffect` crea un `setInterval` pero no devuelve ninguna función de limpieza, así que al desmontar el componente el intervalo sigue disparando peticiones indefinidamente. Además la closure del intervalo se crea una sola vez (el efecto solo se recrea si cambia `noteId`) y captura el `html` de ese momento, así que el auto-guardado siempre envía el texto antiguo, no el que el usuario está escribiendo ahora mismo. El segundo problema es de seguridad: `dangerouslySetInnerHTML` renderiza directamente el HTML que el propio usuario escribió o pegó, sin pasar por ningún sanitizador como DOMPurify, así que un `<script>` o un `onerror=` incrustado se ejecutaría al reabrir la nota. Por último, el `fetch` de guardado no comprueba si la petición falló ni evita que dos guardados se solapen si uno tarda más de 5 segundos; si el usuario pierde conexión un instante, el cambio se pierde en silencio sin ningún aviso.",
+      "respuestaModelo": "Dos fallos en el mismo efecto. El primero es la closure obsoleta: el efecto solo se ejecuta cuando cambia `notaId`, así que la función del intervalo se crea una vez y se queda con el `texto` de ese momento. Cada 5 segundos guarda el texto inicial, no lo que el usuario está escribiendo. El segundo es que no hay limpieza: el efecto no devuelve `() => clearInterval(id)`, así que al desmontar el componente o al cambiar de nota el intervalo anterior sigue vivo, y puede guardar el texto de una nota en otra. Se arregla devolviendo la limpieza y leyendo el texto actual sin recrear el intervalo, con un `useRef` que se actualiza en cada render; o, mejor, guardando con debounce cuando el texto cambia, que además no envía peticiones si nadie escribe.",
+      "resumen": "La función del intervalo captura el texto del primer render (closure obsoleta) y además no se limpia. clearInterval en la limpieza y leer el texto de un ref, o debounce.",
       "etiquetas": ["patrones", "hooks", "xss", "review"],
       "fuentes": [
         {

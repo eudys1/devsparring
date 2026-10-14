@@ -17,8 +17,8 @@ test('la landing enseña el banco real y lleva a entrar', async ({ page }) => {
 });
 
 test('las rutas de la app sin sesión redirigen a entrar', async ({ page }) => {
-  await page.goto('/hoy');
-  await expect(page).toHaveURL(/\/entrar\?volver=%2Fhoy/);
+  await page.goto('/inicio');
+  await expect(page).toHaveURL(/\/entrar\?volver=%2Finicio/);
 });
 
 test('una ruta que no existe da 404, no una redirección a entrar', async ({ page }) => {
@@ -42,7 +42,7 @@ test('privacidad y aviso legal se enlazan desde la portada y se leen sin sesión
 
 test('robots, sitemap y vista previa social están servidos', async ({ page, request }) => {
   const robots = await (await request.get('/robots.txt')).text();
-  expect(robots).toContain('Disallow: /hoy');
+  expect(robots).toContain('Disallow: /inicio');
   expect(robots).toContain('Sitemap:');
   const sitemap = await (await request.get('/sitemap.xml')).text();
   expect(sitemap).toContain('/privacidad');

@@ -12,8 +12,8 @@ export default function NoEncontrado() {
       <h1 className="display mt-1 text-[2.5rem] text-tinta">Esto no existe</h1>
       <p className="mt-2 text-tinta-2">La página que buscas no está o ya no está.</p>
       <div className="mt-6 flex flex-wrap gap-2">
-        <Link href="/hoy" className={estilosBoton('esquina')}>
-          Ir a Hoy
+        <Link href="/inicio" className={estilosBoton('esquina')}>
+          Ir a Inicio
         </Link>
         <Link href="/" className={estilosBoton('normal')}>
           Volver al inicio

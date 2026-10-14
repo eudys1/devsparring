@@ -1,30 +1,44 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { z } from 'zod';
-import { actualizarPerfil } from '@/features/cuenta/db';
+import { actualizarPerfil, borrarPractica } from '@/features/cuenta/db';
+import { EsquemaBorrar, EsquemaPerfil } from '@/features/cuenta/perfil';
 import { supabaseServidor, usuarioActual } from '@/lib/supabase/server';
+import { deFormulario, validar, type ResultadoForm } from '@/lib/validacion';
 
-const Datos = z.object({
-  nombre: z.string().trim().max(80).optional(),
-  rol_objetivo: z.string().trim().min(1).max(80),
-  nivel_por_defecto: z.enum(['junior', 'mid', 'senior']),
-  idioma: z.enum(['es', 'en']),
-});
-
-export async function guardarPerfil(form: FormData): Promise<{ ok: boolean }> {
+export async function guardarPerfil(_: ResultadoForm, form: FormData): Promise<ResultadoForm> {
   const usuario = await usuarioActual();
-  if (!usuario) return { ok: false };
-  const d = Datos.safeParse({
-    nombre: form.get('nombre') || undefined,
-    rol_objetivo: form.get('rol_objetivo'),
-    nivel_por_defecto: form.get('nivel_por_defecto'),
-    idioma: form.get('idioma'),
+  if (!usuario) return { ok: false, error: 'Tu sesión ha caducado. Vuelve a entrar.' };
+  const v = validar(EsquemaPerfil, {
+    ...deFormulario(form),
+    // Las casillas llegan repetidas con el mismo nombre: getAll las junta.
+    pistas_foco: form.getAll('pistas_foco').map(String),
   });
-  if (!d.success) return { ok: false };
+  if (!v.ok) return { ok: false, errores: v.errores };
   const db = await supabaseServidor();
-  const r = await actualizarPerfil(db, usuario.id, { ...d.data, nombre: d.data.nombre ?? null });
+  const r = await actualizarPerfil(db, usuario.id, {
+    ...v.datos,
+    nombre: v.datos.nombre || null,
+  });
+  if (!r.ok) return { ok: false, error: 'No se pudo guardar. Vuelve a probar en un momento.' };
   revalidatePath('/cuenta');
-  revalidatePath('/hoy');
-  return r;
+  revalidatePath('/inicio');
+  revalidatePath('/practicar');
+  return { ok: true, aviso: 'Guardado.' };
+}
+
+export async function borrarDatos(_: ResultadoForm, form: FormData): Promise<ResultadoForm> {
+  const usuario = await usuarioActual();
+  if (!usuario) return { ok: false, error: 'Tu sesión ha caducado. Vuelve a entrar.' };
+  const v = validar(EsquemaBorrar, deFormulario(form));
+  if (!v.ok) return { ok: false, errores: v.errores };
+  const db = await supabaseServidor();
+  const r = await borrarPractica(db, usuario.id, { entrevistas: v.datos.entrevistas === 'si' });
+  if (!r.ok)
+    return {
+      ok: false,
+      error: 'No se pudo borrar todo. Lo que se borró ya no vuelve; prueba otra vez para el resto.',
+    };
+  revalidatePath('/', 'layout');
+  return { ok: true, aviso: 'Datos borrados. Empiezas de cero.' };
 }

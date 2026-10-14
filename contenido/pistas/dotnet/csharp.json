@@ -1,0 +1,226 @@
+{
+  "pista": "dotnet",
+  "familia": "csharp",
+  "preguntas": [
+    {
+      "id": "dotnet-csharp-01",
+      "version": 1,
+      "pista": "dotnet",
+      "familia": "csharp",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Comparas dos objetos `Precio` creados con los mismos datos y `precio1 == precio2` da `false`. ¿Qué cambia si `Precio` es un `record` en vez de una `class`?",
+        "en": "You compare two `Price` objects created with the same data and `price1 == price2` returns `false`. What changes if `Price` is a `record` instead of a `class`?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que una class compara por referencia: dos objetos distintos no son iguales aunque tengan los mismos datos",
+          "Explica que un record compara por valor, propiedad a propiedad, así que daría true"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Menciona que un record posicional es inmutable (propiedades init) y se modifica con with, que crea una copia",
+          "Distingue record class (referencia) de record struct (valor) y explica que las propiedades que son arrays se comparan por referencia",
+          "Señala cuándo no usarlo: entidades de EF Core, que dependen de la igualdad por referencia"
+        ]
+      },
+      "respuestaModelo": "Con una `class`, `==` compara referencias: dos objetos distintos en memoria no son iguales aunque tengan los mismos datos, por eso da `false`. Un `record` hace que el compilador genere `Equals`, `GetHashCode` y los operadores `==`/`!=` comparando cada propiedad, así que dos `Precio` con los mismos valores son iguales. Además, un record posicional (`public record Precio(decimal Importe, string Moneda);`) tiene propiedades `init`: no se cambian tras crearlo, y para \"modificarlo\" se usa `precio with { Importe = 10 }`, que devuelve una copia. Matices: `record` a secas es un `record class` (tipo referencia con igualdad por valor); `record struct` es un tipo valor. Las propiedades que son arrays se comparan por referencia, no por contenido. Y no conviene usar records como entidades de EF Core, que rastrea los cambios por referencia.",
+      "resumen": "Una class compara por referencia; un record genera igualdad por valor, propiedad a propiedad. Además es inmutable y se copia con with. No sirve para entidades de EF Core.",
+      "test": {
+        "enunciado": "¿Qué da `precio1 == precio2` si `Precio` es un `record` y ambos tienen los mismos datos?",
+        "opciones": [
+          {
+            "texto": "false, porque siguen siendo dos objetos distintos en memoria.",
+            "porque": "Eso pasa con una class. El record genera el operador == comparando propiedad a propiedad."
+          },
+          {
+            "texto": "Un error de compilación: los records no admiten el operador ==.",
+            "porque": "Los records generan == y != precisamente para comparar por valor."
+          },
+          {
+            "texto": "true, porque el record compara cada propiedad.",
+            "porque": "El compilador genera Equals, GetHashCode y == con igualdad por valor."
+          },
+          {
+            "texto": "true solo si además se declaran como record struct.",
+            "porque": "Tanto record class como record struct comparan por valor; lo que cambia es si la asignación copia la referencia o los datos."
+          }
+        ],
+        "correcta": 2
+      },
+      "etiquetas": ["record", "igualdad", "inmutabilidad"],
+      "fuentes": [
+        {
+          "url": "https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/types/records",
+          "fecha": "2026-10-13",
+          "tipo": "leida",
+          "nota": "Igualdad por valor, with, record class frente a record struct y el aviso sobre EF Core."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "dotnet-csharp-02",
+      "version": 1,
+      "pista": "dotnet",
+      "familia": "csharp",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Escribes `var caros = productos.Where(p => p.Precio > 100);`, después añades un producto de 200 a `productos` y por último recorres `caros`. ¿Sale el producto nuevo? ¿Por qué?",
+        "en": "You write `var expensive = products.Where(p => p.Price > 100);`, then add a 200 product to `products`, and finally iterate `expensive`. Does the new product show up? Why?"
+      },
+      "rubrica": {
+        "junior": [
+          "Responde que sí sale: la consulta no se ejecuta al escribirla sino al recorrerla",
+          "Nombra la ejecución diferida de LINQ"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que ToList o ToArray materializan el resultado en ese momento y lo congelan",
+          "Señala el riesgo de recorrer varias veces una consulta diferida: se repite el trabajo, y con EF Core se repite la consulta a la base de datos",
+          "Distingue operadores que tienen que leerlo todo antes de devolver el primero (OrderBy) de los perezosos (Where, Select)"
+        ]
+      },
+      "respuestaModelo": "Sí sale. `Where` no filtra en el momento: devuelve una consulta que se evalúa cuando se recorre (ejecución diferida). Como el producto de 200 ya está en la lista cuando haces el `foreach`, entra. Si querías una foto del momento, `ToList()` o `ToArray()` ejecutan la consulta y guardan el resultado. La otra cara del mismo comportamiento: recorrer dos veces una consulta diferida repite el trabajo, y si es un `IQueryable` de EF Core repite la consulta a la base de datos. Algunos operadores, como `OrderBy`, son diferidos pero necesitan leer toda la colección antes de devolver el primer elemento.",
+      "resumen": "Sí sale: LINQ es diferido y la consulta se ejecuta al recorrerla, no al escribirla. ToList la materializa; recorrerla dos veces repite el trabajo (y la consulta en EF Core).",
+      "test": {
+        "opciones": [
+          {
+            "texto": "Sí: la consulta se ejecuta al recorrerla, no al escribirla.",
+            "porque": "Es la ejecución diferida de LINQ: Where devuelve una consulta pendiente que lee la lista actual al recorrerla."
+          },
+          {
+            "texto": "No: Where filtra y guarda el resultado en la línea en que se escribe.",
+            "porque": "Eso es lo que haría ToList. Where solo describe el filtro."
+          },
+          {
+            "texto": "No, y además lanza una excepción por modificar la colección.",
+            "porque": "La excepción salta si modificas la lista mientras la recorres; aquí se añade antes de recorrer."
+          },
+          {
+            "texto": "Depende del tamaño de la lista: con más de mil elementos se evalúa antes.",
+            "porque": "El tamaño no cambia cuándo se ejecuta la consulta."
+          }
+        ],
+        "correcta": 0
+      },
+      "etiquetas": ["linq", "ejecución diferida"],
+      "fuentes": [
+        {
+          "url": "https://learn.microsoft.com/en-us/dotnet/standard/linq/deferred-execution-lazy-evaluation",
+          "fecha": "2026-10-13",
+          "tipo": "leida",
+          "nota": "Ejecución diferida y evaluación perezosa frente a impaciente (OrderBy)."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "dotnet-csharp-03",
+      "version": 1,
+      "pista": "dotnet",
+      "familia": "csharp",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Un compañero declara una acción de controlador como `public async void Get()` y en producción el proceso se cae de vez en cuando. ¿Qué tiene de malo `async void`?",
+        "en": "A teammate declares a controller action as `public async void Get()` and the process occasionally crashes in production. What is wrong with `async void`?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que async void no devuelve una Task que se pueda esperar, así que nadie sabe cuándo termina",
+          "Propone devolver Task (o Task<T>) en vez de void"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que en ASP.NET Core la petición se da por terminada en el primer await y lo que se escriba en la respuesta después llega tarde y puede tumbar el proceso",
+          "Menciona que las excepciones de un async void no se pueden capturar con un try/catch del llamante y que solo tiene sentido en manejadores de eventos"
+        ]
+      },
+      "respuestaModelo": "`async void` no devuelve una `Task`, así que quien llama no puede esperarla ni saber cuándo termina. En ASP.NET Core eso significa que el framework da la petición por terminada en el primer `await`; cuando el método sigue y escribe en la respuesta, el `HttpContext` ya se ha reciclado y la escritura tardía puede tumbar el proceso. Además, una excepción dentro de un `async void` no se puede capturar desde fuera con `try/catch`. La regla: devolver `Task` o `Task<T>` siempre. `async void` solo tiene sentido en manejadores de eventos de interfaz, que el framework no espera.",
+      "resumen": "async void no devuelve una Task: nadie la espera. En ASP.NET Core la petición acaba en el primer await y escribir después tumba el proceso. Siempre Task.",
+      "test": {
+        "enunciado": "¿Qué devuelve una acción de ASP.NET Core bien escrita que es asíncrona y no devuelve datos?",
+        "opciones": [
+          {
+            "texto": "void, marcada con async para que el framework la espere.",
+            "porque": "async void no da nada que esperar: la petición termina en el primer await."
+          },
+          {
+            "texto": "object, para poder devolver lo que haga falta.",
+            "porque": "El tipo de retorno no resuelve el problema: lo que importa es que haya una Task que esperar."
+          },
+          {
+            "texto": "Task, para que el framework espere a que termine.",
+            "porque": "Con Task la petición no se cierra hasta que la acción acaba."
+          },
+          {
+            "texto": "Thread, creando un hilo propio para no bloquear.",
+            "porque": "Crear hilos a mano en una acción no es el modelo de ASP.NET Core; se usa async con Task."
+          }
+        ],
+        "correcta": 2
+      },
+      "etiquetas": ["async", "aspnet core"],
+      "fuentes": [
+        {
+          "url": "https://learn.microsoft.com/en-us/aspnet/core/fundamentals/best-practices",
+          "fecha": "2026-10-13",
+          "tipo": "leida",
+          "nota": "\"Using async void is ALWAYS a bad practice in ASP.NET Core apps\" y el ejemplo de escritura tras completar la petición."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "dotnet-csharp-04",
+      "version": 1,
+      "pista": "dotnet",
+      "familia": "csharp",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Este endpoint tarda varios segundos y la tabla de pedidos tiene un millón de filas: `var lista = context.Pedidos.ToList().Where(p => p.ClienteId == id).ToList();`. ¿Qué está pasando y cómo lo arreglas?",
+        "en": "This endpoint takes several seconds and the orders table has a million rows: `var list = context.Orders.ToList().Where(o => o.CustomerId == id).ToList();`. What is happening and how do you fix it?"
+      },
+      "rubrica": {
+        "junior": [
+          "Detecta que el primer ToList trae la tabla entera a memoria y el Where se ejecuta en C#, no en la base de datos",
+          "Propone poner el Where antes de materializar: context.Pedidos.Where(...).ToListAsync()"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica la diferencia entre IQueryable (se traduce a SQL) e IEnumerable (se ejecuta en memoria) y que ToList pasa de uno a otro",
+          "Propone además proyectar solo las columnas necesarias con Select, usar la versión asíncrona y AsNoTracking si es de solo lectura",
+          "Comprueba que la columna del filtro tiene índice"
+        ]
+      },
+      "respuestaModelo": "El primer `ToList()` ejecuta la consulta sin filtro: trae el millón de pedidos a memoria y a partir de ahí el `Where` se ejecuta en C# sobre un `IEnumerable`. Mientras la consulta es un `IQueryable`, EF Core la traduce a SQL; en cuanto se materializa, lo que viene después ya no llega a la base de datos. Se arregla filtrando antes de materializar: `await context.Pedidos.Where(p => p.ClienteId == id).ToListAsync()`, que genera un `WHERE` en SQL. Ya puestos: `Select` para traer solo las columnas que usa el endpoint, `AsNoTracking()` si es de solo lectura, la versión asíncrona para no bloquear el hilo, y un índice sobre `ClienteId`.",
+      "resumen": "El primer ToList trae la tabla entera y el Where filtra en memoria. Filtrar antes de materializar (IQueryable se traduce a SQL), con Select, ToListAsync y AsNoTracking.",
+      "etiquetas": ["linq", "ef core", "rendimiento"],
+      "fuentes": [
+        {
+          "url": "https://learn.microsoft.com/en-us/aspnet/core/fundamentals/best-practices",
+          "fecha": "2026-10-13",
+          "tipo": "leida",
+          "nota": "\"Do filter and aggregate LINQ queries ... so that the filtering is performed by the database\" y no traer más datos de los necesarios."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 // Piezas que codifican un dato en la forma, no solo en el dígito. No importan
 // nada de features/: las primitivas no conocen el dominio (docs/arquitectura.md).
-type Nivel = 'junior' | 'mid' | 'senior';
+type Nivel = 'junior' | 'junior-mid' | 'mid' | 'mid-senior' | 'senior';
 
 const TONOS = {
   neutro: 'border-linea-fuerte text-tinta-2',
@@ -31,9 +31,12 @@ export function Ficha({
   );
 }
 
+// Los intermedios llenan media barra: junior+ es más que junior y menos que mid.
 const PESO: Record<Nivel, { llenos: number; nombre: string }> = {
   junior: { llenos: 1, nombre: 'Junior' },
+  'junior-mid': { llenos: 1.5, nombre: 'Junior+' },
   mid: { llenos: 2, nombre: 'Mid' },
+  'mid-senior': { llenos: 2.5, nombre: 'Mid+' },
   senior: { llenos: 3, nombre: 'Senior' },
 };
 
@@ -49,7 +52,13 @@ export function Peso({ nivel, conNombre = true }: { nivel: Nivel; conNombre?: bo
         {[0, 1, 2].map((i) => (
           <span
             key={i}
-            className={`block h-3 w-[5px] rounded-[1px] ${i < llenos ? 'bg-tinta-2' : 'bg-linea'}`}
+            className={`block h-3 w-[5px] rounded-[1px] ${
+              i + 1 <= llenos
+                ? 'bg-tinta-2'
+                : i < llenos
+                  ? 'bg-[linear-gradient(to_top,var(--tinta-2)_50%,var(--linea)_50%)]'
+                  : 'bg-linea'
+            }`}
           />
         ))}
       </span>
@@ -121,8 +130,14 @@ export function Progreso({
       role="img"
       aria-label={`${etiqueta}: ${vistas} de ${total} vistas, ${dominadas} dominadas`}
     >
-      <span className="absolute inset-y-0 left-0 bg-linea-fuerte" style={{ width: pct(vistas) }} />
-      <span className="absolute inset-y-0 left-0 bg-punto" style={{ width: pct(dominadas) }} />
+      <span
+        className="barra-crece absolute inset-y-0 left-0 bg-linea-fuerte"
+        style={{ width: pct(vistas) }}
+      />
+      <span
+        className="barra-crece absolute inset-y-0 left-0 bg-punto"
+        style={{ width: pct(dominadas) }}
+      />
     </span>
   );
 }

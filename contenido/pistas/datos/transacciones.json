@@ -103,7 +103,7 @@
     },
     {
       "id": "datos-transacciones-03",
-      "version": 1,
+      "version": 2,
       "pista": "datos",
       "familia": "transacciones",
       "tipo": "review",
@@ -111,23 +111,23 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "Revisa esta función que cierra un pedido, descuenta stock y avisa al cliente. ¿Qué problemas encuentras?",
-        "en": "Review this function that closes an order, decrements stock and notifies the customer. What problems do you find?"
+        "es": "En producción, a veces el stock de un producto acaba en negativo aunque esta función comprueba que hay suficiente. ¿Qué falla y cómo lo arreglas?",
+        "en": "In production, a product's stock sometimes ends up negative even though this function checks there is enough. What is wrong and how do you fix it?"
       },
-      "contexto": "```js\nasync function closeOrder(orderId) {\n  const order = await prisma.order.findUnique({ where: { id: orderId } });\n  order.status = 'closed';\n  await prisma.order.update({\n    where: { id: orderId },\n    data: { status: 'closed' },\n  });\n\n  const items = await prisma.orderItem.findMany({ where: { orderId } });\n  for (const item of items) {\n    const product = await prisma.product.findUnique({ where: { id: item.productId } });\n    await prisma.product.update({\n      where: { id: item.productId },\n      data: { stock: product.stock - item.quantity },\n    });\n  }\n\n  sendOrderClosedEmail(order.customerEmail);\n\n  return order;\n}\n```",
+      "contexto": "```js\nasync function descontarStock(productoId, cantidad) {\n  const producto = await prisma.producto.findUnique({ where: { id: productoId } });\n  if (producto.stock < cantidad) {\n    throw new Error('Sin stock suficiente');\n  }\n  await prisma.producto.update({\n    where: { id: productoId },\n    data: { stock: producto.stock - cantidad },\n  });\n}\n```",
       "rubrica": {
         "junior": [
-          "Detecta el problema N+1: un findUnique y un update por cada item dentro del for",
-          "Detecta que sendOrderClosedEmail se llama sin await ni catch"
+          "Identifica una condición de carrera: dos peticiones a la vez leen el mismo stock, las dos pasan la comprobación y las dos escriben",
+          "Explica que el valor leído puede estar desfasado cuando llega el update"
         ],
         "senior": [
           "Lo anterior",
-          "Explica que cerrar el pedido y descontar stock deberían ser atómicos: si falla a mitad, el pedido queda 'closed' pero el stock de los últimos productos nunca se descuenta",
-          "Detecta la condición de carrera en el descuento de stock: leer product.stock, restar en la aplicación y escribir de vuelta pierde actualizaciones si dos pedidos del mismo producto se cierran a la vez",
-          "Propone la solución concreta: prisma.$transaction para agrupar las operaciones, y un decrement atómico (data: { stock: { decrement: item.quantity } }) en vez de leer-restar-escribir"
+          "Propone hacer la comprobación y el descuento en una sola operación atómica en la base de datos (por ejemplo updateMany con where stock gte cantidad y decrement, comprobando cuántas filas cambió)",
+          "Menciona como alternativa una transacción con bloqueo de fila (SELECT ... FOR UPDATE) y una restricción CHECK (stock >= 0) como red de seguridad"
         ]
       },
-      "respuestaModelo": "Cuatro problemas: (1) **N+1**: dentro del `for` hay un `findUnique` y un `update` por cada item; con 50 items son ~100 queries en vez de 2-3, mejor traer todos los productos de una vez. (2) **Falta de transacción**: actualizar el pedido y descontar stock deberían ser atómicos dentro de `prisma.$transaction`; si falla a mitad, el pedido queda 'closed' pero el stock no se terminó de descontar, dejando datos inconsistentes. (3) **Condición de carrera**: `product.stock - item.quantity` lee, calcula en la aplicación y escribe; si dos cierres del mismo producto ocurren casi a la vez, la segunda escritura pisa a la primera y se pierde un descuento. La solución es una operación atómica de base de datos, `data: { stock: { decrement: item.quantity } }`. (4) **Promesa sin manejar**: `sendOrderClosedEmail(...)` se llama sin `await` ni `.catch`, así que un fallo se convierte en un unhandled rejection silencioso; conviene separarlo (cola, o al menos loguear el error) sin bloquear el cierre del pedido por un email.",
+      "respuestaModelo": "Es una condición de carrera entre leer y escribir. Si dos pedidos de la última unidad llegan casi a la vez, los dos leen `stock = 1`, los dos pasan la comprobación y los dos escriben `1 - 1 = 0`… o, si se cruzan peor, el segundo descuenta sobre un valor que ya no existe y el stock queda en negativo. La comprobación en la aplicación no sirve porque el dato puede cambiar entre el `findUnique` y el `update`. La solución es que la base de datos compruebe y descuente en una sola operación atómica: `prisma.producto.updateMany({ where: { id: productoId, stock: { gte: cantidad } }, data: { stock: { decrement: cantidad } } })` y, si `count` es 0, no había stock. Otra opción es una transacción con bloqueo de la fila (`SELECT ... FOR UPDATE`). Y una restricción `CHECK (stock >= 0)` en la tabla hace de red de seguridad: si algo se escapa, la base de datos lo rechaza.",
+      "resumen": "Leer, comprobar y escribir por separado deja una carrera: dos peticiones leen el mismo stock y las dos descuentan. Comprobar y descontar en una operación atómica.",
       "etiquetas": ["prisma", "transacciones", "n+1", "concurrencia", "review"],
       "fuentes": [
         {

@@ -30,6 +30,7 @@
       "kata": {
         "funcion": "firstOf",
         "codigoInicial": "export function firstOf<T>(arr: T[]): T | null {\n  // tu código\n}\n",
+        "solucion": "export function firstOf<T>(arr: T[]): T | null {\n  // ?? y no ||: un primer elemento 0 o \"\" es válido y no debe convertirse en null.\n  return arr[0] ?? null;\n}\n",
         "casos": [
           {
             "nombre": "devuelve el primer elemento de números",
@@ -86,6 +87,7 @@
       "kata": {
         "funcion": "obtenerId",
         "codigoInicial": "export function obtenerId<T extends { id: string }>(item: T): string {\n  // tu código\n}\n",
+        "solucion": "export function obtenerId<T extends { id: string }>(item: T): string {\n  // La restricción garantiza que id existe y es string: no hace falta comprobarlo.\n  return item.id;\n}\n",
         "casos": [
           {
             "nombre": "extrae el id de un objeto simple",
@@ -144,6 +146,7 @@
       "kata": {
         "funcion": "desenvolver",
         "codigoInicial": "type Desenvuelto<T> = T extends (infer U)[] ? U | null : T;\n\nexport function desenvolver<T>(valor: T): Desenvuelto<T> {\n  // tu código: si es array, primer elemento (o null si está vacío); si no, el valor tal cual\n  return undefined as never;\n}\n",
+        "solucion": "type Desenvuelto<T> = T extends (infer U)[] ? U | null : T;\n\nexport function desenvolver<T>(valor: T): Desenvuelto<T> {\n  if (Array.isArray(valor)) return (valor.length ? valor[0] : null) as Desenvuelto<T>;\n  return valor as Desenvuelto<T>;\n}\n",
         "casos": [
           {
             "nombre": "array de números devuelve el primero",

@@ -12,7 +12,7 @@ const GRUPOS = [
   {
     titulo: 'Entrenar',
     entradas: [
-      { href: '/hoy', texto: 'Hoy', Icono: Flame },
+      { href: '/inicio', texto: 'Inicio', Icono: Flame },
       { href: '/practicar', texto: 'Practicar', Icono: BookOpen },
       { href: '/pistas', texto: 'Temario', Icono: Route },
     ],

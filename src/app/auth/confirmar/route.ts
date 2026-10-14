@@ -10,13 +10,13 @@ export async function GET(request: NextRequest) {
   const supabase = await supabaseServidor();
   if (codigo) {
     const { error } = await supabase.auth.exchangeCodeForSession(codigo);
-    if (!error) return NextResponse.redirect(`${origin}/hoy`);
+    if (!error) return NextResponse.redirect(`${origin}/inicio`);
   } else if (tokenHash && tipo) {
     const { error } = await supabase.auth.verifyOtp({
       token_hash: tokenHash,
       type: tipo as 'email' | 'signup' | 'recovery' | 'magiclink',
     });
-    if (!error) return NextResponse.redirect(`${origin}/hoy`);
+    if (!error) return NextResponse.redirect(`${origin}/inicio`);
   }
   return NextResponse.redirect(`${origin}/entrar?error=enlace`);
 }

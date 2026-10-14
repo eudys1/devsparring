@@ -176,7 +176,7 @@
     },
     {
       "id": "node-errores-validacion-review-login",
-      "version": 1,
+      "version": 2,
       "pista": "node",
       "familia": "errores-validacion",
       "tipo": "review",
@@ -184,22 +184,23 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "Revisa este endpoint de login. Tiene al menos 4 problemas de seguridad/diseño. Encuéntralos y explica cómo los arreglarías.",
-        "en": "Review this login endpoint. It has at least 4 security/design problems. Find them and explain how you'd fix them."
+        "es": "Revisa este endpoint de login. La contraseña se comprueba bien, pero hay un fallo de seguridad grave. ¿Cuál es y cómo lo arreglas?",
+        "en": "Review this login endpoint. The password is checked correctly, but there is a serious security flaw. What is it and how do you fix it?"
       },
-      "contexto": "```js\napp.post('/login', async (req, res) => {\n  const { email, password } = req.body;\n\n  const query = `SELECT * FROM users WHERE email = '${email}'`;\n  const result = await db.query(query);\n  const user = result.rows[0];\n\n  console.log(`Login attempt: ${email} / ${password}`);\n\n  if (!user) {\n    return res.status(404).json({ error: 'User not found' });\n  }\n\n  if (user.password === password) {\n    const token = jwt.sign({ id: user.id, email: user.email }, 'secret123');\n    res.json({ token, user });\n  } else {\n    res.status(401).json({ error: 'Wrong password' });\n  }\n});\n```",
+      "contexto": "```js\napp.post('/login', async (req, res) => {\n  const { email, password } = req.body;\n  const { rows } = await db.query(\n    `SELECT id, password_hash FROM users WHERE email = '${email}'`,\n  );\n  const user = rows[0];\n  const ok = user && (await bcrypt.compare(password, user.password_hash));\n  if (!ok) {\n    return res.status(401).json({ error: 'Credenciales incorrectas' });\n  }\n  const token = jwt.sign({ sub: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });\n  res.json({ token });\n});\n```",
       "rubrica": {
         "junior": [
-          "Detecta la inyección SQL: el email se interpola directamente en el string de la query",
-          "Detecta que la contraseña se compara en texto plano, lo que implica que se guarda sin hashear, y que además se loguea en `console.log`"
+          "Detecta la inyección SQL: el email se mete en la query concatenando texto",
+          "Da un ejemplo de entrada que la explota (por ejemplo ' OR '1'='1)"
         ],
         "senior": [
           "Lo anterior",
-          "Detecta el secreto JWT hardcodeado (`'secret123'`) en vez de leído de una variable de entorno",
-          "Detecta la filtración de información: devuelve el `user` completo (con el hash/contraseña) y distingue 404 (usuario no existe) de 401 (contraseña incorrecta), lo que permite enumerar emails registrados"
+          "Propone una consulta parametrizada (WHERE email = $1 con el valor aparte) o el ORM, que separan el dato del SQL",
+          "Explica que escapar comillas a mano no es la solución y reconoce lo que el endpoint sí hace bien (hash con bcrypt, mismo error para usuario y contraseña, secreto de entorno)"
         ]
       },
-      "respuestaModelo": "El primer problema es una inyección SQL: el email se interpola directamente en el string de la query en vez de usar un parámetro (`$1`) o el ORM, así que un valor como `' OR '1'='1` compromete la consulta completa. El segundo es que la comparación `user.password === password` en texto plano implica que la contraseña se guarda sin hashear en la base de datos, y encima se loguea en claro con `console.log`, quedando expuesta en los logs del sistema, que suelen tener menos control de acceso que la propia base de datos. El tercero es el secreto de JWT hardcodeado directamente en el código fuente (`'secret123'`): cualquiera con acceso al repositorio puede firmar tokens válidos para cualquier usuario; debería leerse de una variable de entorno o un gestor de secretos. El cuarto es una filtración de información doble: la respuesta de éxito devuelve el objeto `user` completo (que probablemente incluye el hash de la contraseña), y además distinguir 404 (usuario no existe) de 401 (contraseña incorrecta) permite a un atacante enumerar qué emails están registrados probando uno a uno, algo que se evita devolviendo siempre el mismo mensaje genérico de credenciales inválidas en ambos casos.",
+      "respuestaModelo": "El fallo es una inyección SQL: el `email` del cuerpo de la petición se mete en la consulta concatenando texto. Con un email como `' OR '1'='1' --` la condición se vuelve siempre cierta y la consulta devuelve usuarios que no son el suyo; con otras variantes se pueden leer o modificar tablas. Se arregla con una consulta parametrizada, `db.query('SELECT id, password_hash FROM users WHERE email = $1', [email])`, o usando el ORM, que separan el dato del SQL y el motor nunca lo interpreta como código. Escapar comillas a mano no es la solución: es fácil olvidarse de un caso. El resto del endpoint está bien hecho: compara con `bcrypt`, devuelve el mismo error tanto si el usuario no existe como si la contraseña falla (no deja enumerar correos) y lee el secreto del entorno.",
+      "resumen": "Inyección SQL: el email entra en la query concatenado. Se arregla con una consulta parametrizada ($1) o el ORM; escapar a mano no basta.",
       "etiquetas": ["errores-validacion", "seguridad", "sql-injection", "review"],
       "fuentes": [
         {
@@ -214,30 +215,31 @@
     },
     {
       "id": "node-errores-validacion-review-cierre-pedido",
-      "version": 1,
+      "version": 2,
       "pista": "node",
       "familia": "errores-validacion",
       "tipo": "review",
       "modos": ["review"],
-      "nivelMinimo": "senior",
+      "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "Revisa esta función que cierra un pedido con Prisma. Tiene al menos 4 problemas: rendimiento, falta de transacción, condición de carrera y una promesa sin manejar. Encuéntralos.",
-        "en": "Review this Prisma order-closing function. It has at least 4 problems: performance, missing transaction, a race condition and an unhandled promise. Find them."
+        "es": "Revisa esta función que cierra un pedido y descuenta el stock de cada línea. Hay un fallo que puede dejar los datos inconsistentes. ¿Cuál y cómo lo evitas?",
+        "en": "Review this function that closes an order and decrements stock for each line. There is a flaw that can leave the data inconsistent. What is it and how do you prevent it?"
       },
-      "contexto": "```js\nasync function closeOrder(orderId) {\n  const order = await prisma.order.findUnique({ where: { id: orderId } });\n  order.status = 'closed';\n  await prisma.order.update({\n    where: { id: orderId },\n    data: { status: 'closed' },\n  });\n\n  const items = await prisma.orderItem.findMany({ where: { orderId } });\n  for (const item of items) {\n    const product = await prisma.product.findUnique({ where: { id: item.productId } });\n    await prisma.product.update({\n      where: { id: item.productId },\n      data: { stock: product.stock - item.quantity },\n    });\n  }\n\n  sendOrderClosedEmail(order.customerEmail);\n\n  return order;\n}\n```",
+      "contexto": "```js\nasync function cerrarPedido(pedidoId) {\n  await prisma.pedido.update({\n    where: { id: pedidoId },\n    data: { estado: 'cerrado' },\n  });\n  const lineas = await prisma.lineaPedido.findMany({ where: { pedidoId } });\n  for (const linea of lineas) {\n    await prisma.producto.update({\n      where: { id: linea.productoId },\n      data: { stock: { decrement: linea.cantidad } },\n    });\n  }\n}\n```",
       "rubrica": {
         "junior": [
-          "Detecta el N+1: un `findUnique` y un `update` por cada item dentro del `for`, en vez de traer todos los productos de una vez",
-          "Detecta que `sendOrderClosedEmail(...)` se llama sin `await` ni `.catch`, generando una promesa sin manejar"
+          "Detecta que no hay transacción: son varias escrituras independientes",
+          "Describe el estado que queda si falla a mitad: el pedido ya está cerrado pero solo parte del stock se ha descontado"
         ],
         "senior": [
           "Lo anterior",
-          "Detecta la falta de transacción: si falla a mitad, el pedido queda 'closed' pero el stock de los productos restantes nunca se descuenta",
-          "Detecta la condición de carrera en el descuento de stock: leer, calcular en la aplicación y escribir de vuelta pierde actualizaciones si dos pedidos del mismo producto se cierran casi a la vez; propone usar `decrement` atómico o un bloqueo"
+          "Propone envolver todo en prisma.$transaction para que se aplique entero o nada",
+          "Comenta qué pasa al reintentar sin transacción (se descontaría dos veces) y, como mejora, agrupar los updates en vez de uno por línea"
         ]
       },
-      "respuestaModelo": "El primer problema es un N+1 clásico: dentro del `for` se hace un `findUnique` y un `update` por cada item, así que un pedido de 50 items dispara unas 100 queries en vez de agrupar la operación; conviene traer todos los productos de una vez y actualizar en lote. El segundo es la falta de una transacción: actualizar el estado del pedido y descontar el stock de cada producto son operaciones que deberían ser atómicas, y tal como está escrito, si falla a mitad (por ejemplo en el producto 3 de 5), el pedido ya quedó marcado 'closed' pero el stock de los productos restantes nunca se descuenta, dejando datos inconsistentes; debería envolverse todo en `prisma.$transaction`. El tercero es una condición de carrera en el descuento de stock: `product.stock - item.quantity` lee el valor, calcula en la aplicación y escribe de vuelta, así que si dos pedidos del mismo producto se cierran casi al mismo tiempo, ambos pueden leer el mismo stock inicial y la segunda escritura pisa a la primera, perdiendo un descuento; la solución es usar la operación atómica `decrement` de Prisma directamente en la base de datos. El cuarto es que `sendOrderClosedEmail(...)` se llama sin `await` ni `.catch`: si falla, se convierte en un 'unhandled promise rejection' que no se reporta en el flujo normal, y el fallo queda completamente silencioso.",
+      "respuestaModelo": "No hay transacción: marcar el pedido como cerrado y descontar el stock de cada línea son escrituras independientes. Si la base de datos falla o el proceso se cae en la tercera línea de cinco, el pedido queda `cerrado` pero solo se ha descontado el stock de dos productos, y nada lo deshace. Peor aún, si alguien reintenta la operación, las dos primeras líneas se descuentan otra vez. La solución es agrupar todo en `prisma.$transaction(async (tx) => { ... })` usando `tx` en cada operación: o se aplica todo o no se aplica nada. Como mejora, en vez de un `update` por línea se pueden agrupar, pero lo que corrige el fallo es la transacción.",
+      "resumen": "Sin transacción: si falla a mitad, el pedido queda cerrado con el stock a medio descontar, y reintentar descuenta dos veces. Todo dentro de $transaction.",
       "etiquetas": ["errores-validacion", "prisma", "transacciones", "review"],
       "fuentes": [
         {

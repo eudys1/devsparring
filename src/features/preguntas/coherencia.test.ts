@@ -21,6 +21,7 @@ const PREFIJOS: Record<string, string> = {
   nextjs: 'next-',
   web: 'web-',
   node: 'node-',
+  dotnet: 'dotnet-',
   datos: 'datos-',
   arquitectura: 'arq-',
   devops: 'devops-',

@@ -11,18 +11,22 @@ test.skip(!email || !clave, 'Sin E2E_EMAIL y E2E_PASSWORD en .env.local');
 
 async function capturar(page: Page, nombre: string) {
   if (process.env.CI) return;
-  await page.screenshot({ path: `capturas/app-${nombre}.png`, fullPage: true });
+  await page.screenshot({
+    path: `capturas/app-${nombre}.png`,
+    fullPage: true,
+    animations: 'disabled',
+  });
 }
 
-test('Hoy saluda, marca la pestaña activa y enseña la racha', async ({ page }) => {
-  await page.goto('/hoy');
+test('Inicio saluda, marca la pestaña activa y enseña la racha', async ({ page }) => {
+  await page.goto('/inicio');
   await expect(page.getByRole('heading', { level: 1 })).toContainText(/Buen/);
-  await expect(page.getByRole('link', { name: 'Hoy' }).first()).toHaveAttribute(
+  await expect(page.getByRole('link', { name: 'Inicio' }).first()).toHaveAttribute(
     'aria-current',
     'page',
   );
   await expect(page.getByText(/días seguidos|día seguido/).first()).toBeVisible();
-  await capturar(page, 'hoy');
+  await capturar(page, 'inicio');
 });
 
 test('el temario abre una ficha con la respuesta que aprueba', async ({ page }) => {
@@ -70,7 +74,14 @@ test('una sesión se responde, se autoevalúa por criterios y se puede dejar a m
   await page.getByTestId('autoevaluar').click();
   await expect(page.getByRole('heading', { name: 'La respuesta que aprueba' })).toBeVisible();
   // Marcar un criterio propone la nota "A medias" y cuenta 1 de N.
-  await page.getByRole('checkbox').first().check();
+  // La casilla de React Aria esconde el input dentro de su etiqueta: se pulsa
+  // la etiqueta, como haría una persona.
+  await page
+    .locator('label')
+    .filter({ has: page.getByRole('checkbox') })
+    .first()
+    .click();
+  await expect(page.getByRole('checkbox').first()).toBeChecked();
   await expect(page.getByText(/^1 de \d+ criterios$/)).toBeVisible();
   await expect(page.getByRole('button', { name: /A medias/ })).toHaveAttribute(
     'aria-pressed',
@@ -79,11 +90,13 @@ test('una sesión se responde, se autoevalúa por criterios y se puede dejar a m
   await capturar(page, 'sesion-evaluando');
   await page.getByTestId('siguiente').click();
   await expect(page.getByLabel(/Asalto 2 de/)).toBeVisible();
-  // Salir a medias: Hoy ofrece continuar.
+  // Salir a medias: Inicio lista todas las sesiones a medias (los otros tests
+  // dejan las suyas) y esta se retoma desde su propio enlace.
+  const ruta = new URL(page.url()).pathname;
   await page.getByRole('link', { name: 'Salir y seguir luego' }).click();
-  await expect(page).toHaveURL(/\/hoy/);
-  await expect(page.getByText('Sesión en curso')).toBeVisible();
-  await page.getByRole('link', { name: 'Continuar' }).click();
+  await expect(page).toHaveURL(/\/inicio/);
+  await expect(page.getByRole('heading', { name: /en curso/ })).toBeVisible();
+  await page.locator(`a[href="${ruta}"]`).click();
   await expect(page.getByLabel(/Asalto 2 de/)).toBeVisible();
 });
 
@@ -127,6 +140,28 @@ test('el repaso relámpago se hace sin escribir: girar, puntuarse y seguir', asy
   await page.keyboard.press('3');
   await page.keyboard.press('Enter');
   await expect(page.getByLabel(/Asalto 2 de/)).toBeVisible();
+});
+
+test('al terminar una sesión sale el informe con la barra y qué hacer ahora', async ({ page }) => {
+  await page.goto('/practicar?modo=verbal');
+  await page.getByTestId('relampago').check();
+  await page.getByRole('button', { name: 'Empezar' }).click();
+  // Relámpago con el teclado hasta la última: girar, puntuarse y seguir.
+  for (let i = 1; ; i++) {
+    const asalto = page.getByLabel(new RegExp(`Asalto ${i} de (\\d+)`));
+    await expect(asalto).toBeVisible();
+    const total = Number((await asalto.getAttribute('aria-label'))?.match(/de (\d+)/)?.[1]);
+    await page.keyboard.press(' ');
+    await expect(page.getByText('La idea en una frase', { exact: true })).toBeVisible();
+    await page.keyboard.press(i % 2 ? '3' : '1');
+    await page.keyboard.press('Enter');
+    if (i >= total) break;
+  }
+  await expect(page).toHaveURL(/\/informe$/, { timeout: 15_000 });
+  await expect(page.getByRole('heading', { name: 'Cómo ha ido' })).toBeVisible();
+  await expect(page.getByRole('img', { name: /bien, \d+ a medias, \d+ falladas/ })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Qué hacer ahora' })).toBeVisible();
+  await capturar(page, 'informe');
 });
 
 test('una kata carga Monaco desde el propio dominio y ejecuta los tests', async ({ page }) => {

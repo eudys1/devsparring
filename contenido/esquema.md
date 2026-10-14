@@ -7,7 +7,7 @@ validador y sin revisión humana en una pull request.
 
 ## Pistas
 
-`fundamentos`, `javascript`, `typescript`, `react`, `nextjs`, `web`, `node`,
+`fundamentos`, `javascript`, `typescript`, `react`, `nextjs`, `web`, `node`, `dotnet`,
 `datos`, `arquitectura`, `devops`, `ia`, `comportamental`.
 
 ## Tipos y modos

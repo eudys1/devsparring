@@ -4,9 +4,10 @@
 # ("Free projects are paused after 1 week of inactivity", supabase.com/pricing,
 # 29-09-2026). Le pasó a devsparring y el login dejó de funcionar.
 #
-# Qué hace: cada día llama a la función public.latido() (migración
-# 20260929120000_latido.sql), que solo devuelve la hora del servidor, y lee una
-# fila de una tabla real. Sin leer ni escribir datos de nadie.
+# Qué hace: cada día llama a la función public.latido(), que lee una fila de
+# una tabla real y devuelve la hora del servidor (migración
+# 20261014090000_niveles_stack_latido.sql). Sin devolver datos de nadie: la
+# lectura va dentro de la función porque el rol anónimo no puede leer tablas.
 #
 # Por qué diario y con tabla (13-10-2026): con una llamada cada tres días y solo
 # now(), Supabase pausó el proyecto igualmente, tres días después de un latido
@@ -53,6 +54,3 @@ jobs:
             -X POST "$URL/rest/v1/rpc/latido" \
             -H "apikey: $CLAVE" -H "Content-Type: application/json" -d '{}')
           echo "Supabase responde: $respuesta"
-          # Una lectura de tabla real: pasa por RLS y devuelve [] para el rol anónimo.
-          tabla=$(curl -sS --fail-with-body --retry 3 --retry-delay 20             "$URL/rest/v1/perfiles?select=user_id&limit=1"             -H "apikey: $CLAVE")
-          echo "Tabla responde: $tabla"

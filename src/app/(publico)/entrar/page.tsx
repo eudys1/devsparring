@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Marca } from '@/components/Marca';
-import { FormularioAcceso } from './FormularioAcceso';
+import { FormularioAcceso, type ModoAcceso } from './FormularioAcceso';
 
 export const metadata: Metadata = { title: 'Entrar', robots: { index: false, follow: true } };
 
@@ -11,6 +11,7 @@ export default async function Entrar({
   searchParams: Promise<{ modo?: string; volver?: string; error?: string }>;
 }) {
   const { modo, volver, error } = await searchParams;
+  const elegido: ModoAcceso = modo === 'registro' || modo === 'olvido' ? modo : 'entrar';
   return (
     <div className="mx-auto flex min-h-dvh max-w-md flex-col justify-center px-5 py-10">
       <Link href="/" className="mb-7 inline-block w-max">
@@ -25,7 +26,7 @@ export default async function Entrar({
             Ese enlace ya no vale. Pide otro entrando con tu correo.
           </p>
         ) : null}
-        <FormularioAcceso registro={modo === 'registro'} volver={volver ?? '/hoy'} />
+        <FormularioAcceso key={elegido} modo={elegido} volver={volver ?? '/inicio'} />
       </main>
     </div>
   );

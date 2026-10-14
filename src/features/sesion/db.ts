@@ -12,6 +12,8 @@ export type Sesion = {
   nivel: Nivel;
   idioma: 'es' | 'en';
   pista: Pista | null;
+  // Las pistas de tu stack con las que se eligieron sus preguntas (null = todas).
+  pistas: Pista[] | null;
   semilla: number;
   iniciada_en: string;
   terminada_en: string | null;
@@ -33,7 +35,7 @@ export type NuevaRespuesta = {
 export async function crearSesion(
   db: SupabaseClient,
   userId: string,
-  datos: { modo: Modo; nivel: Nivel; idioma: 'es' | 'en'; pista?: Pista },
+  datos: { modo: Modo; nivel: Nivel; idioma: 'es' | 'en'; pista?: Pista; pistas?: Pista[] },
 ): Promise<{ ok: true; id: string } | { ok: false; code: 'db' }> {
   const { data, error } = await db
     .from('sesiones')
@@ -43,6 +45,8 @@ export async function crearSesion(
       nivel: datos.nivel,
       idioma: datos.idioma,
       pista: datos.pista ?? null,
+      // Solo si hay stack: así no se escribe la columna mientras no haga falta.
+      ...(datos.pistas?.length ? { pistas: datos.pistas } : {}),
       semilla: Math.floor(Math.random() * 2 ** 31),
     })
     .select('id')
@@ -138,20 +142,62 @@ export async function contarRespuestas(db: SupabaseClient, userId: string): Prom
   return count ?? 0;
 }
 
-// La última sesión sin terminar, para retomarla desde Hoy. Solo cuenta si tiene
-// menos de un día: una sesión abandonada hace una semana no es "en curso".
-export async function sesionAbierta(db: SupabaseClient, userId: string): Promise<Sesion | null> {
-  const hace = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+export type SesionAbierta = Sesion & { respondidas: number };
+
+// Las sesiones sin terminar de la última semana, todas, para retomarlas desde
+// Inicio. Antes solo se veía la última y las demás quedaban olvidadas.
+export async function sesionesAbiertas(
+  db: SupabaseClient,
+  userId: string,
+): Promise<SesionAbierta[]> {
+  const hace = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
   const { data } = await db
     .from('sesiones')
-    .select('*')
+    .select('*, respuestas(count)')
     .eq('user_id', userId)
     .is('terminada_en', null)
     .gte('iniciada_en', hace)
     .order('iniciada_en', { ascending: false })
-    .limit(1)
-    .maybeSingle();
-  return (data as Sesion | null) ?? null;
+    .limit(8);
+  return ((data ?? []) as (Sesion & { respuestas: { count: number }[] })[]).map(
+    ({ respuestas, ...s }) => ({
+      ...s,
+      pistas: s.pistas ?? null,
+      respondidas: respuestas[0]?.count ?? 0,
+    }),
+  );
+}
+
+export type RespuestaDeSesion = {
+  pregunta_id: string;
+  puntuacion: number | null;
+  duracion_ms: number | null;
+  nota: 1 | 2 | 3 | 4 | null;
+};
+
+// Lo respondido en una sesión con su nota de repaso: es lo que cuenta el informe.
+export async function respuestasDeSesion(
+  db: SupabaseClient,
+  sesionId: string,
+): Promise<RespuestaDeSesion[]> {
+  const { data } = await db
+    .from('respuestas')
+    .select('pregunta_id, puntuacion, duracion_ms, creada_en, repasos(nota)')
+    .eq('sesion_id', sesionId)
+    .order('creada_en', { ascending: true });
+  return (
+    (data ?? []) as {
+      pregunta_id: string;
+      puntuacion: number | null;
+      duracion_ms: number | null;
+      repasos: { nota: 1 | 2 | 3 | 4 }[];
+    }[]
+  ).map((r) => ({
+    pregunta_id: r.pregunta_id,
+    puntuacion: r.puntuacion,
+    duracion_ms: r.duracion_ms,
+    nota: r.repasos[0]?.nota ?? null,
+  }));
 }
 
 // Días (AAAA-MM-DD, hora local del servidor) con al menos una respuesta en las

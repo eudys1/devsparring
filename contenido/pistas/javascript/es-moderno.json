@@ -149,6 +149,7 @@
       "kata": {
         "funcion": "combinarConSpread",
         "codigoInicial": "export function combinarConSpread<T>(a: T[], b: T[]): T[] {\n  // tu código: usa el operador spread\n}\n",
+        "solucion": "export function combinarConSpread<T>(a: T[], b: T[]): T[] {\n  return [...a, ...b];\n}\n",
         "casos": [
           {
             "nombre": "combina dos arrays de números",
@@ -208,6 +209,7 @@
       "kata": {
         "funcion": "formatearMensaje",
         "codigoInicial": "function resaltar(strings: TemplateStringsArray, ...valores: unknown[]): string {\n  // tu código: reconstruye el string envolviendo cada valor en **\n  return '';\n}\n\nexport function formatearMensaje(nombre: string, puntos: number): string {\n  return resaltar`Hola ${nombre}, tienes ${puntos} puntos`;\n}\n",
+        "solucion": "function resaltar(strings: TemplateStringsArray, ...valores: unknown[]): string {\n  // strings tiene siempre un trozo más que valores: se intercalan.\n  return strings.reduce(\n    (acc, trozo, i) => acc + trozo + (i < valores.length ? `**${String(valores[i])}**` : ''),\n    '',\n  );\n}\n\nexport function formatearMensaje(nombre: string, puntos: number): string {\n  return resaltar`Hola ${nombre}, tienes ${puntos} puntos`;\n}\n",
         "casos": [
           {
             "nombre": "resalta nombre y puntos",
@@ -265,6 +267,7 @@
       "kata": {
         "funcion": "tipoDeResto",
         "codigoInicial": "export function tipoDeResto(...args: unknown[]): string {\n  // tu código\n}\n",
+        "solucion": "export function tipoDeResto(...args: unknown[]): string {\n  // Un rest parameter es un array de verdad, y typeof de un array es \"object\".\n  return typeof args;\n}\n",
         "casos": [
           {
             "nombre": "el rest parameter es de tipo object con números",
@@ -326,6 +329,7 @@
       "kata": {
         "funcion": "tomarN",
         "codigoInicial": "export function* contador(): Generator<number> {\n  // tu código: yield 0, 1, 2, 3... para siempre\n}\n\nexport function tomarN(n: number): number[] {\n  const resultado: number[] = [];\n  const iterador = contador();\n  // tu código: toma exactamente n valores del iterador y páralo ahí\n  return resultado;\n}\n",
+        "solucion": "export function* contador(): Generator<number> {\n  let n = 0;\n  while (true) yield n++;\n}\n\nexport function tomarN(n: number): number[] {\n  const resultado: number[] = [];\n  const iterador = contador();\n  // Se piden exactamente n valores; el generator solo avanza cuando se le pide.\n  while (resultado.length < n) resultado.push(iterador.next().value);\n  return resultado;\n}\n",
         "casos": [
           { "nombre": "toma los primeros 5 valores", "entrada": [5], "esperado": [0, 1, 2, 3, 4] },
           { "nombre": "cero valores devuelve array vacío", "entrada": [0], "esperado": [] },

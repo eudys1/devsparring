@@ -39,10 +39,10 @@ setup('entrar con la cuenta de pruebas', async ({ page }) => {
   // Solo el aviso del formulario: la página tiene otro role=alert vacío (anunciador de rutas).
   const aviso = page.locator('form').getByRole('alert');
   await Promise.race([
-    page.waitForURL(/\/hoy/),
+    page.waitForURL(/\/inicio/),
     aviso.waitFor({ state: 'visible' }).catch(() => undefined),
   ]);
-  if (!page.url().includes('/hoy')) {
+  if (!page.url().includes('/inicio')) {
     const texto = (await aviso.textContent()) ?? '';
     // Sin cuenta todavía: se crea. Las confirmaciones de correo están
     // desactivadas, así que entra directamente.
@@ -53,6 +53,6 @@ setup('entrar con la cuenta de pruebas', async ({ page }) => {
       throw new Error(`No se pudo entrar con la cuenta de pruebas: ${texto}`);
     }
   }
-  await expect(page).toHaveURL(/\/hoy/, { timeout: 15_000 });
+  await expect(page).toHaveURL(/\/inicio/, { timeout: 15_000 });
   await page.context().storageState({ path: ESTADO_SESION });
 });

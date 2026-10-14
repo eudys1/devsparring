@@ -97,6 +97,7 @@ try {
       const foto = async (nombre) => {
         await prepararCaptura(page);
         return page.screenshot({
+          animations: 'disabled',
           path: path.join(salida, `${nombre}-${vista.nombre}-${tema}.png`),
           fullPage: true,
         });

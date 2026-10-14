@@ -240,7 +240,7 @@
     },
     {
       "id": "react-renderizado-review-lista-usuarios",
-      "version": 1,
+      "version": 2,
       "pista": "react",
       "familia": "renderizado",
       "tipo": "review",
@@ -248,24 +248,23 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "Revisa este componente de lista de usuarios con buscador. Tiene al menos 4 problemas: uno de dependencias, uno de rendimiento con las keys, uno de diseño y uno de accesibilidad. Encuéntralos y explica cómo los arreglarías.",
-        "en": "Review this user list component with a search box. It has at least 4 problems: a dependency bug, a key/performance issue, a design issue and an accessibility issue. Find them and explain how you'd fix them."
+        "es": "Revisa este buscador de usuarios. Cuando llega del servidor una lista nueva de usuarios, la lista que se ve no cambia hasta que escribes algo. ¿Por qué y cómo lo arreglarías bien?",
+        "en": "Review this user search. When a new list of users arrives from the server, the visible list does not change until you type something. Why, and how would you fix it properly?"
       },
-      "contexto": "```tsx\nfunction UserList({ users }) {\n  const [query, setQuery] = useState('');\n  const [filtered, setFiltered] = useState(users);\n\n  useEffect(() => {\n    setFiltered(users.filter(u => u.name.includes(query)));\n  }, [query]);\n\n  return (\n    <div>\n      <input\n        value={query}\n        onChange={e => setQuery(e.target.value)}\n      />\n      <ul>\n        {filtered.map((user, index) => (\n          <li key={index} onClick={() => console.log('selected', user.id)}>\n            <img src={user.avatarUrl} onLoad={() => trackImageLoad(user.id)} />\n            {user.name}\n          </li>\n        ))}\n      </ul>\n    </div>\n  );\n}\n```",
+      "contexto": "```tsx\nfunction ListaUsuarios({ usuarios }) {\n  const [busqueda, setBusqueda] = useState('');\n  const [filtrados, setFiltrados] = useState(usuarios);\n\n  useEffect(() => {\n    setFiltrados(usuarios.filter((u) => u.nombre.includes(busqueda)));\n  }, [busqueda]);\n\n  return (\n    <>\n      <input value={busqueda} onChange={(e) => setBusqueda(e.target.value)} />\n      <ul>\n        {filtrados.map((u) => (\n          <li key={u.id}>{u.nombre}</li>\n        ))}\n      </ul>\n    </>\n  );\n}\n```",
       "rubrica": {
         "junior": [
-          "Detecta que el `useEffect` usa `users` sin declararlo en el array de dependencias, así que si `users` cambia sin que cambie `query`, `filtered` se queda desactualizado",
-          "Detecta que usar `index` como `key` en una lista que se filtra dinámicamente mezcla estado/DOM entre elementos distintos",
-          "Detecta que `<li onClick>` no es accesible por teclado ni tiene rol semántico"
+          "Detecta que el efecto usa usuarios pero no lo declara en sus dependencias, así que no se vuelve a ejecutar cuando llega una lista nueva",
+          "Explica por qué la lista solo se actualiza al escribir: es lo único que dispara el efecto"
         ],
         "senior": [
           "Lo anterior",
-          "Explica que `filtered` es un valor derivado de `users` y `query`, y que sincronizarlo con un `useEffect` y un `useState` extra es innecesario: debería calcularse directamente en el render (con `useMemo` si el filtro es costoso)",
-          "Propone la key correcta (`user.id`) y explica por qué resuelve el problema de raíz, no solo lo parchea",
-          "Propone la solución de accesibilidad completa: usar `<button>` o añadir `tabIndex`, `role` y manejo de teclado"
+          "Señala el problema de fondo: filtrados es un valor derivado y no debería ser estado; se calcula en el render a partir de usuarios y busqueda",
+          "Propone useMemo solo si filtrar fuera caro, y explica que así desaparece el efecto y con él este tipo de fallo"
         ]
       },
-      "respuestaModelo": "El primer bug es de dependencias incompletas: el efecto lee `users` pero solo está declarado `query`, así que si el padre pasa una lista nueva de `users` sin que el texto de búsqueda cambie, `filtered` se queda con datos viejos. El segundo problema es usar `index` como `key` en una lista que cambia con cada tecla: dos resultados de búsqueda distintos pueden compartir posición pero no representar al mismo usuario, y React puede reutilizar mal el DOM o el estado de esa fila. El fallo de diseño de fondo es que `filtered` ni siquiera debería ser estado: es un valor calculable directamente a partir de `users` y `query` en cada render (o memoizado con `useMemo` si filtrar es caro), lo que elimina el bug de dependencias de raíz en vez de solo corregir el array. Por último, el `<li onClick>` no es focuseable ni operable por teclado y no tiene rol semántico de opción seleccionable; lo correcto es usar un elemento interactivo nativo como `<button>` dentro del `<li>`, o añadir `tabIndex`, `role` y el manejo de `Enter`/`Espacio` a mano.",
+      "respuestaModelo": "El efecto lee `usuarios` pero solo declara `busqueda` en sus dependencias, así que cuando el padre pasa una lista nueva el efecto no se vuelve a ejecutar y `filtrados` sigue con los datos viejos; solo se actualiza al escribir, porque es lo único que lo dispara. Añadir `usuarios` a las dependencias lo parchea, pero el problema de fondo es otro: `filtrados` no debería ser estado. Es un valor que se deriva de `usuarios` y `busqueda`, así que se calcula en el render, `const filtrados = usuarios.filter((u) => u.nombre.includes(busqueda))`, envuelto en `useMemo` solo si filtrar fuera caro. Sin estado duplicado ni efecto, este fallo no puede volver a aparecer.",
+      "resumen": "El efecto no declara usuarios en sus dependencias. De fondo: filtrados es un valor derivado, se calcula en el render (useMemo si es caro), sin estado ni efecto.",
       "etiquetas": ["renderizado", "keys", "hooks", "accesibilidad", "review"],
       "fuentes": [
         {

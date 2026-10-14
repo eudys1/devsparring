@@ -224,6 +224,7 @@
       "kata": {
         "funcion": "unicos",
         "codigoInicial": "export function unicos(arr: number[]): number[] {\n  // tu código\n}\n",
+        "solucion": "export function unicos(arr: number[]): number[] {\n  // Un Set recuerda lo ya visto en O(1): todo el recorrido es O(n).\n  const vistos = new Set<number>();\n  const resultado: number[] = [];\n  for (const n of arr) {\n    if (!vistos.has(n)) {\n      vistos.add(n);\n      resultado.push(n);\n    }\n  }\n  return resultado;\n}\n",
         "casos": [
           {
             "nombre": "elimina duplicados preservando el orden",
@@ -285,6 +286,7 @@
       "kata": {
         "funcion": "renderizarTexto",
         "codigoInicial": "type Estilo = { inicio: number; fin: number; tipo: 'negrita' | 'cursiva' };\n\nexport function renderizarTexto(texto: string, estilos: Estilo[]): string {\n  // tu código\n}\n",
+        "solucion": "type Estilo = { inicio: number; fin: number; tipo: 'negrita' | 'cursiva' };\n\nconst ETIQUETA = { negrita: 'b', cursiva: 'i' } as const;\n\nexport function renderizarTexto(texto: string, estilos: Estilo[]): string {\n  // Se recorre de izquierda a derecha: texto sin estilo, luego el rango envuelto.\n  const ordenados = [...estilos].sort((a, b) => a.inicio - b.inicio);\n  let html = '';\n  let cursor = 0;\n  for (const { inicio, fin, tipo } of ordenados) {\n    const t = ETIQUETA[tipo];\n    html += texto.slice(cursor, inicio) + `<${t}>${texto.slice(inicio, fin)}</${t}>`;\n    cursor = fin;\n  }\n  return html + texto.slice(cursor);\n}\n",
         "casos": [
           {
             "nombre": "una palabra en negrita",

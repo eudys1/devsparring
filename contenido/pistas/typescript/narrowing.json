@@ -89,6 +89,7 @@
       "kata": {
         "funcion": "area",
         "codigoInicial": "type Shape =\n  | { kind: 'circle'; radius: number }\n  | { kind: 'rectangle'; width: number; height: number };\n\nfunction assertNever(valor: never): never {\n  throw new Error('Caso no manejado: ' + JSON.stringify(valor));\n}\n\nexport function area(shape: Shape): number {\n  switch (shape.kind) {\n    // tu código: un case por variante, y un default con assertNever\n    default:\n      return assertNever(shape as never);\n  }\n}\n",
+        "solucion": "type Shape =\n  | { kind: 'circle'; radius: number }\n  | { kind: 'rectangle'; width: number; height: number };\n\nfunction assertNever(valor: never): never {\n  throw new Error('Caso no manejado: ' + JSON.stringify(valor));\n}\n\nexport function area(shape: Shape): number {\n  switch (shape.kind) {\n    case 'circle':\n      return Math.PI * shape.radius ** 2;\n    case 'rectangle':\n      return shape.width * shape.height;\n    default:\n      // Si se añade una forma nueva sin su case, esto deja de compilar.\n      return assertNever(shape);\n  }\n}\n",
         "casos": [
           {
             "nombre": "área de un círculo de radio 2",

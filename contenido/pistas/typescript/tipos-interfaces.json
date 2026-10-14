@@ -436,6 +436,7 @@
       "kata": {
         "funcion": "esColorValido",
         "codigoInicial": "export function coloresValidos() {\n  return ['rojo', 'verde', 'azul'] as const;\n}\n\ntype Color = (ReturnType<typeof coloresValidos>)[number];\n\nexport function esColorValido(valor: string): valor is Color {\n  // tu código\n}\n",
+        "solucion": "export function coloresValidos() {\n  return ['rojo', 'verde', 'azul'] as const;\n}\n\ntype Color = (ReturnType<typeof coloresValidos>)[number];\n\nexport function esColorValido(valor: string): valor is Color {\n  // El cast a readonly string[] deja usar includes con un string cualquiera.\n  return (coloresValidos() as readonly string[]).includes(valor);\n}\n",
         "casos": [
           { "nombre": "rojo es válido", "entrada": ["rojo"], "esperado": true },
           { "nombre": "verde es válido", "entrada": ["verde"], "esperado": true },

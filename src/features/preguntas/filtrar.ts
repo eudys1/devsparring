@@ -1,7 +1,14 @@
 // Reglas puras de selección sobre el banco. Sin I/O: reciben la lista y devuelven listas.
 import { MODOS, NIVELES, type Modo, type Nivel, type Pista, type Pregunta } from './esquema';
 
-const ORDEN_NIVEL: Record<Nivel, number> = { junior: 0, mid: 1, senior: 2 };
+// Los intermedios caen entre dos: a un junior+ se le hacen preguntas de junior.
+const ORDEN_NIVEL: Record<Nivel, number> = {
+  junior: 0,
+  'junior-mid': 0.5,
+  mid: 1,
+  'mid-senior': 1.5,
+  senior: 2,
+};
 
 export function publicadas(preguntas: Pregunta[]): Pregunta[] {
   return preguntas.filter((p) => p.estado === 'publicada');
@@ -48,6 +55,8 @@ export type CriteriosSesion = {
   modo: Modo;
   nivel: Nivel;
   pista?: Pista;
+  // Tu stack: sin pista concreta, la sesión sale solo de estas. Vacío = todas.
+  pistas?: Pista[];
   cantidad: number;
   semilla: number;
   // Ids que deben ir primero (por ejemplo, las que el repaso espaciado marca como vencidas).
@@ -57,6 +66,10 @@ export type CriteriosSesion = {
 export function seleccionar(preguntas: Pregunta[], c: CriteriosSesion): Pregunta[] {
   let candidatas = paraModo(paraNivel(publicadas(preguntas), c.nivel), c.modo);
   if (c.pista) candidatas = dePista(candidatas, c.pista);
+  else if (c.pistas?.length) {
+    const del = new Set(c.pistas);
+    candidatas = candidatas.filter((p) => del.has(p.pista));
+  }
   const prioridad = new Set(c.prioritarias ?? []);
   const primero = candidatas.filter((p) => prioridad.has(p.id));
   const resto = barajar(

@@ -152,7 +152,7 @@ export default async function Landing() {
       .map((p) => sinCodigo(p.texto.es)),
   ).slice(0, 22);
 
-  const enlaceEntrar = usuario ? '/hoy' : '/entrar';
+  const enlaceEntrar = usuario ? '/inicio' : '/entrar';
 
   const titulo2 = 'cartel mt-2 text-[clamp(1.9rem,4.2vw,3rem)] text-tinta';
   const cabecera = 'flex flex-wrap items-end justify-between gap-4 border-b border-linea pb-6';
@@ -263,11 +263,11 @@ export default async function Landing() {
           </div>
 
           <ol className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <li className="tarjeta flex flex-col gap-2.5 p-5">
+            <li className="tarjeta tarjeta-viva flex flex-col gap-2.5 p-5">
               <Paso n={1} />
               <h3 className="text-[1.0625rem] font-bold text-tinta">Eliges modo y nivel</h3>
               <p className="text-[0.9375rem] leading-snug text-tinta-2">
-                Seis modos y una vara: junior, mid o senior. La vara cambia lo que se te exige.
+                Seis modos y cinco niveles, de junior a senior. El nivel cambia lo que se te exige.
               </p>
               <p className="mt-auto flex flex-wrap gap-1.5 pt-2">
                 {(['flash', 'verbal', 'kata'] as const).map((m) => (
@@ -277,7 +277,7 @@ export default async function Landing() {
                 ))}
               </p>
             </li>
-            <li className="tarjeta flex flex-col gap-2.5 p-5">
+            <li className="tarjeta tarjeta-viva flex flex-col gap-2.5 p-5">
               <Paso n={2} />
               <h3 className="text-[1.0625rem] font-bold text-tinta">Respondes a tu manera</h3>
               <p className="text-[0.9375rem] leading-snug text-tinta-2">
@@ -285,7 +285,7 @@ export default async function Landing() {
                 se ejecutan o buscas lo que falla en código ajeno.
               </p>
             </li>
-            <li className="tarjeta flex flex-col gap-2.5 p-5">
+            <li className="tarjeta tarjeta-viva flex flex-col gap-2.5 p-5">
               <Paso n={3} />
               <h3 className="text-[1.0625rem] font-bold text-tinta">Te corrigen con tu vara</h3>
               <p className="text-[0.9375rem] leading-snug text-tinta-2">
@@ -309,7 +309,7 @@ export default async function Landing() {
                 ))}
               </dl>
             </li>
-            <li className="tarjeta flex flex-col gap-2.5 p-5">
+            <li className="tarjeta tarjeta-viva flex flex-col gap-2.5 p-5">
               <Paso n={4} />
               <h3 className="text-[1.0625rem] font-bold text-tinta">Vuelve cuando toca</h3>
               <p className="text-[0.9375rem] leading-snug text-tinta-2">
@@ -333,7 +333,11 @@ export default async function Landing() {
           <h3 className="display mt-12 text-[1.5rem] text-tinta">Qué hay dentro</h3>
           <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
             {[
-              { Icono: Flame, t: 'Hoy', d: 'Lo que toca repasar, tu racha y cómo vas por pista.' },
+              {
+                Icono: Flame,
+                t: 'Inicio',
+                d: 'Lo que toca repasar, tu racha y cómo vas por pista.',
+              },
               {
                 Icono: BookOpen,
                 t: 'Practicar',
@@ -355,7 +359,7 @@ export default async function Landing() {
                 d: 'Tu clave de API, el modelo que corrige y tu perfil.',
               },
             ].map(({ Icono, t, d }) => (
-              <li key={t} className="tarjeta flex flex-col gap-2 p-4">
+              <li key={t} className="tarjeta tarjeta-viva flex flex-col gap-2 p-4">
                 <span
                   className="grid h-9 w-9 place-items-center rounded-[8px] border-2 border-ink bg-papel-2 text-tinta"
                   aria-hidden

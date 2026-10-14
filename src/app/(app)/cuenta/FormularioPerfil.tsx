@@ -1,73 +1,103 @@
 'use client';
 
-import { useState } from 'react';
+import { useActionState } from 'react';
+import { Form } from 'react-aria-components';
 import { Boton } from '@/components/ui/Boton';
-import { Entrada, Rotulo, Selector } from '@/components/ui/Campo';
+import { CampoTexto, Casilla, Selector } from '@/components/ui/Campo';
 import type { Perfil } from '@/features/cuenta/db';
+import { NIVELES, PISTAS } from '@/features/preguntas/esquema';
+import { NOMBRE_NIVEL, NOMBRE_PISTA } from '@/features/preguntas/nombres';
+import type { ResultadoForm } from '@/lib/validacion';
 import { guardarPerfil } from './acciones';
 
 export function FormularioPerfil({ perfil }: { perfil: Perfil }) {
-  const [estado, setEstado] = useState<'quieto' | 'enviando' | 'ok' | 'error'>('quieto');
+  const [estado, enviar, enviando] = useActionState(guardarPerfil, { ok: false } as ResultadoForm);
   return (
-    <form
-      className="h-max tarjeta px-4 py-4"
-      action={async (form) => {
-        setEstado('enviando');
-        const r = await guardarPerfil(form);
-        setEstado(r.ok ? 'ok' : 'error');
-      }}
+    <Form
+      action={enviar}
+      validationErrors={estado.ok ? undefined : estado.errores}
+      className="tarjeta h-max px-6 py-6"
     >
-      <h2 className="text-[1.0625rem] font-semibold text-tinta">Perfil</h2>
-      <p className="mt-0.5 text-[0.8125rem] text-tinta-3">
-        Solo sirve para arrancar cada sesión con lo que sueles elegir.
+      <h2 className="text-[1.25rem] font-semibold text-tinta">Perfil</h2>
+      <p className="mt-1 text-[0.875rem] text-tinta-2">
+        Con esto arranca cada sesión: tu nivel, tu idioma y las pistas en las que te centras.
       </p>
 
-      <div className="mt-4 space-y-3.5">
-        <div>
-          <Rotulo htmlFor="nombre">Nombre</Rotulo>
-          <Entrada id="nombre" name="nombre" defaultValue={perfil.nombre ?? ''} maxLength={80} />
-        </div>
-        <div>
-          <Rotulo htmlFor="rol_objetivo">Puesto al que aplicas</Rotulo>
-          <Entrada
-            id="rol_objetivo"
-            name="rol_objetivo"
-            defaultValue={perfil.rol_objetivo}
-            maxLength={80}
-          />
-        </div>
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <Rotulo htmlFor="nivel_por_defecto">Nivel por defecto</Rotulo>
-            <Selector
-              id="nivel_por_defecto"
-              name="nivel_por_defecto"
-              defaultValue={perfil.nivel_por_defecto}
-            >
-              <option value="junior">Junior</option>
-              <option value="mid">Mid</option>
-              <option value="senior">Senior</option>
-            </Selector>
-          </div>
-          <div>
-            <Rotulo htmlFor="idioma">Idioma por defecto</Rotulo>
-            <Selector id="idioma" name="idioma" defaultValue={perfil.idioma}>
-              <option value="es">Español</option>
-              <option value="en">Inglés</option>
-            </Selector>
-          </div>
-        </div>
+      <div className="mt-6 grid gap-5 sm:grid-cols-2">
+        <CampoTexto
+          etiqueta="Nombre"
+          nombre="nombre"
+          autoComplete="given-name"
+          valorInicial={perfil.nombre ?? ''}
+          maximo={60}
+          ayuda="Para saludarte en Inicio. Opcional."
+        />
+        <CampoTexto
+          etiqueta="Puesto al que aplicas"
+          nombre="rol_objetivo"
+          requerido
+          valorInicial={perfil.rol_objetivo}
+          minimo={2}
+          maximo={80}
+          placeholder="Fullstack .NET y React"
+        />
+        <Selector
+          etiqueta="Nivel por defecto"
+          nombre="nivel_por_defecto"
+          requerido
+          valorInicial={perfil.nivel_por_defecto}
+          opciones={NIVELES.map((n) => ({
+            id: n,
+            texto: NOMBRE_NIVEL[n].nombre,
+            detalle: NOMBRE_NIVEL[n].detalle,
+          }))}
+        />
+        <Selector
+          etiqueta="Idioma por defecto"
+          nombre="idioma"
+          requerido
+          valorInicial={perfil.idioma}
+          opciones={[
+            { id: 'es', texto: 'Español' },
+            { id: 'en', texto: 'Inglés', detalle: 'Para entrevistas en inglés' },
+          ]}
+        />
       </div>
 
-      <div className="mt-4 flex items-center gap-3">
-        <Boton type="submit" variante="esquina" disabled={estado === 'enviando'}>
-          {estado === 'enviando' ? 'Guardando…' : 'Guardar'}
+      <fieldset className="mt-7 border-t border-linea pt-5">
+        <legend className="text-[0.9375rem] font-semibold text-tinta">Tu stack</legend>
+        <p className="mt-1 text-[0.875rem] text-tinta-2">
+          Las sesiones con «Todas las pistas» salen solo de las que marques. Sin marcar ninguna,
+          salen de todas.
+        </p>
+        <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-3">
+          {PISTAS.map((p) => (
+            <Casilla
+              key={p}
+              nombre="pistas_foco"
+              valor={p}
+              marcadaInicial={perfil.pistas_foco.includes(p)}
+            >
+              {NOMBRE_PISTA[p]}
+            </Casilla>
+          ))}
+        </div>
+      </fieldset>
+
+      {!estado.ok && estado.error ? (
+        <p role="alert" className="mt-5 text-[0.875rem] text-mal">
+          {estado.error}
+        </p>
+      ) : null}
+
+      <div className="mt-6 flex items-center gap-3">
+        <Boton type="submit" variante="esquina" disabled={enviando}>
+          {enviando ? 'Guardando…' : 'Guardar perfil'}
         </Boton>
-        <span aria-live="polite" className="text-[0.875rem]">
-          {estado === 'ok' ? <span className="text-ok">Guardado.</span> : null}
-          {estado === 'error' ? <span className="text-mal">No se pudo guardar.</span> : null}
+        <span aria-live="polite" className="text-[0.875rem] text-ok">
+          {estado.ok ? estado.aviso : ''}
         </span>
       </div>
-    </form>
+    </Form>
   );
 }

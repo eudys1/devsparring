@@ -10,7 +10,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Atajo, Boton, estilosBoton } from '@/components/ui/Boton';
-import { AreaTexto } from '@/components/ui/Campo';
+import { AreaTexto, Casilla } from '@/components/ui/Campo';
 import { Ficha, Peso } from '@/components/ui/Dato';
 import { enLinea, Markdown } from '@/components/ui/Markdown';
 import { pedirCorreccion } from '@/features/correccion/cliente';
@@ -26,6 +26,8 @@ import { NOMBRE_MODO, NOMBRE_PISTA, NOMBRE_TIPO } from '@/features/preguntas/nom
 import { ideaEnUnaFrase } from '@/features/preguntas/idea';
 import { ReportarPregunta } from '@/features/preguntas/ReportarPregunta';
 import { TarjetaRelampago } from '@/features/preguntas/TarjetaRelampago';
+import { construirInforme, notaANum, type NotaNum } from '@/features/sesion/informe';
+import { InformeSesion } from '@/features/sesion/InformeSesion';
 import { useRelampago, useSinTema } from '@/features/sesion/preferencias';
 import { rubricaParaNivel } from '@/features/preguntas/rubrica';
 import { TipoTest } from '@/features/preguntas/TipoTest';
@@ -87,6 +89,11 @@ export function Motor({
   // Tipo test: la opción elegida (null mientras no se ha respondido).
   const [elegida, setElegida] = useState<number | null>(null);
   const [segundos, setSegundos] = useState(0);
+  // La demo no guarda nada: su informe sale de lo que se va respondiendo aquí.
+  const [hechasDemo, setHechasDemo] = useState<
+    { id: string; texto: string; pista: Pregunta['pista']; nota: NotaNum; duracionMs: number }[]
+  >([]);
+  const [finDemo, setFinDemo] = useState(false);
   const inicio = useRef(0);
   const hechas = yaRespondidas.length + indice;
   const total = preguntas.length;
@@ -211,13 +218,26 @@ export function Motor({
       setFase('evaluando');
       return;
     }
+    if (demo) {
+      setHechasDemo((h) => [
+        ...h,
+        {
+          id: pregunta.id,
+          texto: pregunta.test?.enunciado ?? pregunta.texto.es,
+          pista: pregunta.pista,
+          nota: notaANum(nota),
+          duracionMs: Date.now() - inicio.current,
+        },
+      ]);
+    }
     if (indice + 1 >= pendientes.length) {
       if (demo) {
-        router.push('/entrar?modo=registro');
+        setFinDemo(true);
+        window.scrollTo({ top: 0 });
         return;
       }
       await cerrarSesion(sesion.id);
-      router.push('/hoy');
+      router.push(`/practicar/${sesion.id}/informe`);
       router.refresh();
       return;
     }
@@ -294,14 +314,48 @@ export function Motor({
     puedeCorregir,
   ]);
 
+  if (demo && finDemo) {
+    const informe = construirInforme(
+      hechasDemo.map((h) => ({
+        preguntaId: h.id,
+        pista: h.pista,
+        nota: h.nota,
+        duracionMs: h.duracionMs,
+      })),
+      sesion.nivel,
+    );
+    return (
+      <InformeSesion
+        informe={informe}
+        filas={hechasDemo}
+        nivel={sesion.nivel}
+        titulo="Así te ha ido en la demo"
+        conEnlaces={false}
+        acciones={
+          <>
+            <Link href="/entrar?modo=registro" className={estilosBoton('esquina')}>
+              Crear cuenta y guardar el progreso
+            </Link>
+            <Link href="/" className={estilosBoton('normal')}>
+              Volver a la portada
+            </Link>
+          </>
+        }
+      />
+    );
+  }
+
   if (!pregunta) {
     return (
       <div className="mx-auto max-w-xl py-16 text-center">
         <p className="rotulo">Fin de la sesión</p>
         <h1 className="display mt-2 text-[2.5rem] text-tinta">No quedan asaltos</h1>
         <p className="mt-2 text-tinta-2">Has respondido todas las preguntas de esta sesión.</p>
-        <Link href="/hoy" className={`${estilosBoton('esquina')} mt-5`}>
-          Volver a Hoy
+        <Link
+          href={demo ? '/' : `/practicar/${sesion.id}/informe`}
+          className={`${estilosBoton('esquina')} mt-5`}
+        >
+          {demo ? 'Volver a la portada' : 'Ver el informe'}
         </Link>
       </div>
     );
@@ -329,7 +383,7 @@ export function Motor({
   const autoevaluacion = evaluando && !correccion && !esTest && !esRelampago;
 
   return (
-    <div className="mx-auto max-w-6xl">
+    <div className="pagina">
       {/*
         Marcador del asalto: el número y el reloj mandan, como en la pantalla de
         una retransmisión. Va del color del modo, así sabes en qué modo estás
@@ -394,7 +448,7 @@ export function Motor({
           {demo ? 'Demo: no se guarda nada.' : 'Cada asalto se guarda al pasar al siguiente.'}
         </span>
         <Link
-          href={demo ? '/' : '/hoy'}
+          href={demo ? '/' : '/inicio'}
           className="underline decoration-linea-fuerte underline-offset-2 hover:text-tinta"
         >
           {demo ? 'Salir de la demo' : 'Salir y seguir luego'}
@@ -423,30 +477,34 @@ export function Motor({
           </div>
           {/* En Tipo test manda la pregunta concreta a la que responden las
               opciones; la original, si pide más cosas, va debajo. */}
-          <h1
-            className="prosa mt-3 text-[1.375rem] font-semibold leading-snug text-tinta md:text-[1.625rem]"
-            dangerouslySetInnerHTML={{
-              __html: enLinea(
-                esTest && pregunta.test?.enunciado
-                  ? pregunta.test.enunciado
-                  : sesion.idioma === 'en'
-                    ? pregunta.texto.en
-                    : pregunta.texto.es,
-              ),
-            }}
-          />
-          <p
-            className="prosa mt-1.5 text-[0.875rem] text-tinta-3"
-            dangerouslySetInnerHTML={{
-              __html: enLinea(
-                esTest && pregunta.test?.enunciado
-                  ? `De la pregunta: ${pregunta.texto.es}`
-                  : sesion.idioma === 'en'
-                    ? `En español: ${pregunta.texto.es}`
-                    : `En inglés: ${pregunta.texto.en}`,
-              ),
-            }}
-          />
+          {!esRelampago ? (
+            <>
+              <h1
+                className="prosa mt-3 text-[1.375rem] font-semibold leading-snug text-tinta md:text-[1.625rem]"
+                dangerouslySetInnerHTML={{
+                  __html: enLinea(
+                    esTest && pregunta.test?.enunciado
+                      ? pregunta.test.enunciado
+                      : sesion.idioma === 'en'
+                        ? pregunta.texto.en
+                        : pregunta.texto.es,
+                  ),
+                }}
+              />
+              <p
+                className="prosa mt-1.5 text-[0.875rem] text-tinta-3"
+                dangerouslySetInnerHTML={{
+                  __html: enLinea(
+                    esTest && pregunta.test?.enunciado
+                      ? `De la pregunta: ${pregunta.texto.es}`
+                      : sesion.idioma === 'en'
+                        ? `En español: ${pregunta.texto.es}`
+                        : `En inglés: ${pregunta.texto.en}`,
+                  ),
+                }}
+              />
+            </>
+          ) : null}
           {pregunta.contexto ? (
             <Markdown texto={pregunta.contexto} className="mt-4 text-[0.9375rem]" />
           ) : null}
@@ -456,6 +514,12 @@ export function Motor({
               <TipoTest test={pregunta.test} elegida={elegida} onElegir={elegir} />
             ) : esRelampago ? (
               <TarjetaRelampago
+                pregunta={sesion.idioma === 'en' ? pregunta.texto.en : pregunta.texto.es}
+                otraLengua={
+                  sesion.idioma === 'en'
+                    ? `En español: ${pregunta.texto.es}`
+                    : `En inglés: ${pregunta.texto.en}`
+                }
                 idea={ideaEnUnaFrase(pregunta)}
                 girada={evaluando}
                 onGirar={girar}
@@ -471,24 +535,19 @@ export function Motor({
                 deshabilitado={fase !== 'respondiendo'}
               />
             ) : (
-              <>
-                <label htmlFor="respuesta" className="rotulo mb-1.5 block">
-                  {esVerbal ? 'Tu explicación' : 'Tu respuesta'}
-                </label>
-                <AreaTexto
-                  id="respuesta"
-                  className={esVerbal ? 'min-h-56' : 'min-h-44'}
-                  placeholder={
-                    esVerbal
-                      ? 'Desarróllala como se la contarías al entrevistador: qué, por qué y qué pasaría si…'
-                      : 'Escribe tu respuesta…'
-                  }
-                  value={respuesta}
-                  onChange={(e) => setRespuesta(e.target.value)}
-                  disabled={fase !== 'respondiendo'}
-                  autoFocus
-                />
-              </>
+              <AreaTexto
+                etiqueta={esVerbal ? 'Tu explicación' : 'Tu respuesta'}
+                claseCaja={esVerbal ? 'min-h-64' : 'min-h-48'}
+                placeholder={
+                  esVerbal
+                    ? 'Desarróllala como se la contarías al entrevistador: qué, por qué y qué pasaría si…'
+                    : 'Escribe tu respuesta…'
+                }
+                valor={respuesta}
+                onCambio={setRespuesta}
+                deshabilitado={fase !== 'respondiendo'}
+                autoFocus
+              />
             )}
             {esKata ? (
               <p className="mt-2 text-[0.8125rem] text-tinta-3">
@@ -534,7 +593,20 @@ export function Motor({
             <section className="tarjeta mt-5 grid grid-cols-[6px_1fr] overflow-hidden">
               <span className="bg-punto" aria-hidden />
               <div className="px-4 py-3.5">
-                <h2 className="rotulo">La respuesta que aprueba</h2>
+                <h2 className="rotulo">
+                  {esKata && pregunta.kata?.solucion
+                    ? 'Una solución que aprueba'
+                    : 'La respuesta que aprueba'}
+                </h2>
+                {esKata && pregunta.kata?.solucion ? (
+                  <>
+                    <Markdown
+                      texto={`\`\`\`ts\n${pregunta.kata.solucion}\`\`\``}
+                      className="mt-2 text-[0.875rem]"
+                    />
+                    <h3 className="rotulo mt-4">Por qué así</h3>
+                  </>
+                ) : null}
                 <Markdown
                   texto={pregunta.respuestaModelo}
                   className="mt-2 text-[0.9375rem] text-tinta-2"
@@ -631,15 +703,13 @@ export function Motor({
               {(evaluando ? rubrica : rubrica.slice(0, pistas)).map((c, i) =>
                 autoevaluacion ? (
                   <li key={i}>
-                    <label className="grid cursor-pointer grid-cols-[1.25rem_1fr] items-start gap-2 text-[0.875rem] leading-snug text-tinta-2 has-[:checked]:text-tinta">
-                      <input
-                        type="checkbox"
-                        className="mt-0.5 h-4 w-4 accent-[var(--punto)]"
-                        checked={cubiertos.includes(i)}
-                        onChange={() => marcar(i)}
-                      />
+                    <Casilla
+                      className="text-[0.875rem]"
+                      marcada={cubiertos.includes(i)}
+                      onCambio={() => marcar(i)}
+                    >
                       <span className="prosa" dangerouslySetInnerHTML={{ __html: enLinea(c) }} />
-                    </label>
+                    </Casilla>
                   </li>
                 ) : (
                   <li

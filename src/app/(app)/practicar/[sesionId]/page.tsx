@@ -1,20 +1,12 @@
 import { notFound } from 'next/navigation';
 import { cargarBanco } from '@/features/preguntas/cargar';
 import { seleccionar } from '@/features/preguntas/filtrar';
+import { CANTIDAD } from '@/features/sesion/cantidad';
 import { obtenerSesion, respondidasEnSesion } from '@/features/sesion/db';
 import { idsVencidas } from '@/features/srs/db';
 import { config } from '@/lib/config';
 import { supabaseServidor, usuarioActual } from '@/lib/supabase/server';
 import { Motor } from './Motor';
-
-const CANTIDAD: Record<string, number> = {
-  flash: 10,
-  verbal: 4,
-  kata: 2,
-  review: 3,
-  diseno: 2,
-  star: 4,
-};
 
 export default async function PaginaSesion({ params }: { params: Promise<{ sesionId: string }> }) {
   const { sesionId } = await params;
@@ -32,7 +24,8 @@ export default async function PaginaSesion({ params }: { params: Promise<{ sesio
     modo: sesion.modo,
     nivel: sesion.nivel,
     pista: sesion.pista ?? undefined,
-    cantidad: CANTIDAD[sesion.modo] ?? 5,
+    pistas: sesion.pistas ?? undefined,
+    cantidad: CANTIDAD[sesion.modo],
     semilla: sesion.semilla,
     prioritarias: vencidas,
   });

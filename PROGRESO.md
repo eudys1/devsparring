@@ -25,6 +25,31 @@ Tercera tanda (sin commit todavía: lo hace Eudys). Detalle y porqués en
 Verificación de esta tanda: `pnpm verify`, `pnpm test:e2e` (con sesión),
 `pnpm detector` y palpa. El resultado exacto va en el mensaje de cierre.
 
+## Hecho el 14-10-2026: lista grande de Eudys
+
+Sin commit todavía (lo hace Eudys). Porqués en `docs/decisiones.md`, sección
+"14-10-2026". **Antes de probar en producción, la migración
+`20261014090000_niveles_stack_latido.sql` tiene que estar aplicada** (sale
+sola con el push a `main`): sin ella fallan guardar el perfil con stack, las
+sesiones de nivel intermedio y el latido.
+
+1. ~~Espacios y anchos~~: `--ancho-contenido` (88rem) y la clase `.pagina`.
+2. ~~Campos con React Aria~~, ver/ocultar contraseña, zod compartido.
+3. ~~Entrar y crear cuenta~~ como formularios normales, con recuperar contraseña.
+4. ~~"Hoy" pasa a "Inicio"~~; todas las sesiones a medias.
+5. ~~Cinco niveles~~.
+6. ~~Cuenta~~: carril sin repetir, borrar datos con confirmación, tu stack.
+7. ~~Informe~~ al terminar una sesión y la demo.
+8. ~~Repaso relámpago~~ con la pregunta en la tarjeta.
+9. ~~Katas con solución en código~~ (23, comprobadas por test).
+10. ~~Revisión de código~~: 7 preguntas reescritas con uno o dos fallos.
+11. ~~Pista .NET~~: 13 preguntas publicadas (C#, ASP.NET Core, EF Core).
+12. ~~Animaciones~~: entrada en cascada, barras que crecen, tarjetas que se
+    levantan sin prometer clic, flecha que avanza, el acierto que se estampa.
+
+Verificación: `pnpm verify` (246 tests), `pnpm test:e2e` (18, con sesión),
+capturas revisadas y palpa (un HIGH falso: la ronda de la portada cambia sola).
+
 ## Bloqueos (dependen de Eudys)
 
 - **Revisar las 8 preguntas en borrador** de `contenido/pistas/ia/programar-con-agentes.json`
@@ -33,9 +58,12 @@ Verificación de esta tanda: `pnpm verify`, `pnpm test:e2e` (con sesión),
   repositorio. Decidir si se pone un correo y el nombre completo
   (`TITULAR` en `src/lib/sitio.ts`); para ejercer derechos de datos, un canal
   público no es lo ideal.
+- **Revisar las 13 preguntas de .NET** (`contenido/pistas/dotnet/`): entran
+  publicadas con fuentes leídas, como decidimos el 14-09; se revisan usándolas.
 - **Supabase, URL de producción:** comprobar en el panel (Authentication → URL
   Configuration) que el Site URL es `https://devsparring.vercel.app` y que
-  `https://devsparring.vercel.app/auth/confirmar` está en las redirecciones.
+  `https://devsparring.vercel.app/auth/confirmar` y `/auth/recuperar` están en las
+  redirecciones (la segunda es nueva: recuperar contraseña).
   `supabase/config.toml` ya la lista, pero la integración de GitHub aplica
   migraciones, no la configuración de auth.
 - **Tipos de Supabase:** `npx supabase login` con la cuenta dueña y luego

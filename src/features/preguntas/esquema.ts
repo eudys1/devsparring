@@ -11,6 +11,7 @@ export const PISTAS = [
   'nextjs',
   'web',
   'node',
+  'dotnet',
   'datos',
   'arquitectura',
   'devops',
@@ -30,7 +31,11 @@ export const TIPOS = [
 
 export const MODOS = ['flash', 'verbal', 'kata', 'review', 'diseno', 'star'] as const;
 
-export const NIVELES = ['junior', 'mid', 'senior'] as const;
+// Niveles de práctica: los tres de siempre y un escalón intermedio entre cada par
+// (13-10-2026). Las preguntas del banco solo marcan junior, mid o senior como
+// nivel mínimo; los intermedios afinan la rúbrica que se exige (rubrica.ts).
+export const NIVELES = ['junior', 'junior-mid', 'mid', 'mid-senior', 'senior'] as const;
+export const NIVELES_BANCO = ['junior', 'mid', 'senior'] as const;
 
 export const FRECUENCIAS = ['alta', 'media', 'baja'] as const;
 
@@ -52,6 +57,10 @@ const Kata = z.object({
   codigoInicial: z.string(),
   casos: z.array(CasoPrueba).min(1),
   tiempoMin: z.number().int().positive(),
+  // La solución que aprueba, en código: se enseña al pedir la respuesta, porque
+  // en una kata explicarla con palabras no sirve (13-10-2026). Un test del banco
+  // comprueba que pasa todos sus casos.
+  solucion: z.string().min(1).optional(),
   // true cuando el ejercicio necesita Math.random o Date.now deterministas.
   congelarAleatorio: z.boolean().default(false),
 });
@@ -93,7 +102,7 @@ export const Pregunta = z
     familia: z.string().min(1),
     tipo: z.enum(TIPOS),
     modos: z.array(z.enum(MODOS)).min(1),
-    nivelMinimo: z.enum(NIVELES),
+    nivelMinimo: z.enum(NIVELES_BANCO),
     frecuencia: z.enum(FRECUENCIAS),
     texto: z.object({ es: z.string().min(1), en: z.string().min(1) }),
     contexto: z.string().optional(),
@@ -163,6 +172,7 @@ export type Pista = (typeof PISTAS)[number];
 export type Tipo = (typeof TIPOS)[number];
 export type Modo = (typeof MODOS)[number];
 export type Nivel = (typeof NIVELES)[number];
+export type NivelBanco = (typeof NIVELES_BANCO)[number];
 export type CasoPrueba = z.infer<typeof CasoPrueba>;
 
 // Un fichero de contenido/ es una lista de preguntas de la misma pista y familia.

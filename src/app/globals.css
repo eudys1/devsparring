@@ -367,6 +367,16 @@ select:not(:disabled) {
 /* El carril de la app: ancho por defecto, compacto si el usuario lo pliega */
 :root {
   --ancho-carril: 248px;
+  /* Ancho máximo del contenido de cada pantalla. Antes era ~900 px y en
+     monitores grandes quedaba una columna estrecha con hueco a los lados. El
+     texto corrido sigue limitado a ~65 caracteres por su cuenta (max-w-prose). */
+  --ancho-contenido: 88rem;
+}
+/* Contenedor de cada pantalla de la app: usa el ancho disponible hasta el tope. */
+.pagina {
+  margin-inline: auto;
+  width: 100%;
+  max-width: var(--ancho-contenido);
 }
 :root[data-carril='compacto'] {
   --ancho-carril: 92px;
@@ -403,20 +413,14 @@ select:not(:disabled) {
   right: 0.5rem;
   margin: 0;
 }
-[data-carril='compacto'] .carril-cuenta {
-  display: flex;
+/* Compacto: la inicial encima del botón de plegar, centrados */
+[data-carril='compacto'] .carril-pie {
   flex-direction: column;
-  align-items: center;
-  padding: 0.5rem;
+  gap: 0.5rem;
 }
-[data-carril='compacto'] .carril-acciones {
-  flex-direction: column;
-}
-[data-carril='compacto'] .carril-acciones > * {
+[data-carril='compacto'] .carril-pie > a {
   flex: none;
-  width: 2.25rem;
-  padding-inline: 0;
-  justify-content: center;
+  padding: 0.25rem;
 }
 
 /* Un color por modo: la clase pone --c y las piezas lo usan */
@@ -688,6 +692,73 @@ select:not(:disabled) {
   .ficha-modo:active {
     transform: translateY(1px);
   }
+
+  /* Tarjeta que solo informa: se levanta al pasar el ratón para dar vida, pero
+     no cambia el cursor ni se hunde al pulsar, porque no lleva a ningún sitio
+     (13-10-2026). La sombra dura se reserva para lo que se pulsa. */
+  .tarjeta-viva {
+    cursor: default;
+    transition: transform 220ms var(--salida);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .tarjeta-viva:hover {
+      transform: translateY(-4px);
+    }
+  }
+}
+
+/* Entrada de cada pantalla de la app: los bloques de primer nivel de .pagina
+   suben en cascada corta. Es CSS puro, así que sin JavaScript la página se ve
+   igual y en reposo todo es visible. */
+@media (prefers-reduced-motion: no-preference) {
+  .pagina > * {
+    animation: revelar var(--t-revelar) var(--salida) both;
+  }
+  .pagina > :nth-child(2) {
+    animation-delay: 50ms;
+  }
+  .pagina > :nth-child(3) {
+    animation-delay: 100ms;
+  }
+  .pagina > :nth-child(4) {
+    animation-delay: 150ms;
+  }
+  .pagina > :nth-child(n + 5) {
+    animation-delay: 200ms;
+  }
+}
+
+/* Barras de progreso: se llenan desde la izquierda al aparecer, una vez. Así se
+   lee que la cifra es una cantidad acumulada, no un estado fijo. */
+@keyframes crecer {
+  from {
+    transform: scaleX(0);
+  }
+}
+.barra-crece {
+  transform-origin: left center;
+  animation: crecer 700ms var(--salida) 150ms both;
+}
+
+/* Flecha que avanza un poco cuando se apunta al enlace que la contiene */
+.con-flecha .flecha {
+  transition: transform var(--t-hover) var(--salida);
+}
+@media (hover: hover) and (pointer: fine) {
+  .con-flecha:hover .flecha {
+    transform: translateX(3px);
+  }
+}
+
+/* El resultado de una respuesta se estampa: aparece algo grande y se asienta */
+@keyframes estampar {
+  from {
+    opacity: 0;
+    transform: scale(1.12);
+  }
+}
+.estampa {
+  animation: estampar 260ms var(--salida) both;
 }
 
 /* Barrido: el titular no aparece, se descubre de izquierda a derecha */
@@ -758,8 +829,18 @@ select:not(:disabled) {
   .casilla,
   .cinta-pista,
   .barrido,
-  .teselas > * {
+  .teselas > *,
+  .barra-crece,
+  .estampa {
     animation: none;
+  }
+  .tarjeta-viva,
+  .con-flecha .flecha {
+    transition: none;
+  }
+  .tarjeta-viva:hover,
+  .con-flecha:hover .flecha {
+    transform: none;
   }
   .cursor {
     animation: none;
@@ -809,4 +890,51 @@ select:not(:disabled) {
   .legal a:hover {
     color: var(--tinta);
   }
+}
+
+/* Diálogos y desplegables (React Aria marca data-entering/data-exiting).
+   Entran con un fundido y la caja sube un poco; salen más rápido de lo que
+   entran, porque al cerrar ya no hay nada que leer. */
+@keyframes fundido-entra {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes sube-entra {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+}
+@keyframes asoma-entra {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+.dialogo-fondo[data-entering] {
+  animation: fundido-entra 180ms var(--salida);
+}
+.dialogo-fondo[data-exiting] {
+  animation: fundido-entra 120ms var(--salida) reverse;
+}
+.dialogo-caja[data-entering] {
+  animation: sube-entra 260ms var(--salida);
+}
+.desplegable[data-entering] {
+  animation: asoma-entra 140ms var(--salida);
+}
+.desplegable[data-exiting] {
+  animation: fundido-entra 100ms var(--salida) reverse;
+}
+
+/* El botón de plegar el carril, fuera del carril (en Cuenta): con los colores
+   del papel y un borde, para que se vea como el resto de controles. */
+.carril-en-papel {
+  --carril-tinta: var(--tinta);
+  --carril-tinta-2: var(--tinta-2);
+  display: inline-flex;
+  border: 1px solid var(--linea-fuerte);
+  border-radius: var(--radio, 9px);
+  background: var(--papel-2);
 }

@@ -31,6 +31,7 @@
       "kata": {
         "funcion": "probarMapFiltro",
         "codigoInicial": "export function miMap<T, R>(arr: T[], fn: (item: T) => R): R[] {\n  // tu código: usa reduce, no map\n}\n\nexport function miFiltro<T>(arr: T[], fn: (item: T) => boolean): T[] {\n  // tu código: usa reduce, no filter\n}\n\n// probarMapFiltro la usa el runner: aplica ambas funciones sobre el mismo array.\nexport function probarMapFiltro(arr: number[]): { mapeado: number[]; filtrado: number[] } {\n  return {\n    mapeado: miMap(arr, (x) => x * 2),\n    filtrado: miFiltro(arr, (x) => x % 2 === 0),\n  };\n}\n",
+        "solucion": "export function miMap<T, R>(arr: T[], fn: (item: T) => R): R[] {\n  return arr.reduce<R[]>((acc, item) => {\n    acc.push(fn(item));\n    return acc;\n  }, []);\n}\n\nexport function miFiltro<T>(arr: T[], fn: (item: T) => boolean): T[] {\n  return arr.reduce<T[]>((acc, item) => {\n    if (fn(item)) acc.push(item);\n    return acc;\n  }, []);\n}\n\n// probarMapFiltro la usa el runner: aplica ambas funciones sobre el mismo array.\nexport function probarMapFiltro(arr: number[]): { mapeado: number[]; filtrado: number[] } {\n  return {\n    mapeado: miMap(arr, (x) => x * 2),\n    filtrado: miFiltro(arr, (x) => x % 2 === 0),\n  };\n}\n",
         "casos": [
           {
             "nombre": "duplica y filtra pares",
@@ -212,6 +213,7 @@
       "kata": {
         "funcion": "deepClone",
         "codigoInicial": "export function deepClone<T>(obj: T): T {\n  // tu código\n}\n",
+        "solucion": "export function deepClone<T>(obj: T): T {\n  // Primitivos y null se devuelven tal cual: no tienen nada que copiar.\n  if (obj === null || typeof obj !== 'object') return obj;\n  if (Array.isArray(obj)) return obj.map((x) => deepClone(x)) as T;\n  const copia: Record<string, unknown> = {};\n  for (const [clave, valor] of Object.entries(obj)) copia[clave] = deepClone(valor);\n  return copia as T;\n}\n",
         "casos": [
           {
             "nombre": "clona un objeto anidado",
@@ -334,6 +336,7 @@
       "kata": {
         "funcion": "removerDuplicadosPorId",
         "codigoInicial": "type ConId = { id: number; [clave: string]: unknown };\n\nexport function removerDuplicadosPorId(arr: ConId[]): ConId[] {\n  // tu código\n}\n",
+        "solucion": "type ConId = { id: number; [clave: string]: unknown };\n\nexport function removerDuplicadosPorId(arr: ConId[]): ConId[] {\n  // Un Set de ids vistos: una pasada, O(n), y se queda la primera aparición.\n  const vistos = new Set<number>();\n  return arr.filter((item) => {\n    if (vistos.has(item.id)) return false;\n    vistos.add(item.id);\n    return true;\n  });\n}\n",
         "casos": [
           {
             "nombre": "elimina duplicados por id preservando el primero",
@@ -395,6 +398,7 @@
       "kata": {
         "funcion": "dividirEnPalabras",
         "codigoInicial": "export function dividirEnPalabras(frases: string[]): string[] {\n  // tu código: usa flatMap\n}\n",
+        "solucion": "export function dividirEnPalabras(frases: string[]): string[] {\n  // split(/\\s+/) con filter(Boolean) evita los vacíos de espacios repetidos.\n  return frases.flatMap((frase) => frase.split(/\\s+/).filter(Boolean));\n}\n",
         "casos": [
           {
             "nombre": "divide varias frases en palabras",

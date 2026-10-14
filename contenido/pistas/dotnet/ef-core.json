@@ -1,0 +1,169 @@
+{
+  "pista": "dotnet",
+  "familia": "ef-core",
+  "preguntas": [
+    {
+      "id": "dotnet-ef-core-01",
+      "version": 1,
+      "pista": "dotnet",
+      "familia": "ef-core",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Tienes una pantalla que solo enseña el listado de productos, sin editar nada. ¿Qué aportaría `AsNoTracking()` a esa consulta de EF Core?",
+        "en": "You have a screen that only shows the product list, without editing anything. What would `AsNoTracking()` bring to that EF Core query?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que por defecto EF Core sigue los cambios de las entidades que devuelve para guardarlos en SaveChanges",
+          "Explica que AsNoTracking se salta ese seguimiento y es más rápido cuando solo se lee"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Menciona que sin seguimiento no hay resolución de identidad: la misma entidad repetida llega como objetos distintos (AsNoTrackingWithIdentityResolution si importa)",
+          "Señala que proyectar con Select a un tipo que no es entidad tampoco se sigue, y que se puede cambiar el comportamiento por defecto del contexto"
+        ]
+      },
+      "respuestaModelo": "Por defecto, las consultas de EF Core que devuelven entidades las siguen: el contexto guarda información de cada una para detectar cambios y persistirlos en `SaveChanges`. En una pantalla de solo lectura ese trabajo no sirve de nada. `AsNoTracking()` se lo salta, así que la consulta es más rápida y gasta menos memoria. A cambio, sin seguimiento no hay resolución de identidad: si la misma entidad sale varias veces en el resultado, llega como objetos distintos (para eso existe `AsNoTrackingWithIdentityResolution`). Si la pantalla solo necesita unos campos, proyectar con `Select` a un DTO tampoco genera seguimiento y además trae menos columnas.",
+      "resumen": "EF Core sigue por defecto las entidades que devuelve para guardar cambios. En solo lectura, AsNoTracking se salta ese trabajo: más rápido y menos memoria.",
+      "test": {
+        "opciones": [
+          {
+            "texto": "Que la consulta se cachee y no vuelva a la base de datos.",
+            "porque": "AsNoTracking no cachea nada: cada ejecución vuelve a consultar."
+          },
+          {
+            "texto": "Que se salte el seguimiento de cambios y vaya más rápido.",
+            "porque": "Las entidades no se registran en el change tracker: menos trabajo y menos memoria al leer."
+          },
+          {
+            "texto": "Que los cambios en esas entidades se guarden solos sin llamar a SaveChanges.",
+            "porque": "Es al revés: sin seguimiento, SaveChanges ni siquiera ve esos cambios."
+          },
+          {
+            "texto": "Que la consulta se ejecute en una transacción de solo lectura.",
+            "porque": "No abre ninguna transacción especial; solo cambia el seguimiento en memoria."
+          }
+        ],
+        "correcta": 1
+      },
+      "etiquetas": ["ef core", "rendimiento", "tracking"],
+      "fuentes": [
+        {
+          "url": "https://learn.microsoft.com/en-us/ef/core/querying/tracking",
+          "fecha": "2026-10-13",
+          "tipo": "leida",
+          "nota": "Consultas con y sin seguimiento, resolución de identidad y proyecciones."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "dotnet-ef-core-02",
+      "version": 1,
+      "pista": "dotnet",
+      "familia": "ef-core",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Una página lista 50 blogs con el número de posts y el nombre del autor de cada post. En el log ves 101 consultas SQL. ¿Qué está pasando y cómo lo bajarías a una o dos?",
+        "en": "A page lists 50 blogs with their post count and each post's author name. The log shows 101 SQL queries. What is happening and how would you bring it down to one or two?"
+      },
+      "rubrica": {
+        "junior": [
+          "Reconoce el problema N+1: una consulta para la lista y otra por cada blog o post al acceder a sus relaciones (carga perezosa)",
+          "Propone cargar las relaciones de antemano con Include y ThenInclude"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Propone proyectar con Select solo lo que la página necesita (el recuento y el nombre), que suele generar una sola consulta",
+          "Explica la explosión cartesiana al incluir varias colecciones en una consulta y AsSplitQuery como alternativa",
+          "Propone medirlo con el log de SQL antes y después"
+        ]
+      },
+      "respuestaModelo": "Es un N+1: una consulta trae los 50 blogs y después, al recorrerlos, cada acceso a `blog.Posts` y a `post.Autor` dispara otra consulta (carga perezosa), y así hasta 101. La forma directa de arreglarlo es cargar las relaciones de antemano: `context.Blogs.Include(b => b.Posts).ThenInclude(p => p.Autor)`. Mejor aún, si la página solo enseña el recuento y los nombres, proyectar con `Select` a un DTO (`Posts = b.Posts.Count`, `Autores = b.Posts.Select(p => p.Autor.Nombre)`) trae justo eso en una consulta. Ojo con incluir varias colecciones en la misma consulta: el JOIN multiplica filas (explosión cartesiana); en ese caso `AsSplitQuery()` lo parte en una consulta por colección. Y se comprueba en el log de SQL, antes y después.",
+      "resumen": "N+1: una consulta para la lista y otra por cada relación al recorrerla. Include/ThenInclude o, mejor, Select a un DTO; AsSplitQuery si varias colecciones disparan el JOIN.",
+      "etiquetas": ["ef core", "n+1", "rendimiento"],
+      "fuentes": [
+        {
+          "url": "https://learn.microsoft.com/en-us/ef/core/querying/related-data/eager",
+          "fecha": "2026-10-13",
+          "tipo": "leida",
+          "nota": "Include, ThenInclude y el aviso de rendimiento al cargar colecciones en una sola consulta (consultas únicas frente a divididas)."
+        },
+        {
+          "url": "https://learn.microsoft.com/en-us/aspnet/core/fundamentals/best-practices",
+          "fecha": "2026-10-13",
+          "tipo": "leida",
+          "nota": "Evitar consultas N+1 y traer solo los datos necesarios."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "dotnet-ef-core-03",
+      "version": 1,
+      "pista": "dotnet",
+      "familia": "ef-core",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "Un compañero propone modelar las entidades de EF Core como `record` para tener igualdad por valor gratis. ¿Por qué no es buena idea?",
+        "en": "A teammate proposes modeling EF Core entities as `record` types to get value equality for free. Why is it not a good idea?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que EF Core sigue las entidades por referencia y la igualdad por valor del record interfiere con ese seguimiento",
+          "Propone usar class para las entidades"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Explica que un record con propiedades init y copias con with choca con el modelo de EF Core, que modifica la misma instancia",
+          "Propone dónde sí encajan los records: DTOs y objetos de valor que no son entidades"
+        ]
+      },
+      "respuestaModelo": "EF Core sigue las entidades por referencia: cada objeto cargado es una instancia concreta en el change tracker, y los cambios se detectan sobre esa misma instancia. Un `record` cambia la igualdad a por valor, así que dos instancias con los mismos datos se consideran iguales, lo que confunde ese seguimiento. Además, el estilo de los records (propiedades `init` y copias con `with`) va en contra de cómo se editan las entidades en EF Core, que es modificar la instancia que ya está seguida. La documentación de C# lo dice tal cual: evitar los records para entidades de EF Core. Donde sí encajan es en los DTOs de entrada y salida y en objetos de valor que no son entidades.",
+      "resumen": "EF Core sigue las entidades por referencia; la igualdad por valor del record y las copias con with chocan con eso. Records para DTOs, class para entidades.",
+      "test": {
+        "opciones": [
+          {
+            "texto": "Porque EF Core no sabe mapear propiedades de un record a columnas.",
+            "porque": "Sí puede mapearlas; el problema es la igualdad y la forma de editar."
+          },
+          {
+            "texto": "Porque los records ocupan más memoria que las clases.",
+            "porque": "La diferencia de memoria no es el motivo."
+          },
+          {
+            "texto": "Porque los records no pueden tener una clave primaria.",
+            "porque": "Pueden tener una propiedad Id como cualquier tipo; no es eso."
+          },
+          {
+            "texto": "Porque EF Core sigue las entidades por referencia y el record compara por valor.",
+            "porque": "La igualdad por valor y las copias con with chocan con el seguimiento de cambios por instancia."
+          }
+        ],
+        "correcta": 3
+      },
+      "etiquetas": ["ef core", "record"],
+      "fuentes": [
+        {
+          "url": "https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/types/records",
+          "fecha": "2026-10-13",
+          "tipo": "leida",
+          "nota": "\"Avoid records for entity types in Entity Framework Core, which depends on reference equality to track entities.\""
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

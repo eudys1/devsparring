@@ -1,3 +1,4 @@
+import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { Progreso } from '@/components/ui/Dato';
 import { cargarBanco } from '@/features/preguntas/cargar';
@@ -19,6 +20,7 @@ const DESCRIPCION: Record<Pista, string> = {
   nextjs: 'App Router, server components, caché, despliegue',
   web: 'HTTP, CSS, autenticación, seguridad, rendimiento',
   node: 'Event loop en servidor, frameworks, errores, streams',
+  dotnet: 'C#, ASP.NET Core, inyección de dependencias, EF Core',
   datos: 'SQL, índices, transacciones, ORMs, Supabase',
   arquitectura: 'Monolito y servicios, escalado, APIs, diseño de sistemas',
   devops: 'Docker, CI/CD, observabilidad, cloud',
@@ -34,12 +36,12 @@ export default async function Pistas() {
   const ahoraMs = ahora().getTime();
 
   return (
-    <div className="mx-auto max-w-4xl">
+    <div className="pagina">
       <p className="rotulo">Todo el banco, por temas</p>
       <h1 className="display mt-1 text-[2.5rem] text-tinta">Temario</h1>
       <p className="prosa mt-2 text-tinta-2">
-        Doce pistas, una por tema. Entra en una para leer sus preguntas con la respuesta que aprueba
-        y ver en qué estado tienes cada una.
+        Una pista por tema. Entra en una para leer sus preguntas con la respuesta que aprueba y ver
+        en qué estado tienes cada una.
       </p>
 
       <ul className="mt-7 divide-y divide-linea border-y border-linea">
@@ -59,7 +61,7 @@ export default async function Pistas() {
             <li key={pista}>
               <Link
                 href={`/pistas/${pista}`}
-                className="grid gap-x-5 gap-y-2 py-3.5 pr-2 transition-[background-color] duration-[160ms] ease-salida hover:bg-papel-2 sm:grid-cols-[13rem_1fr_9rem] sm:items-center"
+                className="con-flecha grid gap-x-5 gap-y-2 py-4 pl-2 pr-2 transition-[background-color] duration-[160ms] ease-salida hover:bg-papel-2 sm:grid-cols-[14rem_1fr_11rem_1rem] sm:items-center"
               >
                 <span>
                   <span className="block text-[1.0625rem] font-medium text-tinta">
@@ -84,6 +86,7 @@ export default async function Pistas() {
                     ) : null}
                   </span>
                 </span>
+                <ChevronRight className="flecha hidden h-4 w-4 text-tinta-3 sm:block" aria-hidden />
               </Link>
             </li>
           );

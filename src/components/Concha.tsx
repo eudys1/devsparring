@@ -1,9 +1,8 @@
 // Concha de la app: un carril a la izquierda en escritorio, ancho o compacto a
 // elección del usuario (PlegarCarril), y una barra inferior en móvil. Arriba la
-// marca, en medio las secciones en dos grupos (entrenar y lo tuyo), abajo la
-// ficha de quien está dentro con el tema y la salida.
+// marca, en medio las secciones en dos grupos (entrenar y lo tuyo), abajo quién
+// está dentro (enlace a Cuenta) y el botón de plegar.
 import Link from 'next/link';
-import { CerrarSesion } from './CerrarSesion';
 import { Marca } from './Marca';
 import { NavEnlaces } from './NavEnlaces';
 import { PlegarCarril } from './PlegarCarril';
@@ -23,7 +22,7 @@ export function Concha({
     <div className="min-h-dvh md:grid md:grid-cols-[var(--ancho-carril)_1fr]">
       <aside className="carril hidden md:sticky md:top-0 md:flex md:h-dvh md:flex-col">
         <Link
-          href="/hoy"
+          href="/inicio"
           aria-label="Devsparring"
           className="carril-cabeza mx-5 border-b border-[var(--carril-linea)] py-5"
         >
@@ -39,37 +38,32 @@ export function Concha({
           <NavEnlaces porRepasar={porRepasar} variante="carril" />
         </nav>
 
-        <div className="mt-auto p-3">
-          <div className="carril-cuenta rounded-r2 border border-[var(--carril-linea)] bg-papel-2 p-3">
-            <div className="flex items-center gap-2.5">
-              <span
-                className="grid h-8 w-8 shrink-0 place-items-center rounded-full border-2 border-ink bg-celeste font-mono text-[0.8125rem] font-medium text-sobre-modo"
-                aria-hidden
-              >
-                {inicial}
-              </span>
-              <span className="solo-ancho min-w-0">
-                <span className="rotulo block">Tu cuenta</span>
-                <span
-                  className="block truncate text-[0.8125rem] text-[var(--carril-tinta)]"
-                  title={email}
-                >
-                  {email}
-                </span>
-              </span>
-            </div>
-            <div className="carril-acciones mt-3 flex items-center gap-2">
-              <Tema />
-              <CerrarSesion className="flex-1" />
-              <PlegarCarril />
-            </div>
-          </div>
+        {/* Una sola fila: quién eres (lleva a Cuenta, donde están tema, salir y
+            borrar datos) y plegar el menú. Antes repetía correo, tema y salir. */}
+        <div className="carril-pie mt-auto flex items-center gap-1 border-t border-[var(--carril-linea)] p-3">
+          <Link
+            href="/cuenta"
+            title={email}
+            className="flex min-w-0 flex-1 items-center gap-2.5 rounded-r px-2 py-1.5 transition-[background-color] duration-[160ms] ease-salida hover:bg-[var(--esquina-suave)]"
+          >
+            <span
+              className="grid h-8 w-8 shrink-0 place-items-center rounded-full border-2 border-ink bg-celeste font-mono text-[0.8125rem] font-medium text-sobre-modo"
+              aria-hidden
+            >
+              {inicial}
+            </span>
+            <span className="solo-ancho min-w-0 truncate text-[0.8125rem] text-[var(--carril-tinta)]">
+              {email}
+            </span>
+            <span className="sr-only">Tu cuenta</span>
+          </Link>
+          <PlegarCarril />
         </div>
       </aside>
 
       <div className="pb-[4.5rem] md:pb-0">
         <header className="carril flex items-center justify-between border-b border-[var(--carril-linea)] px-4 py-3 md:hidden">
-          <Link href="/hoy" aria-label="Devsparring">
+          <Link href="/inicio" aria-label="Devsparring">
             <Marca />
           </Link>
           <div className="flex items-center gap-2">

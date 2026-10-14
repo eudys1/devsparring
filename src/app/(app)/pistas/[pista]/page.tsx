@@ -4,7 +4,7 @@ import { estilosBoton } from '@/components/ui/Boton';
 import { Ficha, Peso } from '@/components/ui/Dato';
 import { enLinea, Markdown } from '@/components/ui/Markdown';
 import { cargarBanco } from '@/features/preguntas/cargar';
-import { NIVELES, PISTAS, type Pista } from '@/features/preguntas/esquema';
+import { NIVELES_BANCO, PISTAS, type Pista } from '@/features/preguntas/esquema';
 import { publicadas } from '@/features/preguntas/filtrar';
 import {
   NOMBRE_NIVEL,
@@ -59,13 +59,14 @@ export default async function PaginaPista({ params }: { params: Promise<{ pista:
     if (t.state === State.Review && t.scheduled_days >= 21) return 'dominada';
     return 'vista';
   };
-  const porNivel = NIVELES.map(
-    (n) => [NOMBRE_NIVEL[n], preguntas.filter((p) => p.nivelMinimo === n).length] as const,
+  // El banco marca junior, mid o senior como nivel mínimo; los intermedios son de práctica.
+  const porNivel = NIVELES_BANCO.map(
+    (n) => [NOMBRE_NIVEL[n].nombre, preguntas.filter((p) => p.nivelMinimo === n).length] as const,
   );
   const numeroDe = new Map(preguntas.map((p, i) => [p.id, i + 1]));
 
   return (
-    <div className="mx-auto max-w-4xl">
+    <div className="pagina">
       <Link
         href="/pistas"
         className="text-[0.8125rem] text-tinta-3 underline decoration-linea-fuerte underline-offset-2 hover:text-tinta"
@@ -153,7 +154,7 @@ export default async function PaginaPista({ params }: { params: Promise<{ pista:
                         <div className="space-y-4">
                           {(['junior', 'senior'] as const).map((n) => (
                             <div key={n}>
-                              <h3 className="rotulo">Qué se exige de {NOMBRE_NIVEL[n]}</h3>
+                              <h3 className="rotulo">Qué se exige de {NOMBRE_NIVEL[n].nombre}</h3>
                               <ol className="mt-1.5 space-y-1">
                                 {rubricaParaNivel(p, n).map((c, i) => (
                                   <li

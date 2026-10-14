@@ -1,0 +1,342 @@
+{
+  "pista": "dotnet",
+  "familia": "aspnet-core",
+  "preguntas": [
+    {
+      "id": "dotnet-aspnet-core-01",
+      "version": 1,
+      "pista": "dotnet",
+      "familia": "aspnet-core",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "junior",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Registras tres servicios en ASP.NET Core: un `DbContext`, un servicio que calcula impuestos sin estado y una caché en memoria compartida. ¿Qué ciclo de vida le das a cada uno y por qué?",
+        "en": "You register three services in ASP.NET Core: a `DbContext`, a stateless tax calculator and a shared in-memory cache. Which lifetime do you give each and why?"
+      },
+      "rubrica": {
+        "junior": [
+          "Define Transient (una instancia nueva cada vez), Scoped (una por petición) y Singleton (una para toda la aplicación)",
+          "Asigna Scoped al DbContext y Singleton a la caché compartida"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Justifica el DbContext como Scoped: no es seguro entre hilos y debe vivir lo que dura la petición",
+          "Explica que el servicio sin estado puede ser Transient o Singleton, y que un Singleton debe ser seguro entre hilos",
+          "Menciona el peligro de inyectar un Scoped dentro de un Singleton (dependencia cautiva)"
+        ]
+      },
+      "respuestaModelo": "Transient crea una instancia nueva cada vez que se pide; Scoped, una por petición HTTP (por ámbito); Singleton, una para toda la vida de la aplicación. El `DbContext` va como Scoped (es lo que hace `AddDbContext`): no es seguro entre hilos y su seguimiento de cambios tiene sentido dentro de una petición, no entre peticiones de usuarios distintos. La caché compartida va como Singleton, y por eso tiene que ser segura entre hilos. El calculador de impuestos sin estado puede ser Transient (es barato de crear) o Singleton (si no tiene estado mutable, compartirlo no cuesta nada). Lo que no hay que hacer es inyectar algo Scoped en un Singleton: el Singleton lo retendría para siempre.",
+      "resumen": "Transient: nueva cada vez. Scoped: una por petición (el DbContext). Singleton: una para toda la app (la caché, segura entre hilos). Nunca un Scoped dentro de un Singleton.",
+      "test": {
+        "enunciado": "¿Qué ciclo de vida usa por defecto un `DbContext` registrado con `AddDbContext`?",
+        "opciones": [
+          {
+            "texto": "Singleton, para no crear una conexión en cada petición.",
+            "porque": "Un DbContext compartido entre peticiones mezclaría cambios de usuarios distintos y no es seguro entre hilos."
+          },
+          {
+            "texto": "Transient, una instancia nueva cada vez que se inyecta.",
+            "porque": "Dos servicios de la misma petición tendrían contextos distintos y no verían los cambios del otro."
+          },
+          {
+            "texto": "Ninguno: el DbContext no se registra en el contenedor.",
+            "porque": "Se registra con AddDbContext y se inyecta por constructor como cualquier servicio."
+          },
+          {
+            "texto": "Scoped, una instancia por petición.",
+            "porque": "Vive lo que dura la petición y todos los servicios de esa petición comparten el mismo."
+          }
+        ],
+        "correcta": 3
+      },
+      "etiquetas": ["inyección de dependencias", "ciclo de vida"],
+      "fuentes": [
+        {
+          "url": "https://learn.microsoft.com/en-us/dotnet/core/extensions/dependency-injection",
+          "fecha": "2026-10-13",
+          "tipo": "leida",
+          "nota": "Ciclos de vida, validación de ámbitos y servicios Scoped resueltos desde la raíz."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "dotnet-aspnet-core-02",
+      "version": 1,
+      "pista": "dotnet",
+      "familia": "aspnet-core",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Un servicio Singleton recibe por constructor un repositorio Scoped que usa el `DbContext`. Al arrancar en desarrollo salta una excepción. ¿Qué problema está evitando ASP.NET Core?",
+        "en": "A Singleton service receives a Scoped repository that uses the `DbContext` through its constructor. At startup in development an exception is thrown. What problem is ASP.NET Core preventing?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que el Singleton retendría el repositorio Scoped para siempre, así que dejaría de ser por petición",
+          "Reconoce que la excepción es la validación de ámbitos del contenedor en desarrollo"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Nombra el problema: dependencia cautiva, con un DbContext compartido entre peticiones y entre hilos",
+          "Propone soluciones: cambiar el ciclo de vida del consumidor, o inyectar IServiceScopeFactory y crear un ámbito cuando haga falta"
+        ]
+      },
+      "respuestaModelo": "Es una dependencia cautiva. El Singleton se crea una vez y se queda con la instancia del repositorio Scoped que recibió, así que ese repositorio (y su `DbContext`) deja de ser por petición: lo compartirían todas las peticiones y todos los hilos, con datos mezclados y errores de concurrencia. Por eso el contenedor, en desarrollo, valida los ámbitos al arrancar y lanza una excepción si un Scoped se inyecta en un Singleton o se resuelve desde la raíz. Se arregla haciendo Scoped también al consumidor si puede serlo, o inyectando `IServiceScopeFactory` y creando un ámbito (`CreateScope`) cada vez que necesita el repositorio, que es el patrón que se usa en los servicios en segundo plano.",
+      "resumen": "Dependencia cautiva: el Singleton retendría el Scoped (y su DbContext) para siempre. Hacer Scoped al consumidor o crear un ámbito con IServiceScopeFactory.",
+      "test": {
+        "opciones": [
+          {
+            "texto": "Que el Singleton retenga el Scoped para siempre y lo compartan todas las peticiones.",
+            "porque": "Es la dependencia cautiva: el repositorio y su DbContext dejarían de ser por petición."
+          },
+          {
+            "texto": "Que el Singleton se cree dos veces y haya dos instancias en memoria.",
+            "porque": "El Singleton se crea una sola vez; el problema es lo que retiene."
+          },
+          {
+            "texto": "Que el repositorio no pueda usar async/await dentro de un Singleton.",
+            "porque": "El ciclo de vida no limita el uso de async."
+          },
+          {
+            "texto": "Que el DbContext abra demasiadas conexiones a la base de datos.",
+            "porque": "Al contrario: habría un único contexto compartido entre peticiones, que es justo lo peligroso."
+          }
+        ],
+        "correcta": 0
+      },
+      "etiquetas": ["inyección de dependencias", "dependencia cautiva"],
+      "fuentes": [
+        {
+          "url": "https://learn.microsoft.com/en-us/dotnet/core/extensions/dependency-injection",
+          "fecha": "2026-10-13",
+          "tipo": "leida",
+          "nota": "Validación de ámbitos: los Scoped no se inyectan en Singletons ni se resuelven desde la raíz; IServiceScopeFactory en servicios en segundo plano."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "dotnet-aspnet-core-03",
+      "version": 1,
+      "pista": "dotnet",
+      "familia": "aspnet-core",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "En tu `Program.cs` tienes `app.UseAuthorization();` y en la línea siguiente `app.UseAuthentication();`. Los endpoints con `[Authorize]` devuelven 401 aunque el token sea válido. ¿Por qué?",
+        "en": "In your `Program.cs` you have `app.UseAuthorization();` followed by `app.UseAuthentication();`. Endpoints with `[Authorize]` return 401 even with a valid token. Why?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que el middleware se ejecuta en el orden en que se registra",
+          "Explica que la autorización comprueba un usuario que todavía no se ha autenticado, así que lo ve anónimo"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Da el orden correcto (UseRouting, UseCors, UseAuthentication, UseAuthorization, endpoints) y por qué UseCors va antes",
+          "Explica el cortocircuito: un middleware puede no llamar a next y terminar la petición, como hace la autorización con un 401"
+        ]
+      },
+      "respuestaModelo": "El pipeline de middleware se ejecuta en el orden en que se registra. Aquí la autorización corre antes que la autenticación: cuando comprueba `[Authorize]`, nadie ha leído todavía el token, el usuario es anónimo y responde 401 sin pasar al siguiente middleware (lo cortocircuita). Se arregla invirtiendo el orden: primero `UseAuthentication`, que construye el usuario a partir del token, y después `UseAuthorization`. El orden habitual es `UseRouting`, `UseCors`, `UseAuthentication`, `UseAuthorization` y los endpoints; `UseCors` va antes de la autenticación para que las peticiones de comprobación del navegador reciban sus cabeceras.",
+      "resumen": "El middleware corre en orden de registro: la autorización ve al usuario sin autenticar y corta con 401. Primero UseAuthentication, luego UseAuthorization.",
+      "test": {
+        "opciones": [
+          {
+            "texto": "Porque [Authorize] solo funciona con cookies, no con tokens.",
+            "porque": "Funciona con cualquier esquema de autenticación configurado, también con tokens JWT."
+          },
+          {
+            "texto": "Porque el middleware corre en orden y la autorización ve un usuario sin autenticar.",
+            "porque": "Primero tiene que ejecutarse UseAuthentication, que construye el usuario a partir del token."
+          },
+          {
+            "texto": "Porque falta llamar a UseAuthorization una segunda vez al final.",
+            "porque": "Duplicarlo no arregla nada: el problema es que la autenticación llega tarde."
+          },
+          {
+            "texto": "Porque el token caduca al cruzar dos middlewares.",
+            "porque": "El paso por el pipeline no cambia la validez del token."
+          }
+        ],
+        "correcta": 1
+      },
+      "etiquetas": ["middleware", "autenticación", "autorización"],
+      "fuentes": [
+        {
+          "url": "https://learn.microsoft.com/en-us/aspnet/core/fundamentals/middleware/",
+          "fecha": "2026-10-13",
+          "tipo": "leida",
+          "nota": "Orden del pipeline, cortocircuito (terminal middleware) y UseCors antes de UseAuthentication y UseAuthorization."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "dotnet-aspnet-core-04",
+      "version": 1,
+      "pista": "dotnet",
+      "familia": "aspnet-core",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "alta",
+      "texto": {
+        "es": "Con poca carga tu API va bien, pero con muchas peticiones a la vez los tiempos se disparan. En varios sitios hay `var datos = servicio.ObtenerAsync().Result;`. ¿Qué relación tiene?",
+        "en": "Your API is fine under light load, but with many concurrent requests response times explode. In several places there is `var data = service.GetAsync().Result;`. How are they related?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que .Result (o .Wait()) bloquea el hilo hasta que termina la tarea",
+          "Propone await en toda la cadena de llamadas"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Nombra el agotamiento del pool de hilos: con muchos hilos bloqueados esperando, no quedan hilos para nuevas peticiones",
+          "Explica por qué solo aparece con carga y que envolver el código síncrono en Task.Run tampoco lo arregla"
+        ]
+      },
+      "respuestaModelo": "`.Result` bloquea el hilo hasta que la tarea termina, en vez de soltarlo mientras espera. ASP.NET Core atiende miles de peticiones con un pool pequeño de hilos precisamente porque, en un `await`, el hilo vuelve al pool y atiende otra cosa. Si cada petición deja un hilo bloqueado esperando a la base de datos o a otra API, con carga los hilos se agotan (thread pool starvation): las peticiones nuevas esperan a que haya un hilo libre y los tiempos se disparan, aunque la CPU esté tranquila. Con poca carga no se nota porque sobran hilos. Se arregla con `await` en toda la cadena (acción, servicio, acceso a datos); `Task.Run` alrededor de código síncrono no lo resuelve, solo mueve el bloqueo a otro hilo del mismo pool.",
+      "resumen": ".Result bloquea el hilo mientras espera. Con carga se agota el pool de hilos y todo se para. await en toda la cadena; Task.Run no lo arregla.",
+      "test": {
+        "opciones": [
+          {
+            "texto": ".Result es más lento que await porque copia los datos dos veces.",
+            "porque": "El problema no es el coste de copiar, sino el hilo que queda bloqueado mientras espera."
+          },
+          {
+            "texto": "Ninguna: .Result y await hacen lo mismo con distinta sintaxis.",
+            "porque": "await suelta el hilo mientras espera; .Result lo retiene bloqueado."
+          },
+          {
+            "texto": "Cada .Result bloquea un hilo; con carga se agota el pool de hilos.",
+            "porque": "Es el thread pool starvation: las peticiones nuevas esperan a que se libere un hilo."
+          },
+          {
+            "texto": ".Result abre una conexión nueva a la base de datos en cada llamada.",
+            "porque": "Las conexiones dependen del acceso a datos, no de cómo se espera la tarea."
+          }
+        ],
+        "correcta": 2
+      },
+      "etiquetas": ["async", "rendimiento", "thread pool"],
+      "fuentes": [
+        {
+          "url": "https://learn.microsoft.com/en-us/aspnet/core/fundamentals/best-practices",
+          "fecha": "2026-10-13",
+          "tipo": "leida",
+          "nota": "\"Do not block asynchronous execution by calling Task.Wait or Task<TResult>.Result\" y el agotamiento del pool de hilos."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "dotnet-aspnet-core-05",
+      "version": 1,
+      "pista": "dotnet",
+      "familia": "aspnet-core",
+      "tipo": "fundamento",
+      "modos": ["flash", "verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Cada petición a tu API llama a un servicio externo con `using var http = new HttpClient();`. Con tráfico alto empiezan a fallar las conexiones salientes. ¿Por qué y qué usarías?",
+        "en": "Each request to your API calls an external service with `using var http = new HttpClient();`. Under high traffic outgoing connections start failing. Why, and what would you use?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explica que crear y desechar un HttpClient por petición deja sockets abiertos un rato tras cerrarlo",
+          "Propone IHttpClientFactory (AddHttpClient) en vez de crear clientes a mano"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Nombra el agotamiento de sockets y el estado TIME_WAIT",
+          "Explica que la fábrica reutiliza y recicla las conexiones y permite configurar reintentos y tiempos en un sitio"
+        ]
+      },
+      "respuestaModelo": "`HttpClient` implementa `IDisposable`, pero está pensado para reutilizarse. Al cerrar uno, sus sockets se quedan un tiempo en estado `TIME_WAIT`; si cada petición crea y desecha un cliente, con tráfico alto se agotan los sockets disponibles y las conexiones salientes empiezan a fallar. Se arregla con `IHttpClientFactory`: se registra con `builder.Services.AddHttpClient(...)` y se inyecta un cliente (con nombre o tipado). La fábrica reutiliza y recicla las conexiones por debajo, y además centraliza la configuración: dirección base, cabeceras, tiempos de espera y reintentos.",
+      "resumen": "Crear y desechar un HttpClient por petición deja sockets en TIME_WAIT y con carga se agotan. IHttpClientFactory (AddHttpClient) reutiliza las conexiones.",
+      "test": {
+        "opciones": [
+          {
+            "texto": "Porque HttpClient no admite peticiones HTTPS sin configuración extra.",
+            "porque": "HttpClient usa HTTPS sin configurar nada; el fallo aparece con carga, no siempre."
+          },
+          {
+            "texto": "Porque el servicio externo bloquea las peticiones con using.",
+            "porque": "El servidor externo no ve el using: es un detalle del cliente."
+          },
+          {
+            "texto": "Porque HttpClient no es seguro entre hilos y se corrompe.",
+            "porque": "Las peticiones de un HttpClient compartido son seguras entre hilos; por eso se reutiliza."
+          },
+          {
+            "texto": "Por agotamiento de sockets; se usa IHttpClientFactory.",
+            "porque": "Cada cliente cerrado deja sockets en TIME_WAIT; la fábrica reutiliza las conexiones."
+          }
+        ],
+        "correcta": 3
+      },
+      "etiquetas": ["httpclient", "rendimiento"],
+      "fuentes": [
+        {
+          "url": "https://learn.microsoft.com/en-us/aspnet/core/fundamentals/best-practices",
+          "fecha": "2026-10-13",
+          "tipo": "leida",
+          "nota": "Sección \"Pool HTTP connections with HttpClientFactory\": sockets en TIME_WAIT y agotamiento."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    },
+    {
+      "id": "dotnet-aspnet-core-06",
+      "version": 1,
+      "pista": "dotnet",
+      "familia": "aspnet-core",
+      "tipo": "review",
+      "modos": ["review"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "Esta acción guarda un registro de auditoría en segundo plano para responder rápido. En producción, a veces salta `ObjectDisposedException`. ¿Qué falla y cómo lo arreglas?",
+        "en": "This action saves an audit record in the background to respond quickly. In production, an `ObjectDisposedException` sometimes appears. What is wrong and how do you fix it?"
+      },
+      "contexto": "```csharp\n[HttpPost(\"/pedidos/{id}/cerrar\")]\npublic IActionResult Cerrar(int id, [FromServices] TiendaDbContext db)\n{\n    _ = Task.Run(async () =>\n    {\n        db.Auditoria.Add(new Auditoria { PedidoId = id, Accion = \"cerrar\" });\n        await db.SaveChangesAsync();\n    });\n\n    return Accepted();\n}\n```",
+      "rubrica": {
+        "junior": [
+          "Detecta que el DbContext es Scoped y se desecha al terminar la petición, pero la tarea en segundo plano lo sigue usando",
+          "Explica que por eso a veces falla: depende de si la tarea llega a usarlo antes de que acabe la petición"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Propone inyectar IServiceScopeFactory y crear un ámbito propio dentro de la tarea para resolver un DbContext nuevo",
+          "Comenta que el trabajo en segundo plano de verdad va en un servicio alojado (BackgroundService) o una cola, no en un Task.Run suelto"
+        ]
+      },
+      "respuestaModelo": "El `TiendaDbContext` está registrado como Scoped: vive lo que dura la petición y se desecha cuando esta termina. La acción devuelve `Accepted()` enseguida, la petición acaba y el contexto se desecha, pero la tarea de `Task.Run` sigue usándolo. Si llega a `SaveChangesAsync` después, salta `ObjectDisposedException`; si llega antes, funciona, y por eso falla solo a veces. Se arregla sin capturar nada de la petición: inyectando `IServiceScopeFactory` (que es Singleton) y, dentro de la tarea, `await using var scope = fabrica.CreateAsyncScope();` para pedir un `DbContext` nuevo de ese ámbito. Para trabajo en segundo plano de verdad, mejor un `BackgroundService` o una cola, donde los errores no se pierden en una tarea que nadie espera.",
+      "resumen": "El DbContext es Scoped y se desecha al acabar la petición; la tarea en segundo plano lo usa después. Crear un ámbito propio con IServiceScopeFactory dentro de la tarea.",
+      "etiquetas": ["inyección de dependencias", "segundo plano", "ef core"],
+      "fuentes": [
+        {
+          "url": "https://learn.microsoft.com/en-us/aspnet/core/fundamentals/best-practices",
+          "fecha": "2026-10-13",
+          "tipo": "leida",
+          "nota": "Sección \"Do not capture services injected into the controllers on background threads\": ObjectDisposedException e IServiceScopeFactory."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "publicada"
+    }
+  ]
+}

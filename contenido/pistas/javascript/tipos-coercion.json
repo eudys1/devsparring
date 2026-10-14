@@ -87,6 +87,7 @@
       "kata": {
         "funcion": "sumar",
         "codigoInicial": "export function sumar(a: unknown, b: unknown): unknown {\n  // tu código: exactamente lo que hace + en JavaScript\n}\n",
+        "solucion": "export function sumar(a: unknown, b: unknown): unknown {\n  // Sin convertir nada: el operador + hace su propia coerción (ToPrimitive).\n  return (a as number) + (b as number);\n}\n",
         "casos": [
           {
             "nombre": "número más string numérico concatena",

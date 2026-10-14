@@ -276,7 +276,7 @@
     },
     {
       "id": "fund-clean-code-review-nombres-genericos",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "clean-code",
       "tipo": "review",
@@ -284,22 +284,23 @@
       "nivelMinimo": "junior",
       "frecuencia": "media",
       "texto": {
-        "es": "Revisa esta función. Más allá de que funcione, ¿qué le falta para ser código limpio?",
-        "en": "Review this function. Beyond the fact that it works, what is it missing to be clean code?"
+        "es": "Revisa esta función. Funciona, pero en una revisión de código no la aprobarías tal cual. ¿Qué le pedirías cambiar?",
+        "en": "Review this function. It works, but you would not approve it as is in a code review. What would you ask to change?"
       },
-      "contexto": "```js\nfunction calc(a, b, c) {\n  let r = a * b;\n  if (c === 1) {\n    r = r - r * 0.21;\n  }\n  return r;\n}\n```",
+      "contexto": "```js\nfunction calc(a, b) {\n  return a * b * 1.21;\n}\n```",
       "rubrica": {
         "junior": [
-          "Señala que los nombres (`calc`, `a`, `b`, `c`, `r`) no dicen qué representa cada cosa",
-          "Identifica el número mágico `0.21` sin explicar qué es"
+          "Señala que los nombres (calc, a, b) no dicen qué calcula ni qué representa cada parámetro",
+          "Identifica 1.21 como número mágico: no dice que es el precio con un IVA del 21 %"
         ],
         "senior": [
           "Lo anterior",
-          "Propone nombres descriptivos (`calcularPrecioConDescuento`, `cantidad`, `precioUnitario`) y una constante con nombre para `0.21` (por ejemplo `PORCENTAJE_IVA`)",
-          "Señala que `c === 1` es un booleano disfrazado de número mágico; debería ser un parámetro booleano claro (`aplicarDescuento`) o, si hay más de dos casos, un enum"
+          "Propone nombres concretos (por ejemplo precioConIva(cantidad, precioUnitario)) y una constante con nombre para el tipo de IVA",
+          "Señala que si el IVA puede variar (otro tipo, otro país) debería llegar como parámetro o configuración, no ir fijo en el código"
         ]
       },
-      "respuestaModelo": "La función funciona, pero ninguno de sus nombres comunica intención: `calc` no dice qué calcula, y `a`, `b`, `c`, `r` obligan a leer el cuerpo entero para entender qué representa cada uno. Nombres como `calcularPrecioConDescuento(cantidad, precioUnitario, aplicarDescuento)` dejan claro qué hace la función sin necesidad de leer una línea de implementación. El literal `0.21` es un número mágico: nada en el código explica que es un porcentaje de IVA, así que cualquiera que lo lea por primera vez tiene que adivinarlo o preguntar; una constante con nombre, como `const PORCENTAJE_IVA = 0.21`, lo deja explícito. Por último, `c === 1` es un booleano disfrazado de número: el parámetro `c` solo puede significar \"sí\" o \"no\" para algo, así que debería ser directamente un parámetro booleano con un nombre claro, como `aplicarDescuento`, en vez de un número mágico que el que llama a la función tiene que recordar.",
+      "respuestaModelo": "Dos cosas. Los nombres no comunican nada: `calc` no dice qué calcula y `a` y `b` obligan a adivinar si son cantidad, precio o descuento. Algo como `precioConIva(cantidad, precioUnitario)` se entiende sin leer el cuerpo. Y `1.21` es un número mágico: quien lo lee tiene que deducir que es multiplicar por un IVA del 21 %. Una constante con nombre, `const IVA_GENERAL = 0.21`, y `cantidad * precioUnitario * (1 + IVA_GENERAL)` lo dejan explícito. Si el tipo de IVA puede cambiar (reducido, otro país), mejor que llegue como parámetro o de la configuración en vez de quedar fijo en la función.",
+      "resumen": "Nombres que no dicen nada (calc, a, b) y un número mágico (1.21 es un IVA del 21 %). Nombres concretos y una constante con nombre.",
       "etiquetas": ["clean-code", "code-review", "nombres"],
       "fuentes": [
         {

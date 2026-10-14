@@ -28,34 +28,36 @@
     "tipos:supabase": "npx supabase gen types typescript --project-id gbrzpvpvgxvwgbbygowf --schema public > src/lib/supabase/tipos.ts"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "latest",
-    "@monaco-editor/react": "latest",
-    "@supabase/ssr": "latest",
-    "@supabase/supabase-js": "latest",
+    "@anthropic-ai/sdk": "^0.125.0",
+    "@internationalized/date": "^3.12.4",
+    "@monaco-editor/react": "^4.7.0",
+    "@supabase/ssr": "^0.12.7",
+    "@supabase/supabase-js": "^2.116.0",
     "lucide-react": "^1.45.0",
     "next": "16.3.5",
     "react": "19.2.8",
+    "react-aria-components": "^1.22.1",
     "react-dom": "19.2.8",
-    "server-only": "latest",
-    "ts-fsrs": "latest",
-    "zod": "latest"
+    "server-only": "0.0.1",
+    "ts-fsrs": "^5.4.2",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
-    "@playwright/test": "latest",
+    "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "^4",
-    "@testing-library/jest-dom": "latest",
-    "@testing-library/react": "latest",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@vitejs/plugin-react": "latest",
+    "@vitejs/plugin-react": "^6.1.1",
     "eslint": "^9",
     "eslint-config-next": "16.3.5",
-    "jsdom": "latest",
+    "jsdom": "^30.0.1",
     "monaco-editor": "^0.56.0",
-    "prettier": "latest",
+    "prettier": "^3.9.6",
     "tailwindcss": "^4",
     "typescript": "^5",
-    "vitest": "latest"
+    "vitest": "^5.0.0"
   }
 }

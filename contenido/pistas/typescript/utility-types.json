@@ -30,6 +30,7 @@
       "kata": {
         "funcion": "actualizarUsuario",
         "codigoInicial": "interface Usuario {\n  id: number;\n  nombre: string;\n  email: string;\n}\n\nexport function actualizarUsuario(usuario: Usuario, cambios: Partial<Usuario>): Usuario {\n  // tu código\n}\n",
+        "solucion": "interface Usuario {\n  id: number;\n  nombre: string;\n  email: string;\n}\n\nexport function actualizarUsuario(usuario: Usuario, cambios: Partial<Usuario>): Usuario {\n  // Un objeto nuevo: el usuario original no se muta.\n  return { ...usuario, ...cambios };\n}\n",
         "casos": [
           {
             "nombre": "actualiza solo el nombre",
@@ -96,6 +97,7 @@
       "kata": {
         "funcion": "contarPalabras",
         "codigoInicial": "export function contarPalabras(texto: string): Record<string, number> {\n  // tu código\n}\n",
+        "solucion": "export function contarPalabras(texto: string): Record<string, number> {\n  const cuenta: Record<string, number> = {};\n  for (const palabra of texto.split(/\\s+/).filter(Boolean)) {\n    cuenta[palabra] = (cuenta[palabra] ?? 0) + 1;\n  }\n  return cuenta;\n}\n",
         "casos": [
           {
             "nombre": "cuenta repeticiones simples",

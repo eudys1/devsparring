@@ -31,7 +31,7 @@ export default async function Demo() {
   });
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-5 md:px-6">
+    <div className="pagina px-4 py-5 md:px-10">
       <header className="mb-6 flex flex-wrap items-center justify-between gap-3 border-b border-linea pb-4">
         <Link href="/">
           <Marca />

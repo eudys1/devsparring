@@ -19,7 +19,7 @@ export function CerrarSesion({ className = '' }: { className?: string }) {
       }}
     >
       <LogOut className="h-4 w-4" strokeWidth={1.75} aria-hidden />
-      <span className="solo-ancho">Salir</span>
+      <span>Salir</span>
     </button>
   );
 }

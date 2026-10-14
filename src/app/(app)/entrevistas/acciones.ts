@@ -1,31 +1,25 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { borrarEntrevista, crearEntrevista, NuevaEntrevista } from '@/features/entrevistas/db';
+import { borrarEntrevista, crearEntrevista } from '@/features/entrevistas/db';
+import { lineas, NuevaEntrevista } from '@/features/entrevistas/esquema';
 import { supabaseServidor, usuarioActual } from '@/lib/supabase/server';
+import { deFormulario, validar, type ResultadoForm } from '@/lib/validacion';
 
-export async function registrarEntrevista(form: FormData): Promise<{ ok: boolean; code?: string }> {
+export async function registrarEntrevista(
+  _: ResultadoForm,
+  form: FormData,
+): Promise<ResultadoForm> {
   const usuario = await usuarioActual();
-  if (!usuario) return { ok: false, code: 'sin_sesion' };
-  const preguntas = String(form.get('preguntas') ?? '')
-    .split('\n')
-    .map((l) => l.trim())
-    .filter(Boolean);
-  const d = NuevaEntrevista.safeParse({
-    empresa: form.get('empresa'),
-    rol: form.get('rol') || undefined,
-    nivel: form.get('nivel') || undefined,
-    fecha: form.get('fecha'),
-    formato: form.get('formato') || undefined,
-    preguntas,
-    notas: form.get('notas') || undefined,
-    resultado: form.get('resultado') || undefined,
-  });
-  if (!d.success) return { ok: false, code: 'datos' };
+  if (!usuario) return { ok: false, error: 'Tu sesión ha caducado. Vuelve a entrar.' };
+  const datos = deFormulario(form);
+  const v = validar(NuevaEntrevista, { ...datos, preguntas: lineas(datos.preguntas ?? '') });
+  if (!v.ok) return { ok: false, errores: v.errores };
   const db = await supabaseServidor();
-  const r = await crearEntrevista(db, usuario.id, d.data);
+  const r = await crearEntrevista(db, usuario.id, v.datos);
+  if (!r.ok) return { ok: false, error: 'No se pudo guardar. Vuelve a probar en un momento.' };
   revalidatePath('/entrevistas');
-  return r.ok ? { ok: true } : { ok: false, code: 'db' };
+  return { ok: true, aviso: 'Guardada.' };
 }
 
 export async function eliminarEntrevista(id: string): Promise<void> {

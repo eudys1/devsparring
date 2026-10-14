@@ -19,7 +19,9 @@ export type EntradaCorreccion = {
 
 const NOMBRE_NIVEL: Record<Nivel, string> = {
   junior: 'junior (menos de 2 años)',
+  'junior-mid': 'junior avanzado, camino de mid (unos 2 años)',
   mid: 'mid (2 a 5 años)',
+  'mid-senior': 'mid avanzado, camino de senior (unos 5 años)',
   senior: 'senior (más de 5 años)',
 };
 

@@ -1,6 +1,14 @@
 // Nombres para pantalla. El núcleo devuelve códigos; aquí se redacta la frase.
 import type { Modo, Nivel, Pista, Tipo } from './esquema';
 
+export const NOMBRE_NIVEL: Record<Nivel, { nombre: string; detalle: string }> = {
+  junior: { nombre: 'Junior', detalle: 'Menos de 2 años' },
+  'junior-mid': { nombre: 'Junior+', detalle: 'Unos 2 años, camino de mid' },
+  mid: { nombre: 'Mid', detalle: 'De 2 a 5 años' },
+  'mid-senior': { nombre: 'Mid+', detalle: 'Unos 5 años, camino de senior' },
+  senior: { nombre: 'Senior', detalle: 'Más de 5 años' },
+};
+
 export const NOMBRE_PISTA: Record<Pista, string> = {
   fundamentos: 'Fundamentos',
   javascript: 'JavaScript',
@@ -9,6 +17,7 @@ export const NOMBRE_PISTA: Record<Pista, string> = {
   nextjs: 'Next.js',
   web: 'Web y HTTP',
   node: 'Node',
+  dotnet: '.NET y C#',
   datos: 'Datos y SQL',
   arquitectura: 'Arquitectura',
   devops: 'DevOps',
@@ -41,12 +50,6 @@ export const NOMBRE_MODO: Record<Modo, { nombre: string; frase: string; minutos:
   star: { nombre: 'STAR', frase: 'Situaciones: conflicto, error, plazo', minutos: '10 min' },
 };
 
-export const NOMBRE_NIVEL: Record<Nivel, string> = {
-  junior: 'Junior',
-  mid: 'Mid',
-  senior: 'Senior',
-};
-
 export const NOMBRE_TIPO: Record<Tipo, string> = {
   definicion: 'Definición',
   fundamento: 'Fundamento',
@@ -66,6 +69,7 @@ export const NOMBRE_FAMILIA: Record<string, string> = {
   apis: 'APIs',
   'app-router': 'App Router',
   'arrays-objetos': 'Arrays y objetos',
+  'aspnet-core': 'ASP.NET Core',
   asincronia: 'Asincronía',
   autenticacion: 'Autenticación',
   cache: 'Caché',
@@ -78,11 +82,13 @@ export const NOMBRE_FAMILIA: Record<string, string> = {
   configuracion: 'Configuración',
   'coste-latencia': 'Coste y latencia',
   'criterio-tecnico': 'Criterio técnico',
+  csharp: 'C#',
   css: 'CSS',
   despliegue: 'Despliegue',
   'diseno-sistemas': 'Diseño de sistemas',
   docker: 'Docker',
   'dom-eventos': 'DOM y eventos',
+  'ef-core': 'Entity Framework Core',
   embeddings: 'Embeddings',
   'errores-validacion': 'Errores y validación',
   'es-moderno': 'JavaScript moderno',

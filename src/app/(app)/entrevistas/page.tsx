@@ -13,7 +13,7 @@ export default async function Entrevistas() {
   const preguntas = lista.reduce((a, e) => a + e.preguntas.length, 0);
 
   return (
-    <div className="mx-auto max-w-4xl">
+    <div className="pagina">
       <p className="rotulo">Tu registro</p>
       <h1 className="display mt-1 text-[2.5rem] text-tinta">Entrevistas reales</h1>
       <p className="prosa mt-2 text-tinta-2">
