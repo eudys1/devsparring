@@ -19,8 +19,10 @@ Diseñada genérica para otros perfiles tech.
 - `contenido/`: el banco de preguntas en JSON, fuente de verdad, revisado por PR.
 - `src/app/`: solo enrutado. `src/features/*`: el código por funcionalidad.
   `src/lib/`: clientes (Supabase, Anthropic, config). Sin ficheros índice.
-- `supabase/migrations/`: SQL con nombre `AAAAMMDDHHMMSS_asunto.sql`. Las aplica la
-  integración de GitHub de Supabase en cada push a `main`; a mano, `npx supabase db push`.
+- `supabase/migrations/`: SQL con nombre `AAAAMMDDHHMMSS_asunto.sql`. Las aplica el
+  workflow `.github/workflows/migraciones-supabase.yml` en cada push a `main` que
+  toque esa carpeta (`supabase db push`). Nunca a mano en el SQL Editor. Escribirlas
+  repetibles (`if not exists`, `create or replace`).
   `supabase/config.toml` es la configuración como código (auth, redirecciones).
 - `scripts/`: validar contenido, capturas. Cabecera con el porqué.
 
