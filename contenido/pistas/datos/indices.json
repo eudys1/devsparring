@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "datos-indices-01",
-      "version": 1,
+      "version": 2,
       "pista": "datos",
       "familia": "indices",
       "tipo": "razonamiento",
@@ -12,7 +12,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Cómo decides qué columnas indexar, y por qué un índice a veces EMPEORA el rendimiento en vez de mejorarlo?",
+        "es": "¿Cómo decides qué columnas indexar? ¿Por qué un índice a veces EMPEORA el rendimiento en vez de mejorarlo?",
         "en": "How do you decide which columns to index, and why does an index sometimes MAKE performance WORSE?"
       },
       "rubrica": {
@@ -27,7 +27,7 @@
           "Da un ejemplo de índice inútil (columna booleana de baja cardinalidad) y de una tabla de escritura intensiva donde demasiados índices empeoran el total"
         ]
       },
-      "respuestaModelo": "Se indexan las columnas que aparecen en `WHERE`, `JOIN` y `ORDER BY`, sobre todo si tienen alta selectividad (muchos valores distintos, como un email o un `created_at`). Un índice en una columna de baja cardinalidad, como un booleano `is_active`, casi nunca ayuda al planner porque filtra poco. El coste oculto es que cada índice hay que mantenerlo en cada `INSERT`/`UPDATE`/`DELETE`, y ocupa espacio en disco y memoria; en una tabla de escritura muy intensiva, tener demasiados índices puede hacer que las escrituras se vuelvan el cuello de botella real, superando el beneficio en lectura.",
+      "respuestaModelo": "Se indexan las columnas que usas en `WHERE`, `JOIN` y `ORDER BY`, sobre todo si tienen muchos valores distintos (un email, un `created_at`): ahí el índice te deja ir directo a pocas filas. Un índice en una columna con dos valores, como un booleano `is_active`, casi nunca ayuda, porque filtra muy poco. Y tienen un coste escondido: cada índice hay que actualizarlo en cada `INSERT`, `UPDATE` o `DELETE`, y ocupa disco y memoria. En una tabla donde se escribe muchísimo, tener demasiados índices puede convertir las escrituras en el verdadero atasco, y pierdes más de lo que ganas en las lecturas.",
       "etiquetas": ["sql", "indices", "rendimiento"],
       "fuentes": [
         {
@@ -42,7 +42,7 @@
     },
     {
       "id": "datos-indices-02",
-      "version": 1,
+      "version": 2,
       "pista": "datos",
       "familia": "indices",
       "tipo": "razonamiento",
@@ -50,7 +50,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "alta",
       "texto": {
-        "es": "Tienes una tabla de 1 millón de pedidos y necesitas paginar el listado de un panel de admin. ¿Por qué OFFSET se vuelve lento y qué harías en su lugar?",
+        "es": "Tienes una tabla con un millón de pedidos y tienes que paginar el listado en un panel de administración. ¿Por qué `OFFSET` se vuelve lento y qué harías en su lugar?",
         "en": "You have a table with 1 million orders and need to paginate an admin listing. Why does OFFSET get slow, and what would you do instead?"
       },
       "rubrica": {
@@ -66,7 +66,7 @@
           "Propone un híbrido razonable: OFFSET solo en las primeras páginas, cursor para 'cargar más'"
         ]
       },
-      "respuestaModelo": "`OFFSET N` obliga a Postgres a recorrer y descartar las primeras N filas del índice antes de devolver la página, así que el coste crece con el número de página: en la página 10.000 es mucho más lento que en la página 2. La alternativa es paginación por keyset/cursor: en vez de pedir 'la página 500', pides 'lo que viene después de este cursor' con algo como `WHERE (created_at, id) < ($cursor_fecha, $cursor_id) ORDER BY created_at DESC, id DESC LIMIT n`, apoyado en un índice compuesto que siga ese mismo orden. El coste es casi constante por página, independientemente de cuán profundo se navegue. Un híbrido práctico es usar `OFFSET` solo en las primeras páginas visibles y cursor para 'cargar más'.",
+      "respuestaModelo": "Con `OFFSET N`, Postgres tiene que recorrer y tirar las primeras N filas antes de darte tu página. Así que cuanto más lejos vas, más tarda: la página 10.000 es muchísimo más lenta que la 2. La alternativa es paginar con cursor (keyset): en vez de pedir \"la página 500\", pides \"lo que va después de esto\", con algo como `WHERE (created_at, id) < ($fecha_cursor, $id_cursor) ORDER BY created_at DESC, id DESC LIMIT n`, apoyado en un índice que siga ese mismo orden. Así cada página cuesta casi lo mismo, por muy adentro que vayas. Un apaño práctico es usar `OFFSET` solo en las primeras páginas que se ven y cursor para el \"cargar más\".",
       "etiquetas": ["sql", "paginacion", "indices", "postgres"],
       "fuentes": [
         {
@@ -81,7 +81,7 @@
     },
     {
       "id": "datos-indices-03",
-      "version": 1,
+      "version": 2,
       "pista": "datos",
       "familia": "indices",
       "tipo": "razonamiento",
@@ -89,7 +89,7 @@
       "nivelMinimo": "senior",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Cómo diseñarías el índice para que la paginación por cursor del ejercicio anterior sea realmente rápida?",
+        "es": "¿Cómo harías el índice para que esa paginación por cursor vaya rápida de verdad?",
         "en": "How would you design the index so the previous cursor-pagination query is actually fast?"
       },
       "rubrica": {
@@ -104,7 +104,7 @@
           "Menciona EXPLAIN ANALYZE para confirmar que el planner usa un index scan y no un seq scan"
         ]
       },
-      "respuestaModelo": "El índice tiene que seguir exactamente el orden y la dirección del `ORDER BY` de la query de paginación, por ejemplo `(created_at DESC, id DESC)`. El `id` funciona como desempate único: si dos pedidos comparten el mismo `created_at` (posible hasta el microsegundo en tablas muy activas), el índice compuesto sigue dando un orden total y determinista, evitando que se salten o repitan filas entre páginas. Antes de dar la query por buena, se confirma con `EXPLAIN ANALYZE` que Postgres usa un index scan (o index-only scan) sobre ese índice y no cae a un seq scan, que anularía la ganancia.",
+      "respuestaModelo": "El índice tiene que seguir exactamente el mismo orden y la misma dirección que el `ORDER BY` de la consulta, por ejemplo `(created_at DESC, id DESC)`. El `id` está para desempatar: si dos pedidos tienen el mismo `created_at` (pasa en tablas con mucho movimiento), con el `id` el orden queda fijo y no se saltan ni se repiten filas entre una página y otra. Y antes de darla por buena, comprueba con `EXPLAIN ANALYZE` que Postgres usa ese índice (un index scan o index-only scan) y no se pone a recorrer la tabla entera (un seq scan), que te quitaría toda la ganancia.",
       "etiquetas": ["sql", "paginacion", "indices", "postgres"],
       "fuentes": [
         {

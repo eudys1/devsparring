@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "web-css-01",
-      "version": 2,
+      "version": 3,
       "pista": "web",
       "familia": "css",
       "tipo": "definicion",
@@ -12,7 +12,7 @@
       "nivelMinimo": "junior",
       "frecuencia": "alta",
       "texto": {
-        "es": "Dos columnas con `width: 50%` y `padding: 16px` no caben en la misma fila. Explica el modelo de caja CSS (`box-sizing: content-box` frente a `border-box`).",
+        "es": "Dos columnas con `width: 50%` y `padding: 16px` no caben en la misma fila. ¿Por qué? Explica el modelo de caja de CSS (`content-box` frente a `border-box`).",
         "en": "Two columns with `width: 50%` and `padding: 16px` don't fit on the same row. Explain the CSS box model (`box-sizing: content-box` vs `border-box`)."
       },
       "rubrica": {
@@ -25,8 +25,8 @@
           "Explica por qué muchos resets globales usan `* { box-sizing: border-box; }` para que el layout sea predecible"
         ]
       },
-      "respuestaModelo": "Con `content-box`, que es el valor por defecto del navegador, las propiedades `width` y `height` miden solo el área de contenido: el padding y el border se suman por encima, así que una caja con `width: 200px` y `padding: 20px` ocupa en realidad 240px de ancho total. Con `border-box`, `width` y `height` incluyen el padding y el border dentro de esa medida, así que la caja con `width: 200px` sigue midiendo 200px de ancho total, y el padding le resta espacio al contenido en vez de sumarse por fuera. Por eso muchos resets globales aplican `* { box-sizing: border-box; }` al principio del proyecto: hace que el tamaño declarado sea el tamaño real en pantalla, evitando el cálculo mental constante de sumar padding y border cada vez que se ajusta un layout.",
-      "resumen": "Con `content-box`, `width` mide solo el contenido y padding y borde se suman (200 + 40 = 240 px). Con `border-box`, los incluye y la caja mide lo que dices; por eso se suele poner en todo.",
+      "respuestaModelo": "Con `content-box`, que es lo que trae el navegador por defecto, `width` y `height` miden solo el contenido, y el padding y el borde se suman por fuera. Una caja con `width: 200px` y `padding: 20px` acaba ocupando 240 px. Eso es lo que te pasa: cada columna mide 50% más 32 px, y dos ya no caben. Con `border-box`, el padding y el borde van incluidos: la caja de `width: 200px` mide 200 px y lo que se encoge es el contenido de dentro. Por eso casi todos los proyectos empiezan con `* { box-sizing: border-box; }`: el tamaño que escribes es el que ves, sin ir sumando padding y bordes de cabeza.",
+      "resumen": "Con `content-box`, `width` mide solo el contenido y el padding y el borde se suman por fuera (200 + 40 = 240 px). Con `border-box` van dentro y la caja mide lo que dices; por eso casi todo el mundo lo pone a todo.",
       "test": {
         "enunciado": "Con `box-sizing: content-box`, `width: 200px` y `padding: 20px`, ¿cuánto mide la caja de ancho, sin contar el borde?",
         "correcta": 3,
@@ -63,7 +63,7 @@
     },
     {
       "id": "web-css-02",
-      "version": 1,
+      "version": 2,
       "pista": "web",
       "familia": "css",
       "tipo": "razonamiento",
@@ -71,7 +71,7 @@
       "nivelMinimo": "junior",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Cuándo usarías Flexbox y cuándo Grid? Da un ejemplo de layout donde uno encaja claramente mejor.",
+        "es": "¿Cuándo usarías Flexbox y cuándo Grid? Pon un ejemplo donde uno encaje claramente mejor que el otro.",
         "en": "When would you use Flexbox vs Grid? Give an example layout where one clearly fits better."
       },
       "rubrica": {
@@ -85,7 +85,7 @@
           "Menciona que se pueden combinar (Grid para el layout general, Flex dentro de cada celda)"
         ]
       },
-      "respuestaModelo": "Flexbox está pensado para layouts unidimensionales: distribuir elementos en una sola fila o una sola columna, como una barra de navegación con varios enlaces o una lista de etiquetas que se ajustan según el espacio disponible. Grid está pensado para layouts bidimensionales: controlar filas y columnas a la vez, como el esqueleto completo de una página con cabecera, menú lateral, contenido y pie, o un dashboard con áreas nombradas que ocupan distinto número de columnas y filas. En la práctica ambos se combinan sin problema: Grid define la estructura general de la página, y dentro de cada celda de esa estructura, Flexbox organiza el contenido interno en una dirección.",
+      "respuestaModelo": "Flexbox es para colocar cosas en una sola dirección: una fila o una columna. Por ejemplo, una barra de navegación con enlaces, o una lista de etiquetas que se recolocan según el espacio. Grid es para trabajar en dos direcciones a la vez, filas y columnas: el esqueleto de una página con cabecera, menú lateral, contenido y pie, o un panel con zonas que ocupan distinto número de filas y columnas. Y no son rivales: lo normal es que Grid monte la estructura general y, dentro de cada zona, Flexbox ordene lo que hay.",
       "etiquetas": ["css", "flexbox", "grid"],
       "fuentes": [
         {
@@ -100,7 +100,7 @@
     },
     {
       "id": "web-css-03",
-      "version": 1,
+      "version": 2,
       "pista": "web",
       "familia": "css",
       "tipo": "fundamento",
@@ -108,7 +108,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Cómo se calcula la especificidad en CSS y qué problema causa el abuso de `!important`?",
+        "es": "¿Cómo decide CSS qué regla gana (la especificidad)? ¿Qué problema trae abusar de `!important`?",
         "en": "How is CSS specificity calculated, and what problem does overusing `!important` cause?"
       },
       "rubrica": {
@@ -122,8 +122,8 @@
           "Explica que obliga a usar más `!important` en cascada para sobreescribirlo, haciendo el CSS imposible de mantener con el tiempo"
         ]
       },
-      "respuestaModelo": "La especificidad se calcula por capas de peso, de mayor a menor: un estilo inline en el propio elemento gana siempre, después los selectores por id, después clases, atributos y pseudoclases, y por último elementos y pseudoelementos; dentro de una misma regla, ese peso se suma por cada selector que aparece. `!important` rompe deliberadamente esa jerarquía: una declaración marcada así gana sin importar la especificidad normal del selector que la contiene. El problema es que, una vez que un equipo empieza a usarlo para 'ganar' una guerra de especificidad puntual, la única forma de sobreescribir esa regla más adelante es con otro `!important` todavía más específico, y ese patrón se repite en cascada hasta que el CSS se vuelve imposible de razonar o mantener sin buscar en todo el proyecto quién puso el último `!important`.",
-      "resumen": "Peso de mayor a menor: estilo inline, ids, clases, atributos y pseudoclases, elementos. `!important` se salta esa jerarquía y obliga a más `!important` para sobrescribirlo: una escalada difícil de mantener.",
+      "respuestaModelo": "Cuando dos reglas chocan, gana la más específica, y el peso va por capas, de más a menos: un estilo puesto en línea en el propio elemento, luego los ids, luego las clases, atributos y pseudoclases, y al final las etiquetas y pseudoelementos. Dentro de una regla, cada selector suma. `!important` se salta toda esa jerarquía: esa declaración gana pase lo que pase. El problema llega cuando el equipo lo usa para ganar una pelea puntual: la única forma de pisarlo después es otro `!important` todavía más específico, y así una y otra vez, hasta que el CSS es imposible de entender sin buscar por todo el proyecto quién puso el último.",
+      "resumen": "De más a menos peso: estilo en línea, ids, clases (y atributos y pseudoclases), etiquetas. `!important` se salta todo eso y obliga a más `!important` para pisarlo: una escalada imposible de mantener.",
       "test": {
         "enunciado": "¿Por qué da problemas abusar de `!important`?",
         "correcta": 1,
@@ -160,7 +160,7 @@
     },
     {
       "id": "web-css-04",
-      "version": 1,
+      "version": 2,
       "pista": "web",
       "familia": "css",
       "tipo": "razonamiento",
@@ -168,7 +168,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "Diseña un layout responsive con mobile-first: ¿qué diferencia hay respecto a partir de desktop y usar media queries \"max-width\"?",
+        "es": "Vas a hacer un diseño responsive empezando por el móvil (mobile-first). ¿Qué cambia respecto a empezar por escritorio y usar media queries con `max-width`?",
         "en": "Design a mobile-first responsive layout: how does it differ from starting from desktop and using \"max-width\" media queries?"
       },
       "rubrica": {
@@ -182,8 +182,8 @@
           "Explica que móvil no descarga (ni aplica) reglas pensadas para desktop que luego tendría que sobreescribir"
         ]
       },
-      "respuestaModelo": "Mobile-first define primero los estilos base pensados para la pantalla más pequeña, sin ninguna media query, y va añadiendo complejidad progresivamente con media queries `min-width` a medida que el viewport crece: cada breakpoint añade lo que hace falta, no sobreescribe lo anterior. El enfoque contrario, partir de desktop y usar `max-width`, define primero el layout completo para pantallas grandes y luego usa media queries para ir quitando o simplificando cosas en pantallas pequeñas, lo que en la práctica suele producir más reglas CSS totales porque el móvil tiene que cargar y luego sobreescribir estilos pensados para un layout que nunca va a usar tal cual. El resultado práctico de mobile-first suele ser mejor rendimiento en móvil, precisamente porque no hay que anular reglas de escritorio innecesarias en el dispositivo con menos recursos.",
-      "resumen": "Mobile-first parte del móvil sin media queries y añade con `min-width` según crece la pantalla. Desde desktop con `max-width` se deshace lo ya definido, y el móvil carga CSS que no usa.",
+      "respuestaModelo": "Con mobile-first escribes primero los estilos para la pantalla pequeña, sin ninguna media query, y vas añadiendo con `min-width` a medida que la pantalla crece: cada punto de corte suma lo que hace falta, no deshace lo anterior. Al revés, empezando por escritorio con `max-width`, montas todo para pantalla grande y luego vas quitando y simplificando para el móvil. En la práctica eso te deja más CSS en total, porque el móvil carga estilos de escritorio para luego anularlos. Por eso mobile-first suele ir mejor en el móvil, que es justo el dispositivo con menos recursos.",
+      "resumen": "Mobile-first empieza por el móvil sin media queries y añade con `min-width` según crece la pantalla. Empezando por escritorio con `max-width` vas deshaciendo lo que ya pusiste, y el móvil carga CSS que no usa.",
       "etiquetas": ["css", "responsive", "mobile-first"],
       "fuentes": [
         {

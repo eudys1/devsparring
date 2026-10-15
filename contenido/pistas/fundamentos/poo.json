@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "fund-poo-01",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "poo",
       "tipo": "definicion",
@@ -12,7 +12,7 @@
       "nivelMinimo": "junior",
       "frecuencia": "alta",
       "texto": {
-        "es": "Explica los cuatro pilares de la programación orientada a objetos (encapsulamiento, abstracción, herencia, polimorfismo) con un ejemplo.",
+        "es": "Explica los cuatro pilares de la programación orientada a objetos (encapsulamiento, abstracción, herencia y polimorfismo) con un ejemplo.",
         "en": "Explain the four pillars of object-oriented programming (encapsulation, abstraction, inheritance, polymorphism) with an example."
       },
       "rubrica": {
@@ -27,7 +27,7 @@
           "Relaciona el polimorfismo con interfaces o duck typing en un lenguaje dinámico como JS"
         ]
       },
-      "respuestaModelo": "Encapsulamiento es ocultar el estado interno de un objeto y exponer solo lo necesario (por ejemplo, un campo privado `#saldo` con un método `retirar()` que valida antes de tocarlo). Abstracción es modelar solo los detalles relevantes para el problema, ignorando lo demás. Herencia permite que una clase reutilice comportamiento de otra (`Perro extends Animal`). Polimorfismo es que distintos tipos respondan al mismo mensaje de forma distinta, por ejemplo `animal.hacerSonido()` da un resultado distinto según sea Perro o Gato. Un candidato senior añade que en JS/TS muchas veces se prefiere composición e interfaces sobre herencia profunda porque es más flexible y evita jerarquías frágiles.",
+      "respuestaModelo": "Encapsulamiento es esconder el estado de un objeto y dejar ver solo lo necesario: por ejemplo, un campo privado `#saldo` que solo cambia a través de `retirar()`, que comprueba antes si hay dinero. Abstracción es quedarte solo con lo que importa para tu problema e ignorar el resto. Herencia es que una clase aproveche lo que ya hace otra (`Perro extends Animal`). Polimorfismo es que tipos distintos respondan a la misma llamada cada uno a su manera: `animal.hacerSonido()` hace una cosa si es un perro y otra si es un gato. Para sumar nivel: en JavaScript y TypeScript muchas veces se prefiere componer piezas e interfaces antes que herencias muy profundas, porque es más flexible y no te deja jerarquías frágiles.",
       "test": {
         "enunciado": "Un campo privado `#saldo` que solo se cambia con `retirar()`, que valida antes. ¿Qué pilar de la POO es?",
         "correcta": 0,

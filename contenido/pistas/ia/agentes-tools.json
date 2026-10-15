@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "ia-agentes-tools-01",
-      "version": 2,
+      "version": 3,
       "pista": "ia",
       "familia": "agentes-tools",
       "tipo": "definicion",
@@ -26,8 +26,8 @@
           "Da un ejemplo real de agente usado en desarrollo (Claude Code, un asistente que explora un repo)"
         ]
       },
-      "respuestaModelo": "Un agente de IA es un sistema donde un LLM decide de forma iterativa qué acciones tomar, llamar una herramienta, leer el resultado, decidir el siguiente paso, para cumplir un objetivo, en vez de limitarse a dar una única respuesta a una única petición. En desarrollo de software esto se ve, por ejemplo, en un asistente que puede explorar un repositorio, ejecutar tests, leer el resultado de esos tests y ajustar el código en base a lo que encontró, todo dentro de la misma tarea sin que el humano tenga que dar una instrucción nueva en cada paso.",
-      "resumen": "Un sistema donde un LLM decide en bucle qué herramienta usar, lee el resultado y elige el siguiente paso hasta cumplir un objetivo, en vez de dar una única respuesta a una única petición.",
+      "respuestaModelo": "Un agente de IA es un sistema en el que un LLM va decidiendo qué hacer para cumplir un objetivo: llama a una herramienta, mira qué le devuelve, decide el siguiente paso, y así en bucle. Un asistente normal, en cambio, te da una respuesta a una pregunta y ahí se acaba. En programación lo ves en un asistente que explora el repositorio, ejecuta los tests, lee qué ha fallado y cambia el código según eso, todo dentro de la misma tarea, sin que tengas que darle una instrucción nueva en cada paso. Ese es el que arregla los tests por su cuenta.",
+      "resumen": "Un sistema en el que un LLM decide en bucle qué herramienta usar, mira el resultado y elige el siguiente paso hasta cumplir un objetivo, en vez de dar una sola respuesta a una sola pregunta.",
       "test": {
         "enunciado": "¿Qué distingue a un agente de IA de una llamada normal a un LLM?",
         "correcta": 2,
@@ -64,7 +64,7 @@
     },
     {
       "id": "ia-agentes-tools-02",
-      "version": 2,
+      "version": 3,
       "pista": "ia",
       "familia": "agentes-tools",
       "tipo": "definicion",
@@ -86,8 +86,8 @@
           "Menciona que esto le permite al modelo razonar con información actualizada que no tenía en su entrenamiento"
         ]
       },
-      "respuestaModelo": "Function calling, o tool use, es la capacidad del modelo de, en vez de solo generar texto libre, generar una petición estructurada con el nombre de una función y sus argumentos, para que la aplicación ejecute una acción real, por ejemplo llamar a una API externa o consultar una base de datos, y le devuelva el resultado. Con eso el modelo puede seguir razonando con información actualizada o específica que nunca vio durante su entrenamiento, como el estado actual de un pedido o el precio de una acción en tiempo real, en vez de tener que inventarlo.",
-      "resumen": "El modelo, en vez de solo texto, genera una llamada estructurada (función y argumentos); tu aplicación la ejecuta y le devuelve el resultado, así razona con datos actuales que no vio al entrenar.",
+      "respuestaModelo": "Function calling (o tool use) es que el modelo, en vez de contestar solo con texto, puede escribir una petición ordenada con el nombre de una función y sus argumentos, por ejemplo `consultarPedido({ id: '123' })`. Tu aplicación es la que ejecuta esa función de verdad (llama a tu API o a tu base de datos) y le devuelve el resultado al modelo. Con eso puede seguir respondiendo con información al día que nunca vio al entrenarse, como el estado real de un pedido, en vez de inventárselo.",
+      "resumen": "El modelo, en vez de solo texto, escribe una llamada con el nombre de una función y sus argumentos; tu app la ejecuta y le devuelve el resultado. Así trabaja con datos actuales que no vio al entrenar.",
       "test": {
         "enunciado": "¿Qué hace el modelo cuando usa function calling (tool use)?",
         "correcta": 0,
@@ -124,7 +124,7 @@
     },
     {
       "id": "ia-agentes-tools-03",
-      "version": 1,
+      "version": 2,
       "pista": "ia",
       "familia": "agentes-tools",
       "tipo": "fundamento",
@@ -145,7 +145,7 @@
           "Menciona que el bucle necesita un límite (número de pasos, timeout) para no quedar atrapado"
         ]
       },
-      "respuestaModelo": "En un agente ReAct el modelo razona sobre cuál es el siguiente paso más útil, elige y ejecuta una herramienta, y observa el resultado que le devuelve esa herramienta antes de decidir el siguiente movimiento. El ciclo razonar-actuar-observar se repite tantas veces como haga falta hasta que el modelo considera que ya tiene suficiente información para responder o completar la tarea. Es imprescindible poner un límite explícito, un número máximo de iteraciones o un timeout, porque sin él un agente puede quedarse repitiendo el mismo patrón indefinidamente si no encuentra una salida clara.",
+      "respuestaModelo": "En un agente ReAct, el modelo piensa cuál es el siguiente paso más útil, elige una herramienta y la usa, y mira lo que le devuelve antes de decidir qué hacer después. Razonar, actuar, observar, y otra vez, tantas veces como haga falta hasta que cree que tiene lo necesario para terminar la tarea. Es imprescindible ponerle un límite claro, un número máximo de vueltas o un tiempo máximo, porque si no encuentra la salida puede quedarse repitiendo lo mismo para siempre.",
       "test": {
         "enunciado": "En un agente tipo ReAct, ¿por qué hay que poner un límite de iteraciones o un timeout?",
         "correcta": 3,
@@ -182,7 +182,7 @@
     },
     {
       "id": "ia-agentes-tools-04",
-      "version": 1,
+      "version": 2,
       "pista": "ia",
       "familia": "agentes-tools",
       "tipo": "razonamiento",
@@ -190,7 +190,7 @@
       "nivelMinimo": "senior",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Qué riesgos tiene dar a un agente de IA permisos de escritura, por ejemplo borrar archivos o ejecutar comandos?",
+        "es": "¿Qué riesgos tiene dejar que un agente de IA escriba cosas, como borrar ficheros o ejecutar comandos?",
         "en": "What are the risks of giving an AI agent write permissions (e.g. deleting files or running commands)?"
       },
       "rubrica": {
@@ -204,8 +204,8 @@
           "Menciona el riesgo de instrucciones inyectadas que empujen al agente a actuar mal"
         ]
       },
-      "respuestaModelo": "El riesgo principal es que el modelo tome acciones irreversibles basándose en una interpretación incorrecta del contexto, o incluso en instrucciones inyectadas dentro de algo que está procesando, como un fichero o un resultado de herramienta con texto malicioso. Se mitiga con el principio de menor privilegio, dando al agente solo el acceso estrictamente necesario, exigiendo confirmación humana explícita antes de cualquier acción destructiva o difícil de revertir, ejecutando el agente en un entorno aislado (sandboxing), y fijando límites explícitos de qué rutas, comandos o recursos puede tocar en vez de confiar solo en que el modelo se comporte bien por defecto.",
-      "resumen": "Que haga algo irreversible por malinterpretar el contexto o por instrucciones inyectadas. Se mitiga con menor privilegio, confirmación humana en lo destructivo y un entorno aislado.",
+      "respuestaModelo": "El riesgo principal es que haga algo que no se puede deshacer porque entendió mal la situación, o porque le colaron instrucciones dentro de algo que estaba leyendo (un fichero o un resultado de herramienta con texto malicioso). Se reduce con varias capas: darle solo el acceso que necesita y nada más (mínimo privilegio), pedir confirmación a una persona antes de cualquier cosa destructiva o difícil de deshacer, ejecutarlo en un entorno aislado (sandbox), y fijar por escrito qué rutas, comandos o recursos puede tocar, en vez de fiarse de que el modelo se porte bien.",
+      "resumen": "Que haga algo que no se puede deshacer por entender mal el contexto o por instrucciones que le cuelan. Se reduce dándole el mínimo acceso, pidiendo confirmación humana en lo destructivo y aislándolo.",
       "etiquetas": ["agentes", "seguridad"],
       "fuentes": [
         {
@@ -220,7 +220,7 @@
     },
     {
       "id": "ia-agentes-tools-05",
-      "version": 1,
+      "version": 2,
       "pista": "ia",
       "familia": "agentes-tools",
       "tipo": "fundamento",
@@ -228,7 +228,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Qué diferencia hay entre un agente autónomo y un asistente tipo Copilot que sugiere código?",
+        "es": "¿Qué diferencia hay entre un agente autónomo y un asistente tipo Copilot que te sugiere código?",
         "en": "Difference between an autonomous agent and a Copilot-style assistant that suggests code."
       },
       "rubrica": {
@@ -242,7 +242,7 @@
           "Da un ejemplo de cuándo conviene cada modelo de interacción"
         ]
       },
-      "respuestaModelo": "Un asistente tipo Copilot sugiere y el humano decide y aplica cada cambio de forma individual, así que el control queda en manos de la persona en todo momento. Un agente autónomo puede encadenar múltiples pasos, llamar varias herramientas seguidas, y ejecutar acciones sin que haya intervención humana en cada paso intermedio, lo que exige mucho más control y observabilidad, porque nadie está revisando cada decisión en el momento en que se toma. Copilot encaja bien para tareas cortas donde el humano quiere quedarse con el control fino; el agente autónomo encaja mejor para tareas largas y bien acotadas donde revisar cada paso sería demasiado lento.",
+      "respuestaModelo": "Copilot te sugiere y tú decides y aplicas cada cambio, uno a uno: el control es tuyo en todo momento. Un agente autónomo encadena varios pasos, usa varias herramientas seguidas y hace cosas sin que nadie revise cada paso intermedio, así que necesitas muchos más límites y mucha más visibilidad de lo que está haciendo, porque nadie está mirando cada decisión cuando se toma. Copilot va bien para tareas cortas donde quieres el control fino; un agente va mejor para tareas largas y bien acotadas en las que revisar cada paso sería demasiado lento.",
       "test": {
         "enunciado": "¿Qué diferencia principal hay entre un agente autónomo y un asistente tipo Copilot?",
         "correcta": 1,
@@ -279,7 +279,7 @@
     },
     {
       "id": "ia-agentes-tools-06",
-      "version": 1,
+      "version": 2,
       "pista": "ia",
       "familia": "agentes-tools",
       "tipo": "razonamiento",
@@ -287,7 +287,7 @@
       "nivelMinimo": "senior",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Cómo depurarías un agente que entra en un bucle repitiendo la misma llamada a herramienta?",
+        "es": "Un agente se queda en bucle repitiendo la misma llamada a una herramienta. ¿Cómo lo depurarías?",
         "en": "How would you debug an agent stuck in a loop repeating the same tool call?"
       },
       "rubrica": {
@@ -301,8 +301,8 @@
           "Propone mejorar el mensaje de error/resultado devuelto para que el modelo pueda cambiar de estrategia"
         ]
       },
-      "respuestaModelo": "Lo primero es revisar los logs del razonamiento del agente y de las observaciones que recibió tras cada llamada: muchas veces la causa es que la herramienta devuelve un error poco claro y el modelo interpreta que vale la pena repetir la misma acción esperando un resultado distinto. Como salvaguarda estructural conviene añadir un límite duro de iteraciones que corte el bucle aunque el modelo no se dé cuenta por sí solo. Y como arreglo de fondo, mejorar el mensaje de error o el resultado que recibe la herramienta para que sea lo bastante informativo como para que el modelo pueda cambiar de estrategia en vez de repetir ciegamente.",
-      "resumen": "Mirar en los logs qué observó tras cada llamada: a menudo un error poco claro le invita a repetir. Poner un límite duro de iteraciones y, de fondo, mejorar el mensaje que devuelve la herramienta.",
+      "respuestaModelo": "Lo primero, mirar en los logs qué pensó el agente y qué le devolvió la herramienta en cada vuelta. Muchas veces la herramienta devuelve un error poco claro y el modelo entiende que vale la pena repetir lo mismo a ver si esta vez sale. Como red de seguridad, un límite duro de vueltas que corte el bucle aunque el modelo no se dé cuenta. Y como arreglo de fondo, mejorar lo que devuelve la herramienta (el mensaje de error o el resultado) para que le dé al modelo información suficiente para cambiar de estrategia en vez de repetir a ciegas.",
+      "resumen": "Mira en los logs qué le devolvió cada llamada: a menudo un error poco claro le invita a repetir. Pon un límite duro de vueltas y, de fondo, mejora el mensaje que devuelve la herramienta.",
       "etiquetas": ["agentes", "debugging"],
       "fuentes": [
         {
@@ -317,7 +317,7 @@
     },
     {
       "id": "ia-agentes-tools-07",
-      "version": 1,
+      "version": 2,
       "pista": "ia",
       "familia": "agentes-tools",
       "tipo": "razonamiento",
@@ -325,7 +325,7 @@
       "nivelMinimo": "senior",
       "frecuencia": "baja",
       "texto": {
-        "es": "¿Qué es un sistema multiagente y cuándo aporta frente a un único agente?",
+        "es": "¿Qué es un sistema multiagente y cuándo aporta más que un solo agente?",
         "en": "What is a multi-agent system and when is it worth it over a single agent?"
       },
       "rubrica": {
@@ -336,7 +336,7 @@
           "Reconoce el coste añadido de coordinación y por qué solo se justifica si un único agente no basta"
         ]
       },
-      "respuestaModelo": "Un sistema multiagente son varios agentes especializados, por ejemplo uno que planifica, otro que ejecuta y otro que revisa, coordinados entre sí para completar una tarea conjunta. Aporta valor cuando la tarea se beneficia claramente de separar responsabilidades, cada agente con su propio prompt y herramientas enfocadas, o de ejecutar partes en paralelo. Pero añade complejidad real de coordinación, más superficie de fallo y más coste, así que solo se justifica cuando un único agente bien diseñado, con buen prompting y buenas herramientas, demuestra no ser suficiente para la tarea; no es el punto de partida por defecto.",
+      "respuestaModelo": "Son varios agentes especializados que trabajan juntos en una tarea: por ejemplo, uno que planifica, otro que hace y otro que revisa. Aporta cuando la tarea gana claramente al separar responsabilidades (cada agente con su prompt y sus herramientas) o al hacer partes en paralelo. Pero añade complejidad para coordinarlos, más sitios donde fallar y más coste. Así que solo compensa cuando un único agente bien hecho, con buen prompt y buenas herramientas, ya ha demostrado que no llega. No es el punto de partida.",
       "etiquetas": ["agentes", "multiagente"],
       "fuentes": [
         {

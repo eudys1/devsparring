@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "node-event-loop-01",
-      "version": 1,
+      "version": 2,
       "pista": "node",
       "familia": "event-loop",
       "tipo": "fundamento",
@@ -12,7 +12,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "alta",
       "texto": {
-        "es": "Explica el event loop de Node.js: ¿por qué un `while(true)` bloquea todas las peticiones aunque Node sea \"no bloqueante\"?",
+        "es": "Explica el event loop de Node.js: ¿por qué un `while (true)` deja colgadas todas las peticiones si se supone que Node es \"no bloqueante\"?",
         "en": "Explain the Node.js event loop: why does a `while(true)` block all requests even though Node is \"non-blocking\"?"
       },
       "rubrica": {
@@ -23,7 +23,7 @@
           "Explica que código síncrono pesado en el hilo principal bloquea el event loop y con él TODAS las peticiones concurrentes"
         ]
       },
-      "respuestaModelo": "Node ejecuta el código JavaScript de usuario en un único hilo. Lo de 'no bloqueante' se refiere específicamente a las operaciones de I/O (leer un fichero, hacer una petición de red, consultar una base de datos): esas operaciones se delegan a libuv y su pool de hilos internos, así que mientras esperan, el hilo principal queda libre para atender otras peticiones. Pero eso no aplica al trabajo intensivo de CPU ejecutado directamente en JavaScript: un `while(true)` corre en el mismo y único hilo que atiende todas las peticiones HTTP, así que mientras ese bucle no termine, el event loop no puede procesar ningún otro callback, ninguna otra petición entrante, porque no hay ningún otro hilo disponible para atenderlas en paralelo. La confusión típica es pensar que 'no bloqueante' significa 'todo corre en paralelo', cuando en realidad solo el I/O delegado se beneficia de esa concurrencia.",
+      "respuestaModelo": "Porque Node ejecuta tu JavaScript en un único hilo. Lo de \"no bloqueante\" se refiere a la entrada y salida: leer un fichero, una petición de red, una consulta a la base de datos. Eso Node lo delega (a libuv y su grupo de hilos internos) y, mientras espera, el hilo principal queda libre para atender otras peticiones. Pero el trabajo de CPU que haces tú en JavaScript no se delega: un `while (true)` corre en ese mismo y único hilo que atiende todas las peticiones, así que mientras el bucle no acabe, no se atiende nada más. No hay otro hilo que lo haga en paralelo. La confusión típica es creer que \"no bloqueante\" significa \"todo en paralelo\", cuando solo se beneficia de eso la entrada y salida.",
       "test": {
         "enunciado": "¿Por qué un `while(true)` dentro de un handler bloquea todas las peticiones en Node?",
         "correcta": 1,
@@ -60,7 +60,7 @@
     },
     {
       "id": "node-event-loop-02",
-      "version": 1,
+      "version": 2,
       "pista": "node",
       "familia": "event-loop",
       "tipo": "fundamento",
@@ -68,7 +68,7 @@
       "nivelMinimo": "senior",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Cuáles son las fases del event loop (timers, poll, check, etc.) y dónde encajan `setImmediate` vs `process.nextTick`?",
+        "es": "¿Qué fases tiene el event loop de Node (timers, poll, check...) y dónde encajan `setImmediate` y `process.nextTick`?",
         "en": "What are the event loop phases (timers, poll, check, etc.) and where do `setImmediate` vs `process.nextTick` fit?"
       },
       "rubrica": {
@@ -79,7 +79,7 @@
           "Advierte que abusar de `process.nextTick` en bucle puede morir de inanición el event loop"
         ]
       },
-      "respuestaModelo": "El event loop de Node avanza por varias fases (timers, pending callbacks, poll, check, close callbacks, entre otras), cada una procesando un tipo distinto de callback pendiente. `setImmediate` está diseñado específicamente para ejecutarse en la fase 'check', justo después de que termine la fase de poll (donde se procesa I/O), lo que lo hace útil para 'ejecuta esto justo después de que termine el I/O de este ciclo'. `process.nextTick` no es una fase del loop en sí: su cola (junto con la de microtasks de promesas) se vacía por completo antes de pasar de una fase a la siguiente, con prioridad más alta que cualquier callback de cualquier fase. Esto es potente pero peligroso: si dentro de un callback de `process.nextTick` se programa otro `process.nextTick`, y así sucesivamente en bucle, el event loop nunca consigue avanzar a la siguiente fase, muriendo de inanición (starvation) y bloqueando efectivamente toda la aplicación aunque técnicamente no haya ningún bucle síncrono infinito visible.",
+      "respuestaModelo": "El event loop de Node va pasando por varias fases (timers, pending callbacks, poll, check, close callbacks...) y cada una atiende un tipo de callback pendiente. `setImmediate` se ejecuta en la fase check, justo después de poll, que es donde se atiende la entrada y salida: sirve para \"haz esto en cuanto termine el I/O de esta vuelta\". `process.nextTick` no es una fase: su cola, junto con la de las promesas, se vacía entera antes de pasar de una fase a la siguiente, así que va antes que cualquier otra cosa. Eso es potente pero peligroso: si dentro de un `nextTick` programas otro `nextTick`, y así sin parar, el event loop nunca llega a la siguiente fase y la aplicación se queda colgada, aunque no veas ningún bucle infinito en el código.",
       "test": {
         "enunciado": "En Node, ¿qué se ejecuta antes: `setImmediate` o `process.nextTick`?",
         "correcta": 0,

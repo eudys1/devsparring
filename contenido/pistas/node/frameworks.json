@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "node-frameworks-01",
-      "version": 1,
+      "version": 2,
       "pista": "node",
       "familia": "frameworks",
       "tipo": "razonamiento",
@@ -12,7 +12,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "Diferencia entre Express, Fastify y NestJS: ¿cuándo elegirías cada uno para un proyecto fullstack nuevo?",
+        "es": "¿Qué diferencia hay entre Express, Fastify y NestJS? ¿Cuándo elegirías cada uno para un proyecto nuevo?",
         "en": "Difference between Express, Fastify and NestJS: when would you choose each for a new fullstack project?"
       },
       "rubrica": {
@@ -23,8 +23,8 @@
           "Explica que NestJS aporta arquitectura opinada (inyección de dependencias, módulos, decoradores) a costa de más boilerplate y curva de aprendizaje"
         ]
       },
-      "respuestaModelo": "Express es minimalista y de bajo nivel: da control total sobre cómo estructurar la app, pero deja al equipo decidir organización de carpetas, validación y manejo de errores desde cero, lo que puede ir bien en proyectos pequeños o cuando el equipo ya tiene sus propias convenciones. Fastify prioriza rendimiento (menor overhead por petición) y trae validación de esquema integrada basada en JSON Schema, útil cuando la app necesita exprimir latencia o quiere validación declarativa sin depender de una librería externa. NestJS aporta una arquitectura opinada al estilo Angular, con inyección de dependencias, módulos y decoradores, lo que da mucha estructura y convención sobre configuración, ideal para equipos grandes que necesitan consistencia entre muchos desarrolladores, a costa de más boilerplate y una curva de aprendizaje más pronunciada que las otras dos opciones.",
-      "resumen": "Express: minimalista, todo lo decides tú. Fastify: rendimiento y validación con JSON Schema integrada. NestJS: estructura opinada con módulos e inyección de dependencias, útil en equipos grandes.",
+      "respuestaModelo": "Express es lo mínimo: te da control total pero te deja a ti decidir cómo organizar carpetas, validación y errores. Va bien en proyectos pequeños o si el equipo ya tiene sus costumbres. Fastify pone por delante el rendimiento (gasta menos por petición) y trae validación con JSON Schema incluida, así que encaja si te importa mucho la latencia o quieres validar sin añadir librerías. NestJS te da una arquitectura ya decidida al estilo de Angular, con inyección de dependencias, módulos y decoradores. Mucha estructura y muchas convenciones, ideal para equipos grandes que necesitan que todo el mundo programe igual, a cambio de escribir más código y de que cueste más aprenderlo.",
+      "resumen": "Express: mínimo, todo lo decides tú. Fastify: más rápido y con validación por JSON Schema incluida. NestJS: estructura muy marcada con módulos e inyección de dependencias, útil en equipos grandes.",
       "etiquetas": ["frameworks", "express", "fastify", "nestjs"],
       "fuentes": [
         {
@@ -39,7 +39,7 @@
     },
     {
       "id": "node-frameworks-02",
-      "version": 2,
+      "version": 3,
       "pista": "node",
       "familia": "frameworks",
       "tipo": "definicion",
@@ -47,7 +47,7 @@
       "nivelMinimo": "junior",
       "frecuencia": "alta",
       "texto": {
-        "es": "En tu API de Express, una ruta protegida se queda cargando para siempre tras añadir un middleware de autenticación. ¿Qué es un middleware en Express/Fastify y cómo se propaga (o se detiene) el manejo de una petición?",
+        "es": "En tu API de Express, una ruta protegida se queda cargando para siempre después de añadir un middleware de autenticación. ¿Qué es un middleware y cómo pasa (o se para) una petición por ellos?",
         "en": "In your Express API, a protected route hangs forever after you add an authentication middleware. What is middleware in Express/Fastify and how does request handling propagate (or stop)?"
       },
       "rubrica": {
@@ -61,7 +61,7 @@
           "Distingue los middlewares de error (4 argumentos `(err, req, res, next)` en Express)"
         ]
       },
-      "respuestaModelo": "Un middleware es una función que recibe `req`, `res` y una función `next`, y se ejecuta antes de que la petición llegue al handler final de la ruta. Si el middleware no llama a `next()` ni responde directamente con `res.send`/`res.json`, la petición se queda colgada indefinidamente, porque nada le indica a Express que debe continuar la cadena. El orden en que se registran los middlewares importa mucho: un middleware de autenticación tiene que registrarse antes que la ruta protegida a la que aplica, porque Express los ejecuta en el orden en que se declaran. Los middlewares de error se distinguen sintácticamente en Express por tener cuatro argumentos, `(err, req, res, next)`, y Express solo los invoca cuando algo llama a `next(err)` con un valor, saltándose todos los middlewares normales intermedios hasta llegar a uno de estos.",
+      "respuestaModelo": "Un middleware es una función que recibe `req`, `res` y `next`, y se ejecuta antes de llegar al handler de la ruta. Si no llama a `next()` y tampoco responde (con `res.send` o `res.json`), la petición se queda colgada para siempre, porque nadie le dice a Express que siga. Seguramente es lo que te pasa: algún camino de tu middleware de autenticación no hace ninguna de las dos cosas. El orden en que los registras importa: el de autenticación tiene que ir antes que la ruta que protege, porque Express los ejecuta en el orden en que los declaras. Y los middlewares de error se reconocen por tener cuatro argumentos, `(err, req, res, next)`: Express solo los llama cuando alguien hace `next(err)`, y se salta todos los normales que haya en medio.",
       "test": {
         "enunciado": "¿Qué pasa si un middleware de Express ni llama a `next()` ni responde?",
         "correcta": 3,
@@ -98,7 +98,7 @@
     },
     {
       "id": "node-frameworks-rate-limiting-contacto",
-      "version": 1,
+      "version": 2,
       "pista": "node",
       "familia": "frameworks",
       "tipo": "razonamiento",
@@ -106,7 +106,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "Implementa un middleware Express/Fastify de rate limiting para `POST /api/contact` que permita como máximo 5 peticiones por IP cada 10 minutos, usando Redis para que funcione con varias instancias. Debe devolver 429 con `Retry-After` cuando se supera el límite. Explica cómo lo estructurarías.",
+        "es": "Monta un middleware de Express o Fastify que limite `POST /api/contact` a 5 peticiones por IP cada 10 minutos, usando Redis para que funcione con varias instancias. Si se pasa del límite, 429 con `Retry-After`. ¿Cómo lo harías?",
         "en": "Implement an Express/Fastify rate-limiting middleware for `POST /api/contact` allowing at most 5 requests per IP every 10 minutes, using Redis so it works across instances. It must return 429 with `Retry-After` when the limit is exceeded. Explain how you'd structure it."
       },
       "rubrica": {
@@ -121,7 +121,7 @@
           "Distingue limitar por IP de limitar por usuario autenticado, y explica por qué limitar solo por IP falla si varios usuarios comparten IP (NAT/oficina)"
         ]
       },
-      "respuestaModelo": "El contador vive en Redis, con una clave por IP (por ejemplo `ratelimit:contact:<ip>`), para que el límite se respete igual con una instancia del servidor o con diez detrás de un balanceador. La operación de incrementar y comprobar el límite tiene que ser atómica: usar `INCR` seguido de `EXPIRE` solo en la primera petición de la ventana (comprobando si el valor devuelto por `INCR` es 1), o directamente un script Lua que haga ambas cosas en una sola operación atómica del lado de Redis, para evitar que dos peticiones casi simultáneas lean el mismo contador antes de que ninguna lo haya incrementado todavía. Cuando el contador supera 5 dentro de la ventana de 10 minutos, el middleware responde 429 con una cabecera `Retry-After` calculada a partir del TTL restante de la clave en Redis, no un número fijo inventado. Limitar únicamente por IP tiene un problema real: varios usuarios detrás del mismo NAT (una oficina, una red compartida) comparten IP pública y se limitarían entre sí injustamente, así que cuando el endpoint tiene usuarios autenticados conviene combinar el límite por IP con un límite adicional por usuario o API key.",
+      "respuestaModelo": "El contador va en Redis, con una clave por IP (por ejemplo `ratelimit:contact:<ip>`), para que el límite valga igual con un servidor o con diez detrás de un balanceador. Sumar y comprobar tiene que ser una sola operación que no se pueda partir: `INCR` y, solo si devuelve 1 (la primera de la ventana), `EXPIRE` de 10 minutos; o un script Lua que lo haga todo de una vez en Redis. Si no, dos peticiones casi a la vez pueden leer el mismo contador antes de que ninguna lo suba. Cuando el contador pasa de 5, respondes 429 con `Retry-After` calculado con lo que le queda de vida a la clave en Redis, no con un número inventado. Ojo con limitar solo por IP: varias personas en la misma oficina o red comparten IP y se bloquearían entre ellas. Si hay usuarios con sesión, combina el límite por IP con otro por usuario o por API key.",
       "etiquetas": ["frameworks", "rate-limiting", "redis"],
       "fuentes": [
         {
@@ -136,7 +136,7 @@
     },
     {
       "id": "node-frameworks-diseno-estructura-carpetas",
-      "version": 1,
+      "version": 2,
       "pista": "node",
       "familia": "frameworks",
       "tipo": "razonamiento",
@@ -144,7 +144,7 @@
       "nivelMinimo": "junior",
       "frecuencia": "media",
       "texto": {
-        "es": "Vas a estructurar una API pequeña en Express con rutas para usuarios y pedidos. ¿Cómo organizarías las carpetas y separarías responsabilidades?",
+        "es": "Vas a montar una API pequeña en Express con rutas de usuarios y de pedidos. ¿Cómo organizarías las carpetas y quién se encarga de qué?",
         "en": "You're structuring a small Express API with routes for users and orders. How would you organize the folders and separate responsibilities?"
       },
       "rubrica": {
@@ -158,8 +158,8 @@
           "Menciona dónde pondría la validación de entrada (como middleware, antes de llegar al controlador) para no repetirla en cada ruta"
         ]
       },
-      "respuestaModelo": "Una estructura razonable separa por capa y por recurso: `routes/usuarios.js` y `routes/pedidos.js` solo declaran las rutas y qué controlador llaman; `controllers/usuarios.js` y `controllers/pedidos.js` reciben la petición ya validada y coordinan la respuesta; y `services/` o `repos/` concentra el acceso a la base de datos, sin mezclar SQL o llamadas a Prisma directamente en el controlador. Si la lógica de negocio (calcular un total, decidir si un pedido se puede cancelar) vive en una función aparte del handler de Express, se puede testear llamándola directamente con datos de prueba, sin tener que levantar un servidor HTTP ni simular `req`/`res`. La validación de los datos de entrada (que el body tenga los campos esperados, con el tipo correcto) conviene ponerla como middleware que se ejecuta antes del controlador, para no repetir la misma comprobación en cada ruta que reciba un body parecido.",
-      "resumen": "Por capa y por recurso: `routes/` declara rutas, `controllers/` coordina la respuesta y `services/` o `repos/` accede a datos. La lógica de negocio fuera del controlador para poder probarla sola.",
+      "respuestaModelo": "Separaría por capa y por recurso. `routes/usuarios.js` y `routes/pedidos.js` solo dicen qué rutas hay y a qué controlador llaman. `controllers/` recibe la petición ya validada y prepara la respuesta. Y `services/` o `repos/` es el único sitio que habla con la base de datos, para no mezclar SQL o llamadas a Prisma en el controlador. Si la lógica de negocio (calcular un total, decidir si un pedido se puede cancelar) vive en una función aparte del handler de Express, la puedes probar llamándola directamente con datos de prueba, sin levantar un servidor ni simular `req` y `res`. Y la validación de lo que llega (que el body traiga los campos esperados con el tipo correcto) la pondría en un middleware antes del controlador, para no repetirla en cada ruta.",
+      "resumen": "Por capas y por recurso: `routes/` declara las rutas, `controllers/` prepara la respuesta y `services/` o `repos/` habla con la base de datos. La lógica de negocio fuera del controlador, para poder probarla sola.",
       "etiquetas": ["frameworks", "estructura", "express"],
       "fuentes": [
         {

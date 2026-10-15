@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "fund-criterio-tecnico-01",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "criterio-tecnico",
       "tipo": "comportamental",
@@ -12,7 +12,7 @@
       "nivelMinimo": "senior",
       "frecuencia": "baja",
       "texto": {
-        "es": "Heredas un módulo de código legado difícil de mantener. ¿Cómo decides si lo refactorizas de forma incremental o lo reescribes desde cero?",
+        "es": "Heredas un módulo antiguo difícil de mantener. ¿Cómo decides si lo vas arreglando poco a poco o lo reescribes de cero?",
         "en": "You inherit a hard-to-maintain legacy module. How do you decide whether to refactor it incrementally or rewrite it from scratch?"
       },
       "rubrica": {
@@ -26,7 +26,7 @@
           "Menciona cómo se ganaría confianza antes de tocar el módulo (characterization tests, métricas de uso real)"
         ]
       },
-      "respuestaModelo": "Por defecto prefiero refactorizar de forma incremental antes que reescribir desde cero, porque una reescritura completa arriesga perder comportamiento no documentado que los usuarios dependen de él sin saberlo, y ese tipo de proyectos tiende a alargarse indefinidamente mientras el sistema viejo sigue en producción. Antes de tocar nada, añadiría characterization tests que capturen el comportamiento actual, y miraría métricas de uso real para saber qué partes del módulo importan de verdad. Solo consideraría una reescritura completa si el módulo está realmente aislado, es pequeño, y el coste de entenderlo para refactorizarlo supera el de rehacerlo con las reglas de negocio ya claras.",
+      "respuestaModelo": "Por defecto prefiero arreglarlo poco a poco antes que reescribirlo. Una reescritura completa se arriesga a perder comportamientos que no están documentados y de los que dependen los usuarios sin saberlo, y esos proyectos tienden a alargarse eternamente mientras el sistema viejo sigue en producción. Antes de tocar nada, escribiría tests que capturen cómo se comporta ahora (characterization tests, tests que dejan por escrito lo que hace hoy), y miraría datos de uso real para saber qué partes importan de verdad. Solo me plantearía reescribirlo si el módulo está bien aislado, es pequeño, y entenderlo para arreglarlo cuesta más que rehacerlo con las reglas de negocio ya claras.",
       "etiquetas": ["criterio-tecnico", "legado"],
       "fuentes": [
         {
@@ -41,7 +41,7 @@
     },
     {
       "id": "fund-criterio-tecnico-02",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "criterio-tecnico",
       "tipo": "comportamental",
@@ -49,7 +49,7 @@
       "nivelMinimo": "senior",
       "frecuencia": "baja",
       "texto": {
-        "es": "El negocio pide una feature nueva pero tú ves deuda técnica que la haría más frágil. ¿Cómo planteas la conversación?",
+        "es": "Negocio pide una funcionalidad nueva, pero tú ves deuda técnica que la haría más frágil. ¿Cómo planteas la conversación?",
         "en": "The business wants a new feature but you see technical debt that would make it fragile. How do you frame that conversation?"
       },
       "rubrica": {
@@ -63,7 +63,7 @@
           "No presenta la deuda técnica como un bloqueo absoluto sin negociación"
         ]
       },
-      "respuestaModelo": "Planteo la conversación en términos de impacto de negocio, no de jerga técnica: en vez de decir \"hay deuda técnica\", explico qué riesgo concreto trae (por ejemplo, \"con el estado actual, esta feature va a tardar el doble en el futuro cada vez que la toquemos, o hay más probabilidad de un incidente en producción\"). Doy opciones en vez de un bloqueo: hacerlo ahora asumiendo y documentando el riesgo, o invertir un tiempo acotado en resolver la deuda antes de construir encima, dejando que el negocio decida con la información completa. No presento la deuda técnica como un veto absoluto, porque casi siempre hay un balance razonable entre velocidad y salud del código.",
+      "respuestaModelo": "La planteo hablando de impacto en el negocio, no con jerga. En vez de \"hay deuda técnica\", explico el riesgo concreto: \"tal y como está, cada vez que toquemos esto tardaremos el doble\", o \"hay más probabilidad de un fallo en producción\". Y llevo opciones, no un bloqueo: hacerlo ya, asumiendo el riesgo y dejándolo escrito, o dedicar un tiempo acotado a sanear antes de construir encima. Que decida negocio con toda la información. No vendo la deuda técnica como un veto, porque casi siempre hay un punto medio razonable entre ir rápido y tener el código sano.",
       "etiquetas": ["criterio-tecnico", "deuda-tecnica"],
       "fuentes": [
         {
@@ -78,7 +78,7 @@
     },
     {
       "id": "fund-criterio-tecnico-03",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "criterio-tecnico",
       "tipo": "comportamental",
@@ -86,7 +86,7 @@
       "nivelMinimo": "junior",
       "frecuencia": "baja",
       "texto": {
-        "es": "Explica qué es una API a alguien que no tiene conocimientos técnicos, en menos de un minuto.",
+        "es": "Explícale qué es una API a alguien que no sabe nada de programación, en menos de un minuto.",
         "en": "Explain what an API is to someone with no technical background, in under a minute."
       },
       "rubrica": {
@@ -101,7 +101,7 @@
           "Evita simplificar tanto que la explicación se vuelve incorrecta"
         ]
       },
-      "respuestaModelo": "Una API es como la carta de un restaurante: tú no entras a la cocina a preparar el plato, pides algo del menú y el camarero te trae el resultado, sin que necesites saber cómo se cocina por dentro. Un programa hace lo mismo con otro programa: le pide algo concreto (\"dame el clima de Madrid\") sin necesitar saber cómo ese otro programa lo calcula por dentro, y recibe una respuesta con el formato acordado. Comprobaría que la analogía quedó clara preguntando si tiene sentido antes de dar la explicación por terminada.",
+      "respuestaModelo": "Una API es como la carta de un restaurante. Tú no entras a la cocina a hacerte el plato: pides algo de la carta y el camarero te lo trae, sin que necesites saber cómo se cocina. Un programa hace lo mismo con otro: le pide algo concreto (\"dame el tiempo que hace en Madrid\") sin saber cómo lo calcula el otro por dentro, y recibe la respuesta en el formato que habían acordado. Y antes de dar la explicación por buena, le preguntaría si le ha quedado claro.",
       "etiquetas": ["criterio-tecnico", "comunicacion"],
       "fuentes": [
         {
@@ -115,7 +115,7 @@
     },
     {
       "id": "fund-criterio-tecnico-04",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "criterio-tecnico",
       "tipo": "comportamental",
@@ -123,7 +123,7 @@
       "nivelMinimo": "junior",
       "frecuencia": "media",
       "texto": {
-        "es": "Te hacen una pregunta técnica en la entrevista y no sabes la respuesta. ¿Qué haces?",
+        "es": "En la entrevista te hacen una pregunta técnica y no sabes la respuesta. ¿Qué haces?",
         "en": "You're asked a technical question in the interview and you don't know the answer. What do you do?"
       },
       "rubrica": {
@@ -137,7 +137,7 @@
           "Mantiene la calma y sigue participando en la conversación en vez de bloquearse"
         ]
       },
-      "respuestaModelo": "Admito que no lo sé, en vez de improvisar algo que suene bien pero sea incorrecto; un entrevistador nota la diferencia y prefiere honestidad. Si el concepto se parece a algo que sí conozco, lo digo en voz alta (\"no he trabajado con X directamente, pero por cómo funciona Y que sí conozco, imagino que...\"), porque eso muestra cómo razono aunque no tenga el dato exacto. Y explico cómo lo verificaría en un caso real: documentación oficial, código fuente, o preguntando a alguien del equipo con más experiencia en esa área, en vez de quedarme bloqueado.",
+      "respuestaModelo": "Digo que no lo sé, en vez de inventarme algo que suene bien pero esté mal: el entrevistador lo nota y prefiere la honestidad. Si se parece a algo que sí conozco, lo razono en voz alta (\"con X no he trabajado, pero por cómo funciona Y, que sí conozco, imagino que...\"), porque así ve cómo pienso aunque no tenga el dato exacto. Y cuento cómo lo comprobaría en un caso real: la documentación oficial, el código fuente o preguntar a alguien del equipo que sepa más de eso, en vez de quedarme bloqueado.",
       "etiquetas": ["criterio-tecnico", "entrevista"],
       "fuentes": [
         {
@@ -151,7 +151,7 @@
     },
     {
       "id": "fund-criterio-tecnico-05",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "criterio-tecnico",
       "tipo": "comportamental",
@@ -159,7 +159,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "baja",
       "texto": {
-        "es": "Tienes que elegir entre dos librerías para resolver el mismo problema (por ejemplo, gestión de estado). ¿Qué criterios usas para decidir?",
+        "es": "Tienes que elegir entre dos librerías que resuelven lo mismo (por ejemplo, para gestionar el estado). ¿En qué te fijas para decidir?",
         "en": "You have to choose between two libraries that solve the same problem (e.g. state management). What criteria do you use to decide?"
       },
       "rubrica": {
@@ -171,7 +171,7 @@
           "Reconoce que la decisión correcta depende del contexto del equipo y del proyecto, no de una preferencia universal"
         ]
       },
-      "respuestaModelo": "Miro criterios objetivos antes que preferencia personal: si el proyecto tiene mantenimiento activo (commits y releases recientes, issues respondidos), el tamaño que añade al bundle, la curva de aprendizaje para el equipo actual, y qué tan bien encaja con el stack que ya usamos. También pesa la comunidad y documentación disponible, porque afecta cuánto tiempo se pierde resolviendo dudas. La decisión final depende del contexto: para un equipo pequeño con poco tiempo, la opción más simple de aprender puede ganar aunque la otra sea técnicamente más potente; no hay una respuesta universal, solo la que mejor encaja con las restricciones reales del proyecto.",
+      "respuestaModelo": "Miro cosas objetivas antes que mis gustos: si está mantenida (commits y versiones recientes, issues que se contestan), cuánto pesa en el bundle, cuánto le va a costar aprenderla al equipo que hay y si encaja con lo que ya usamos. También cuenta la comunidad y la documentación, porque de eso depende cuánto tiempo pierdes resolviendo dudas. Y al final depende del contexto: para un equipo pequeño con poco tiempo, la más fácil de aprender puede ganar aunque la otra sea más potente. No hay una respuesta que valga para todo, solo la que mejor encaja con lo que tiene ese proyecto.",
       "etiquetas": ["criterio-tecnico"],
       "fuentes": [
         {

@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "datos-sql-01",
-      "version": 1,
+      "version": 2,
       "pista": "datos",
       "familia": "sql",
       "tipo": "definicion",
@@ -12,7 +12,7 @@
       "nivelMinimo": "junior",
       "frecuencia": "alta",
       "texto": {
-        "es": "Explícame los tipos de JOIN (INNER, LEFT, RIGHT, FULL OUTER) y pon un ejemplo de cuándo usarías cada uno.",
+        "es": "Explícame los tipos de JOIN (INNER, LEFT, RIGHT y FULL OUTER) con un ejemplo de cuándo usarías cada uno.",
         "en": "Explain the types of JOIN (INNER, LEFT, RIGHT, FULL OUTER) with an example of when you'd use each."
       },
       "rubrica": {
@@ -27,7 +27,7 @@
           "Explica qué pasa con las columnas sin match en un FULL OUTER JOIN y cuándo tiene sentido usarlo"
         ]
       },
-      "respuestaModelo": "`INNER JOIN` solo trae filas que tienen coincidencia en ambas tablas. `LEFT JOIN` trae todas las filas de la tabla izquierda aunque no haya coincidencia en la derecha, rellenando con NULL. `RIGHT JOIN` es el espejo del LEFT pero casi nadie lo usa, se prefiere reescribir como LEFT cambiando el orden. `FULL OUTER JOIN` combina ambos lados: trae todo, con NULL donde falte. Ejemplo típico: `usuarios LEFT JOIN pedidos` para ver todos los usuarios y sus pedidos si tienen, frente a `usuarios INNER JOIN pedidos` para quedarte solo con los que sí compraron.",
+      "respuestaModelo": "`INNER JOIN` solo trae las filas que tienen pareja en las dos tablas. `LEFT JOIN` trae todas las de la tabla de la izquierda, tengan pareja o no, y rellena con NULL lo que falte. `RIGHT JOIN` es lo mismo al revés, y casi nadie lo usa: se prefiere escribirlo como LEFT cambiando el orden de las tablas. `FULL OUTER JOIN` trae todo de los dos lados, con NULL donde falte la pareja. Ejemplo típico: `usuarios LEFT JOIN pedidos` para ver a todos los usuarios con sus pedidos si los tienen, frente a `usuarios INNER JOIN pedidos` para quedarte solo con los que han comprado.",
       "test": {
         "enunciado": "Quieres listar todos los usuarios, tengan o no pedidos. ¿Qué JOIN usas entre `usuarios` y `pedidos`?",
         "correcta": 1,
@@ -64,7 +64,7 @@
     },
     {
       "id": "datos-sql-02",
-      "version": 1,
+      "version": 2,
       "pista": "datos",
       "familia": "sql",
       "tipo": "definicion",
@@ -72,7 +72,7 @@
       "nivelMinimo": "junior",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Qué diferencia hay entre WHERE y HAVING en una consulta con GROUP BY?",
+        "es": "¿Qué diferencia hay entre `WHERE` y `HAVING` en una consulta con `GROUP BY`?",
         "en": "What's the difference between WHERE and HAVING in a query with GROUP BY?"
       },
       "rubrica": {
@@ -86,7 +86,7 @@
           "Explica que se pueden combinar en la misma query (WHERE reduce filas primero, HAVING filtra el resultado agregado después) y por qué eso es más eficiente que filtrar todo con HAVING"
         ]
       },
-      "respuestaModelo": "`WHERE` filtra filas individuales ANTES de que se agrupen, así que no puede usar funciones de agregación como `COUNT` o `SUM`. `HAVING` filtra los grupos DESPUÉS de calcular la agregación, por ejemplo `GROUP BY customer_id HAVING COUNT(*) > 5` para quedarte con clientes con más de 5 pedidos. Conviene usar `WHERE` para descartar filas cuanto antes (reduce el trabajo de agrupar) y reservar `HAVING` solo para condiciones que dependen del resultado agregado. Confundir los dos es un error clásico de sintaxis en entrevistas de nivel junior.",
+      "respuestaModelo": "`WHERE` filtra filas sueltas ANTES de agruparlas, así que no puede usar funciones como `COUNT` o `SUM`. `HAVING` filtra los grupos DESPUÉS de calcular esas sumas o cuentas: por ejemplo, `GROUP BY customer_id HAVING COUNT(*) > 5` te deja solo los clientes con más de 5 pedidos. Usa `WHERE` para quitar filas cuanto antes, que así se agrupa menos, y deja `HAVING` solo para condiciones que dependen del resultado agrupado. Confundirlos es un error típico en entrevistas de nivel junior.",
       "test": {
         "enunciado": "¿Qué diferencia hay entre WHERE y HAVING en una consulta con GROUP BY?",
         "correcta": 1,
@@ -123,7 +123,7 @@
     },
     {
       "id": "datos-sql-03",
-      "version": 1,
+      "version": 2,
       "pista": "datos",
       "familia": "sql",
       "tipo": "comportamental",
@@ -131,7 +131,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "Cuéntame de una query lenta que optimizaste en producción. ¿Cómo la encontraste y qué cambiaste exactamente?",
+        "es": "Cuéntame una consulta lenta que optimizaras en producción. ¿Cómo la encontraste y qué cambiaste exactamente?",
         "en": "Tell me about a slow query you optimized in production. How did you find it and what exactly did you change?"
       },
       "rubrica": {
@@ -147,7 +147,7 @@
           "Reflexiona sobre cómo evitaría que el problema volviera a aparecer (alertas, revisión de queries en PR)"
         ]
       },
-      "respuestaModelo": "Una respuesta que aprueba sigue el formato STAR: describe el síntoma (un endpoint lento, una tarea que empezó a tardar minutos), cómo lo localizó con evidencia real (slow query log de Postgres, `EXPLAIN ANALYZE`, o una traza de APM como Datadog/New Relic) en vez de suponer, y el cambio exacto que hizo: un índice compuesto nuevo, eliminar un N+1, reescribir un `OFFSET` grande por keyset pagination, o desnormalizar un campo calculado. Cierra con el resultado medido (de 3s a 80ms, de 500 a 20 queries) y qué puso en marcha para detectar regresiones similares antes de que lleguen a producción.",
+      "respuestaModelo": "Una buena respuesta sigue el formato STAR. Cuenta el síntoma (un endpoint lento, una tarea que de repente tardaba minutos), cómo encontraste el culpable con pruebas y no a ojo (el log de consultas lentas de Postgres, `EXPLAIN ANALYZE`, o una traza en un APM como Datadog o New Relic), y qué cambiaste exactamente: un índice compuesto nuevo, quitar un N+1, cambiar un `OFFSET` enorme por paginación con cursor, o guardar un valor ya calculado. Cierra con el resultado medido (de 3 segundos a 80 ms, de 500 consultas a 20) y con lo que pusiste para pillar problemas parecidos antes de que lleguen a producción.",
       "etiquetas": ["sql", "rendimiento", "comportamental"],
       "fuentes": [
         {
@@ -162,7 +162,7 @@
     },
     {
       "id": "datos-sql-04",
-      "version": 1,
+      "version": 2,
       "pista": "datos",
       "familia": "sql",
       "tipo": "razonamiento",
@@ -170,7 +170,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "Tienes las tablas `customers(id, name)`, `orders(id, customer_id, created_at, status)` y `order_items(id, order_id, product_id, quantity, unit_price)`. Escribe la consulta para los 5 clientes que más han gastado en pedidos completados en los últimos 30 días, incluyendo a los que no tienen pedidos (deben salir con 0, no desaparecer).",
+        "es": "Tienes las tablas `customers(id, name)`, `orders(id, customer_id, created_at, status)` y `order_items(id, order_id, product_id, quantity, unit_price)`. Escribe la consulta de los 5 clientes que más han gastado en pedidos completados en los últimos 30 días, incluidos los que no tienen pedidos (tienen que salir con 0, no desaparecer).",
         "en": "You have tables `customers(id, name)`, `orders(id, customer_id, created_at, status)` and `order_items(id, order_id, product_id, quantity, unit_price)`. Write the query for the top 5 customers by spend on completed orders in the last 30 days, including customers with no orders (they should show 0, not disappear)."
       },
       "contexto": "```sql\n-- Tablas disponibles\ncustomers(id, name)\norders(id, customer_id, created_at, status)\norder_items(id, order_id, product_id, quantity, unit_price)\n```",
@@ -203,7 +203,7 @@
     },
     {
       "id": "datos-sql-05",
-      "version": 2,
+      "version": 3,
       "pista": "datos",
       "familia": "sql",
       "tipo": "review",
@@ -211,7 +211,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "Este reporte debe listar a todos los clientes con lo que han gastado en los últimos 30 días, también a los que no han gastado nada (con 0). Hay un fallo. ¿Cuál y cómo lo arreglas?",
+        "es": "Este informe tiene que listar a todos los clientes con lo que han gastado en los últimos 30 días, también a los que no han gastado nada (con 0). Hay un fallo. ¿Cuál es y cómo lo arreglas?",
         "en": "This report must list every customer with what they spent in the last 30 days, including those who spent nothing (with 0). There is a bug. What is it and how do you fix it?"
       },
       "contexto": "```sql\nSELECT\n  c.id,\n  c.name,\n  COALESCE(SUM(oi.quantity * oi.unit_price), 0) AS total_spent\nFROM customers c\nLEFT JOIN orders o ON o.customer_id = c.id\nLEFT JOIN order_items oi ON oi.order_id = o.id\nWHERE o.created_at >= NOW() - INTERVAL '30 days'\n  AND o.status = 'completed'\nGROUP BY c.id, c.name\nORDER BY total_spent DESC;\n```",
@@ -227,7 +227,7 @@
         ]
       },
       "respuestaModelo": "El fallo está en el `WHERE`: filtra por `o.created_at` y `o.status`, columnas del lado derecho del `LEFT JOIN`. Para un cliente sin pedidos en el periodo, esas columnas valen `NULL`, la condición da falso y la fila se descarta, así que el `LEFT JOIN` acaba comportándose como un `INNER JOIN` y los clientes que no han gastado nada no salen. Se arregla moviendo las dos condiciones al `ON` del JOIN con `orders` (`LEFT JOIN orders o ON o.customer_id = c.id AND o.status = 'completed' AND o.created_at >= NOW() - INTERVAL '30 days'`), o filtrando los pedidos en una subconsulta antes de unirlos. Con eso el `COALESCE(..., 0)`, que ya estaba bien, devuelve el 0 que pedía el reporte.",
-      "resumen": "El WHERE sobre columnas de orders descarta las filas en NULL y convierte el LEFT JOIN en INNER: los clientes sin pedidos desaparecen. Las condiciones van en el ON.",
+      "resumen": "El `WHERE` sobre columnas de `orders` tira las filas con NULL y convierte el LEFT JOIN en un INNER: los clientes sin pedidos desaparecen. Esas condiciones van en el `ON`.",
       "etiquetas": ["sql", "joins", "review", "indices"],
       "fuentes": [
         {

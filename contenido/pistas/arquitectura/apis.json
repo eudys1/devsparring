@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "arq-apis-01",
-      "version": 1,
+      "version": 2,
       "pista": "arquitectura",
       "familia": "apis",
       "tipo": "diseno",
@@ -12,7 +12,7 @@
       "nivelMinimo": "senior",
       "frecuencia": "media",
       "texto": {
-        "es": "Diseña el rate limiting de una API pública: ¿qué algoritmo usarías y por qué, y a qué nivel lo aplicarías, usuario, IP o API key?",
+        "es": "Diseña el límite de peticiones (rate limiting) de una API pública: ¿qué algoritmo usarías y por qué? ¿Lo aplicarías por usuario, por IP o por API key?",
         "en": "Design rate limiting for a public API: what algorithm would you use and why, and at what level (user, IP, API key)?"
       },
       "rubrica": {
@@ -28,7 +28,7 @@
           "Especifica la respuesta: 429 con cabeceras Retry-After y X-RateLimit-Remaining"
         ]
       },
-      "respuestaModelo": "Token bucket es el algoritmo por defecto razonable para una API pública: permite ráfagas cortas (el usuario puede gastar varias peticiones de golpe si no las ha usado antes) y se implementa en O(1) por usuario con un script Lua atómico en Redis. Leaky bucket encaja mejor cuando hace falta proteger un sistema downstream frágil con una tasa de salida constante, sin permitir ráfagas. El límite debería aplicarse por API key o usuario autenticado, no solo por IP, porque varios usuarios detrás de un NAT corporativo comparten la misma IP y se penalizarían entre sí injustamente; IP sirve como límite adicional para tráfico no autenticado. Al superar el límite, la API responde 429 con cabeceras `Retry-After` (cuándo puede reintentar) y `X-RateLimit-Remaining` (cuántas peticiones le quedan), para que el cliente pueda comportarse bien.",
+      "respuestaModelo": "Para una API pública, lo razonable por defecto es el token bucket: cada usuario tiene un cubo de fichas que se va rellenando, y eso le deja gastar varias peticiones de golpe si no las había usado (ráfagas cortas). Se monta fácil y barato con un script Lua en Redis que haga todo de una vez. El leaky bucket va mejor cuando tienes que proteger a un sistema de detrás que es frágil y necesita un ritmo constante, sin ráfagas. El límite lo pondría por API key o por usuario con sesión, no solo por IP: varias personas detrás de la red de una empresa comparten IP y se bloquearían entre ellas. La IP sirve como límite extra para quien no está identificado. Al pasarse, la API contesta 429 con `Retry-After` (cuándo puede volver) y `X-RateLimit-Remaining` (cuántas le quedan), para que el cliente pueda portarse bien.",
       "etiquetas": ["arquitectura", "rate-limiting", "apis", "redis"],
       "fuentes": [
         {
@@ -43,7 +43,7 @@
     },
     {
       "id": "arq-apis-02",
-      "version": 1,
+      "version": 2,
       "pista": "arquitectura",
       "familia": "apis",
       "tipo": "fundamento",
@@ -51,7 +51,7 @@
       "nivelMinimo": "senior",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Qué es la idempotencia en el diseño de una API y por qué un endpoint de 'cobrar pago' la necesita aunque use POST?",
+        "es": "¿Qué es la idempotencia en una API y por qué un endpoint de \"cobrar pago\" la necesita aunque sea un POST?",
         "en": "What is idempotency in API design, and why does a 'charge payment' endpoint need it even though it uses POST?"
       },
       "rubrica": {
@@ -66,7 +66,7 @@
           "Explica que en reintentos con la misma key el servidor devuelve el resultado guardado sin volver a ejecutar la operación"
         ]
       },
-      "respuestaModelo": "Idempotencia significa que repetir la misma operación produce el mismo resultado que hacerla una sola vez, sin efectos secundarios adicionales. POST no es idempotente por definición del protocolo HTTP: cada llamada puede crear un nuevo recurso o efecto. El problema real es que si el cliente reintenta un POST tras un timeout de red, sin saber si el primer intento llegó a completarse en el servidor, puede acabar cobrando dos veces por el mismo pedido. La solución es que el cliente genere una `Idempotency-Key` única por operación (un UUID, por ejemplo) y la envíe en la petición; el servidor la guarda junto con el resultado de la primera ejecución, y si llega otra petición con la misma key, devuelve el resultado guardado sin volver a ejecutar el cobro.",
+      "respuestaModelo": "Idempotencia es que hacer lo mismo dos veces deje todo igual que hacerlo una vez, sin efectos de más. POST, por definición de HTTP, no lo es: cada llamada puede crear algo nuevo. El problema real llega cuando el cliente reintenta un POST tras un timeout, sin saber si el primero llegó a hacerse en el servidor: puede acabar cobrando dos veces el mismo pedido. La solución es que el cliente genere una `Idempotency-Key` única para esa operación (un UUID, por ejemplo) y la mande en la petición. El servidor la guarda junto con el resultado de la primera vez y, si vuelve a llegar la misma clave, devuelve ese resultado guardado sin volver a cobrar.",
       "test": {
         "enunciado": "Un cliente reintenta un POST de «cobrar pago» tras un timeout. ¿Cómo evitas cobrar dos veces?",
         "correcta": 2,
@@ -103,7 +103,7 @@
     },
     {
       "id": "arq-apis-03",
-      "version": 1,
+      "version": 2,
       "pista": "arquitectura",
       "familia": "apis",
       "tipo": "diseno",
@@ -111,7 +111,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "alta",
       "texto": {
-        "es": "Diseña las rutas, parámetros de query y forma de la respuesta JSON del endpoint GET /api/orders para un panel de administración con potencialmente millones de filas, con paginación, filtro por estado y por rango de fechas, y ordenación.",
+        "es": "Diseña las rutas, los parámetros y la respuesta JSON de `GET /api/orders` para un panel de administración que puede tener millones de pedidos, con paginación, filtro por estado y por fechas, y ordenación.",
         "en": "Design the routes, query parameters and JSON response shape for the GET /api/orders endpoint of an admin panel with potentially millions of rows, supporting pagination, status filter, date range filter, and sorting."
       },
       "rubrica": {
@@ -142,7 +142,7 @@
     },
     {
       "id": "arq-apis-04",
-      "version": 1,
+      "version": 2,
       "pista": "arquitectura",
       "familia": "apis",
       "tipo": "diseno",
@@ -150,7 +150,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "Implementa un middleware de rate limiting para el endpoint público POST /api/contact que permita como máximo 5 peticiones por IP cada 10 minutos, usando Redis como almacén compartido entre varias instancias del servidor.",
+        "es": "Escribe un middleware que limite el endpoint público `POST /api/contact` a 5 peticiones por IP cada 10 minutos, guardando el contador en Redis para que lo compartan varias instancias del servidor.",
         "en": "Implement a rate-limiting middleware for the public endpoint POST /api/contact allowing at most 5 requests per IP every 10 minutes, using Redis as a shared store across multiple server instances."
       },
       "rubrica": {
@@ -180,7 +180,7 @@
     },
     {
       "id": "arq-apis-diseno-todo-crud",
-      "version": 1,
+      "version": 2,
       "pista": "arquitectura",
       "familia": "apis",
       "tipo": "razonamiento",
@@ -188,7 +188,7 @@
       "nivelMinimo": "junior",
       "frecuencia": "media",
       "texto": {
-        "es": "Diseña la API REST para gestionar una lista de tareas: crear, listar, marcar como hecha y borrar una tarea. ¿Qué rutas y métodos HTTP usarías?",
+        "es": "Diseña la API REST de una lista de tareas: crear, listar, marcar como hecha y borrar. ¿Qué rutas y métodos HTTP usarías?",
         "en": "Design the REST API to manage a to-do list: create, list, mark as done, and delete a task. What routes and HTTP methods would you use?"
       },
       "rubrica": {
@@ -202,8 +202,8 @@
           "Menciona qué código de estado devolvería cada operación (201 al crear, 200 al listar o marcar, 204 al borrar, 404 si el id no existe)"
         ]
       },
-      "respuestaModelo": "Cuatro rutas sobre el recurso `tareas`: `POST /tareas` para crear (devuelve 201 y la tarea creada), `GET /tareas` para listar (200 con el array), `PATCH /tareas/:id` para marcar como hecha (200 con la tarea actualizada) y `DELETE /tareas/:id` para borrar (204 sin contenido). `PATCH` encaja mejor que `PUT` para marcar como hecha porque solo se está cambiando un campo (`completada: true`); `PUT` implica reemplazar el recurso entero, y obligaría a reenviar título, descripción y el resto de campos solo para cambiar uno. Si `:id` no corresponde a ninguna tarea, tanto `PATCH` como `DELETE` deberían devolver 404 en vez de un 200 silencioso o un error genérico, para que el cliente sepa exactamente qué pasó.",
-      "resumen": "Cuatro rutas sobre `tareas`: POST crea (201), GET lista (200), PATCH `/tareas/:id` marca como hecha (200) y DELETE borra (204). PATCH y no PUT, porque solo cambia un campo.",
+      "respuestaModelo": "Cuatro rutas sobre `tareas`: `POST /tareas` para crear (201 y la tarea creada), `GET /tareas` para listar (200 con la lista), `PATCH /tareas/:id` para marcarla como hecha (200 con la tarea actualizada) y `DELETE /tareas/:id` para borrarla (204, sin contenido). Para marcar como hecha va mejor `PATCH` que `PUT`, porque solo cambias un campo (`completada: true`); `PUT` es sustituir la tarea entera, y te obligaría a mandar otra vez el título, la descripción y todo lo demás solo para cambiar uno. Y si el `:id` no existe, `PATCH` y `DELETE` deberían devolver 404, no un 200 como si nada ni un error genérico, para que el cliente sepa exactamente qué pasó.",
+      "resumen": "Cuatro rutas sobre `tareas`: POST crea (201), GET lista (200), PATCH `/tareas/:id` marca como hecha (200) y DELETE borra (204). PATCH y no PUT, porque solo cambias un campo.",
       "etiquetas": ["arquitectura", "diseno-de-api", "rest"],
       "fuentes": [
         {

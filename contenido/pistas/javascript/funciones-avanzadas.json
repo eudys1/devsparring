@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "js-funciones-avanzadas-01",
-      "version": 2,
+      "version": 3,
       "pista": "javascript",
       "familia": "funciones-avanzadas",
       "tipo": "definicion",
@@ -12,7 +12,7 @@
       "nivelMinimo": "junior",
       "frecuencia": "alta",
       "texto": {
-        "es": "En una revisión alguien dice que `pedidos.map(formatear)` funciona \"porque las funciones son de primera clase\". ¿Qué es una \"first class function\" y qué es una \"higher order function\"? Da un ejemplo de cada una.",
+        "es": "En una revisión alguien dice que `pedidos.map(formatear)` funciona \"porque las funciones son de primera clase\". ¿Qué es una \"first class function\" y qué es una \"higher order function\"? Pon un ejemplo de cada una.",
         "en": "In a review someone says `orders.map(format)` works \"because functions are first-class\". What is a \"first class function\" and what is a \"higher order function\"? Give an example of each."
       },
       "rubrica": {
@@ -27,7 +27,7 @@
           "Explica que toda higher order function depende de que el lenguaje trate las funciones como first class"
         ]
       },
-      "respuestaModelo": "Que JavaScript tenga \"first class functions\" significa que las funciones se tratan como cualquier otro valor: se pueden guardar en una variable, pasar como argumento, devolver desde otra función, o meter en un array. Una \"higher order function\" es una función que recibe una o más funciones como argumento, devuelve una función, o ambas cosas; `Array.prototype.map` es el ejemplo más común, porque recibe una función callback como argumento. Un ejemplo propio de higher order que además ilustra devolver una función es `crearMultiplicador(factor)`, que devuelve una nueva función `x => x * factor`. Las higher order functions solo son posibles porque el lenguaje trata las funciones como first class: sin eso no se podrían pasar como argumento en primer lugar.",
+      "respuestaModelo": "Que las funciones sean \"first class\" quiere decir que en JavaScript una función es un valor más: la puedes guardar en una variable, pasarla a otra función, devolverla o meterla en un array. Una \"higher order function\" es una función que recibe funciones, devuelve una función, o las dos cosas. El ejemplo de todos los días es `map`: recibe la función que aplica a cada elemento, como tu `formatear`. Un ejemplo de devolver una función: `crearMultiplicador(factor)`, que devuelve `x => x * factor`. Lo uno lleva a lo otro: si las funciones no fueran valores, no podrías pasárselas a `map`.",
       "test": {
         "enunciado": "¿Qué es una higher order function?",
         "correcta": 0,

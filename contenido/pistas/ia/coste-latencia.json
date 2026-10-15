@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "ia-coste-latencia-01",
-      "version": 1,
+      "version": 2,
       "pista": "ia",
       "familia": "coste-latencia",
       "tipo": "definicion",
@@ -12,7 +12,7 @@
       "nivelMinimo": "junior",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Cómo se factura el uso de un LLM vía API?",
+        "es": "¿Cómo se cobra el uso de un LLM por API?",
         "en": "How is LLM API usage billed?"
       },
       "rubrica": {
@@ -23,7 +23,7 @@
           "Menciona que el precio varía según el tamaño o versión del modelo"
         ]
       },
-      "respuestaModelo": "Normalmente se factura por tokens de entrada y de salida por separado, con precios distintos entre ambos: la salida suele costar más por token que la entrada, porque generarla requiere más cómputo que solo procesarla. Además el precio varía bastante según el tamaño o la versión del modelo elegido: un modelo más grande y capaz cuesta más por token que uno pequeño pensado para tareas sencillas. Por eso el coste de una función con LLM depende tanto de cuánto contexto se manda como de cuánto texto se le pide generar.",
+      "respuestaModelo": "Normalmente por tokens (trocitos de texto), contando aparte los de entrada y los de salida, y con precios distintos: la salida suele costar más por token, porque generarla cuesta más que leer. Además el precio cambia mucho según el modelo: uno grande y potente cuesta bastante más por token que uno pequeño pensado para tareas sencillas. Por eso lo que te cuesta una función con IA depende tanto de cuánto contexto le mandas como de cuánto texto le pides que escriba.",
       "test": {
         "enunciado": "¿Cómo se suele facturar el uso de un LLM por API?",
         "correcta": 2,
@@ -60,7 +60,7 @@
     },
     {
       "id": "ia-coste-latencia-02",
-      "version": 1,
+      "version": 2,
       "pista": "ia",
       "familia": "coste-latencia",
       "tipo": "razonamiento",
@@ -68,7 +68,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Por qué la latencia de un LLM importa más en unos productos que en otros, y cómo se mitiga en UX?",
+        "es": "¿Por qué lo que tarda un LLM en contestar importa más en unos productos que en otros? ¿Cómo lo disimulas en la interfaz?",
         "en": "Why does LLM latency matter more in some products than others, and how is it mitigated in UX?"
       },
       "rubrica": {
@@ -81,7 +81,7 @@
           "Menciona respuestas parciales o precalculadas como alternativa"
         ]
       },
-      "respuestaModelo": "En un chat conversacional la sensación de estar hablando con algo 'vivo' importa mucho, así que cualquier pausa larga se nota de inmediato y afecta a la percepción del producto. En un proceso batch que corre en background, en cambio, importa mucho más el rendimiento total (throughput) que la latencia de una llamada individual, porque nadie está esperando delante de la pantalla. La mitigación habitual en interfaces conversacionales es el streaming, mostrar el texto token a token en vez de esperar la respuesta completa, junto con indicadores de progreso, y en algunos casos mostrar un resultado parcial o precalculado mientras se termina de generar el resto.",
+      "respuestaModelo": "En un chat, la sensación de estar hablando con algo vivo importa mucho: cualquier pausa larga se nota al momento y estropea la experiencia. En un proceso que corre en segundo plano, en cambio, importa más cuánto trabajo sale en total que lo que tarda cada llamada, porque nadie está esperando delante de la pantalla. En un chat, lo habitual es el streaming (ir enseñando el texto según se genera en vez de esperar a tenerlo entero), junto con indicadores de que está trabajando y, a veces, enseñar algo parcial o ya preparado mientras termina el resto.",
       "etiquetas": ["latencia", "ux"],
       "fuentes": [
         {
@@ -96,7 +96,7 @@
     },
     {
       "id": "ia-coste-latencia-03",
-      "version": 2,
+      "version": 3,
       "pista": "ia",
       "familia": "coste-latencia",
       "tipo": "definicion",
@@ -104,7 +104,7 @@
       "nivelMinimo": "junior",
       "frecuencia": "alta",
       "texto": {
-        "es": "Los usuarios abandonan tu chat porque la respuesta tarda ocho segundos en aparecer entera. ¿Qué es el streaming de respuestas de un LLM y por qué ayuda?",
+        "es": "La gente abandona tu chat porque la respuesta tarda ocho segundos en salir entera. ¿Qué es el streaming de respuestas y por qué ayuda?",
         "en": "Users abandon your chat because the answer takes eight seconds to appear in full. What is LLM response streaming and why does it help?"
       },
       "rubrica": {
@@ -115,7 +115,7 @@
           "Menciona la implicación en el frontend (renderizado progresivo)"
         ]
       },
-      "respuestaModelo": "El streaming permite que la API vaya devolviendo tokens a medida que se generan, en vez de esperar a que el modelo termine toda la respuesta para enviarla de una vez. Esto reduce la latencia percibida por el usuario, porque empieza a ver texto casi de inmediato aunque la latencia total, el tiempo hasta la última palabra, sea exactamente la misma. En el frontend implica renderizar el texto de forma progresiva a medida que llegan los fragmentos, algo que la mayoría de frameworks de UI modernos soportan sin demasiada complicación.",
+      "respuestaModelo": "Con streaming, la API te va mandando los tokens según el modelo los genera, en vez de esperar a tener la respuesta entera para mandarla de golpe. El usuario empieza a ver texto casi al momento, aunque el tiempo total hasta la última palabra sea exactamente el mismo: lo que baja es la espera que siente. En el frontend solo tienes que ir pintando el texto a medida que llegan los trozos, algo que casi cualquier framework moderno hace sin complicarse.",
       "test": {
         "enunciado": "¿Qué mejora el streaming de las respuestas de un LLM?",
         "correcta": 0,
@@ -152,7 +152,7 @@
     },
     {
       "id": "ia-coste-latencia-04",
-      "version": 1,
+      "version": 2,
       "pista": "ia",
       "familia": "coste-latencia",
       "tipo": "fundamento",
@@ -160,7 +160,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Qué es el prompt caching y cuándo ahorra dinero de verdad?",
+        "es": "¿Qué es el prompt caching y cuándo te ahorra dinero de verdad?",
         "en": "What is prompt caching and when does it actually save money?"
       },
       "rubrica": {
@@ -173,8 +173,8 @@
           "Aclara que ahorra cuando el mismo prefijo se reusa muchas veces en poco tiempo, no cuando cada prompt es distinto"
         ]
       },
-      "respuestaModelo": "El prompt caching permite marcar una parte fija del prompt, por ejemplo un system prompt largo o un documento que se repite en varias llamadas, para que el proveedor la reutilice en vez de reprocesarla desde cero cada vez, cobrando una fracción del precio normal en esas relecturas. Ahorra de verdad cuando el mismo prefijo de contexto se reusa muchas veces en un periodo corto, como una conversación larga con el mismo system prompt o una app que consulta el mismo documento base repetidamente. No aporta nada si cada prompt es prácticamente distinto al anterior, porque entonces no hay nada que cachear de forma efectiva.",
-      "resumen": "Marcar una parte fija del prompt para que el proveedor la reutilice y la cobre mucho más barata en las relecturas. Ahorra cuando el mismo prefijo largo se repite en poco tiempo; si cambia, nada.",
+      "respuestaModelo": "El prompt caching te deja marcar una parte fija del prompt, por ejemplo unas instrucciones de sistema largas o un documento que mandas en muchas llamadas, para que el proveedor la reutilice en vez de procesarla otra vez desde cero, y te la cobre a una fracción del precio. Ahorra de verdad cuando ese mismo principio del prompt se repite muchas veces en poco tiempo: una conversación larga con las mismas instrucciones, o una app que pregunta una y otra vez sobre el mismo documento. Si cada prompt es casi distinto del anterior, no hay nada que reutilizar y no ganas nada.",
+      "resumen": "Marcas una parte fija del prompt para que el proveedor la reutilice y te la cobre mucho más barata las siguientes veces. Ahorra cuando el mismo trozo largo se repite en poco tiempo; si cambia cada vez, nada.",
       "test": {
         "enunciado": "¿Cuándo ahorra dinero de verdad el prompt caching?",
         "correcta": 3,
@@ -211,7 +211,7 @@
     },
     {
       "id": "ia-coste-latencia-05",
-      "version": 1,
+      "version": 2,
       "pista": "ia",
       "familia": "coste-latencia",
       "tipo": "razonamiento",
@@ -233,7 +233,7 @@
           "Propone precalcular en background o rediseñar el flujo para no bloquear la interacción del usuario"
         ]
       },
-      "respuestaModelo": "Primero probaría con streaming para bajar la latencia percibida, aunque la latencia total no cambie. Si eso no basta, evaluaría cambiar a un modelo más pequeño y rápido para esa tarea concreta, midiendo con un eval si mantiene la calidad mínima aceptable, y reduciría el tamaño del prompt o del contexto enviado. También cachearía respuestas repetidas o el prefijo del prompt con prompt caching si aplica. Si nada de eso llega a los 2 segundos, replantearía el flujo entero: precalcular en background cuando sea posible, o mostrar un resultado parcial de inmediato y completar el resto después, en vez de bloquear toda la interacción del usuario en una única llamada.",
+      "respuestaModelo": "Primero, streaming, para que el usuario vea algo enseguida aunque el tiempo total no baje. Si no basta, probar un modelo más pequeño y rápido para esa tarea, comprobando con un eval que la calidad sigue siendo aceptable, y recortar el prompt o el contexto que mandas. También guardar en caché las respuestas que se repiten, o el principio del prompt con prompt caching si encaja. Y si nada de eso baja de los 2 segundos, replantear el flujo: calcularlo antes en segundo plano cuando se pueda, o enseñar un resultado parcial al momento y completar el resto después, en vez de tener al usuario esperando a una sola llamada.",
       "etiquetas": ["latencia", "produccion"],
       "fuentes": [
         {
@@ -248,7 +248,7 @@
     },
     {
       "id": "ia-coste-latencia-06",
-      "version": 1,
+      "version": 2,
       "pista": "ia",
       "familia": "coste-latencia",
       "tipo": "razonamiento",
@@ -256,7 +256,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Cómo elegirías entre usar un modelo grande/caro y uno pequeño/barato para una funcionalidad concreta?",
+        "es": "¿Cómo eliges entre un modelo grande y caro y uno pequeño y barato para una funcionalidad concreta?",
         "en": "How would you choose between a large/expensive model and a small/cheap one for a specific feature?"
       },
       "rubrica": {
@@ -267,8 +267,8 @@
           "Propone medir con evals si el modelo barato llega a la calidad mínima antes de pagar el caro por defecto"
         ]
       },
-      "respuestaModelo": "Depende de la complejidad real de la tarea, no es lo mismo una clasificación simple que un razonamiento largo con varios pasos, del volumen de llamadas, porque a mayor volumen más pesa el coste por token en la factura total, y de la tolerancia a error que tenga el caso de uso. Una práctica habitual es medir con un eval si el modelo barato llega a la calidad mínima aceptable para esa tarea concreta antes de pagar el modelo caro por defecto sin cuestionarlo; muchas veces un modelo pequeño bien afinado a la tarea rinde casi igual que uno grande, y en volumen alto esa diferencia de coste es enorme.",
-      "resumen": "Según la complejidad de la tarea, el volumen de llamadas y la tolerancia a error. Medir con un eval si el barato llega a la calidad mínima antes de pagar el caro por defecto.",
+      "respuestaModelo": "Depende de tres cosas: lo difícil que sea la tarea de verdad (no es lo mismo clasificar un texto que razonar en varios pasos), cuántas llamadas vas a hacer (cuantas más, más pesa el precio por token en la factura) y cuánto error puedes aguantar en ese caso. Lo sensato es medir con un eval si el modelo barato llega a la calidad mínima que necesitas antes de pagar el caro por inercia. Muchas veces uno pequeño, bien ajustado a la tarea, rinde casi igual, y con mucho volumen la diferencia de dinero es enorme.",
+      "resumen": "Según lo difícil que sea la tarea, cuántas llamadas vas a hacer y cuánto error aguantas. Mide con un eval si el barato llega a la calidad mínima antes de pagar el caro por defecto.",
       "etiquetas": ["coste", "seleccion-modelo"],
       "fuentes": [
         {

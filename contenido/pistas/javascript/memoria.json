@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "js-memoria-01",
-      "version": 1,
+      "version": 2,
       "pista": "javascript",
       "familia": "memoria",
       "tipo": "fundamento",
@@ -12,7 +12,7 @@
       "nivelMinimo": "senior",
       "frecuencia": "media",
       "texto": {
-        "es": "Da tres causas comunes de fugas de memoria (memory leaks) en una aplicación JavaScript del navegador.",
+        "es": "Dime tres motivos típicos por los que una aplicación JavaScript en el navegador va gastando cada vez más memoria (memory leaks).",
         "en": "Give three common causes of memory leaks in a browser JavaScript application."
       },
       "rubrica": {
@@ -26,8 +26,8 @@
           "Menciona `WeakMap`/`WeakRef` como herramientas para evitar retener referencias innecesarias"
         ]
       },
-      "respuestaModelo": "Tres causas comunes: listeners de eventos que se añaden pero nunca se remueven cuando el componente o elemento se destruye; temporizadores (`setInterval`) que siguen corriendo indefinidamente porque nadie llamó a `clearInterval`; y referencias a nodos DOM ya eliminados que se quedan guardadas en una variable global o capturadas por un closure, impidiendo que el recolector de basura los libere aunque ya no estén en la página. Una cuarta causa habitual son variables globales accidentales que acumulan datos sin límite. Para evitar retener referencias sin querer, `WeakMap` y `WeakRef` permiten asociar datos a un objeto sin impedir que el recolector de basura lo libere cuando ya no hay otras referencias fuertes.",
-      "resumen": "Listeners que nunca se quitan, `setInterval` sin `clearInterval` y referencias a nodos DOM ya eliminados guardadas en globales o closures, que impiden que el recolector los libere.",
+      "respuestaModelo": "Tres clásicos. Uno: añades listeners de eventos y nunca los quitas cuando el componente o el elemento desaparece. Dos: un `setInterval` que sigue corriendo para siempre porque nadie llamó a `clearInterval`. Tres: guardas una referencia a un elemento del DOM que ya has quitado de la página, en una variable global o dentro de un closure; mientras esa referencia exista, el recolector de basura no puede liberarlo. Un cuarto bastante común son las variables globales creadas sin querer que van acumulando datos. Si necesitas asociar datos a un objeto sin impedir que se libere, para eso existen `WeakMap` y `WeakRef`.",
+      "resumen": "Listeners que nunca se quitan, `setInterval` sin `clearInterval` y referencias a elementos del DOM ya borrados que se quedan guardadas en variables globales o closures, y que impiden liberarlos.",
       "test": {
         "enunciado": "¿Cuál de estas es una causa típica de fuga de memoria en el navegador?",
         "correcta": 3,
@@ -63,7 +63,7 @@
     },
     {
       "id": "js-memoria-02",
-      "version": 1,
+      "version": 2,
       "pista": "javascript",
       "familia": "memoria",
       "tipo": "definicion",
@@ -71,7 +71,7 @@
       "nivelMinimo": "senior",
       "frecuencia": "baja",
       "texto": {
-        "es": "¿Qué es un `WeakMap` y en qué se diferencia de un `Map` normal? ¿Cuándo ayuda a evitar fugas de memoria?",
+        "es": "¿Qué es un `WeakMap` y en qué se diferencia de un `Map` normal? ¿Cuándo te ayuda a no gastar memoria de más?",
         "en": "What is a `WeakMap` and how does it differ from a regular `Map`? When does it help avoid memory leaks?"
       },
       "rubrica": {
@@ -83,8 +83,8 @@
           "Da un caso de uso: metadatos asociados a nodos DOM que se limpian solos al eliminarse el nodo"
         ]
       },
-      "respuestaModelo": "Un `WeakMap` es como un `Map` pero sus claves deben ser objetos, y esas claves se mantienen con una referencia débil: si no queda ninguna otra referencia fuerte al objeto usado como clave, el recolector de basura puede liberarlo igualmente, y su entrada desaparece del `WeakMap` sola. Un `Map` normal, en cambio, retiene sus claves para siempre mientras el `Map` exista, aunque nadie más las referencie, lo que puede causar una fuga de memoria si se usa para asociar datos a objetos que van y vienen. El caso de uso típico es guardar metadatos asociados a nodos DOM (por ejemplo, un caché de medidas): al usar `WeakMap`, cuando el nodo se elimina de la página y ya no hay otra referencia, tanto el nodo como su entrada en el `WeakMap` se liberan automáticamente, sin necesidad de limpiar manualmente.",
-      "resumen": "Un `WeakMap` solo admite objetos como clave y no los retiene: si nadie más los referencia, se liberan y su entrada desaparece. Útil para asociar datos a objetos sin alargar su vida.",
+      "respuestaModelo": "Un `WeakMap` es como un `Map`, pero sus claves tienen que ser objetos y las guarda \"sin agarrarlas fuerte\": si en el resto del programa nadie más usa ese objeto, el recolector de basura lo libera igual, y su entrada desaparece del `WeakMap` sola. Un `Map` normal se queda con sus claves para siempre mientras exista, aunque nadie más las use, y eso es una fuga de memoria si lo usas para colgar datos de objetos que van y vienen. El ejemplo típico: guardar datos asociados a elementos del DOM, como un caché de medidas. Con `WeakMap`, cuando el elemento se quita de la página y nadie más lo referencia, se van el elemento y su entrada a la vez, sin limpiar nada a mano.",
+      "resumen": "Un `WeakMap` solo acepta objetos como clave y no los retiene: si nadie más los usa, se liberan y su entrada desaparece sola. Sirve para colgar datos de un objeto sin alargarle la vida.",
       "test": {
         "enunciado": "¿Por qué un `WeakMap` ayuda a evitar fugas de memoria que un `Map` causaría?",
         "correcta": 1,

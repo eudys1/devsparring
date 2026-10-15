@@ -64,6 +64,19 @@ capturas revisadas y palpa (un HIGH falso: la ronda de la portada cambia sola).
 - Palpa: icono para la pantalla de inicio, texto de 14 px en móvil, canonical
   en `/entrar`.
 
+## Hecho el 16-10-2026
+
+- **Banco entero en lenguaje llano:** 306 preguntas reescritas (pregunta,
+  respuesta, resumen y enunciado del Tipo test) con la regla de
+  `contenido/esquema.md`; versión subida en cada una. Sin tocar: la rúbrica
+  (la usa la corrección), las opciones del Tipo test, .NET y "Programar con
+  agentes" (ya estaban en ese tono), Comportamental (ya conversacional) y la
+  familia "En inglés" (responde en inglés a propósito).
+- **Arreglado el editor de katas:** la segunda kata enseñaba el código de la
+  primera porque Monaco guardaba el código con un nombre de fichero fijo. Ahora
+  cada kata de cada sesión tiene el suyo; un e2e lo comprueba y falla sin el
+  arreglo.
+
 ## Bloqueos (dependen de Eudys)
 
 - **Aviso legal y privacidad:** el contacto es el canal de incidencias del
@@ -72,14 +85,9 @@ capturas revisadas y palpa (un HIGH falso: la ronda de la portada cambia sola).
   público no es lo ideal.
 - **Revisar las 13 preguntas de .NET** (`contenido/pistas/dotnet/`): entran
   publicadas con fuentes leídas, como decidimos el 14-09; se revisan usándolas.
-- **Aprobar el tono** de las 23 katas antes de pasar el resto del banco
-  (unas 375 preguntas) a lenguaje llano.
 
 ## Pendiente
 
-- Banco en lenguaje llano por tandas, empezando por tu stack (JavaScript,
-  TypeScript, React, Node, .NET). Con `aplicar-texto`: solo cambia el texto y la
-  versión, el diff se lee pregunta a pregunta.
 - Cuando llegue la primera PR de tipos de Supabase: fusionarla y pasar
   `<Database>` a los clientes, quitando los tipos escritos a mano en cada `db.ts`.
 

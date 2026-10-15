@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "web-autenticacion-01",
-      "version": 1,
+      "version": 2,
       "pista": "web",
       "familia": "autenticacion",
       "tipo": "razonamiento",
@@ -12,7 +12,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "alta",
       "texto": {
-        "es": "Compara JWT con sesiones basadas en cookies del lado del servidor. ¿Cuándo elegirías cada una?",
+        "es": "JWT o sesiones guardadas en el servidor con una cookie: ¿cuándo elegirías cada una?",
         "en": "Compare JWT with server-side cookie sessions. When would you choose each?"
       },
       "rubrica": {
@@ -26,8 +26,8 @@
           "Menciona que en ambos casos el token/cookie debe ir `httpOnly`, `Secure`, `SameSite`, nunca en `localStorage`"
         ]
       },
-      "respuestaModelo": "Una sesión guardada en el servidor (por ejemplo en Redis) es fácil de revocar al instante: basta con borrar esa entrada y el usuario queda deslogueado en la siguiente petición, pero requiere un almacenamiento compartido si hay varios servidores detrás de un balanceador. Un JWT es autocontenido y sin estado: el propio token lleva la información firmada, lo que facilita escalar horizontalmente y encaja bien en arquitecturas de microservicios donde no todos los servicios comparten la misma base de sesiones, pero a cambio es difícil de revocar antes de que expire sin mantener una lista negra, lo que reintroduce parte del estado que se quería evitar. En ambos casos, el token o el identificador de sesión debe viajar en una cookie `httpOnly`, `Secure` y con `SameSite` configurado, nunca en `localStorage`, porque una cookie `httpOnly` no es accesible desde JavaScript y reduce el impacto de un XSS.",
-      "resumen": "Sesión en servidor: fácil de revocar al momento, pero necesita un almacén compartido. JWT: sin estado y fácil de escalar, pero difícil de revocar antes de que caduque. Los dos, en cookie `httpOnly`.",
+      "respuestaModelo": "Con una sesión guardada en el servidor (por ejemplo en Redis) cerrar la sesión de alguien es inmediato: borras su entrada y en la siguiente petición ya está fuera. El precio es que, si tienes varios servidores, necesitas ese almacén compartido. Un JWT lleva dentro la información firmada y el servidor no guarda nada, así que escala muy fácil y encaja bien con microservicios que no comparten base de sesiones. El problema: es difícil anularlo antes de que caduque, y si montas una lista negra para eso, vuelves a guardar estado, que era justo lo que querías evitar. En los dos casos, el token o el id de sesión va en una cookie `httpOnly`, `Secure` y con `SameSite`, nunca en `localStorage`: así JavaScript no la puede leer y un ataque XSS hace mucho menos daño.",
+      "resumen": "La sesión en el servidor se puede cortar al momento, pero necesita un almacén compartido entre servidores. El JWT no guarda nada en el servidor y escala fácil, pero es difícil de anular antes de que caduque. Los dos, en cookie `httpOnly`.",
       "etiquetas": ["autenticacion", "jwt", "sesiones"],
       "fuentes": [
         {
@@ -42,7 +42,7 @@
     },
     {
       "id": "web-autenticacion-02",
-      "version": 2,
+      "version": 3,
       "pista": "web",
       "familia": "autenticacion",
       "tipo": "definicion",
@@ -50,7 +50,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "Tu app ofrece \"Entrar con Google\" y además distingue usuarios normales de administradores. ¿Qué es OAuth 2.0 y qué diferencia hay entre autenticación y autorización?",
+        "es": "Tu app tiene \"Entrar con Google\" y además distingue usuarios normales de administradores. ¿Qué es OAuth 2.0 y qué diferencia hay entre autenticación y autorización?",
         "en": "Your app offers \"Sign in with Google\" and also tells regular users apart from admins. What is OAuth 2.0 and what is the difference between authentication and authorization?"
       },
       "rubrica": {
@@ -63,7 +63,7 @@
           "Distingue el rol de authorization server, resource server y client, y menciona que OpenID Connect añade la parte de autenticación encima de OAuth"
         ]
       },
-      "respuestaModelo": "Autenticación responde a '¿quién eres?': verificar la identidad de alguien. Autorización responde a '¿qué puedes hacer?': decidir qué recursos o acciones tiene permitidas esa identidad ya verificada. OAuth 2.0 es, estrictamente, un protocolo de autorización: permite que una aplicación acceda a recursos de un usuario en otro servicio sin que ese usuario tenga que compartir su contraseña con la aplicación, delegando el acceso mediante tokens con un alcance concreto. Define tres roles claros: el authorization server (quien emite los tokens tras verificar al usuario), el resource server (quien guarda el dato protegido y valida el token) y el client (la aplicación que quiere acceder). La parte de autenticación propiamente dicha, como en 'iniciar sesión con Google', la aporta OpenID Connect, una capa construida encima de OAuth 2.0 específicamente para identificar al usuario, no solo para autorizar acceso a recursos.",
+      "respuestaModelo": "Autenticación es \"¿quién eres?\": comprobar que eres quien dices. Autorización es \"¿qué puedes hacer?\": decidir qué te deja hacer el sistema una vez sabe quién eres. En tu app, \"Entrar con Google\" es lo primero y lo de admin o usuario normal es lo segundo. OAuth 2.0, en sentido estricto, es de autorización: deja que una aplicación use datos tuyos en otro servicio sin que le des tu contraseña, con tokens que solo permiten lo justo. Tiene tres papeles: el servidor de autorización (el que te comprueba y da los tokens), el servidor de recursos (el que guarda los datos y revisa el token) y el cliente (la app que quiere acceder). La parte de \"entrar con tu cuenta\" la pone OpenID Connect, una capa encima de OAuth 2.0 pensada justo para identificar al usuario.",
       "test": {
         "enunciado": "¿Qué diferencia hay entre autenticación y autorización?",
         "correcta": 0,
@@ -100,7 +100,7 @@
     },
     {
       "id": "web-autenticacion-03",
-      "version": 1,
+      "version": 2,
       "pista": "web",
       "familia": "autenticacion",
       "tipo": "fundamento",
@@ -108,7 +108,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Qué son las cookies `SameSite=Strict/Lax/None` y qué ataque previenen?",
+        "es": "¿Qué significan `SameSite=Strict`, `Lax` y `None` en una cookie y qué ataque evitan?",
         "en": "What are `SameSite=Strict/Lax/None` cookies and what attack do they prevent?"
       },
       "rubrica": {
@@ -121,7 +121,7 @@
           "Explica que mitiga CSRF porque un sitio malicioso ya no puede 'montarse' en la sesión autenticada de la víctima"
         ]
       },
-      "respuestaModelo": "El atributo `SameSite` de una cookie controla en qué peticiones el navegador la incluye automáticamente cuando el origen que hace la petición es distinto del origen que la emitió. `Strict` nunca la envía en peticiones cross-site, ni siquiera al navegar desde un enlace externo; `Lax`, el valor por defecto en navegadores modernos, la envía solo en navegación de nivel superior de tipo GET (como hacer clic en un enlace), pero no en peticiones disparadas por un formulario o script de otro sitio; `None` la envía siempre en cualquier contexto cross-site, pero exige además el atributo `Secure`. Esto mitiga CSRF (cross-site request forgery) porque un sitio malicioso que intente disparar una petición automática hacia la app legítima ya no consigue que el navegador adjunte la cookie de sesión de la víctima, rompiendo el ataque en el punto donde antes 'se montaba' sobre la sesión ya autenticada.",
+      "respuestaModelo": "`SameSite` decide si el navegador manda la cookie cuando la petición viene de otra web. `Strict` no la manda nunca desde otra web, ni siquiera si llegas a la tuya desde un enlace externo. `Lax`, que es lo que ponen los navegadores si no dices nada, la manda solo cuando navegas a tu web con un clic normal (un GET), pero no en formularios ni peticiones que lance otra web por su cuenta. `None` la manda siempre, y te obliga a marcarla también `Secure`. Lo que evita es el CSRF: que una web maliciosa haga que el navegador de tu usuario lance una petición a tu app con su sesión puesta sin que se entere. Si la cookie de sesión no viaja, el ataque no tiene sesión en la que apoyarse.",
       "test": {
         "enunciado": "¿Qué ataque previene sobre todo el atributo `SameSite` de las cookies?",
         "correcta": 2,

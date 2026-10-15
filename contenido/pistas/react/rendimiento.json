@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "react-rendimiento-01",
-      "version": 1,
+      "version": 2,
       "pista": "react",
       "familia": "rendimiento",
       "tipo": "fundamento",
@@ -26,7 +26,7 @@
           "Recomienda medir con React DevTools Profiler antes de optimizar"
         ]
       },
-      "respuestaModelo": "`React.memo` envuelve un componente para que React se salte su re-render si las props recibidas son iguales a las del render anterior, usando por defecto una comparación superficial (shallow equal) propiedad por propiedad. El problema aparece cuando alguna prop es un objeto, array o función creada de nuevo en cada render del padre (por ejemplo un callback inline sin `useCallback`): la comparación superficial siempre los ve como distintos, así que `memo` nunca evita el re-render, y encima paga el coste de comparar las props en cada ocasión, quedando peor que no memoizar nada. La recomendación es no aplicar `memo` de forma preventiva en todo el árbol, sino medir con React DevTools Profiler qué componentes realmente re-renderizan de forma cara e innecesaria antes de envolverlos.",
+      "respuestaModelo": "`React.memo` envuelve un componente para que React no lo vuelva a pintar si sus props son iguales que la vez anterior. Las compara una a una, de forma superficial (shallow equal). El problema llega cuando alguna prop es un objeto, un array o una función que el padre crea de nuevo en cada render, por ejemplo un callback escrito en línea sin `useCallback`: para la comparación siempre es \"distinta\", así que `memo` nunca se ahorra nada y encima paga el coste de comparar cada vez. Sale peor que no ponerlo. Por eso no se pone en todos lados por si acaso: primero mira con el Profiler de React DevTools qué componentes se repintan sin necesidad y les cuesta, y envuelve solo esos.",
       "test": {
         "enunciado": "¿Por qué `React.memo` a veces no evita ningún render?",
         "correcta": 1,
@@ -63,7 +63,7 @@
     },
     {
       "id": "react-rendimiento-02",
-      "version": 1,
+      "version": 2,
       "pista": "react",
       "familia": "rendimiento",
       "tipo": "razonamiento",
@@ -71,7 +71,7 @@
       "nivelMinimo": "senior",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Cuándo usarías `useTransition` o `useDeferredValue` en vez de un simple `useState`?",
+        "es": "¿Cuándo usarías `useTransition` o `useDeferredValue` en vez de un `useState` normal?",
         "en": "When would you use `useTransition` or `useDeferredValue` instead of a plain `useState`?"
       },
       "rubrica": {
@@ -84,7 +84,7 @@
           "Aclara que ninguno de los dos sustituye al debounce de llamadas de red"
         ]
       },
-      "respuestaModelo": "Ambos existen para cuando una actualización de estado dispara un render caro, como filtrar 10.000 filas en pantalla, y ese cálculo bloquearía la interfaz haciendo que escribir en un input se sienta con retraso. `useTransition` marca explícitamente una actualización como 'no urgente': React puede interrumpirla si llega algo más prioritario (como la siguiente pulsación de tecla) y expone un flag `isPending` para mostrar un estado de carga mientras tanto. `useDeferredValue` toma un valor y devuelve una versión que se actualiza con retraso para los renders no críticos, útil cuando no controlas directamente el `setState` (por ejemplo, el valor viene de una prop). Ninguno de los dos sustituye al debounce de peticiones de red: son mecanismos de prioridad de render en el cliente, no de reducción de tráfico hacia el servidor.",
+      "respuestaModelo": "Los dos son para cuando un cambio de estado provoca un render caro, por ejemplo filtrar 10.000 filas, y ese cálculo hace que escribir en un input vaya a trompicones. `useTransition` marca una actualización como \"no urgente\": React puede pararla si llega algo más importante (la siguiente tecla) y te da un `isPending` para enseñar que está cargando. `useDeferredValue` recibe un valor y te devuelve una versión que se actualiza con algo de retraso para las partes que no corren prisa; va bien cuando no controlas tú el `setState`, por ejemplo si el valor te llega por props. Ojo: ninguno sustituye al debounce de las peticiones. Ordenan qué se pinta antes en el navegador, no reducen las llamadas al servidor.",
       "etiquetas": ["rendimiento", "concurrent-react"],
       "fuentes": [
         {
@@ -99,7 +99,7 @@
     },
     {
       "id": "react-rendimiento-03",
-      "version": 1,
+      "version": 2,
       "pista": "react",
       "familia": "rendimiento",
       "tipo": "razonamiento",
@@ -107,7 +107,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "Tienes una lista de 5.000 elementos y el scroll va con tirones. ¿Qué técnicas aplicarías?",
+        "es": "Tienes una lista de 5.000 elementos y el scroll va a tirones. ¿Qué harías?",
         "en": "You have a list of 5,000 items and scrolling stutters. What techniques would you apply?"
       },
       "rubrica": {
@@ -121,8 +121,8 @@
           "Explica el riesgo de recrear funciones/objetos inline como props que rompen esa memoización"
         ]
       },
-      "respuestaModelo": "La técnica principal es windowing o virtualización: renderizar en el DOM solo las filas que están dentro (o cerca) del viewport visible, con librerías como `react-window` o `@tanstack/react-virtual`, en vez de montar los 5.000 nodos de golpe. Junto a eso, memoizar cada fila con `React.memo` evita que se vuelvan a renderizar filas que no cambiaron cuando el padre re-renderiza por otro motivo, pero solo funciona si se evita pasarle props inline nuevas cada vez (funciones u objetos creados en cada render rompen la memoización). Si el caso de uso lo permite, paginar o cargar bajo demanda en vez de traer las 5.000 filas de golpe reduce tanto el trabajo del backend como el tamaño inicial de la lista a virtualizar.",
-      "resumen": "Virtualizar: montar solo las filas cercanas al viewport con `react-window` o `@tanstack/react-virtual`. Además, `React.memo` en cada fila, con props estables para que la comparación sirva.",
+      "respuestaModelo": "Lo principal es virtualizar la lista: en vez de meter las 5.000 filas en el DOM, montas solo las que se ven (y unas pocas alrededor) y las vas cambiando al hacer scroll. Hay librerías que lo hacen por ti, como `react-window` o `@tanstack/react-virtual`. Además, envolver cada fila en `React.memo` evita repintar las que no han cambiado cuando el padre se vuelve a pintar por otro motivo, pero solo funciona si no le pasas props nuevas en cada render (funciones u objetos creados en línea lo rompen). Y si el caso lo permite, pagina o carga bajo demanda en vez de traer las 5.000 de golpe: menos trabajo para el backend y una lista más pequeña de entrada.",
+      "resumen": "Virtualizar: montar solo las filas que están cerca de la pantalla, con `react-window` o `@tanstack/react-virtual`. Y `React.memo` en cada fila, con props estables para que la comparación sirva.",
       "etiquetas": ["rendimiento", "listas", "virtualizacion"],
       "fuentes": [
         {

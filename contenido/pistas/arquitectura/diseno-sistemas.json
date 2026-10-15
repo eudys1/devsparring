@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "arq-diseno-sistemas-01",
-      "version": 1,
+      "version": 2,
       "pista": "arquitectura",
       "familia": "diseno-sistemas",
       "tipo": "diseno",
@@ -12,7 +12,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "alta",
       "texto": {
-        "es": "Diseña a nivel fullstack un acortador de URLs tipo bit.ly: esquema de datos, generación del código corto y ruta de redirección.",
+        "es": "Diseña de punta a punta un acortador de URLs tipo bit.ly: las tablas, cómo sale el código corto y la ruta que redirige.",
         "en": "Design a URL shortener (like bit.ly) at the fullstack level: data schema, short code generation, and redirect route."
       },
       "rubrica": {
@@ -27,7 +27,7 @@
           "Menciona cache (Redis) delante de la tabla de redirects porque la lectura domina brutalmente sobre la escritura"
         ]
       },
-      "respuestaModelo": "Esquema mínimo: `short_code` (PK), `long_url`, `owner_id`, `created_at`, `expires_at`, y un contador de clicks. El código corto se genera con un contador incremental (autoincrement o una secuencia) codificado en base62, lo que evita colisiones por construcción, a diferencia de hashear la URL larga y truncar el hash, que necesita reintentos cuando choca. La ruta de redirección hace un `SELECT` indexado por `short_code` y devuelve un 301 (permanente, cacheable por el navegador) o 302 (temporal, si se quiere seguir contando clicks con precisión) hacia `long_url`. A escala, la lectura domina brutalmente sobre la escritura (se crea un link una vez, se resuelve miles de veces), así que conviene poner Redis delante de la tabla de redirects como cache de lectura, invalidando o con TTL corto si el link puede cambiar de destino.",
+      "respuestaModelo": "Con una tabla basta: `short_code` (clave primaria), `long_url`, `owner_id`, `created_at`, `expires_at` y un contador de clics. El código corto sale de un contador que va subiendo (un autoincremento o una secuencia) escrito en base62: así nunca se repite y no hay que comprobar choques, cosa que sí pasa si haces un hash de la URL y lo recortas. La ruta de redirección busca por `short_code` (con índice) y devuelve un 301 (permanente, el navegador lo guarda) o un 302 (temporal, si quieres seguir contando bien los clics) hacia `long_url`. Y como se lee muchísimo más de lo que se escribe (un enlace se crea una vez y se abre miles), pondría Redis delante como caché de lectura, con caducidad corta o borrando la entrada si el destino de un enlace puede cambiar.",
       "etiquetas": ["arquitectura", "diseno-sistemas", "url-shortener"],
       "fuentes": [
         {
@@ -42,7 +42,7 @@
     },
     {
       "id": "arq-diseno-sistemas-02",
-      "version": 1,
+      "version": 2,
       "pista": "arquitectura",
       "familia": "diseno-sistemas",
       "tipo": "diseno",
@@ -50,7 +50,7 @@
       "nivelMinimo": "senior",
       "frecuencia": "media",
       "texto": {
-        "es": "Diseña a nivel fullstack un chat 1 a 1 simple: cómo entregas mensajes en tiempo real y qué pasa si el receptor está offline.",
+        "es": "Diseña de punta a punta un chat sencillo entre dos personas: cómo llegan los mensajes en tiempo real y qué pasa si quien los recibe no está conectado.",
         "en": "Design a simple 1:1 chat at the fullstack level: how do you deliver messages in real time, and what happens if the receiver is offline?"
       },
       "rubrica": {
@@ -65,7 +65,7 @@
           "Menciona el problema de escalar WebSockets entre varias instancias del servidor (necesita un pub-sub o sticky sessions)"
         ]
       },
-      "respuestaModelo": "Para usuarios online, una conexión WebSocket persistente permite que el servidor empuje el mensaje al instante en cuanto llega, sin polling. Todo mensaje se persiste también en la base de datos (Postgres para metadatos de conversación y usuario, con una tabla de mensajes optimizada a escritura e indexada por conversación y fecha) independientemente de si el receptor está conectado. Si el receptor está offline, el mensaje queda persistido y se entrega en cuanto reconecta (el cliente pide 'lo que me perdí desde el último mensaje visto'), más una notificación push opcional para avisar fuera de la app. El problema adicional al escalar a varias instancias del servidor es que dos usuarios pueden acabar conectados a instancias distintas: hace falta un pub-sub (Redis, o un servicio dedicado) para que la instancia que recibe el mensaje lo reenvíe a la instancia donde está conectado el receptor.",
+      "respuestaModelo": "Si la otra persona está conectada, una conexión WebSocket abierta deja que el servidor le mande el mensaje en cuanto llega, sin que su app tenga que estar preguntando. Y cada mensaje se guarda siempre en la base de datos, esté conectado o no (Postgres para conversaciones y usuarios, y una tabla de mensajes pensada para escribir mucho, con índice por conversación y fecha). Si no está conectado, el mensaje queda guardado y le llega al volver: su app pide \"lo que me he perdido desde el último que vi\", y opcionalmente le mandas una notificación push. El problema extra al tener varios servidores es que cada persona puede estar conectada a uno distinto: hace falta un canal compartido (Redis pub/sub o un servicio dedicado) para que el servidor que recibe el mensaje se lo pase al servidor donde está conectado el destinatario.",
       "etiquetas": ["arquitectura", "diseno-sistemas", "websockets", "chat"],
       "fuentes": [
         {
@@ -80,7 +80,7 @@
     },
     {
       "id": "arq-diseno-sistemas-03",
-      "version": 1,
+      "version": 2,
       "pista": "arquitectura",
       "familia": "diseno-sistemas",
       "tipo": "diseno",
@@ -88,7 +88,7 @@
       "nivelMinimo": "senior",
       "frecuencia": "media",
       "texto": {
-        "es": "Diseña a nivel fullstack un feed tipo timeline: posts de la gente que sigues, ordenados cronológicamente o por relevancia.",
+        "es": "Diseña de punta a punta un feed tipo timeline: los posts de la gente que sigues, por orden cronológico o por relevancia.",
         "en": "Design a timeline-style feed at the fullstack level (posts from people you follow, ordered chronologically or by relevance)."
       },
       "rubrica": {
@@ -104,7 +104,7 @@
           "Usa paginación por cursor, no offset, para el scroll infinito"
         ]
       },
-      "respuestaModelo": "Hay dos estrategias clásicas. 'Pull': al pedir el feed, se consultan en el momento los posts de todos los seguidos (barato de escribir, cada post se guarda una vez, pero caro de leer si sigues a mucha gente, porque hay que fusionar y ordenar muchas fuentes en cada request). 'Push' o fan-out en escritura: al publicarse un post, se inserta una referencia en el feed pre-computado de cada seguidor, así que leer el feed es casi instantáneo, pero escribir se vuelve muy caro si el autor tiene millones de seguidores (fan-out masivo). La solución práctica es un híbrido: push para la mayoría de usuarios, y pull (o un límite de fan-out) para cuentas con muchísimos seguidores, mezclando ambas fuentes al leer. El scroll infinito del feed se pagina por cursor (el timestamp o id del último post visto), nunca por offset, para que cargar más no se vuelva más lento cuanto más se desplaza el usuario.",
+      "respuestaModelo": "Hay dos formas clásicas. \"Pull\": cuando alguien abre su feed, buscas en ese momento los posts de todos los que sigue. Escribir es barato (cada post se guarda una vez), pero leer es caro si sigues a mucha gente, porque en cada petición tienes que juntar y ordenar muchas fuentes. \"Push\" (fan-out al escribir): cuando alguien publica, metes una referencia en el feed ya preparado de cada uno de sus seguidores. Leer es casi instantáneo, pero publicar sale carísimo si el autor tiene millones de seguidores. Lo práctico es mezclar: push para la mayoría y pull (o un tope) para las cuentas con muchísimos seguidores, juntando las dos cosas al leer. Y el scroll infinito se pagina con cursor (la fecha o el id del último post que viste), nunca con offset, para que cargar más no vaya cada vez más lento.",
       "etiquetas": ["arquitectura", "diseno-sistemas", "feed", "fan-out"],
       "fuentes": [
         {

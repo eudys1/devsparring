@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "datos-transacciones-01",
-      "version": 1,
+      "version": 2,
       "pista": "datos",
       "familia": "transacciones",
       "tipo": "definicion",
@@ -12,7 +12,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Qué son las transacciones y las propiedades ACID? Dame un ejemplo de negocio donde una transacción es obligatoria.",
+        "es": "¿Qué es una transacción y qué son las propiedades ACID? Dame un ejemplo de negocio en el que una transacción sea obligatoria.",
         "en": "What are transactions and the ACID properties? Give a business example where a transaction is mandatory."
       },
       "rubrica": {
@@ -27,8 +27,8 @@
           "Menciona los niveles de aislamiento (read committed, repeatable read, serializable) y el trade-off entre consistencia y concurrencia"
         ]
       },
-      "respuestaModelo": "ACID son las cuatro garantías de una transacción: Atomicidad (todo el bloque de operaciones se aplica o no se aplica nada), Consistencia (las reglas y constraints de la base de datos se respetan siempre, antes y después), Aislamiento (transacciones concurrentes no se pisan de forma incoherente entre sí) y Durabilidad (una vez confirmada, la transacción sobrevive a un crash del servidor). El ejemplo clásico es transferir dinero entre dos cuentas: debitar de una y acreditar en otra tienen que ser atómicas, porque si el proceso falla a mitad sin transacción, el dinero puede desaparecer o duplicarse.",
-      "resumen": "ACID: atomicidad (todo o nada), consistencia (las reglas se cumplen), aislamiento (las concurrentes no se pisan) y durabilidad (lo confirmado sobrevive). Ejemplo: una transferencia entre dos cuentas.",
+      "respuestaModelo": "Una transacción agrupa varias operaciones para que se traten como una sola. ACID son sus cuatro garantías. Atomicidad: o se aplica todo o no se aplica nada. Consistencia: las reglas y restricciones de la base de datos se cumplen antes y después. Aislamiento: dos transacciones a la vez no se pisan dejando datos sin sentido. Durabilidad: lo que se confirma sobrevive aunque el servidor se caiga justo después. El ejemplo clásico es una transferencia entre dos cuentas: quitar el dinero de una y sumarlo a la otra tiene que ir junto, porque si el proceso falla a mitad sin transacción, el dinero puede desaparecer o duplicarse.",
+      "resumen": "ACID: atomicidad (todo o nada), consistencia (se cumplen las reglas), aislamiento (las que van a la vez no se pisan) y durabilidad (lo confirmado sobrevive). Ejemplo: una transferencia entre dos cuentas.",
       "test": {
         "enunciado": "En una transferencia entre dos cuentas, ¿qué propiedad ACID evita que se debite una sin acreditar la otra?",
         "correcta": 0,
@@ -65,7 +65,7 @@
     },
     {
       "id": "datos-transacciones-02",
-      "version": 1,
+      "version": 2,
       "pista": "datos",
       "familia": "transacciones",
       "tipo": "razonamiento",
@@ -73,7 +73,7 @@
       "nivelMinimo": "senior",
       "frecuencia": "media",
       "texto": {
-        "es": "Diseña cómo evitarías que dos usuarios reserven el mismo asiento de un evento al mismo tiempo, es decir, una condición de carrera.",
+        "es": "¿Cómo evitarías que dos personas reserven el mismo asiento de un evento a la vez (una condición de carrera)?",
         "en": "Design how you'd prevent two users from booking the same event seat at the same time, i.e. a race condition."
       },
       "rubrica": {
@@ -88,7 +88,7 @@
           "Menciona un TTL de reserva temporal (hold) mientras el usuario completa el pago, para no bloquear el asiento indefinidamente si abandona"
         ]
       },
-      "respuestaModelo": "La confirmación de la reserva tiene que ir dentro de una transacción con bloqueo sobre la fila del asiento. Con bloqueo pesimista, `SELECT ... FOR UPDATE` bloquea la fila hasta que la transacción termina, así que la segunda petición espera y luego ve el asiento ya ocupado; es simple de razonar pero reduce la concurrencia. Con bloqueo optimista, se añade una columna de versión y el `UPDATE` incluye `WHERE version = X`; si otra transacción ganó la carrera, la actualización afecta 0 filas y hay que reintentar o avisar al usuario; escala mejor pero exige manejar el conflicto explícitamente. En cualquiera de los dos casos conviene un TTL de 'reserva temporal' (hold de unos minutos) mientras el usuario paga, para liberar el asiento si abandona el checkout.",
+      "respuestaModelo": "Confirmando la reserva dentro de una transacción que bloquea la fila del asiento. Con bloqueo pesimista, `SELECT ... FOR UPDATE` bloquea esa fila hasta que acaba la transacción: la segunda petición espera y luego ve que el asiento ya está ocupado. Es fácil de entender, pero deja menos cosas pasar a la vez. Con bloqueo optimista, añades una columna de versión y el `UPDATE` lleva `WHERE version = X`: si otra transacción se te adelantó, tu actualización no toca ninguna fila y tienes que reintentar o avisar al usuario. Aguanta mejor mucha carga, pero te obliga a gestionar ese choque. En los dos casos conviene una reserva temporal de unos minutos mientras la persona paga, para soltar el asiento si abandona la compra.",
       "etiquetas": ["sql", "transacciones", "concurrencia", "locks"],
       "fuentes": [
         {
@@ -103,7 +103,7 @@
     },
     {
       "id": "datos-transacciones-03",
-      "version": 2,
+      "version": 3,
       "pista": "datos",
       "familia": "transacciones",
       "tipo": "review",
@@ -127,7 +127,7 @@
         ]
       },
       "respuestaModelo": "Es una condición de carrera entre leer y escribir. Si dos pedidos de la última unidad llegan casi a la vez, los dos leen `stock = 1`, los dos pasan la comprobación y los dos escriben `1 - 1 = 0`… o, si se cruzan peor, el segundo descuenta sobre un valor que ya no existe y el stock queda en negativo. La comprobación en la aplicación no sirve porque el dato puede cambiar entre el `findUnique` y el `update`. La solución es que la base de datos compruebe y descuente en una sola operación atómica: `prisma.producto.updateMany({ where: { id: productoId, stock: { gte: cantidad } }, data: { stock: { decrement: cantidad } } })` y, si `count` es 0, no había stock. Otra opción es una transacción con bloqueo de la fila (`SELECT ... FOR UPDATE`). Y una restricción `CHECK (stock >= 0)` en la tabla hace de red de seguridad: si algo se escapa, la base de datos lo rechaza.",
-      "resumen": "Leer, comprobar y escribir por separado deja una carrera: dos peticiones leen el mismo stock y las dos descuentan. Comprobar y descontar en una operación atómica.",
+      "resumen": "Leer, comprobar y escribir por separado deja una carrera: dos peticiones leen el mismo stock y las dos descuentan. Hay que comprobar y descontar en una sola operación que no se pueda partir.",
       "etiquetas": ["prisma", "transacciones", "n+1", "concurrencia", "review"],
       "fuentes": [
         {

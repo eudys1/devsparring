@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "fund-diseno-sistemas-01",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "diseno-sistemas",
       "tipo": "razonamiento",
@@ -12,7 +12,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "baja",
       "texto": {
-        "es": "Diseña, a alto nivel, un acortador de URLs tipo bit.ly. ¿Qué decisiones tomarías sobre cómo generar el código corto y cómo lo consultarías rápido?",
+        "es": "Diseña, a grandes rasgos, un acortador de URLs tipo bit.ly. ¿Cómo generarías el código corto y cómo lo buscarías rápido?",
         "en": "Design, at a high level, a URL shortener like bit.ly. What decisions would you make about generating the short code and looking it up quickly?"
       },
       "rubrica": {
@@ -27,8 +27,8 @@
           "Menciona al menos una decisión adicional: expiración de enlaces, métricas de clics, o redirección 301 vs 302"
         ]
       },
-      "respuestaModelo": "Para generar el código corto, una opción simple es un contador incremental codificado en base62, que garantiza unicidad sin comprobar colisiones pero es predecible (se puede adivinar el siguiente código); otra opción es un hash truncado de la URL original, que reparte mejor pero necesita comprobar colisiones al insertar. Guardaría el mapeo código-URL en una base de datos clave-valor por el patrón de acceso simple (buscar por clave), y pondría una caché en memoria (o Redis) delante, porque las lecturas (redirecciones) son muchísimo más frecuentes que las escrituras (crear un enlace nuevo). Otras decisiones a definir serían si los enlaces expiran, si se registran métricas de clics de forma asíncrona para no ralentizar la redirección, y si se usa una redirección 301 (cacheable por el navegador) o 302 según si se quiere poder cambiar el destino más adelante.",
-      "resumen": "El código corto sale de un contador en base62 (único pero predecible) o de un hash truncado (hay que mirar colisiones). Almacén clave-valor y caché delante, porque hay muchas más lecturas que escrituras.",
+      "respuestaModelo": "Para el código corto, una opción sencilla es un contador que va subiendo, escrito en base62 (letras y números): nunca se repite y no tienes que comprobar choques, pero se puede adivinar el siguiente. Otra es un hash de la URL recortado: queda más repartido, pero al guardar tienes que comprobar que no choca con otro. Guardaría la relación código-URL en una base de datos clave-valor, porque solo buscas por clave, y pondría una caché en memoria (o Redis) delante, porque las redirecciones son muchísimo más frecuentes que crear enlaces. Otras cosas que decidiría: si los enlaces caducan, si los clics se apuntan en segundo plano para no retrasar la redirección, y si la redirección es 301 (el navegador la guarda) o 302 (puedes cambiar el destino más adelante).",
+      "resumen": "El código corto sale de un contador en base62 (nunca se repite, pero se puede adivinar) o de un hash recortado (hay que comprobar que no choque). Almacén clave-valor y caché delante, porque se lee muchísimo más de lo que se escribe.",
       "etiquetas": ["diseno-sistemas"],
       "fuentes": [
         {

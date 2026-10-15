@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "datos-modelado-01",
-      "version": 1,
+      "version": 2,
       "pista": "datos",
       "familia": "modelado",
       "tipo": "fundamento",
@@ -12,7 +12,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Qué es la normalización de bases de datos y cuándo desnormalizarías a propósito?",
+        "es": "¿Qué es normalizar una base de datos y cuándo desnormalizarías a propósito?",
         "en": "What is database normalization, and when would you intentionally denormalize?"
       },
       "rubrica": {
@@ -27,7 +27,7 @@
           "Reconoce el coste que se asume al desnormalizar: mantener la duplicación consistente (triggers, jobs, o aceptar cierta inconsistencia eventual)"
         ]
       },
-      "respuestaModelo": "Normalizar es dividir los datos en tablas relacionadas para eliminar redundancia y evitar anomalías de actualización (1NF, 2NF, 3NF son los pasos habituales de ese proceso). Desnormalizar es hacer lo contrario a propósito: duplicar un dato o guardar un campo ya calculado en vez de recalcularlo con un JOIN cada vez. Tiene sentido cuando las lecturas dominan brutalmente sobre las escrituras y el JOIN repetido es el cuello de botella real medido, por ejemplo guardar `total_spent` en la tabla de clientes en vez de sumar `order_items` en cada request. El coste que se asume es mantener esa duplicación consistente, normalmente con un trigger, un job o aceptando una ventana de inconsistencia eventual.",
+      "respuestaModelo": "Normalizar es repartir los datos en tablas relacionadas para no tener nada repetido y evitar que, al actualizar algo, se te quede una copia desactualizada en otro sitio (las formas normales 1FN, 2FN y 3FN son los pasos habituales). Desnormalizar es lo contrario, a propósito: repetir un dato o guardar un valor ya calculado en vez de calcularlo con un JOIN cada vez. Tiene sentido cuando se lee muchísimo más de lo que se escribe y ese JOIN es el atasco de verdad, medido. Por ejemplo, guardar `total_spent` en la tabla de clientes en vez de sumar sus pedidos en cada petición. El precio es mantener esa copia al día, con un trigger, una tarea programada o aceptando que durante un rato no cuadre.",
       "test": {
         "enunciado": "¿Cuándo tiene sentido desnormalizar a propósito una base de datos?",
         "correcta": 2,
@@ -64,7 +64,7 @@
     },
     {
       "id": "datos-modelado-02",
-      "version": 1,
+      "version": 2,
       "pista": "datos",
       "familia": "modelado",
       "tipo": "fundamento",
@@ -72,7 +72,7 @@
       "nivelMinimo": "junior",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Qué son las migraciones de base de datos y por qué no deberías editar el esquema de producción a mano desde un cliente SQL?",
+        "es": "¿Qué son las migraciones de base de datos? ¿Por qué no deberías cambiar el esquema de producción a mano desde un cliente SQL?",
         "en": "What are database migrations, and why shouldn't you hand-edit the production schema from a SQL client?"
       },
       "rubrica": {
@@ -87,7 +87,7 @@
           "Añade que un cambio manual no pasa por revisión de código ni se puede revertir de forma fiable"
         ]
       },
-      "respuestaModelo": "Las migraciones son scripts versionados (en git, junto al código) que llevan el esquema de la base de datos de un estado a otro de forma reproducible y auditable en cualquier entorno. Editar el esquema de producción a mano desde un cliente SQL rompe eso de varias formas: crea drift entre entornos (producción deja de coincidir con lo que dicen las migraciones en el repo), el cambio no queda registrado en ningún sitio salvo la memoria de quien lo hizo, no pasa por revisión de código, y no se puede revertir de forma fiable si algo sale mal. Herramientas como Prisma Migrate o Drizzle Kit generan y aplican esos scripts de forma controlada.",
+      "respuestaModelo": "Las migraciones son scripts guardados en git, junto al código, que llevan el esquema de la base de datos de un estado al siguiente de la misma forma en cualquier entorno, y queda constancia de cada cambio. Cambiar producción a mano desde un cliente SQL lo rompe todo: producción deja de coincidir con lo que dicen las migraciones del repo, el cambio no queda escrito en ningún sitio salvo en la memoria de quien lo hizo, nadie lo revisa y, si sale mal, no hay forma fiable de deshacerlo. Herramientas como Prisma Migrate o Drizzle Kit generan y aplican esos scripts de forma controlada.",
       "test": {
         "enunciado": "¿Por qué no se debe cambiar el esquema de producción a mano desde un cliente SQL?",
         "correcta": 0,
@@ -124,7 +124,7 @@
     },
     {
       "id": "datos-modelado-03",
-      "version": 1,
+      "version": 2,
       "pista": "datos",
       "familia": "modelado",
       "tipo": "razonamiento",
@@ -132,7 +132,7 @@
       "nivelMinimo": "senior",
       "frecuencia": "baja",
       "texto": {
-        "es": "Necesitas añadir una columna NOT NULL a una tabla de 10 millones de filas en producción sin downtime. ¿Cómo lo harías?",
+        "es": "Tienes que añadir una columna obligatoria (`NOT NULL`) a una tabla de 10 millones de filas en producción, sin cortar el servicio. ¿Cómo lo harías?",
         "en": "You need to add a NOT NULL column to a 10-million-row table in production without downtime. How would you do it?"
       },
       "rubrica": {
@@ -147,7 +147,7 @@
           "Explica que el código que escribe en la columna nueva debe desplegarse ANTES del backfill, en pasos separados (expand/contract)"
         ]
       },
-      "respuestaModelo": "Añadir `NOT NULL` directamente bloquea la tabla mientras Postgres valida que ninguna fila existente tenga NULL, inviable en una tabla de 10 millones de filas en horario de tráfico. El patrón correcto es expand/contract en varios pasos: primero añadir la columna como nullable con un valor por defecto; después desplegar el código que ya escribe esa columna en las filas nuevas; luego rellenar (backfill) las filas existentes en lotes pequeños para no saturar el WAL ni bloquear escrituras concurrentes; y solo al final, con todas las filas pobladas, añadir el constraint `NOT NULL`. En versiones recientes de Postgres, si antes se añade un `CHECK (columna IS NOT NULL) NOT VALID` y se valida por separado, el `NOT NULL` final se puede aplicar sin el bloqueo largo de una validación completa en el mismo paso.",
+      "respuestaModelo": "Si añades el `NOT NULL` de golpe, Postgres bloquea la tabla mientras comprueba que ninguna fila tiene el campo vacío, y con 10 millones de filas en plena hora de tráfico eso no se puede. Lo correcto es hacerlo en varios pasos (lo llaman expand/contract). Uno: añadir la columna permitiendo vacíos y con un valor por defecto. Dos: desplegar el código que ya rellena esa columna en las filas nuevas. Tres: rellenar las filas que ya existían, poco a poco y en lotes pequeños, para no saturar la base de datos ni bloquear a quien escribe. Cuatro, solo al final, con todo relleno: poner el `NOT NULL`. En versiones recientes de Postgres puedes añadir antes un `CHECK (columna IS NOT NULL) NOT VALID` y validarlo aparte, y así el `NOT NULL` final no necesita ese bloqueo largo.",
       "etiquetas": ["sql", "migraciones", "postgres", "zero-downtime"],
       "fuentes": [
         {
@@ -162,7 +162,7 @@
     },
     {
       "id": "datos-modelado-diseno-blog-simple",
-      "version": 1,
+      "version": 2,
       "pista": "datos",
       "familia": "modelado",
       "tipo": "razonamiento",
@@ -170,7 +170,7 @@
       "nivelMinimo": "junior",
       "frecuencia": "media",
       "texto": {
-        "es": "Diseña las tablas para un blog sencillo con posts y comentarios. Cada post tiene un autor; cada comentario pertenece a un post y a un autor. ¿Qué tablas y claves usarías?",
+        "es": "Diseña las tablas de un blog sencillo con posts y comentarios. Cada post tiene un autor; cada comentario es de un post y de un autor. ¿Qué tablas y claves pondrías?",
         "en": "Design the tables for a simple blog with posts and comments. Each post has an author; each comment belongs to a post and an author. What tables and keys would you use?"
       },
       "rubrica": {
@@ -184,8 +184,8 @@
           "Explica qué pasa con los comentarios si se borra el post (borrado en cascada o restricción) y justifica la elección"
         ]
       },
-      "respuestaModelo": "Tres tablas: `users(id, name)`, `posts(id, title, body, author_id, created_at)` y `comments(id, post_id, author_id, body, created_at)`, con `author_id` en ambas apuntando a `users(id)` y `post_id` en `comments` apuntando a `posts(id)`, en vez de repetir el nombre del autor en cada fila. Para que listar los comentarios de un post sea rápido conforme la tabla crece, conviene un índice sobre `comments(post_id)`. Sobre qué pasa al borrar un post, lo más habitual es `ON DELETE CASCADE` en la clave foránea de `comments.post_id`, para que sus comentarios se borren con él y no queden huérfanos apuntando a un post inexistente; la alternativa, `ON DELETE RESTRICT`, tiene sentido si se prefiere impedir borrar un post mientras tenga comentarios, forzando una decisión explícita antes de perder ese historial.",
-      "resumen": "Tres tablas: `users`, `posts` con `author_id` y `comments` con `post_id` y `author_id`, todas con claves foráneas; índice en `comments(post_id)` y decidir qué pasa al borrar un post.",
+      "respuestaModelo": "Tres tablas: `users(id, name)`, `posts(id, title, body, author_id, created_at)` y `comments(id, post_id, author_id, body, created_at)`. El `author_id` de las dos apunta a `users(id)` y el `post_id` de `comments` apunta a `posts(id)`, en vez de repetir el nombre del autor en cada fila. Para que sacar los comentarios de un post siga yendo rápido cuando la tabla crezca, un índice en `comments(post_id)`. Y hay que decidir qué pasa al borrar un post: lo más habitual es `ON DELETE CASCADE` en `comments.post_id`, para que sus comentarios se vayan con él y no se queden apuntando a un post que no existe. La alternativa, `ON DELETE RESTRICT`, impide borrar un post que tenga comentarios, para obligar a decidirlo a propósito antes de perder ese historial.",
+      "resumen": "Tres tablas: `users`, `posts` con `author_id` y `comments` con `post_id` y `author_id`, todas con claves foráneas; un índice en `comments(post_id)` y decidir qué pasa con los comentarios al borrar un post.",
       "etiquetas": ["modelado", "claves-foraneas"],
       "fuentes": [
         {

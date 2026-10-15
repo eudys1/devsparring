@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "react-patrones-01",
-      "version": 2,
+      "version": 3,
       "pista": "react",
       "familia": "patrones",
       "tipo": "definicion",
@@ -12,7 +12,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "alta",
       "texto": {
-        "es": "Tu dashboard se queda en blanco entero cuando falla la carga de un solo widget. ¿Qué son `Suspense` y los error boundaries, y por qué son mecanismos complementarios?",
+        "es": "Tu panel se queda en blanco entero cuando falla la carga de un solo widget. ¿Qué son `Suspense` y los error boundaries, y por qué se usan juntos?",
         "en": "Your whole dashboard goes blank when a single widget fails to load. What are `Suspense` and error boundaries, and why are they complementary mechanisms?"
       },
       "rubrica": {
@@ -26,8 +26,8 @@
           "Aclara que ninguno de los dos captura errores en handlers de eventos ni en código asíncrono fuera del render"
         ]
       },
-      "respuestaModelo": "`Suspense` captura el hecho de que un componente está esperando algo (una carga de código con `lazy`, o de datos con las APIs que lo soportan) y mientras tanto muestra un fallback en su lugar, sin que el desarrollador tenga que gestionar manualmente un estado de carga. Los error boundaries son componentes (de clase, con `getDerivedStateFromError` y `componentDidCatch`, o envoltorios de librerías como `react-error-boundary`) que capturan errores lanzados durante el renderizado de sus hijos y muestran una UI alternativa en vez de que toda la app se rompa en blanco. Son complementarios porque cubren dos fases distintas: `Suspense` cubre la espera, el error boundary cubre el fallo; y ambos comparten una limitación importante, no capturan errores que ocurren en handlers de eventos (un `onClick` que lanza) ni en código asíncrono fuera del ciclo de render, para eso sigue haciendo falta un `try/catch` normal.",
-      "resumen": "`Suspense` muestra un fallback mientras algo carga; un error boundary muestra una UI alternativa si algo falla al renderizar. Uno cubre la espera y el otro el error, así que van juntos.",
+      "respuestaModelo": "`Suspense` se encarga de la espera: cuando un componente está cargando algo (su código con `lazy`, o datos con las APIs que lo soportan), enseña un fallback en su sitio sin que tengas que gestionar tú el \"cargando\". Un error boundary se encarga del fallo: si un hijo lanza un error al pintarse, enseña una pantalla alternativa en vez de que se caiga toda la app. Se escriben como componentes de clase (con `getDerivedStateFromError` y `componentDidCatch`) o con librerías como `react-error-boundary`. Para tu panel, envuelve cada widget en su propio error boundary y así un widget roto no se lleva a los demás. Ojo con lo que no cubren: los errores dentro de un `onClick` o en código asíncrono fuera del render; para eso sigue haciendo falta un `try/catch` normal.",
+      "resumen": "`Suspense` enseña algo mientras se carga; un error boundary enseña una alternativa si algo falla al pintar. Uno cubre la espera y el otro el error, por eso van juntos.",
       "test": {
         "enunciado": "¿Por qué `Suspense` y los error boundaries son complementarios?",
         "correcta": 2,
@@ -64,7 +64,7 @@
     },
     {
       "id": "react-patrones-02",
-      "version": 1,
+      "version": 2,
       "pista": "react",
       "familia": "patrones",
       "tipo": "fundamento",
@@ -72,7 +72,7 @@
       "nivelMinimo": "junior",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Qué diferencia hay entre accesibilidad de un `<div onClick>` y un `<button>`? ¿Por qué importa en una revisión de código?",
+        "es": "¿Qué diferencia hay, en accesibilidad, entre un `<div onClick>` y un `<button>`? ¿Por qué importa en una revisión de código?",
         "en": "What's the accessibility difference between a `<div onClick>` and a `<button>`? Why does it matter in a code review?"
       },
       "rubrica": {
@@ -86,8 +86,8 @@
           "Da la solución cuando de verdad hace falta un `<div>` interactivo: `tabIndex`, `role=\"button\"` y manejo de teclado"
         ]
       },
-      "respuestaModelo": "Un `<div onClick>` solo responde al clic del ratón: no es focuseable por teclado por defecto (no aparece en el orden de tabulación), no tiene un rol semántico que indique que es interactivo, y no responde a `Enter` ni `Espacio` como esperaría cualquier usuario que navega con teclado. Un lector de pantalla lo anuncia como texto plano, sin indicar que se puede activar. `<button>` trae todo eso gratis: foco por teclado, rol de botón anunciado por el lector de pantalla, y la activación con `Enter`/`Espacio` ya implementada por el navegador. En una revisión de código este es uno de los hallazgos de accesibilidad más frecuentes y más baratos de arreglar: si el elemento se puede simplemente cambiar a `<button>` (con los estilos adecuados) es la solución preferida; si por alguna razón debe seguir siendo un `<div>`, hay que añadir `tabIndex={0}`, `role=\"button\"` y manejar `onKeyDown` a mano.",
-      "resumen": "Un `<div onClick>` solo responde al ratón: sin foco de teclado, sin rol y sin Enter ni Espacio, y el lector lo anuncia como texto. `<button>` trae todo eso gratis; por eso se señala en una revisión.",
+      "respuestaModelo": "Un `<div onClick>` solo funciona con el ratón. No se puede llegar a él con Tab, no dice que es algo pulsable y no responde a Enter ni a Espacio, que es lo que espera quien navega con teclado. Un lector de pantalla lo lee como texto normal, sin decir que se puede activar. Un `<button>` trae todo eso de serie: foco con el teclado, el lector anuncia que es un botón, y Enter y Espacio ya funcionan. En una revisión es de lo que más sale y de lo más fácil de arreglar: si puedes cambiarlo a `<button>` con los estilos que toque, hazlo. Si por algún motivo tiene que seguir siendo un `<div>`, le faltan `tabIndex={0}`, `role=\"button\"` y manejar `onKeyDown` a mano.",
+      "resumen": "Un `<div onClick>` solo funciona con el ratón: no recibe foco con el teclado, no responde a Enter ni Espacio y el lector de pantalla lo lee como texto. `<button>` trae todo eso hecho; por eso se señala en una revisión.",
       "test": {
         "enunciado": "¿Qué le falta a un `<div onClick>` que sí tiene un `<button>`?",
         "correcta": 1,
@@ -124,7 +124,7 @@
     },
     {
       "id": "react-patrones-03",
-      "version": 2,
+      "version": 3,
       "pista": "react",
       "familia": "patrones",
       "tipo": "definicion",
@@ -132,7 +132,7 @@
       "nivelMinimo": "senior",
       "frecuencia": "alta",
       "texto": {
-        "es": "Un compañero dice que los Server Components \"son el SSR de siempre con otro nombre\". ¿Qué son las Server Components de React y en qué se diferencian del SSR tradicional?",
+        "es": "Un compañero dice que los Server Components \"son el SSR de siempre con otro nombre\". ¿Qué son los Server Components de React y en qué se diferencian del SSR de toda la vida?",
         "en": "A teammate says Server Components \"are just good old SSR with a new name\". What are React Server Components and how do they differ from traditional SSR?"
       },
       "rubrica": {
@@ -146,8 +146,8 @@
           "Aclara que solo los Client Components (`\"use client\"`) se hidratan"
         ]
       },
-      "respuestaModelo": "El SSR tradicional genera el HTML inicial en el servidor para que la primera pintura sea rápida, pero después el navegador descarga el JavaScript de esos mismos componentes y los vuelve a ejecutar entero para 'hidratarlos' y hacerlos interactivos: el código del componente viaja al cliente igualmente. Los Server Components van más allá: se ejecutan exclusivamente en el servidor, su código nunca se incluye en el bundle que descarga el navegador, y por eso pueden hacer acceso directo a una base de datos o al sistema de archivos sin arriesgarse a filtrar credenciales, porque ese código físicamente no llega al cliente. Solo los Client Components, marcados explícitamente con la directiva `\"use client\"`, se hidratan y ejecutan también en el navegador; el resto del árbol se queda como HTML (y una serialización especial) que no necesita JavaScript para existir.",
-      "resumen": "SSR genera HTML en el servidor, pero luego el navegador descarga ese código y lo hidrata. Los Server Components solo se ejecutan en el servidor y su código nunca entra en el bundle del cliente.",
+      "respuestaModelo": "Con el SSR de siempre, el servidor genera el HTML para que la primera pantalla salga rápido, pero luego el navegador descarga el JavaScript de esos mismos componentes y los vuelve a ejecutar enteros para \"hidratarlos\" y que respondan a clics. O sea, el código viaja al navegador igualmente. Los Server Components van más allá: solo se ejecutan en el servidor y su código nunca entra en lo que descarga el navegador. Por eso pueden leer la base de datos o ficheros directamente sin riesgo de filtrar credenciales: ese código físicamente no llega al cliente. Solo los Client Components, los marcados con `\"use client\"`, se hidratan y se ejecutan también en el navegador; el resto llega como HTML y no necesita JavaScript.",
+      "resumen": "El SSR genera el HTML en el servidor, pero luego el navegador descarga ese mismo código y lo hidrata. Los Server Components solo se ejecutan en el servidor y su código nunca llega al navegador.",
       "test": {
         "enunciado": "¿Qué diferencia a los Server Components del SSR tradicional?",
         "correcta": 0,
@@ -184,7 +184,7 @@
     },
     {
       "id": "react-patrones-04",
-      "version": 1,
+      "version": 2,
       "pista": "react",
       "familia": "patrones",
       "tipo": "fundamento",
@@ -192,7 +192,7 @@
       "nivelMinimo": "junior",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Qué es el \"prop drilling\" y qué alternativas hay además de Context?",
+        "es": "¿Qué es el \"prop drilling\" y qué alternativas tienes, además de Context?",
         "en": "What is \"prop drilling\" and what alternatives exist besides Context?"
       },
       "rubrica": {
@@ -206,7 +206,7 @@
           "Menciona un store externo para estado muy compartido entre partes no relacionadas del árbol"
         ]
       },
-      "respuestaModelo": "El prop drilling ocurre cuando un dato necesita llegar de un componente ancestro a uno descendiente lejano, y hay que pasarlo como prop a través de varios componentes intermedios que no lo usan para nada, solo lo reenvían. La primera alternativa, antes incluso de pensar en Context, es la composición: en vez de pasar el dato, se pasa el componente ya construido como `children` o como prop de tipo elemento, evitando que los intermedios necesiten saber que ese dato existe. Context resuelve el caso donde de verdad muchos componentes en distintos niveles necesitan el mismo valor, especialmente si cambia poco (tema, idioma, usuario autenticado). Cuando el estado es compartido por partes del árbol que no tienen relación de ancestro directo y cambia con frecuencia, un store externo como Zustand o Redux suele encajar mejor que forzar Context a ese caso de uso.",
+      "respuestaModelo": "Es cuando un dato tiene que bajar desde un componente de arriba hasta uno muy de abajo, y lo vas pasando como prop por varios componentes de en medio que no lo usan, solo lo reenvían. La primera alternativa, antes incluso de Context, es la composición: en vez de bajar el dato, bajas el componente ya montado como `children` o como prop, y los de en medio ni se enteran de que ese dato existe. Context encaja cuando muchos componentes a distintos niveles necesitan el mismo valor, sobre todo si cambia poco (el tema, el idioma, el usuario). Si el estado lo comparten partes del árbol que no cuelgan una de otra y cambia a menudo, suele ir mejor un store como Zustand o Redux que forzar Context.",
       "test": {
         "enunciado": "¿Cuál es la primera alternativa al prop drilling, antes de pensar en Context?",
         "correcta": 3,
@@ -243,7 +243,7 @@
     },
     {
       "id": "react-patrones-05",
-      "version": 1,
+      "version": 2,
       "pista": "react",
       "familia": "patrones",
       "tipo": "comportamental",
@@ -251,7 +251,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "Cuéntame de una vez que tuviste que decidir entre \"hacerlo rápido\" y \"hacerlo bien\" en un componente React de producción.",
+        "es": "Cuéntame una vez en la que tuviste que elegir entre \"hacerlo rápido\" y \"hacerlo bien\" en un componente React en producción.",
         "en": "Tell me about a time you had to choose between \"doing it fast\" and \"doing it right\" on a production React component."
       },
       "rubrica": {
@@ -263,7 +263,7 @@
           "Muestra criterio de cuándo cada opción es razonable, no presenta 'ir rápido' como un error automático"
         ]
       },
-      "respuestaModelo": "Una respuesta que aprueba no se queda en 'lo hice rápido porque había prisa', sino que reconstruye la situación con estructura STAR: qué presión de negocio o de plazo había (situación y tarea), qué opción concreta se tomó y por qué era razonable en ese momento (acción), y qué pasó después con esa decisión (resultado). Un candidato senior nombra la deuda técnica exacta que se asumió (por ejemplo, un componente sin memoizar, sin tests, o con lógica de negocio mezclada en la UI), explica el criterio que usó para decidir que ir rápido era aceptable en ese caso concreto, y cuenta cómo y cuándo se pagó esa deuda después, en vez de dejarla pudrirse indefinidamente. Lo que se valora es el criterio de ingeniería, no una moraleja genérica de 'siempre hay que hacerlo bien'.",
+      "respuestaModelo": "Una buena respuesta no se queda en \"lo hice rápido porque había prisa\": cuenta la historia con estructura STAR. Qué presión de negocio o de plazo había (situación y tarea), qué hiciste exactamente y por qué tenía sentido en ese momento (acción), y qué pasó después con esa decisión (resultado). Para nivel senior, nombra la deuda concreta que asumiste (un componente sin memoizar, sin tests, con lógica de negocio metida en la interfaz), explica por qué ir rápido era aceptable en ese caso, y cuenta cómo y cuándo la pagaste después, en vez de dejarla ahí para siempre. Lo que se valora es tu criterio, no una moraleja de \"siempre hay que hacerlo bien\".",
       "etiquetas": ["patrones", "comportamental", "deuda-tecnica"],
       "fuentes": [
         {
@@ -278,7 +278,7 @@
     },
     {
       "id": "react-patrones-buscador-autocompletado",
-      "version": 1,
+      "version": 2,
       "pista": "react",
       "familia": "patrones",
       "tipo": "razonamiento",
@@ -286,7 +286,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "alta",
       "texto": {
-        "es": "Implementa un componente `<ProductSearch />` con un input que, mientras el usuario escribe, consulte `GET /api/products?q=...` y muestre hasta 10 resultados. Requisitos: no dispares una petición por cada tecla (debounce de 300ms), ignora respuestas que lleguen fuera de orden si el usuario escribe rápido, muestra estados de carga y de \"sin resultados\", y hazlo accesible por teclado (flechas para navegar, Enter para seleccionar). Explica cómo lo estructurarías.",
+        "es": "Diseña un componente `<ProductSearch />` con un input que, mientras escribes, consulte `GET /api/products?q=...` y enseñe hasta 10 resultados. Requisitos: no lances una petición por tecla (debounce de 300 ms), ignora respuestas que lleguen desordenadas si escribes rápido, enseña \"cargando\" y \"sin resultados\", y que se pueda usar con el teclado (flechas para moverte, Enter para elegir). ¿Cómo lo montarías?",
         "en": "Implement a `<ProductSearch />` component with a text input that, as the user types, queries `GET /api/products?q=...` and shows up to 10 results. Requirements: don't fire a request per keystroke (300ms debounce), ignore out-of-order responses if the user types fast, show loading and empty states, and make it keyboard accessible (arrow keys to navigate, Enter to select). Explain how you'd structure it."
       },
       "rubrica": {
@@ -301,8 +301,8 @@
           "Explica la navegación por teclado y un `aria-live` para anunciar resultados a lectores de pantalla"
         ]
       },
-      "respuestaModelo": "La estructura razonable usa un estado para el texto del input y otro para el valor 'debounciado', con un `useEffect` que arma un `setTimeout` de 300ms cada vez que cambia el texto y lo cancela en la limpieza del efecto (o un hook `useDebouncedValue` que encapsule ese patrón). La petición real se dispara cuando cambia el valor debounciado, usando un `AbortController` para cancelar la petición anterior si el usuario sigue escribiendo, o alternativamente comparando el texto que originó la respuesta con el texto actual del input antes de pintar los resultados, para no mostrar una respuesta vieja que llegó tarde. El componente mantiene un estado de tres posiciones (cargando, con resultados, sin resultados) que se actualiza de forma coherente para evitar parpadeos entre ellos. Para accesibilidad, la lista de resultados se comporta como un combobox: las flechas mueven un índice activo, Enter selecciona el resultado resaltado, y un `aria-live=\"polite\"` anuncia cuántos resultados aparecieron para quien usa lector de pantalla.",
-      "resumen": "Texto y valor con debounce de 300 ms; `AbortController` para cancelar la petición vieja; estados de cargando, con resultados y sin resultados; y un combobox con flechas, Enter y `aria-live` para el recuento.",
+      "respuestaModelo": "Dos estados: el texto del input y el texto \"con debounce\". Un `useEffect` pone un `setTimeout` de 300 ms cada vez que cambia el texto y lo cancela en su limpieza (o lo metes en un hook `useDebouncedValue`). La petición sale cuando cambia el texto con debounce, y usas un `AbortController` para cancelar la anterior si sigues escribiendo; otra opción es comprobar, antes de pintar, que la respuesta corresponde al texto actual, para no enseñar una respuesta vieja que llegó tarde. Llevas un estado con tres posibilidades (cargando, con resultados, sin resultados) y lo cambias de forma ordenada para que no parpadee. Para el teclado, la lista funciona como un combobox: las flechas mueven cuál está marcado, Enter elige el marcado, y un `aria-live=\"polite\"` le dice al lector de pantalla cuántos resultados han salido.",
+      "resumen": "Texto y valor con debounce de 300 ms; `AbortController` para cancelar la petición vieja; estados de cargando, con resultados y sin resultados; y un combobox con flechas, Enter y `aria-live` para anunciar cuántos hay.",
       "etiquetas": ["patrones", "debounce", "accesibilidad", "condicion-de-carrera"],
       "fuentes": [
         {
@@ -317,7 +317,7 @@
     },
     {
       "id": "react-patrones-review-nota-autoguardado",
-      "version": 2,
+      "version": 3,
       "pista": "react",
       "familia": "patrones",
       "tipo": "review",
@@ -325,7 +325,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "Revisa este componente de nota que se guarda sola cada 5 segundos. Los usuarios dicen que a veces se guarda texto antiguo. ¿Qué falla?",
+        "es": "Revisa este componente de nota que se guarda sola cada 5 segundos. La gente dice que a veces se guarda un texto antiguo. ¿Qué falla?",
         "en": "Review this note component that auto-saves every 5 seconds. Users say it sometimes saves old text. What is wrong?"
       },
       "contexto": "```tsx\nfunction NotaAutoguardada({ notaId, textoInicial }) {\n  const [texto, setTexto] = useState(textoInicial);\n\n  useEffect(() => {\n    setInterval(() => {\n      fetch(`/api/notas/${notaId}`, {\n        method: 'PUT',\n        body: JSON.stringify({ texto }),\n      });\n    }, 5000);\n  }, [notaId]);\n\n  return <textarea value={texto} onChange={(e) => setTexto(e.target.value)} />;\n}\n```",
@@ -341,7 +341,7 @@
         ]
       },
       "respuestaModelo": "Dos fallos en el mismo efecto. El primero es la closure obsoleta: el efecto solo se ejecuta cuando cambia `notaId`, así que la función del intervalo se crea una vez y se queda con el `texto` de ese momento. Cada 5 segundos guarda el texto inicial, no lo que el usuario está escribiendo. El segundo es que no hay limpieza: el efecto no devuelve `() => clearInterval(id)`, así que al desmontar el componente o al cambiar de nota el intervalo anterior sigue vivo, y puede guardar el texto de una nota en otra. Se arregla devolviendo la limpieza y leyendo el texto actual sin recrear el intervalo, con un `useRef` que se actualiza en cada render; o, mejor, guardando con debounce cuando el texto cambia, que además no envía peticiones si nadie escribe.",
-      "resumen": "La función del intervalo captura el texto del primer render (closure obsoleta) y además no se limpia. clearInterval en la limpieza y leer el texto de un ref, o debounce.",
+      "resumen": "La función del intervalo se queda con el texto del primer render (stale closure) y además nunca se limpia. Arréglalo con `clearInterval` en la limpieza y leyendo el texto de un ref, o guardando con debounce.",
       "etiquetas": ["patrones", "hooks", "xss", "review"],
       "fuentes": [
         {

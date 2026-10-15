@@ -526,6 +526,8 @@ export function Motor({
               />
             ) : esKata && pregunta.kata ? (
               <EditorKata
+                key={pregunta.id}
+                fichero={`${sesion.id}-${pregunta.id}`}
                 codigoInicial={pregunta.kata.codigoInicial}
                 funcion={pregunta.kata.funcion}
                 casos={pregunta.kata.casos}

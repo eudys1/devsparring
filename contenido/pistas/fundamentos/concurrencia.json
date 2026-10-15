@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "fund-concurrencia-01",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "concurrencia",
       "tipo": "fundamento",
@@ -12,7 +12,7 @@
       "nivelMinimo": "junior",
       "frecuencia": "alta",
       "texto": {
-        "es": "JavaScript es de un solo hilo, entonces ¿cómo puede manejar operaciones asíncronas sin bloquear la interfaz?",
+        "es": "Si JavaScript tiene un solo hilo, ¿cómo puede esperar a cosas asíncronas sin que se congele la pantalla?",
         "en": "JavaScript is single-threaded, so how can it handle asynchronous operations without blocking the UI?"
       },
       "rubrica": {
@@ -27,8 +27,8 @@
           "Distingue que el entorno (navegador, libuv en Node) sí puede usar hilos internos aunque el JS que corre sea single-threaded"
         ]
       },
-      "respuestaModelo": "El motor de JavaScript ejecuta el código en un único hilo, pero delega las operaciones de I/O (peticiones de red, temporizadores, lectura de archivos) al entorno que lo rodea: el navegador o, en Node, libuv, que sí puede usar hilos internos para eso. Cuando esas operaciones terminan, su callback o la resolución de la promesa se coloca en una cola de tareas, y el event loop la ejecuta solo cuando el call stack del hilo principal está vacío. Así el hilo de JavaScript nunca se queda bloqueado esperando una respuesta de red: sigue procesando otro código mientras tanto.",
-      "resumen": "El motor ejecuta en un solo hilo pero delega la I/O al navegador o a libuv. Al terminar, el callback va a una cola y el event loop lo ejecuta cuando la pila está vacía; el hilo nunca espera.",
+      "respuestaModelo": "El motor de JavaScript ejecuta tu código en un solo hilo, pero las esperas (peticiones de red, temporizadores, leer ficheros) no las hace él: se las pasa al entorno, que es el navegador o, en Node, libuv, y esos sí pueden usar hilos por dentro. Cuando esa operación termina, su callback o la resolución de la promesa se pone en una cola, y el event loop la ejecuta cuando el hilo principal ha terminado lo que estaba haciendo. Así el hilo de JavaScript nunca se queda parado esperando a la red: mientras tanto sigue con otras cosas, y por eso la pantalla no se congela.",
+      "resumen": "JavaScript corre en un hilo, pero deja las esperas (red, temporizadores) al navegador o a libuv. Al terminar, el callback va a una cola y el event loop lo ejecuta cuando el hilo queda libre.",
       "test": {
         "enunciado": "Si JavaScript tiene un solo hilo, ¿cómo espera a una petición de red sin congelar la interfaz?",
         "correcta": 0,
@@ -65,7 +65,7 @@
     },
     {
       "id": "fund-concurrencia-02",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "concurrencia",
       "tipo": "razonamiento",
@@ -73,7 +73,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "Da un ejemplo de condición de carrera (race condition) que puede ocurrir en el frontend, por ejemplo con peticiones fetch, y cómo la evitarías.",
+        "es": "Pon un ejemplo de condición de carrera (race condition) en el frontend, por ejemplo con peticiones `fetch`, y cómo la evitarías.",
         "en": "Give an example of a race condition that can happen in the frontend, for example with fetch requests, and how you'd avoid it."
       },
       "rubrica": {
@@ -88,8 +88,8 @@
           "Menciona un caso adicional distinto al autocompletado (doble clic en un botón de guardar, por ejemplo)"
         ]
       },
-      "respuestaModelo": "El caso clásico es un autocompletado de búsqueda: el usuario escribe rápido, se disparan varias peticiones fetch, y la respuesta de una petición antigua puede llegar después que la de una más reciente y pisar el resultado correcto en pantalla, porque el orden de llegada de las respuestas de red no está garantizado. Para evitarlo, guardo un identificador incremental de la última petición enviada y descarto cualquier respuesta que no corresponda a esa última petición, o cancelo la petición anterior con `AbortController` en cuanto se dispara una nueva. Un caso similar ocurre con un doble clic en un botón de guardar que dispara dos peticiones: ahí conviene deshabilitar el botón mientras la primera está en curso.",
-      "resumen": "En un autocompletado, una respuesta vieja puede llegar después que la nueva y pisarla. Se evita descartando respuestas que no son de la última petición o cancelando la anterior con `AbortController`.",
+      "respuestaModelo": "El caso típico es un buscador con sugerencias: escribes rápido, salen varias peticiones, y la respuesta de una vieja puede llegar después que la de la última y pisar el resultado bueno en pantalla, porque la red no garantiza que las respuestas lleguen en orden. Para evitarlo, guardas un contador de la última petición enviada y tiras cualquier respuesta que no sea de esa, o cancelas la anterior con `AbortController` en cuanto sale una nueva. Otro parecido: un doble clic en \"Guardar\" que manda dos peticiones. Ahí conviene desactivar el botón mientras la primera está en marcha.",
+      "resumen": "En un buscador con sugerencias, una respuesta vieja puede llegar después de la nueva y pisarla. Se evita tirando las respuestas que no son de la última petición o cancelando la anterior con `AbortController`.",
       "etiquetas": ["concurrencia", "asincronia"],
       "fuentes": [
         {
@@ -103,7 +103,7 @@
     },
     {
       "id": "fund-concurrencia-03",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "concurrencia",
       "tipo": "razonamiento",
@@ -111,7 +111,7 @@
       "nivelMinimo": "senior",
       "frecuencia": "baja",
       "texto": {
-        "es": "Node.js corre en un solo hilo para el JavaScript, pero ¿cómo manejarías una tarea intensiva en CPU (por ejemplo, procesar un CSV enorme) sin bloquear el servidor?",
+        "es": "Node ejecuta tu JavaScript en un solo hilo. ¿Cómo harías un trabajo pesado de CPU, como procesar un CSV enorme, sin dejar colgado el servidor?",
         "en": "Node.js runs JavaScript on a single thread, so how would you handle a CPU-intensive task (e.g. processing a huge CSV) without blocking the server?"
       },
       "rubrica": {
@@ -125,7 +125,7 @@
           "Explica el trade-off: mover a otro hilo/proceso añade complejidad de serialización de datos entre hilos"
         ]
       },
-      "respuestaModelo": "Un trabajo de CPU intensivo ejecutado directamente en el event loop bloquea todo el servidor: mientras se procesa el CSV, ninguna otra petición se atiende, aunque sea I/O. La solución habitual es mover ese trabajo a un `worker_thread`, que corre en un hilo separado con su propio event loop y se comunica con el principal mediante paso de mensajes, o a un `child_process` si el trabajo es más pesado aún y conviene aislarlo en otro proceso. Si no se puede usar un hilo separado, una alternativa es trocear el CSV en bloques y procesarlos con `setImmediate` entre bloque y bloque, cediendo el control al event loop periódicamente para no bloquearlo de una sola vez. El coste de mover a un worker es la serialización de datos al pasarlos entre hilos, que no es gratis para estructuras grandes.",
+      "respuestaModelo": "Si haces ese trabajo pesado directamente en el event loop, bloqueas todo el servidor: mientras procesas el CSV no se atiende ninguna otra petición. Lo habitual es sacarlo a un `worker_thread`, que corre en otro hilo con su propio event loop y habla con el principal mandándose mensajes, o a un `child_process` si es todavía más pesado y prefieres aislarlo en otro proceso. Si no puedes usar otro hilo, otra opción es partir el CSV en bloques y procesarlos con un `setImmediate` entre bloque y bloque, devolviendo el control al event loop cada poco para no bloquearlo de golpe. El precio de mandar el trabajo a un worker es que los datos hay que copiarlos al pasarlos de un hilo a otro, y con estructuras grandes eso también cuesta.",
       "etiquetas": ["concurrencia", "node"],
       "fuentes": [
         {
@@ -140,7 +140,7 @@
     },
     {
       "id": "fund-concurrencia-04",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "concurrencia",
       "tipo": "razonamiento",
@@ -148,7 +148,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "baja",
       "texto": {
-        "es": "Un test o una funcionalidad falla de forma intermitente (a veces pasa, a veces no) y sospechas que es un problema de asincronía. ¿Cómo lo depurarías?",
+        "es": "Un test o una funcionalidad falla a veces sí y a veces no, y sospechas que es un problema de asincronía. ¿Cómo lo depurarías?",
         "en": "A test or feature fails intermittently (sometimes it passes, sometimes it doesn't) and you suspect it's an async issue. How would you debug it?"
       },
       "rubrica": {
@@ -160,7 +160,7 @@
           "Evita \"arreglar a ciegas\" (añadir un `setTimeout` random) sin haber entendido la causa primero"
         ]
       },
-      "respuestaModelo": "Antes de tocar nada sospecho de una condición de carrera: un `await` que falta en algún punto, dos promesas cuyo orden de resolución no está garantizado, o un test que depende de un temporizador real. Para reproducirlo de forma controlada, ejecuto el test muchas veces en bucle (localmente o en CI con un flag de repetición) para aumentar la probabilidad de que falle, y si tengo una hipótesis de dónde está la carrera, fuerzo un delay artificial ahí para confirmar o descartar. Evito \"arreglar a ciegas\" añadiendo un `setTimeout` arbitrario para que el test pase, porque eso esconde el bug real y lo puede reintroducir en otro entorno con timing distinto.",
+      "respuestaModelo": "Lo primero que sospecho es una condición de carrera: un `await` que falta, dos promesas que no siempre terminan en el mismo orden, o un test que depende de un temporizador real. Para pillarlo, ejecuto el test muchas veces seguidas (en local o en CI con la opción de repetir) para que falle más a menudo, y si tengo una idea de dónde está la carrera, meto un retraso artificial justo ahí para confirmarlo o descartarlo. Lo que evito es \"arreglarlo\" poniendo un `setTimeout` a ojo para que pase: eso esconde el bug de verdad, y vuelve a salir en otro entorno con otros tiempos.",
       "etiquetas": ["concurrencia", "testing", "asincronia"],
       "fuentes": [
         {

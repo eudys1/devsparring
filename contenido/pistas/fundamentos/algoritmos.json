@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "fund-algoritmos-01",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "algoritmos",
       "tipo": "definicion",
@@ -12,7 +12,7 @@
       "nivelMinimo": "junior",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Qué es la notación Big O? Da la complejidad temporal de buscar en un array, en un objeto/Map, y de ordenar con `Array.sort`.",
+        "es": "¿Qué es la notación Big O? ¿Qué complejidad tiene buscar en un array, buscar en un objeto o `Map`, y ordenar con `Array.sort`?",
         "en": "What is Big O notation? Give the time complexity of searching in an array, in an object/Map, and of sorting with `Array.sort`."
       },
       "rubrica": {
@@ -27,7 +27,7 @@
           "No solo recita definiciones, las aplica a un caso propio"
         ]
       },
-      "respuestaModelo": "Big O describe cómo crece el tiempo (o memoria) de un algoritmo a medida que crece el tamaño de la entrada, ignorando constantes. Buscar un valor en un array recorriéndolo es O(n): en el peor caso hay que mirar todos los elementos. Buscar por clave en un objeto o un `Map` es O(1) amortizado, porque internamente usan una tabla hash con acceso casi directo. Ordenar con `Array.prototype.sort` es O(n log n) en el caso general en motores como V8, que usa una variante de Timsort.",
+      "respuestaModelo": "Big O es una forma de decir cómo crece lo que tarda (o lo que ocupa) un algoritmo cuando le das más datos, sin fijarse en detalles pequeños. Buscar un valor recorriendo un array es O(n): en el peor caso miras todos los elementos, así que el doble de datos es el doble de tiempo. Buscar por clave en un objeto o un `Map` es O(1): por dentro usan una tabla hash que va casi directa a la clave, y tarda lo mismo con diez elementos que con un millón. Ordenar con `Array.prototype.sort` es O(n log n) en motores como V8, que usa una variante de Timsort: crece algo más rápido que los datos, pero mucho menos que comparar todos con todos.",
       "test": {
         "enunciado": "¿Qué complejidad tiene buscar un valor recorriendo un array sin ordenar?",
         "correcta": 3,
@@ -63,7 +63,7 @@
     },
     {
       "id": "fund-algoritmos-02",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "algoritmos",
       "tipo": "fundamento",
@@ -71,7 +71,7 @@
       "nivelMinimo": "junior",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Cuándo usarías un `Map` en vez de un objeto plano `{}` en JavaScript? ¿Y un `Set` en vez de un array?",
+        "es": "¿Cuándo usarías un `Map` en vez de un objeto `{}`? ¿Y un `Set` en vez de un array?",
         "en": "When would you use a `Map` instead of a plain object `{}` in JavaScript? And a `Set` instead of an array?"
       },
       "rubrica": {
@@ -86,8 +86,8 @@
           "Da un caso real donde elegiría cada uno (caché con claves objeto, deduplicar ids)"
         ]
       },
-      "respuestaModelo": "Un `Map` conviene cuando las claves no son siempre strings (pueden ser objetos), cuando necesito el orden de inserción garantizado, o cuando hay muchas inserciones y borrados frecuentes, porque además expone `.size` directamente sin contar propiedades a mano. Un objeto plano sigue siendo cómodo para estructuras fijas conocidas en tiempo de escritura. Un `Set` conviene cuando necesito garantizar unicidad y comprobar pertenencia muchas veces: `set.has(x)` es O(1) frente a `array.includes(x)` que es O(n), lo que importa mucho al trabajar con colecciones grandes, por ejemplo para deduplicar ids.",
-      "resumen": "`Map` cuando las claves no son strings, importa el orden o hay muchas altas y bajas. `Set` para garantizar unicidad y comprobar pertenencia: `has` es O(1) frente al O(n) de `includes`.",
+      "respuestaModelo": "Un `Map` conviene cuando las claves no son siempre textos (pueden ser objetos), cuando necesitas que se respete el orden en que metiste las cosas, o cuando vas a añadir y borrar mucho; además te da `.size` sin tener que contar. Un objeto normal sigue siendo cómodo para estructuras fijas que ya conoces al escribir el código. Un `Set` conviene cuando no quieres repetidos y vas a preguntar muchas veces si algo está: `set.has(x)` es instantáneo (O(1)), mientras que `array.includes(x)` recorre el array entero (O(n)). Con colecciones grandes, por ejemplo para quitar ids repetidos, la diferencia se nota muchísimo.",
+      "resumen": "`Map` cuando las claves no son textos, te importa el orden o hay muchas altas y bajas. `Set` para no tener repetidos y comprobar si algo está: `has` es instantáneo, `includes` recorre todo.",
       "test": {
         "enunciado": "¿Cuándo conviene un `Set` en vez de un array?",
         "correcta": 2,
@@ -124,7 +124,7 @@
     },
     {
       "id": "fund-algoritmos-03",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "algoritmos",
       "tipo": "razonamiento",
@@ -132,7 +132,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "Tienes un bucle anidado que compara cada elemento de un array de 10.000 elementos contra todos los demás (O(n²)). ¿Cómo lo detectarías como un problema y cómo lo mejorarías?",
+        "es": "Tienes un bucle dentro de otro que compara cada elemento de un array de 10.000 contra todos los demás (O(n²)). ¿Cómo verías que es un problema y cómo lo mejorarías?",
         "en": "You have a nested loop comparing every element of a 10,000-item array against every other (O(n²)). How would you spot it as a problem and how would you improve it?"
       },
       "rubrica": {
@@ -147,7 +147,7 @@
           "Reconoce que esto solo funciona si el criterio de comparación admite una clave (igualdad exacta, no cualquier comparación arbitraria)"
         ]
       },
-      "respuestaModelo": "Antes de tocar código, calculo el orden de magnitud: 10.000 al cuadrado son 100 millones de comparaciones, claramente el origen de la lentitud reportada. La señal de alarma es precisamente un bucle `for` dentro de otro `for` sobre el mismo array. Si el criterio de comparación se puede expresar como una clave (por ejemplo un id o una combinación de campos), lo sustituyo por una pasada única que construye un `Map` o `Set` con esa clave, y luego comparo con una búsqueda O(1) en vez de recorrer todo de nuevo, bajando el algoritmo de O(n²) a O(n). Esto solo funciona si la comparación es de igualdad por clave, no para comparaciones arbitrarias entre todos los pares.",
+      "respuestaModelo": "Antes de tocar nada, echo la cuenta: 10.000 por 10.000 son 100 millones de comparaciones. Ahí está la lentitud. La señal de alarma es justo esa: un `for` dentro de otro `for` sobre el mismo array. Si lo que comparas se puede convertir en una clave (un id, o varios campos juntos), lo cambias por una sola pasada que va metiendo esas claves en un `Map` o un `Set`, y cada comprobación pasa a ser instantánea en vez de recorrer todo otra vez. Pasas de O(n²) a O(n). Un matiz importante: esto vale cuando comparas por igualdad de una clave, no para cualquier comparación entre todas las parejas.",
       "etiquetas": ["algoritmos", "complejidad"],
       "fuentes": [
         {
@@ -161,7 +161,7 @@
     },
     {
       "id": "fund-algoritmos-04",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "algoritmos",
       "tipo": "razonamiento",
@@ -169,7 +169,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "Tienes un archivo con 100.000 pedidos y sospechas que hay pedidos duplicados (mismo cliente, mismo producto, mismo importe, en una ventana de minutos). ¿Cómo lo abordarías, hablando en voz alta desde la estrategia de datos hasta la implementación?",
+        "es": "Tienes un fichero con 100.000 pedidos y sospechas que hay duplicados (mismo cliente, mismo producto, mismo importe, con pocos minutos de diferencia). ¿Cómo lo harías? Piensa en voz alta, desde los datos hasta el código.",
         "en": "You have a file with 100,000 orders and suspect there are duplicate orders (same customer, same product, same amount, within a few minutes). How would you approach it, thinking out loud from data strategy to implementation?"
       },
       "rubrica": {
@@ -184,8 +184,8 @@
           "Menciona cómo validaría falsos positivos (pedidos legítimos idénticos hechos por error del usuario, no del sistema) antes de borrar nada"
         ]
       },
-      "respuestaModelo": "Antes de escribir código, definiría qué cuenta exactamente como duplicado: ¿coincidencia exacta de cliente, producto e importe, o también hay que considerar una ventana temporal de unos minutos? Con eso claro, construiría una clave compuesta por esos campos y agruparía los 100.000 pedidos en un `Map` de clave a lista de pedidos en una sola pasada O(n), en vez de comparar cada pedido contra todos los demás. Dentro de cada grupo con más de un pedido, si hace falta ventana temporal, ordenaría por fecha y compararía solo pedidos consecutivos dentro del grupo. Antes de borrar nada, revisaría manualmente una muestra de los grupos detectados, porque dos pedidos idénticos también pueden ser legítimos (el cliente repitió la compra por error suyo, no del sistema), y eso no se debería borrar automáticamente sin confirmación.",
-      "resumen": "Primero definir qué es un duplicado. Luego una clave compuesta (cliente, producto, importe) y agrupar en un `Map` en una pasada O(n); dentro de cada grupo, ordenar por fecha y comparar vecinos.",
+      "respuestaModelo": "Antes de escribir código, aclararía qué es exactamente un duplicado: ¿que coincidan cliente, producto e importe, o también que estén a pocos minutos? Con eso claro, juntaría esos campos en una clave y agruparía los 100.000 pedidos en un `Map` de clave a lista de pedidos, en una sola pasada (O(n)), en vez de comparar cada pedido con todos los demás. En los grupos con más de un pedido, si hay que mirar la ventana de minutos, los ordeno por fecha y comparo solo los que van seguidos. Y antes de borrar nada, revisaría a mano una muestra: dos pedidos idénticos también pueden ser legítimos (el cliente compró dos veces), y eso no se borra en automático sin confirmarlo.",
+      "resumen": "Primero, decidir qué es un duplicado. Luego una clave con cliente, producto e importe y agrupar en un `Map` en una sola pasada; dentro de cada grupo, ordenar por fecha y comparar solo los que van seguidos.",
       "etiquetas": ["algoritmos", "datos"],
       "fuentes": [
         {

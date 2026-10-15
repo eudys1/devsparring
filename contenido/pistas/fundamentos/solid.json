@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "fund-solid-01",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "solid",
       "tipo": "fundamento",
@@ -12,7 +12,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Qué es el Principio de Responsabilidad Única (SRP) y cómo identificas cuándo una clase lo viola?",
+        "es": "¿Qué es el principio de responsabilidad única (SRP) y cómo ves que una clase no lo cumple?",
         "en": "What is the Single Responsibility Principle and how do you identify when a class violates it?"
       },
       "rubrica": {
@@ -27,7 +27,7 @@
           "Menciona que \"razón para cambiar\" se refiere a quién pide el cambio (negocio vs infraestructura), no a número de métodos"
         ]
       },
-      "respuestaModelo": "SRP dice que una clase debería tener una sola razón para cambiar, es decir, responder ante un solo actor o motivo de negocio. Una señal típica de violación es una clase `ReportGenerator` que calcula totales, los formatea a HTML y además los guarda en disco: si cambia el formato de salida, si cambia el cálculo o si cambia el almacenamiento, la misma clase se ve afectada por tres razones distintas. La solución habitual es separar en `CalculadorDeTotales`, `FormateadorHTML` y `RepositorioDeReportes`, cada una con un único motivo de cambio, sin fragmentar en exceso solo por principio.",
+      "respuestaModelo": "SRP dice que una clase debería tener un solo motivo para cambiar, es decir, responder ante una sola necesidad del negocio. Ejemplo de que no se cumple: una clase `ReportGenerator` que calcula totales, los convierte en HTML y además los guarda en disco. Si cambia el formato, si cambia el cálculo o si cambia dónde se guarda, siempre toca esa misma clase, por tres motivos distintos. Lo normal es separarla en `CalculadorDeTotales`, `FormateadorHtml` y `RepositorioDeReportes`, cada una con un solo motivo para cambiar. Eso sí, sin trocear de más solo por cumplir el principio.",
       "test": {
         "enunciado": "Una clase calcula totales, los formatea a HTML y los guarda en disco. ¿Qué principio incumple?",
         "correcta": 3,
@@ -63,7 +63,7 @@
     },
     {
       "id": "fund-solid-02",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "solid",
       "tipo": "fundamento",
@@ -71,7 +71,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Qué significa que una clase esté \"abierta a extensión pero cerrada a modificación\"? Da un ejemplo con y sin el principio aplicado.",
+        "es": "¿Qué quiere decir que una clase esté \"abierta a extensión pero cerrada a modificación\"? Pon un ejemplo con y sin el principio.",
         "en": "What does it mean for a class to be \"open for extension but closed for modification\"? Give an example with and without the principle applied."
       },
       "rubrica": {
@@ -86,7 +86,7 @@
           "Reconoce cuándo NO vale la pena aplicar OCP de entrada (sobre-generalizar antes de tiempo)"
         ]
       },
-      "respuestaModelo": "Sin OCP, calcular el descuento de un pedido suele empezar como un `switch (tipoCliente)` dentro de una función que crece con cada tipo de cliente nuevo, arriesgando romper los casos existentes cada vez que se toca. Aplicando OCP, se define una interfaz `EstrategiaDeDescuento` con una implementación por tipo de cliente, y añadir un cliente nuevo significa crear una clase nueva sin tocar las existentes. La señal de alarma es precisamente ese condicional que crece sin parar; la solución típica es polimorfismo o el patrón Strategy, no añadir otro `else if`.",
+      "respuestaModelo": "Sin este principio (OCP), calcular el descuento de un pedido suele empezar con un `switch (tipoCliente)` que va creciendo cada vez que aparece un tipo de cliente nuevo, y cada vez que lo tocas te arriesgas a romper los que ya funcionaban. Con el principio, defines una interfaz `EstrategiaDeDescuento` y una implementación por tipo de cliente: añadir uno nuevo es crear una clase nueva sin tocar las que hay. La señal de alarma es justo ese `switch` o esa cadena de `if` que no para de crecer; la solución típica es el polimorfismo o el patrón Strategy, no añadir otro `else if`.",
       "test": {
         "enunciado": "¿Qué señal indica que falta aplicar el principio abierto/cerrado?",
         "correcta": 2,
@@ -122,7 +122,7 @@
     },
     {
       "id": "fund-solid-03",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "solid",
       "tipo": "fundamento",
@@ -130,7 +130,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Qué es el Principio de Sustitución de Liskov? Pon un ejemplo clásico de violación (por ejemplo Cuadrado/Rectángulo).",
+        "es": "¿Qué es el principio de sustitución de Liskov? Pon el ejemplo clásico de cuando no se cumple (el del cuadrado y el rectángulo).",
         "en": "What is the Liskov Substitution Principle? Give a classic example of a violation (e.g. Square/Rectangle)."
       },
       "rubrica": {
@@ -145,7 +145,7 @@
           "Relaciona LSP con contratos y precondiciones/postcondiciones, no solo con \"que compile\""
         ]
       },
-      "respuestaModelo": "LSP dice que si `B` hereda de `A`, cualquier código que funcione con un `A` debe seguir funcionando si se le pasa un `B`, sin sorpresas. El ejemplo clásico es `Cuadrado extends Rectangulo`: si `Rectangulo` tiene `setAncho` y `setAlto` independientes, un `Cuadrado` que fuerza ambos lados iguales rompe el comportamiento esperado por cualquier código que asuma que cambiar el ancho no afecta al alto. La solución no es forzar la herencia a encajar, sino replantear el modelo: quizá ninguno debería heredar del otro, o ambos deberían implementar una interfaz `Forma` más simple con solo `area()`.",
+      "respuestaModelo": "Liskov (LSP) dice que si `B` hereda de `A`, cualquier código que funcione con un `A` tiene que seguir funcionando si le pasas un `B`, sin sorpresas. El ejemplo clásico es `Cuadrado extends Rectangulo`. Si `Rectangulo` tiene `setAncho` y `setAlto` independientes, un `Cuadrado` que obliga a que los dos lados sean iguales rompe lo que espera cualquier código que crea que cambiar el ancho no toca el alto. La solución no es forzar la herencia para que encaje, sino replantear el modelo: quizá ninguno debería heredar del otro, o los dos deberían cumplir una interfaz `Forma` más sencilla, solo con `area()`.",
       "test": {
         "enunciado": "¿Por qué `Cuadrado extends Rectangulo` viola el principio de sustitución de Liskov?",
         "correcta": 1,
@@ -181,7 +181,7 @@
     },
     {
       "id": "fund-solid-04",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "solid",
       "tipo": "fundamento",
@@ -189,7 +189,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Qué problema resuelve el Principio de Segregación de Interfaces? ¿Cómo se aplica en TypeScript?",
+        "es": "¿Qué problema resuelve el principio de segregación de interfaces? ¿Cómo lo aplicas en TypeScript?",
         "en": "What problem does the Interface Segregation Principle solve? How would you apply it in TypeScript?"
       },
       "rubrica": {
@@ -204,7 +204,7 @@
           "Relaciona ISP con SRP (una interfaz también debería tener una sola razón para cambiar)"
         ]
       },
-      "respuestaModelo": "ISP dice que nadie debería depender de métodos que no usa. Una interfaz `Trabajador` con `trabajar()` e `comer()` obliga a un `Robot` a implementar `comer()` sin sentido. En TypeScript se resuelve dividiendo en `interface Trabajador { trabajar(): void }` e `interface SerVivo { comer(): void }`, y una clase implementa solo las que necesita (`class Humano implements Trabajador, SerVivo`). El problema real que evita es una clase que implementa una interfaz grande a medias, con métodos vacíos o que lanzan error, señal de que la interfaz debería partirse.",
+      "respuestaModelo": "ISP dice que nadie debería depender de métodos que no usa. Si una interfaz `Trabajador` tiene `trabajar()` y `comer()`, un `Robot` está obligado a tener un `comer()` que no tiene sentido. En TypeScript se resuelve partiéndola: `interface Trabajador { trabajar(): void }` e `interface SerVivo { comer(): void }`, y cada clase cumple solo las que le tocan (`class Humano implements Trabajador, SerVivo`). Lo que evita de verdad es una clase que cumple una interfaz grande a medias, con métodos vacíos o que lanzan un error. Eso es la señal de que la interfaz había que partirla.",
       "test": {
         "enunciado": "Un `Robot` implementa `Trabajador` y tiene que definir `comer()` vacío. ¿Qué principio arregla eso?",
         "correcta": 3,
@@ -240,7 +240,7 @@
     },
     {
       "id": "fund-solid-05",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "solid",
       "tipo": "fundamento",
@@ -248,7 +248,7 @@
       "nivelMinimo": "senior",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Qué es la Inversión de Dependencias y en qué se diferencia de la Inyección de Dependencias?",
+        "es": "¿Qué es la inversión de dependencias y en qué se diferencia de la inyección de dependencias?",
         "en": "What is Dependency Inversion and how does it differ from Dependency Injection?"
       },
       "rubrica": {
@@ -262,7 +262,7 @@
           "Menciona un contenedor de inyección de dependencias como forma automatizada de aplicar la técnica"
         ]
       },
-      "respuestaModelo": "La Inversión de Dependencias es el principio: los módulos de alto nivel no deberían depender de módulos de bajo nivel, ambos deberían depender de abstracciones. La Inyección de Dependencias es una de las técnicas para conseguirlo: en vez de que un `ServicioDePedidos` haga `new RepositorioSQL()` dentro de sí mismo, recibe una interfaz `RepositorioDePedidos` por el constructor, y quien lo instancia decide qué implementación concreta pasarle. Esto permite sustituir la implementación real por una en memoria en los tests sin tocar el servicio. Un contenedor de DI (como los de NestJS) automatiza ese cableado, pero el principio se puede aplicar a mano perfectamente.",
+      "respuestaModelo": "La inversión de dependencias es el principio: el código de alto nivel (las reglas de negocio) no debería depender del de bajo nivel (la base de datos, por ejemplo); los dos deberían depender de una abstracción, una interfaz. La inyección de dependencias es una forma de conseguirlo: en vez de que `ServicioDePedidos` haga `new RepositorioSql()` dentro, recibe una interfaz `RepositorioDePedidos` por el constructor, y quien lo crea decide qué implementación le pasa. Así en los tests le pasas una versión en memoria sin tocar el servicio. Un contenedor de inyección (como el de NestJS) hace esa conexión por ti, pero el principio lo puedes aplicar a mano sin problema.",
       "test": {
         "enunciado": "¿Qué relación hay entre inversión e inyección de dependencias?",
         "correcta": 0,

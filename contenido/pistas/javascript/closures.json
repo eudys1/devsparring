@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "js-closures-01",
-      "version": 1,
+      "version": 2,
       "pista": "javascript",
       "familia": "closures",
       "tipo": "definicion",
@@ -12,7 +12,7 @@
       "nivelMinimo": "junior",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Qué es un closure y para qué lo has usado?",
+        "es": "¿Qué es un closure y en qué ocasión lo has usado tú?",
         "en": "What is a closure and when have you used one?"
       },
       "rubrica": {
@@ -27,7 +27,7 @@
           "Relaciona con fugas de memoria por referencias retenidas y con dependencias de hooks en React"
         ]
       },
-      "respuestaModelo": "Un closure es una función que recuerda las variables del ámbito donde se definió aunque se ejecute fuera de él. Un `crearContador()` que devuelve `() => ++n` es el ejemplo típico: `n` no es accesible desde fuera pero sigue viva. Sirve para estado privado, memoización y callbacks. El fallo clásico es `for (var i…)` con un `setTimeout`: todas las funciones ven el mismo `i`; con `let` cada iteración tiene su propio enlace. Un senior menciona que las referencias retenidas por closures pueden impedir liberar memoria y que en React una función capturada en un `useEffect` ve el estado del render en que se creó (stale closure).",
+      "respuestaModelo": "Un closure es una función que se acuerda de las variables del sitio donde nació, aunque la ejecutes en otro lado. El ejemplo de siempre: `crearContador()` devuelve `() => ++n`. Desde fuera nadie puede tocar `n`, pero la función la sigue viendo. Sirve para tener estado privado, para memoizar resultados y en los callbacks de todos los días. El fallo clásico es un `for (var i…)` con un `setTimeout` dentro: todas las funciones acaban viendo el mismo `i`; con `let`, cada vuelta tiene el suyo. Si quieres sumar puntos: lo que un closure retiene no se libera de memoria mientras la función siga viva, y en React una función dentro de un `useEffect` ve el estado del render en que se creó (lo que se llama stale closure).",
       "test": {
         "enunciado": "¿Qué es un closure?",
         "correcta": 2,

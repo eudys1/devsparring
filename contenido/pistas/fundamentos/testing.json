@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "fund-testing-01",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "testing",
       "tipo": "fundamento",
@@ -12,7 +12,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "alta",
       "texto": {
-        "es": "Explica la pirámide de testing (unitarios, integración, e2e). ¿Por qué se recomienda tener más unitarios que e2e?",
+        "es": "Explica la pirámide de tests (unitarios, de integración y e2e). ¿Por qué se recomiendan más unitarios que e2e?",
         "en": "Explain the testing pyramid (unit, integration, e2e). Why is it recommended to have more unit tests than e2e tests?"
       },
       "rubrica": {
@@ -27,8 +27,8 @@
           "Reconoce cuándo un proyecto real se aleja de la pirámide ideal (por ejemplo, testing trophy con más integración)"
         ]
       },
-      "respuestaModelo": "La pirámide propone muchos tests unitarios en la base (rápidos, baratos, prueban una función o módulo aislado), menos tests de integración en el medio (prueban que varias piezas colaboran bien) y pocos e2e en la cima (recorren la app real de punta a punta). Se recomienda esa proporción porque los unitarios son rápidos y baratos de mantener, mientras un e2e es lento, más frágil ante cambios de UI, y cuando falla es más difícil saber exactamente qué se rompió por su alcance amplio. En la práctica muchos equipos prefieren un \"testing trophy\" con más peso en integración, pero la lógica de coste-velocidad es la misma.",
-      "resumen": "Muchos unitarios (rápidos y baratos), menos de integración y pocos e2e (lentos, frágiles y difíciles de diagnosticar). Por eso la proporción; en la práctica muchos equipos engordan la integración.",
+      "respuestaModelo": "La pirámide dice: muchos tests unitarios abajo (rápidos, baratos, prueban una función o un módulo solo), menos de integración en medio (prueban que varias piezas funcionan bien juntas) y pocos e2e arriba (recorren la app de verdad de principio a fin). La proporción es por coste: los unitarios son rápidos y fáciles de mantener; un e2e es lento, se rompe con cualquier cambio en la interfaz y, cuando falla, cuesta saber qué se ha roto porque abarca mucho. En la práctica muchos equipos prefieren el \"testing trophy\", que pone más peso en la integración, pero la lógica de coste y velocidad es la misma.",
+      "resumen": "Muchos unitarios (rápidos y baratos), menos de integración y pocos e2e (lentos, frágiles y difíciles de diagnosticar). De ahí la proporción; en la práctica muchos equipos ponen más peso en la integración.",
       "test": {
         "enunciado": "¿Por qué la pirámide de testing recomienda más tests unitarios que e2e?",
         "correcta": 2,
@@ -65,7 +65,7 @@
     },
     {
       "id": "fund-testing-02",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "testing",
       "tipo": "comportamental",
@@ -73,7 +73,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Qué es TDD (red-green-refactor)? ¿Lo usas siempre o solo en ciertos casos? Justifica.",
+        "es": "¿Qué es TDD (rojo, verde, refactor)? ¿Lo usas siempre o solo a veces? ¿Por qué?",
         "en": "What is TDD (red-green-refactor)? Do you always use it, or only in certain cases? Justify."
       },
       "rubrica": {
@@ -87,7 +87,7 @@
           "No lo presenta como dogma; reconoce que la disciplina real depende del contexto del equipo"
         ]
       },
-      "respuestaModelo": "TDD sigue el ciclo red-green-refactor: primero se escribe un test que falla porque la funcionalidad no existe, luego se escribe el mínimo código para que pase, y después se refactoriza con la seguridad de que el test sigue verde. Lo uso sobre todo cuando la lógica de negocio está clara (cálculos, validaciones, reglas), porque escribir el test primero ayuda a diseñar una API más simple de usar. No lo aplico igual en exploración de UI o prototipos donde el diseño todavía va a cambiar mucho, porque ahí escribir tests de antemano frena la iteración sin aportar tanto valor.",
+      "respuestaModelo": "TDD es un ciclo: primero escribes un test que falla, porque lo que pruebas aún no existe (rojo); luego escribes lo mínimo para que pase (verde); y después ordenas el código con la tranquilidad de que el test sigue pasando (refactor). Lo uso sobre todo cuando la lógica de negocio está clara (cálculos, validaciones, reglas), porque escribir el test primero te empuja a diseñar funciones más fáciles de usar. No lo uso igual cuando estoy explorando una interfaz o haciendo un prototipo que va a cambiar mucho: ahí escribir los tests antes me frena sin aportar tanto.",
       "etiquetas": ["testing", "tdd"],
       "fuentes": [
         {
@@ -102,7 +102,7 @@
     },
     {
       "id": "fund-testing-03",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "testing",
       "tipo": "definicion",
@@ -110,7 +110,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Cuál es la diferencia entre un mock, un stub y un spy? Da un ejemplo de cuándo usarías cada uno.",
+        "es": "¿Qué diferencia hay entre un mock, un stub y un spy? Pon un ejemplo de cuándo usarías cada uno.",
         "en": "What is the difference between a mock, a stub and a spy? Give an example of when you'd use each."
       },
       "rubrica": {
@@ -125,7 +125,7 @@
           "Explica el riesgo de abusar de mocks: tests acoplados a la implementación en vez de al comportamiento"
         ]
       },
-      "respuestaModelo": "Un stub reemplaza una dependencia devolviendo datos fijos, por ejemplo un `RepositorioDeUsuarios` falso que siempre devuelve el mismo usuario, útil cuando solo necesitas datos predecibles. Un spy envuelve una función real y registra cómo se llamó, útil para comprobar que se invocó `enviarEmail` con los argumentos correctos sin cambiar su comportamiento. Un mock va más allá: se configuran expectativas concretas (\"debe llamarse exactamente una vez con este argumento\") y el test falla si no se cumplen. Abusar de mocks acopla los tests a los detalles de implementación; conviene reservarlos para verificar interacciones críticas, no cualquier llamada interna.",
+      "respuestaModelo": "Un stub sustituye una dependencia y devuelve datos fijos: por ejemplo, un `RepositorioDeUsuarios` falso que siempre devuelve el mismo usuario. Úsalo cuando solo necesitas datos predecibles. Un spy envuelve una función de verdad y apunta cómo la llamaron: sirve para comprobar que se llamó a `enviarEmail` con los argumentos correctos sin cambiar lo que hace. Un mock va más allá: le dices de antemano lo que esperas (\"se tiene que llamar exactamente una vez con esto\") y el test falla si no pasa. Ojo con abusar de los mocks: atan tus tests a cómo está hecho el código por dentro. Resérvalos para comprobar llamadas que de verdad importan.",
       "test": {
         "enunciado": "Quieres comprobar que se llamó a `enviarEmail` con los argumentos correctos sin cambiar lo que hace. ¿Qué usas?",
         "correcta": 1,
@@ -162,7 +162,7 @@
     },
     {
       "id": "fund-testing-04",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "testing",
       "tipo": "fundamento",
@@ -170,7 +170,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Cuál es la diferencia práctica entre un test de integración y un test e2e (end-to-end)? Da un ejemplo de cada uno para una funcionalidad de login.",
+        "es": "¿Qué diferencia práctica hay entre un test de integración y uno e2e? Pon un ejemplo de cada uno con un login.",
         "en": "What is the practical difference between an integration test and an e2e test? Give an example of each for a login feature."
       },
       "rubrica": {
@@ -185,8 +185,8 @@
           "Reconoce que los e2e son más lentos y frágiles, por lo que se usan con moderación"
         ]
       },
-      "respuestaModelo": "Un test de integración verifica que varias piezas del propio sistema colaboran bien: por ejemplo, que el formulario de login llama correctamente al servicio de autenticación, mockeando la respuesta de red pero usando el código real del formulario y del servicio juntos. Un test e2e recorre la app real de punta a punta, simulando a un usuario real: abre el navegador, rellena el formulario de login contra un backend real o casi real, y comprueba que termina en la pantalla esperada. Los e2e dan más confianza porque prueban el sistema completo, pero son más lentos y frágiles ante cambios de UI, por eso se usan con moderación frente a los de integración.",
-      "resumen": "Integración: piezas propias colaborando con la red mockeada (el formulario de login llama bien al servicio). E2E: la app real de punta a punta en un navegador, hasta la pantalla final.",
+      "respuestaModelo": "Un test de integración comprueba que varias piezas tuyas funcionan bien juntas. Por ejemplo, que el formulario de login llama bien al servicio de autenticación, con el código real de los dos pero simulando la respuesta de la red. Un test e2e recorre la app de verdad de principio a fin, como lo haría una persona: abre el navegador, rellena el login contra un backend real (o casi), y comprueba que acaba en la pantalla que toca. Los e2e dan más confianza porque prueban todo junto, pero son más lentos y se rompen más con cambios de la interfaz, así que se usan con moderación.",
+      "resumen": "Integración: tus piezas trabajando juntas con la red simulada (el formulario de login llama bien al servicio). E2E: la app de verdad de principio a fin en un navegador, hasta la pantalla final.",
       "test": {
         "enunciado": "En un login, ¿qué es un test e2e y no uno de integración?",
         "correcta": 3,
@@ -223,7 +223,7 @@
     },
     {
       "id": "fund-testing-05",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "testing",
       "tipo": "comportamental",
@@ -231,7 +231,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "baja",
       "texto": {
-        "es": "Te unes a un proyecto sin tests y te piden añadir una funcionalidad crítica de pagos. ¿Cómo lo abordas?",
+        "es": "Entras en un proyecto sin tests y te piden añadir algo crítico: los pagos. ¿Cómo lo enfocas?",
         "en": "You join a project with no tests and are asked to add a critical payments feature. How do you approach it?"
       },
       "rubrica": {
@@ -243,7 +243,7 @@
           "Prioriza cobertura en la ruta crítica de pagos por el riesgo de negocio, no cobertura uniforme"
         ]
       },
-      "respuestaModelo": "No intentaría cubrir todo el proyecto de tests antes de empezar, sería poco realista y bloquearía la entrega. Primero escribiría characterization tests alrededor del código existente que voy a tocar, para capturar su comportamiento actual antes de modificarlo y detectar si rompo algo sin querer. Luego añadiría tests nuevos para la funcionalidad de pagos con prioridad alta, cubriendo los casos límite y de fallo (pago rechazado, timeout, reintentos) porque el riesgo de negocio ahí es mayor que en el resto del código sin tests.",
+      "respuestaModelo": "No intentaría llenar de tests todo el proyecto antes de empezar: no es realista y bloquearía la entrega. Primero escribiría tests alrededor del código que voy a tocar que dejen por escrito cómo se comporta hoy (characterization tests), para enterarme si rompo algo sin querer. Después, tests para la parte de pagos con prioridad alta, cubriendo sobre todo los casos límite y de fallo (pago rechazado, timeout, reintentos), porque ahí es donde un fallo cuesta dinero de verdad.",
       "etiquetas": ["testing"],
       "fuentes": [
         {

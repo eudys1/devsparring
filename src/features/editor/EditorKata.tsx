@@ -27,6 +27,10 @@ const Editor = dynamic(
 
 export type Props = {
   codigoInicial: string;
+  /** Un nombre de fichero por kata y sesión. Monaco guarda el código por nombre
+   *  y solo usa codigoInicial al crear el fichero: con un nombre fijo, la
+   *  segunda kata enseñaba el código de la primera (15-10-2026). */
+  fichero: string;
   funcion: string;
   casos: Caso[];
   congelarAleatorio: boolean;
@@ -37,6 +41,7 @@ export type Props = {
 
 export function EditorKata({
   codigoInicial,
+  fichero,
   funcion,
   casos,
   congelarAleatorio,
@@ -139,7 +144,7 @@ export function EditorKata({
       <Editor
         height="420px"
         defaultLanguage="typescript"
-        path="solucion.ts"
+        path={`${fichero}.ts`}
         defaultValue={codigoInicial}
         theme={oscuro ? 'vs-dark' : 'vs'}
         onMount={onMount}

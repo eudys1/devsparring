@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "arq-razonamiento-paginacion-millon-filas",
-      "version": 1,
+      "version": 2,
       "pista": "arquitectura",
       "familia": "razonamiento",
       "tipo": "razonamiento",
@@ -12,7 +12,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "alta",
       "texto": {
-        "es": "Tienes que mostrar un listado de 1.000.000 de filas en el panel de admin sin que la base de datos ni el navegador sufran. Explica tu solución de extremo a extremo.",
+        "es": "Tienes que enseñar un listado de 1.000.000 de filas en el panel de administración sin que sufran ni la base de datos ni el navegador. Explica tu solución de principio a fin.",
         "en": "You need to show a listing of 1,000,000 rows in the admin panel without straining the database or the browser. Explain your end-to-end solution."
       },
       "rubrica": {
@@ -27,7 +27,7 @@
           "Para 'ver el total', propone una cuenta aproximada (cache o estimación) en vez de un COUNT(*) exacto costoso en cada request"
         ]
       },
-      "respuestaModelo": "En el backend, paginación por keyset/cursor con un índice compuesto que siga el orden de la query, nunca traer el millón de filas ni hacer un `OFFSET` grande, cuyo coste crece con la página. En el frontend, renderizar solo una página de filas a la vez, o usar virtualización (`react-window`, `@tanstack/react-virtual`) si el diseño pide scroll continuo, en vez de montar un millón de nodos DOM que colgarían el navegador. Si el panel necesita mostrar 'de cuántas filas en total', conviene una cuenta aproximada (cacheada, o una estimación del planner de Postgres) en vez de un `COUNT(*)` exacto sobre la tabla completa en cada request, que es costoso y no aporta valor real para un admin.",
+      "respuestaModelo": "En el backend, paginación con cursor apoyada en un índice que siga el mismo orden que la consulta. Nunca traer el millón de filas ni usar un `OFFSET` grande, que va más lento cuanto más lejos está la página. En el frontend, pintar solo una página cada vez o, si el diseño pide scroll continuo, virtualizar (`react-window`, `@tanstack/react-virtual`) para que solo existan en el DOM las filas que se ven; montar un millón de elementos colgaría el navegador. Y si hay que enseñar \"de cuántas filas en total\", mejor un número aproximado (guardado en caché, o la estimación que ya calcula Postgres) que un `COUNT(*)` exacto de toda la tabla en cada petición, que sale caro y a un administrador no le aporta casi nada.",
       "etiquetas": ["arquitectura", "paginacion", "razonamiento"],
       "fuentes": [
         {
@@ -42,7 +42,7 @@
     },
     {
       "id": "arq-razonamiento-subida-video-3gb",
-      "version": 1,
+      "version": 2,
       "pista": "arquitectura",
       "familia": "razonamiento",
       "tipo": "razonamiento",
@@ -50,7 +50,7 @@
       "nivelMinimo": "senior",
       "frecuencia": "media",
       "texto": {
-        "es": "Un usuario necesita subir un vídeo de 3GB desde el navegador. Diseña el flujo completo (frontend, backend, almacenamiento) para que no falle por timeout ni sature tu servidor.",
+        "es": "Un usuario tiene que subir un vídeo de 3 GB desde el navegador. Diseña todo el camino (frontend, backend y almacenamiento) para que no falle por timeout ni ahogue tu servidor.",
         "en": "A user needs to upload a 3GB video from the browser. Design the full flow (frontend, backend, storage) so it doesn't fail on timeout or overload your server."
       },
       "rubrica": {
@@ -66,7 +66,7 @@
           "Menciona expiración corta de las URLs firmadas por seguridad"
         ]
       },
-      "respuestaModelo": "El archivo no debería pasar por el servidor Node propio, para no saturar su memoria ni su ancho de banda con un vídeo de 3GB. El backend solo genera URLs pre-firmadas hacia un almacenamiento de objetos (S3 o equivalente), una por cada parte de una subida multipart. El cliente sube los chunks directo al storage, en paralelo, con reintento individual por parte si alguna falla, sin volver a subir el archivo entero. Cuando todas las partes están subidas, el backend confirma la unión del multipart upload ante el storage y solo entonces guarda la referencia (URL, tamaño, metadata) en la base de datos. Las URLs firmadas deberían tener una expiración corta, para que no sirvan para nada útil si se filtran.",
+      "respuestaModelo": "El vídeo no debería pasar por tu servidor de Node: 3 GB le saturarían la memoria y la conexión. El backend solo genera URLs firmadas hacia un almacenamiento de objetos (S3 o similar), una por cada trozo de una subida por partes (multipart). El navegador sube los trozos directamente al almacenamiento, varios a la vez, y si uno falla reintenta solo ese, no el fichero entero. Cuando están todos, el backend le dice al almacenamiento que junte las partes y, solo entonces, guarda en la base de datos la referencia (URL, tamaño, datos del vídeo). Las URLs firmadas tienen que caducar pronto, para que si alguien las pilla no le sirvan de nada.",
       "etiquetas": ["arquitectura", "uploads", "s3", "razonamiento"],
       "fuentes": [
         {
@@ -81,7 +81,7 @@
     },
     {
       "id": "arq-razonamiento-autocompletado",
-      "version": 1,
+      "version": 2,
       "pista": "arquitectura",
       "familia": "razonamiento",
       "tipo": "razonamiento",
@@ -89,7 +89,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "alta",
       "texto": {
-        "es": "Diseña la búsqueda con autocompletado de un buscador de productos: qué pasa en cada tecla que pulsa el usuario, del frontend al backend.",
+        "es": "Diseña un buscador de productos con sugerencias mientras escribes: ¿qué pasa en cada tecla, del frontend al backend?",
         "en": "Design the search-with-autocomplete for a product search: what happens on every keystroke, from frontend to backend."
       },
       "rubrica": {
@@ -105,7 +105,7 @@
           "En el backend, elige un índice de prefijos o un motor de búsqueda dedicado (Postgres pg_trgm, Elasticsearch, Meilisearch) según la escala, en vez de LIKE '%texto%' sin índice"
         ]
       },
-      "respuestaModelo": "En el frontend, un debounce de unos 200-300ms en el input evita disparar una petición por cada tecla pulsada. Como pueden quedar varias peticiones en vuelo a la vez, hace falta cancelar las obsoletas (con `AbortController`) o al menos ignorar las respuestas que lleguen fuera de orden, para que una respuesta lenta de una búsqueda antigua no pise a la más reciente en pantalla. Una cache local de resultados ya vistos evita repetir peticiones si el usuario borra y vuelve a escribir lo mismo. En el backend, buscar con `LIKE '%texto%'` sin índice sobre una tabla grande es lento porque no puede usar un índice B-tree normal; según la escala conviene un índice de prefijos con `pg_trgm` en Postgres, o un motor de búsqueda dedicado como Elasticsearch o Meilisearch si el volumen y la latencia lo justifican.",
+      "respuestaModelo": "En el frontend, un debounce de unos 200-300 ms en el input para no lanzar una petición por cada tecla. Como puede haber varias peticiones a la vez, hay que cancelar las viejas (con `AbortController`) o al menos ignorar las respuestas que lleguen desordenadas, para que una búsqueda antigua que tarda más no pise a la nueva en pantalla. Una caché local de lo que ya has buscado evita repetir peticiones si el usuario borra y vuelve a escribir lo mismo. En el backend, `LIKE '%texto%'` en una tabla grande va lento porque no puede usar un índice normal; según el tamaño, un índice de trigramas con `pg_trgm` en Postgres, o un buscador dedicado como Elasticsearch o Meilisearch si el volumen y la velocidad lo piden.",
       "etiquetas": ["arquitectura", "autocompletado", "debounce", "razonamiento"],
       "fuentes": [
         {
@@ -120,7 +120,7 @@
     },
     {
       "id": "arq-razonamiento-doble-cobro-checkout",
-      "version": 1,
+      "version": 2,
       "pista": "arquitectura",
       "familia": "razonamiento",
       "tipo": "razonamiento",
@@ -128,7 +128,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "alta",
       "texto": {
-        "es": "Un formulario de checkout permite hacer doble clic en 'Pagar' por accidente, o el usuario reintenta tras un timeout de red. ¿Cómo evitas cobrar dos veces?",
+        "es": "En el checkout, el usuario hace doble clic en \"Pagar\" sin querer, o reintenta tras un timeout. ¿Cómo evitas cobrarle dos veces?",
         "en": "A checkout form lets users accidentally double-click 'Pay' (or a user retries after a network timeout). How do you avoid charging twice?"
       },
       "rubrica": {
@@ -144,7 +144,7 @@
           "Menciona el fallo del enfoque solo-UX: si el usuario recarga la página y reenvía el formulario, el botón deshabilitado ya no protege nada"
         ]
       },
-      "respuestaModelo": "Deshabilitar el botón tras el primer clic es una defensa de UX razonable pero no es protección real: si el usuario recarga la página y reenvía el formulario, el botón vuelve a estar habilitado y la protección desaparece. La protección real es una `Idempotency-Key` generada por el cliente (un UUID por intento de pago) y enviada en la petición; el backend la guarda junto al resultado del primer intento, y si llega un reintento con la misma key (por doble clic o por un reintento tras timeout), responde con el mismo resultado ya guardado sin volver a ejecutar el cobro. Este es exactamente el mismo patrón de idempotencia que protege cualquier endpoint de pago independientemente del origen del reintento.",
+      "respuestaModelo": "Desactivar el botón después del primer clic está bien para la experiencia, pero no protege de verdad: si el usuario recarga la página y vuelve a enviar, el botón está activo otra vez. La protección real es una `Idempotency-Key` que genera el navegador (un UUID por cada intento de pago) y manda con la petición. El backend la guarda junto con el resultado del primer intento y, si llega otra vez la misma clave (por un doble clic o un reintento tras timeout), devuelve ese mismo resultado sin volver a cobrar. Es el mismo patrón que protege cualquier endpoint de pagos, venga el reintento de donde venga.",
       "etiquetas": ["arquitectura", "idempotencia", "pagos", "razonamiento"],
       "fuentes": [
         {
@@ -159,7 +159,7 @@
     },
     {
       "id": "arq-razonamiento-feed-tiempo-real",
-      "version": 1,
+      "version": 2,
       "pista": "arquitectura",
       "familia": "razonamiento",
       "tipo": "razonamiento",
@@ -167,7 +167,7 @@
       "nivelMinimo": "senior",
       "frecuencia": "media",
       "texto": {
-        "es": "Tu feed necesita mostrar '5 nuevos posts' en tiempo real sin que el usuario recargue. ¿WebSockets, Server-Sent Events o polling? Justifica.",
+        "es": "Tu feed tiene que avisar de \"5 posts nuevos\" en tiempo real sin que el usuario recargue. ¿WebSockets, Server-Sent Events o preguntar cada poco (polling)? ¿Por qué?",
         "en": "Your feed needs to show '5 new posts' in real time without the user reloading. WebSockets, Server-Sent Events, or polling? Justify."
       },
       "rubrica": {
@@ -182,8 +182,8 @@
           "Reconoce que polling es la opción más simple y a veces suficiente si la 'tiempo real' no es crítica, a costa de latencia y carga innecesaria"
         ]
       },
-      "respuestaModelo": "Para un caso unidireccional simple, el servidor avisando al cliente de 'hay contenido nuevo', Server-Sent Events es más simple que WebSockets: funciona sobre HTTP normal, trae reconexión automática nativa en el navegador, y no exige mantener sockets bidireccionales que aquí no se necesitan. WebSockets se justifican cuando además el cliente necesita enviar datos en tiempo real hacia el servidor, como en un chat o una herramienta colaborativa; usarlos solo para notificar 'hay posts nuevos' es más infraestructura de la que hace falta. Polling (consultar cada N segundos) es la opción más simple de implementar y a veces suficiente si la inmediatez no es crítica, a costa de más latencia percibida y carga innecesaria en el servidor cuando no hay nada nuevo.",
-      "resumen": "Server-Sent Events: el aviso va solo del servidor al cliente, funciona sobre HTTP y reconecta solo. WebSockets, cuando el cliente también envía en tiempo real (chat); polling, si la inmediatez no es crítica.",
+      "respuestaModelo": "Aquí el aviso va en una sola dirección, del servidor al navegador (\"hay posts nuevos\"), y para eso Server-Sent Events es más sencillo que WebSockets: funciona sobre HTTP normal, el navegador se reconecta solo si se corta, y no mantienes conexiones de ida y vuelta que no necesitas. WebSockets compensan cuando el navegador también tiene que mandar cosas en tiempo real al servidor, como en un chat o una herramienta colaborativa; usarlos solo para avisar de posts nuevos es montar más de lo que hace falta. Preguntar cada pocos segundos (polling) es lo más fácil de hacer y a veces basta si no corre prisa, a cambio de que el aviso llegue más tarde y de cargar el servidor con preguntas aunque no haya nada nuevo.",
+      "resumen": "Server-Sent Events: el aviso solo va del servidor al navegador, funciona sobre HTTP normal y se reconecta solo. WebSockets, cuando el navegador también tiene que mandar cosas en tiempo real (un chat); polling, si no corre prisa.",
       "etiquetas": ["arquitectura", "tiempo-real", "sse", "websockets", "razonamiento"],
       "fuentes": [
         {
@@ -198,7 +198,7 @@
     },
     {
       "id": "arq-razonamiento-export-csv-200k",
-      "version": 1,
+      "version": 2,
       "pista": "arquitectura",
       "familia": "razonamiento",
       "tipo": "razonamiento",
@@ -206,7 +206,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "Tienes que exportar un reporte de 200.000 filas a CSV desde un botón de la interfaz. ¿Lo generas síncronamente en el request o de otra forma? Explica.",
+        "es": "Hay que exportar un informe de 200.000 filas a CSV desde un botón. ¿Lo generas dentro de la misma petición o de otra forma? ¿Por qué?",
         "en": "You need to export a 200,000-row report to CSV from a button in the UI. Do you generate it synchronously in the request, or some other way? Explain."
       },
       "rubrica": {
@@ -221,8 +221,8 @@
           "Justifica por qué nunca bloquear el request-response principal con un trabajo de minutos: satura el pool de conexiones/hilos disponible para otras peticiones"
         ]
       },
-      "respuestaModelo": "Para un volumen de 200.000 filas, generar el CSV de forma síncrona dentro del mismo request es arriesgado: puede tardar varios segundos o minutos, y mientras tanto ocupa una conexión/hilo del servidor que debería estar disponible para otras peticiones. Hay dos alternativas razonables: generar el CSV de forma asíncrona en una cola de trabajo y avisar al usuario cuando esté listo (por email, notificación en la UI, o un endpoint que consulta el estado), o hacer streaming de la respuesta con backpressure, escribiendo filas al stream HTTP a medida que se leen de la base de datos, en vez de construir el CSV entero en memoria antes de enviarlo. La clave es nunca bloquear el request-response del servidor web principal con un trabajo que puede tardar minutos.",
-      "resumen": "No en el request: tarda y ocupa el servidor. O se genera en una cola y se avisa al usuario cuando esté, o se hace streaming de la respuesta con backpressure, fila a fila.",
+      "respuestaModelo": "Con 200.000 filas, generarlo dentro de la misma petición es arriesgado: puede tardar segundos o minutos, y mientras tanto tiene ocupada una conexión del servidor que debería estar atendiendo a otros. Hay dos opciones razonables. Una: generarlo en segundo plano con una cola y avisar al usuario cuando esté listo (por email, un aviso en la app, o una ruta que consulta si ya está). Dos: mandarlo a trozos (streaming), escribiendo las filas en la respuesta a medida que las lees de la base de datos y respetando el ritmo de quien descarga (backpressure), en vez de montar el CSV entero en memoria y enviarlo después. Lo importante es no dejar al servidor web bloqueado con un trabajo que puede tardar minutos.",
+      "resumen": "Dentro de la petición no: tarda y tiene ocupado al servidor. O se genera en una cola y avisas al usuario cuando esté, o se manda a trozos (streaming) fila a fila.",
       "etiquetas": ["arquitectura", "exportacion", "streaming", "razonamiento"],
       "fuentes": [
         {
@@ -237,7 +237,7 @@
     },
     {
       "id": "arq-razonamiento-catalogo-carga-rapida",
-      "version": 1,
+      "version": 2,
       "pista": "arquitectura",
       "familia": "razonamiento",
       "tipo": "razonamiento",
@@ -245,7 +245,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "Un cliente pide 'que la web cargue instantánea' en un catálogo de productos con imágenes pesadas. Prioriza 3 acciones concretas y explica el porqué de ese orden.",
+        "es": "Un cliente pide \"que la web cargue al instante\": un catálogo de productos con imágenes pesadas. Dime tres acciones concretas, por orden de prioridad, y por qué ese orden.",
         "en": "A client asks for 'instant loading' on a product catalog with heavy images. Prioritize 3 concrete actions and explain why in that order."
       },
       "rubrica": {
@@ -261,7 +261,7 @@
           "Rechaza optimizar a ciegas sin medir antes con datos reales de campo (CrUX/RUM), no solo un test de laboratorio"
         ]
       },
-      "respuestaModelo": "El orden se decide por impacto medible en Core Web Vitals, no por intuición. Primero, LCP: en un catálogo con imágenes pesadas, la imagen principal suele ser el elemento más grande visible, así que optimizar su formato (WebP/AVIF), tamaño servido y prioridad de carga es lo que más mueve la métrica. Segundo, lo que bloquea la interactividad: JavaScript innecesario en el critical path que retrasa que la página responda a la primera interacción del usuario. Tercero, CLS: reservar el espacio de las imágenes con dimensiones explícitas para que no salten el layout mientras cargan. Antes de declarar la tarea terminada, conviene medir con datos reales de campo (CrUX o RUM propio) y no solo con un test de laboratorio, porque el rendimiento percibido por usuarios reales puede diferir bastante de un entorno controlado.",
+      "respuestaModelo": "El orden lo decide lo que más mueve las Core Web Vitals, no la intuición. Primero, el LCP (lo que tarda en verse lo más grande de la pantalla): en un catálogo con imágenes pesadas, la imagen principal suele ser eso, así que optimizarla (WebP o AVIF, el tamaño justo, cargarla con prioridad) es lo que más se nota. Segundo, lo que retrasa que la página responda: JavaScript que no hace falta al principio y que hace que el primer clic tarde. Tercero, el CLS: reservar el hueco de cada imagen con sus medidas para que la página no salte mientras cargan. Y antes de darlo por terminado, mide con datos de usuarios reales (CrUX o tu propia medición), no solo con una prueba en tu ordenador, porque lo que vive la gente puede ser muy distinto.",
       "etiquetas": ["arquitectura", "rendimiento", "core-web-vitals", "razonamiento"],
       "fuentes": [
         {

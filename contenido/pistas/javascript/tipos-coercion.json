@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "js-tipos-coercion-01",
-      "version": 1,
+      "version": 2,
       "pista": "javascript",
       "familia": "tipos-coercion",
       "tipo": "definicion",
@@ -12,7 +12,7 @@
       "nivelMinimo": "junior",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Cuál es la diferencia entre `==` y `===`? ¿Cuándo, si alguna vez, usarías `==`?",
+        "es": "¿Qué diferencia hay entre `==` y `===`? ¿Usarías `==` alguna vez?",
         "en": "What is the difference between `==` and `===`? When, if ever, would you use `==`?"
       },
       "rubrica": {
@@ -26,9 +26,9 @@
           "Recomienda `===` por defecto para evitar bugs sutiles de coerción"
         ]
       },
-      "respuestaModelo": "`===` compara valor y tipo sin convertir nada; `==` primero intenta convertir los operandos a un tipo común y después compara, lo que produce resultados poco intuitivos como `'' == 0` siendo `true` o `'0' == false` siendo `true`. Por eso la recomendación general es usar siempre `===`. El único caso donde `==` se acepta de forma consciente es comparar contra `null` (`valor == null`), porque esa comparación es `true` tanto si `valor` es `null` como si es `undefined`, ahorrando escribir las dos comparaciones por separado; fuera de ese caso concreto, `==` suele considerarse una fuente de bugs sutiles.",
+      "respuestaModelo": "`===` compara valor y tipo tal cual, sin convertir nada. `==` primero intenta convertir los dos lados a un mismo tipo y luego compara, y de ahí salen sorpresas como que `'' == 0` o `'0' == false` den `true`. Por eso lo normal es usar siempre `===`. Hay un único caso en el que `==` se usa a propósito: `valor == null`, que da `true` tanto si `valor` es `null` como si es `undefined`, y te ahorra escribir las dos comprobaciones. Fuera de eso, `==` es una fuente de bugs difíciles de ver.",
       "test": {
-        "enunciado": "¿En qué caso se acepta usar `==` a conciencia?",
+        "enunciado": "¿En qué caso tiene sentido usar `==` a propósito?",
         "correcta": 3,
         "opciones": [
           {
@@ -124,7 +124,7 @@
     },
     {
       "id": "js-tipos-coercion-02",
-      "version": 1,
+      "version": 2,
       "pista": "javascript",
       "familia": "tipos-coercion",
       "tipo": "definicion",
@@ -132,7 +132,7 @@
       "nivelMinimo": "junior",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Cuáles son los 8 valores \"falsy\" en JavaScript?",
+        "es": "¿Cuáles son los 8 valores \"falsy\" de JavaScript, los que cuentan como `false` en un `if`?",
         "en": "What are the 8 \"falsy\" values in JavaScript?"
       },
       "rubrica": {
@@ -144,7 +144,7 @@
           "Menciona el bug clásico de usar `||` con `0` como valor válido y cómo `??` lo evita"
         ]
       },
-      "respuestaModelo": "Los 8 valores falsy en JavaScript son: `undefined`, `null`, `NaN`, `false`, `''` (string vacío), `0`, `-0` y `0n` (BigInt cero). Cualquier otro valor es truthy, incluido un array vacío `[]` o un objeto vacío `{}`, lo que sorprende a quien espera que \"vacío\" sea falsy. Esto importa en la práctica porque `cantidad || 10` da `10` también cuando `cantidad` vale `0`, un bug clásico; usar `cantidad ?? 10` solo cae al valor por defecto si `cantidad` es `null` o `undefined`, tratando `0` como un valor válido.",
+      "respuestaModelo": "Son ocho: `undefined`, `null`, `NaN`, `false`, `''` (texto vacío), `0`, `-0` y `0n` (el cero de BigInt). Todo lo demás cuenta como verdadero, y eso incluye un array vacío `[]` y un objeto vacío `{}`, que pillan a mucha gente que espera que \"vacío\" sea falso. Donde más se nota en el día a día: `cantidad || 10` te da `10` también cuando `cantidad` vale `0`, que es un bug clásico. Con `cantidad ?? 10` solo se usa el valor por defecto si `cantidad` es `null` o `undefined`, y el `0` se respeta.",
       "test": {
         "enunciado": "¿Cuál de estos valores es truthy?",
         "correcta": 0,
@@ -172,7 +172,7 @@
     },
     {
       "id": "js-tipos-coercion-03",
-      "version": 1,
+      "version": 2,
       "pista": "javascript",
       "familia": "tipos-coercion",
       "tipo": "definicion",
@@ -180,7 +180,7 @@
       "nivelMinimo": "junior",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Cuál es la diferencia entre una variable que vale `null`, una que vale `undefined` y una que no ha sido declarada?",
+        "es": "¿Qué diferencia hay entre una variable que vale `null`, una que vale `undefined` y una que ni siquiera existe?",
         "en": "What is the difference between a variable that is `null`, `undefined`, or undeclared?"
       },
       "rubrica": {
@@ -195,7 +195,7 @@
           "Menciona que `typeof null === 'object'`, un error histórico del lenguaje que no se puede corregir por compatibilidad"
         ]
       },
-      "respuestaModelo": "`undefined` es el valor que JavaScript asigna automáticamente a una variable declarada pero sin inicializar, o a un parámetro de función que no se pasó. `null` es un valor que alguien asigna intencionalmente para representar \"ausencia de valor\". Una variable no declarada es distinta de ambas: acceder a ella lanza `ReferenceError`, mientras que leer una variable declarada sin asignar da `undefined` sin error. Una excepción práctica es `typeof`: `typeof variableNoDeclarada` no lanza error y devuelve `'undefined'`, por eso se usa para comprobar si algo existe sin arriesgar una excepción. Un dato curioso (y un error histórico del lenguaje) es que `typeof null` devuelve `'object'`, no `'null'`, y no se puede corregir sin romper compatibilidad con código existente.",
+      "respuestaModelo": "`undefined` es lo que JavaScript pone solo cuando declaras una variable sin darle valor, o cuando no pasas un parámetro a una función. `null` lo pones tú a propósito para decir \"aquí no hay nada\". Una variable que no existe es otra historia: si la lees, lanza un `ReferenceError`, mientras que leer una declarada sin valor te da `undefined` sin error. La excepción es `typeof`: `typeof variableQueNoExiste` no falla y devuelve `'undefined'`, por eso se usaba para comprobar si algo existía. Y una curiosidad que suele salir: `typeof null` da `'object'`. Es un error antiguo del lenguaje que no se puede arreglar sin romper código que ya existe.",
       "test": {
         "enunciado": "¿Qué devuelve `typeof variableNoDeclarada`?",
         "correcta": 2,
@@ -232,7 +232,7 @@
     },
     {
       "id": "js-tipos-coercion-04",
-      "version": 2,
+      "version": 3,
       "pista": "javascript",
       "familia": "tipos-coercion",
       "tipo": "definicion",
@@ -240,7 +240,7 @@
       "nivelMinimo": "junior",
       "frecuencia": "media",
       "texto": {
-        "es": "Pasas un array a una función, ella hace `push` y el array original también cambia. Explica la diferencia entre objetos mutables e inmutables en JavaScript con un ejemplo de cada uno.",
+        "es": "Le pasas un array a una función, ella hace `push` y tu array original también cambia. ¿Por qué? Explica la diferencia entre valores mutables e inmutables con un ejemplo de cada uno.",
         "en": "You pass an array to a function, it calls `push`, and the original array changes too. Explain the difference between mutable and immutable objects in JavaScript with an example of each."
       },
       "rubrica": {
@@ -255,7 +255,7 @@
           "Menciona `Object.freeze`, spread o `structuredClone` como formas de trabajar de forma inmutable con objetos"
         ]
       },
-      "respuestaModelo": "Un valor primitivo (string, número, booleano) es inmutable por diseño del lenguaje: `'hola'.toUpperCase()` devuelve un string nuevo, no modifica el original, porque los strings no se pueden mutar. Un objeto o un array son mutables por defecto: `arr.push(1)` modifica el array original en el sitio, y si ese array se pasó como referencia a una función, quien la llamó ve el cambio aunque no lo esperara, una fuente común de bugs. Para trabajar de forma inmutable con objetos hay que hacerlo explícito: crear una copia con spread (`{...obj, campo: nuevo}`) en vez de mutar el original, o usar `Object.freeze` para impedir cambios de primer nivel.",
+      "respuestaModelo": "Los valores simples (textos, números, booleanos) no se pueden modificar: `'hola'.toUpperCase()` te devuelve un texto nuevo y el original se queda igual. Los objetos y los arrays sí se modifican en el sitio: `lista.push(1)` cambia ese mismo array. Y como a una función no le pasas una copia sino una referencia al mismo array, quien la llamó ve el cambio aunque no se lo esperara. Es una fuente de bugs muy común. Para trabajar sin modificar el original tienes que hacerlo a propósito: crear una copia con spread (`{ ...obj, campo: nuevo }`, `[...lista, 1]`) en vez de tocar el original, o congelarlo con `Object.freeze` para que no se pueda cambiar su primer nivel.",
       "test": {
         "enunciado": "Pasas un array a una función que hace `lista.push(1)`. ¿Qué ve quien la llamó?",
         "correcta": 1,
@@ -292,7 +292,7 @@
     },
     {
       "id": "js-tipos-coercion-review-comparacion-nan",
-      "version": 1,
+      "version": 2,
       "pista": "javascript",
       "familia": "tipos-coercion",
       "tipo": "review",
@@ -300,7 +300,7 @@
       "nivelMinimo": "junior",
       "frecuencia": "media",
       "texto": {
-        "es": "Revisa esta función, que debería validar que una cantidad de pedido es un número válido. ¿Qué falla en la comparación?",
+        "es": "Esta función tendría que comprobar que la cantidad de un pedido es un número válido. ¿Qué falla en la comparación?",
         "en": "Review this function, which should validate that an order quantity is a valid number. What's wrong with the comparison?"
       },
       "contexto": "```js\nfunction esCantidadValida(cantidad) {\n  return cantidad !== NaN;\n}\n```",
@@ -316,7 +316,7 @@
           "Menciona que el `isNaN()` global tiene una trampa adicional: convierte su argumento a número antes de comparar, así que `isNaN('hola')` también da `true`, mientras que `Number.isNaN` no convierte nada"
         ]
       },
-      "respuestaModelo": "`NaN` es el único valor del lenguaje que no es igual a sí mismo: `NaN === NaN` da `false`, y por lo tanto `cantidad !== NaN` da `true` sin importar qué sea `cantidad`, incluido el propio `NaN`. La función, tal como está, no valida nada: siempre devuelve `true`. La forma correcta de comprobarlo es `!Number.isNaN(cantidad)`, la única función pensada específicamente para detectar `NaN`. Conviene usar `Number.isNaN` y no el `isNaN()` global, porque este último convierte su argumento a número antes de comparar (coerción), así que `isNaN('hola')` también devuelve `true` aunque `'hola'` nunca fue `NaN`, solo no se pudo convertir a número.",
+      "respuestaModelo": "`NaN` es el único valor de JavaScript que no es igual a sí mismo: `NaN === NaN` da `false`. Así que `cantidad !== NaN` da `true` siempre, sea lo que sea `cantidad`, incluido el propio `NaN`. Tal como está, la función no valida nada: siempre dice que sí. Lo correcto es `!Number.isNaN(cantidad)`, que está hecha justo para detectar `NaN`. Mejor esa que el `isNaN()` global, porque el global convierte antes el valor a número: `isNaN('hola')` da `true` aunque `'hola'` nunca fue `NaN`, simplemente no se pudo convertir.",
       "etiquetas": ["coercion", "nan", "code-review"],
       "fuentes": [
         {

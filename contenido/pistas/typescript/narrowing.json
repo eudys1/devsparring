@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "ts-narrowing-01",
-      "version": 1,
+      "version": 2,
       "pista": "typescript",
       "familia": "narrowing",
       "tipo": "fundamento",
@@ -12,7 +12,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Qué es el \"narrowing\" (estrechamiento) de tipos en TypeScript? Da un ejemplo con `typeof` y otro con un discriminated union.",
+        "es": "¿Qué es el \"narrowing\" (estrechar tipos) en TypeScript? Pon un ejemplo con `typeof` y otro con un discriminated union.",
         "en": "What is type \"narrowing\" in TypeScript? Give an example with `typeof` and another with a discriminated union."
       },
       "rubrica": {
@@ -27,7 +27,7 @@
           "Menciona que TypeScript hace este análisis de flujo automáticamente, sin necesitar castear manualmente"
         ]
       },
-      "respuestaModelo": "Narrowing es cuando TypeScript reduce automáticamente un tipo unión a uno más específico dentro de una rama de código, basándose en una comprobación en tiempo de ejecución. Con `typeof valor === 'string'`, dentro del `if` TypeScript sabe que `valor` es `string`, sin necesitar un cast manual. Con `instanceof`, `if (error instanceof RangoInvalidoError)` estrecha el tipo dentro del bloque a esa clase concreta. Con un discriminated union como `{ kind: 'circulo', radio: number } | { kind: 'cuadrado', lado: number }`, un `switch (forma.kind)` estrecha el tipo en cada `case` según el valor literal de `kind`, permitiendo acceder a `radio` o `lado` sin comprobación adicional dentro de cada rama. En todos los casos, el análisis de flujo de TypeScript hace el trabajo automáticamente a partir de la comprobación en tiempo de ejecución.",
+      "respuestaModelo": "Es cuando TypeScript, al ver una comprobación en tu código, se da cuenta de que dentro de esa rama el tipo es más concreto. Si haces `if (typeof valor === 'string')`, dentro del `if` sabe que `valor` es un texto y te deja usar sus métodos sin forzar nada. Con `instanceof` igual: dentro de `if (error instanceof RangoInvalidoError)` sabe que es ese error. Y con un discriminated union, por ejemplo `{ kind: 'circulo', radio: number } | { kind: 'cuadrado', lado: number }`, un `switch (forma.kind)` hace que en cada `case` sepa qué forma es, y puedes usar `radio` o `lado` directamente. Tú solo escribes la comprobación normal de JavaScript; TypeScript hace el resto solo.",
       "test": {
         "enunciado": "¿Qué es el narrowing en TypeScript?",
         "correcta": 0,
@@ -123,7 +123,7 @@
     },
     {
       "id": "ts-narrowing-02",
-      "version": 1,
+      "version": 2,
       "pista": "typescript",
       "familia": "narrowing",
       "tipo": "definicion",
@@ -131,7 +131,7 @@
       "nivelMinimo": "senior",
       "frecuencia": "baja",
       "texto": {
-        "es": "¿Qué representa el tipo `never` en TypeScript? Da un ejemplo de uso en una función que siempre lanza una excepción y otro en un `switch` exhaustivo.",
+        "es": "¿Qué significa el tipo `never` en TypeScript? Pon un ejemplo con una función que siempre lanza un error y otro con un `switch` que cubre todos los casos.",
         "en": "What does the `never` type represent in TypeScript? Give an example in a function that always throws, and another in an exhaustive `switch`."
       },
       "rubrica": {
@@ -143,7 +143,7 @@
           "Distingue `never` de `void`: `void` es \"no devuelve nada útil pero retorna\", `never` es \"no retorna en absoluto\""
         ]
       },
-      "respuestaModelo": "`never` representa un valor que nunca puede ocurrir: el tipo de retorno de una función que nunca termina normalmente, porque siempre lanza una excepción o entra en un bucle infinito. `function fallar(msg: string): never { throw new Error(msg); }` tiene tipo de retorno `never` porque nunca llega a devolver nada. El otro uso clásico es en el `default` de un `switch` exhaustivo sobre un discriminated union: si se manejaron todos los casos posibles en los `case` anteriores, lo que llega al `default` debería tener tipo `never`, y pasarlo a una función `assertNever(valor: never)` hace que el compilador avise si en el futuro se añade una variante sin manejar. `never` es distinto de `void`: `void` significa \"la función retorna pero no devuelve nada útil\", mientras `never` significa \"la función no retorna en absoluto\".",
+      "respuestaModelo": "`never` es el tipo de algo que nunca llega a pasar. Por ejemplo, lo que devuelve una función que nunca termina bien porque siempre lanza un error: `function fallar(msg: string): never { throw new Error(msg); }`. El otro uso típico es en el `default` de un `switch` sobre un discriminated union: si ya has cubierto todos los casos, lo que llega al `default` es `never`. Si lo pasas a una función `assertNever(valor: never)`, TypeScript te avisará el día que alguien añada un caso nuevo y se olvide de cubrirlo. No lo confundas con `void`: `void` es \"termina, pero no devuelve nada útil\"; `never` es \"no termina nunca\".",
       "test": {
         "enunciado": "¿Qué tipo de retorno tiene una función que siempre lanza una excepción?",
         "correcta": 3,

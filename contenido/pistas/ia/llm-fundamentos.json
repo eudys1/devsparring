@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "ia-llm-fundamentos-01",
-      "version": 2,
+      "version": 3,
       "pista": "ia",
       "familia": "llm-fundamentos",
       "tipo": "definicion",
@@ -27,7 +27,7 @@
           "Distingue entrenamiento (aprender patrones) de inferencia (generar en producción)"
         ]
       },
-      "respuestaModelo": "Un LLM es un modelo de lenguaje entrenado con una red transformer sobre enormes cantidades de texto, aprendiendo a estimar qué palabra (token) es más probable a continuación de un texto dado. En inferencia genera de forma autorregresiva: produce un token, lo añade al contexto y repite el proceso hasta terminar la respuesta. No entiende el mundo como una persona, sino que aprovecha patrones estadísticos del lenguaje observados durante el entrenamiento. Por eso puede sonar coherente sin estar necesariamente verificando ningún hecho.",
+      "respuestaModelo": "Un LLM es un modelo de lenguaje entrenado con muchísimo texto (con una red de tipo transformer) para aprender qué palabra, o trozo de palabra (token), es más probable que venga después de un texto dado. Cuando responde, va generando de uno en uno: escribe un token, lo añade a lo que ya tenía y vuelve a calcular el siguiente, hasta terminar. No busca en ninguna base de datos ni entiende el mundo como una persona: aprovecha los patrones del lenguaje que vio al entrenarse. Por eso puede sonar muy coherente sin estar comprobando ningún dato.",
       "test": {
         "enunciado": "¿Cómo genera texto un LLM?",
         "correcta": 3,
@@ -64,7 +64,7 @@
     },
     {
       "id": "ia-llm-fundamentos-02",
-      "version": 2,
+      "version": 3,
       "pista": "ia",
       "familia": "llm-fundamentos",
       "tipo": "definicion",
@@ -86,7 +86,7 @@
           "Relaciona el número de tokens con el coste y con el límite de contexto"
         ]
       },
-      "respuestaModelo": "Un token es la unidad mínima de texto que el modelo procesa, generada por un tokenizador que suele usar un algoritmo tipo BPE para dividir el texto en subpalabras. Una palabra común puede ser un único token, pero una palabra larga, poco frecuente o en otro idioma puede partirse en varios. Esto importa en la práctica porque el precio de la API y el límite de la ventana de contexto se miden en tokens, no en palabras, así que un texto con muchas palabras raras consume más tokens de lo que parece a simple vista.",
+      "respuestaModelo": "Un token es el trozo más pequeño de texto con el que trabaja el modelo. Lo decide un tokenizador que suele partir el texto en trozos de palabra (con algoritmos tipo BPE). Una palabra común puede ser un solo token, pero una palabra larga, rara o en otro idioma se puede partir en varios. Esto importa porque tanto el precio de la API como el límite de contexto se miden en tokens, no en palabras: un texto con muchas palabras raras gasta más tokens de lo que parece a simple vista, y por eso tu cuenta por palabras se quedaba corta.",
       "test": {
         "enunciado": "¿Por qué un token no equivale a una palabra?",
         "correcta": 1,
@@ -123,7 +123,7 @@
     },
     {
       "id": "ia-llm-fundamentos-03",
-      "version": 2,
+      "version": 3,
       "pista": "ia",
       "familia": "llm-fundamentos",
       "tipo": "definicion",
@@ -145,7 +145,7 @@
           "Comenta el trade-off entre ventanas grandes y coste/latencia"
         ]
       },
-      "respuestaModelo": "La ventana de contexto es el número máximo de tokens, sumando entrada y salida, que el modelo puede manejar en una sola llamada. Si se supera, la API devuelve un error o el sistema tiene que truncar el historial más antiguo antes de enviarlo. En una aplicación de chat con conversaciones largas esto obliga a decidir una estrategia: resumir el historial periódicamente, recortar los mensajes más viejos, o apoyarse en RAG para traer solo el contexto relevante en vez de arrastrar toda la conversación en cada llamada.",
+      "respuestaModelo": "La ventana de contexto es el máximo de tokens que el modelo puede manejar en una sola llamada, sumando lo que le mandas y lo que contesta. Si te pasas, la API te da un error, o tu sistema tiene que recortar la parte más antigua de la conversación antes de mandarla. Eso es lo que le pasa a tu asistente: lo del principio se queda fuera. En un chat con conversaciones largas tienes que decidir qué hacer: resumir la conversación cada cierto tiempo, recortar los mensajes más viejos, o usar RAG para traer solo lo importante en vez de arrastrar toda la conversación en cada llamada.",
       "test": {
         "enunciado": "¿Qué cuenta dentro de la ventana de contexto de un LLM?",
         "correcta": 2,
@@ -182,7 +182,7 @@
     },
     {
       "id": "ia-llm-fundamentos-04",
-      "version": 2,
+      "version": 3,
       "pista": "ia",
       "familia": "llm-fundamentos",
       "tipo": "definicion",
@@ -204,7 +204,7 @@
           "Menciona el riesgo de incoherencia con temperatura alta"
         ]
       },
-      "respuestaModelo": "La temperatura reescala la distribución de probabilidad sobre el siguiente token antes de muestrear. Con temperatura cercana a cero el modelo casi siempre elige el token más probable, dando respuestas repetibles y predecibles, útil para clasificación o extracción de datos. Con temperatura alta se amplifican las opciones menos probables, lo que da más variedad y creatividad a cambio de más riesgo de respuestas incoherentes o poco fiables. La elección depende de la tarea: nunca conviene subir la temperatura en tareas donde se necesita exactitud.",
+      "respuestaModelo": "La temperatura ajusta cuánto se arriesga el modelo al elegir el siguiente token. Cerca de cero, casi siempre coge el más probable, así que sus respuestas se repiten y son predecibles: justo lo que quieres para clasificar o extraer datos, como en tus facturas. Con temperatura alta, le da más opciones a los tokens menos probables, y sale más variedad y creatividad a cambio de más riesgo de respuestas raras o poco fiables. Depende de la tarea, pero cuando necesitas exactitud, nunca la subas.",
       "test": {
         "enunciado": "Tienes que extraer datos de facturas en un JSON fijo. ¿Qué temperatura usas?",
         "correcta": 0,
@@ -241,7 +241,7 @@
     },
     {
       "id": "ia-llm-fundamentos-05",
-      "version": 1,
+      "version": 2,
       "pista": "ia",
       "familia": "llm-fundamentos",
       "tipo": "fundamento",
@@ -263,8 +263,8 @@
           "Da un ejemplo de cómo depuraría un comportamiento inesperado causado por ambos parámetros a la vez"
         ]
       },
-      "respuestaModelo": "La temperatura afecta a toda la distribución de probabilidad de los tokens candidatos, mientras que top-p recorta la cola: solo considera el conjunto más pequeño de tokens cuya probabilidad acumulada supera el valor p, descartando las opciones muy improbables antes de muestrear. En la práctica se pueden combinar, pero eso añade dos fuentes de aleatoriedad difíciles de razonar juntas, así que en producción es habitual fijar uno de los dos parámetros al valor por defecto y ajustar solo el otro para tener un comportamiento más predecible.",
-      "resumen": "La temperatura cambia toda la distribución; top-p recorta la cola y solo muestrea entre los tokens que suman probabilidad p. En producción se suele ajustar uno y dejar el otro por defecto.",
+      "respuestaModelo": "La temperatura cambia todas las probabilidades de los tokens candidatos a la vez. Top-p, en cambio, corta la cola: se queda solo con los tokens más probables hasta que entre todos suman la probabilidad p, y tira los muy improbables antes de elegir. Se pueden usar juntos, pero entonces tienes dos fuentes de azar difíciles de entender a la vez, así que en producción lo normal es dejar uno con su valor por defecto y ajustar solo el otro, para que el comportamiento sea más predecible.",
+      "resumen": "La temperatura cambia todas las probabilidades; top-p corta la cola y solo elige entre los tokens que juntos suman una probabilidad p. En producción se suele tocar uno y dejar el otro por defecto.",
       "test": {
         "enunciado": "¿Qué hace top-p (nucleus sampling) que no hace la temperatura?",
         "correcta": 3,
@@ -301,7 +301,7 @@
     },
     {
       "id": "ia-llm-fundamentos-06",
-      "version": 1,
+      "version": 2,
       "pista": "ia",
       "familia": "llm-fundamentos",
       "tipo": "razonamiento",
@@ -309,7 +309,7 @@
       "nivelMinimo": "senior",
       "frecuencia": "baja",
       "texto": {
-        "es": "¿Por qué un LLM puede dar respuestas distintas ante el mismo prompt aunque la temperatura sea 0?",
+        "es": "¿Por qué un LLM puede contestar distinto al mismo prompt aunque la temperatura sea 0?",
         "en": "Why can an LLM give different answers to the same prompt even at temperature 0?"
       },
       "rubrica": {
@@ -323,7 +323,7 @@
           "Deja claro que no hay una única fuente que cuantifique el peso de cada causa"
         ]
       },
-      "respuestaModelo": "Aunque temperatura 0 hace que el modelo elija casi siempre el token más probable, no garantiza determinismo absoluto. El hardware de inferencia (operaciones de coma flotante no asociativas en GPU, el orden en que se agrupan las peticiones en un batch) puede introducir pequeñas variaciones numéricas que a veces cambian qué token gana el empate. A eso se suma que muchos proveedores actualizan silenciosamente la versión del modelo detrás de un alias, así que si no se fija una versión exacta, parte de la variación puede venir simplemente de estar hablando con un modelo distinto entre dos llamadas.",
+      "respuestaModelo": "Con temperatura 0 el modelo elige casi siempre el token más probable, pero eso no garantiza que salga exactamente igual cada vez. El hardware donde corre (las cuentas con decimales en la GPU no dan siempre igual según el orden, o cómo se agrupan las peticiones) puede meter diferencias minúsculas que, de vez en cuando, cambian qué token gana un empate. Y además, muchos proveedores actualizan el modelo por debajo sin avisar cuando usas un nombre genérico, así que si no fijas una versión exacta, parte de la diferencia puede venir de que, sin saberlo, estás hablando con otro modelo.",
       "etiquetas": ["no-determinismo", "produccion"],
       "fuentes": [
         {
@@ -338,7 +338,7 @@
     },
     {
       "id": "ia-llm-fundamentos-07",
-      "version": 1,
+      "version": 2,
       "pista": "ia",
       "familia": "llm-fundamentos",
       "tipo": "definicion",
@@ -346,7 +346,7 @@
       "nivelMinimo": "junior",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Qué es un modelo multimodal? Da un ejemplo de uso en una app web normal.",
+        "es": "¿Qué es un modelo multimodal? Pon un ejemplo de uso en una app web normal.",
         "en": "What is a multimodal model? Give an example use in a regular web app."
       },
       "rubrica": {
@@ -360,7 +360,7 @@
           "Comenta una limitación práctica de usar visión en producción (coste, latencia, calidad variable de la imagen de entrada)"
         ]
       },
-      "respuestaModelo": "Un modelo multimodal acepta y/o genera más de un tipo de dato, por ejemplo texto e imagen, en vez de trabajar solo con texto. En una app web normal esto se traduce en casos como dejar que un usuario suba una captura de un formulario roto y pedirle al modelo que identifique el problema visual, o generar automáticamente texto alternativo para las imágenes que suben los usuarios. Conviene recordar que añadir imágenes al prompt suele subir el coste y la latencia frente a una llamada solo de texto, así que hay que medir si compensa antes de usarlo por defecto.",
+      "respuestaModelo": "Un modelo multimodal entiende (o genera) más de un tipo de dato, por ejemplo texto e imágenes, en vez de solo texto. En una app web normal: dejar que un usuario suba una captura de un formulario que se ve mal y pedirle al modelo que diga qué falla, o generar solo el texto alternativo de las imágenes que suben los usuarios. Ojo: meter imágenes en el prompt suele costar más y tardar más que una llamada solo con texto, así que mide si compensa antes de usarlo por defecto.",
       "test": {
         "enunciado": "¿Qué caso de uso de un modelo multimodal encaja en una app web normal?",
         "correcta": 1,
@@ -397,7 +397,7 @@
     },
     {
       "id": "ia-llm-fundamentos-08",
-      "version": 1,
+      "version": 2,
       "pista": "ia",
       "familia": "llm-fundamentos",
       "tipo": "fundamento",
@@ -405,7 +405,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Qué diferencia hay entre un modelo base y un modelo instruct o afinado para chat?",
+        "es": "¿Qué diferencia hay entre un modelo base y uno \"instruct\" o afinado para chat?",
         "en": "What is the difference between a base model and an instruct/chat-tuned model?"
       },
       "rubrica": {
@@ -419,7 +419,7 @@
           "Comenta por qué el modelo instruct es más seguro y predecible como asistente de producto"
         ]
       },
-      "respuestaModelo": "El modelo base es el resultado del preentrenamiento: solo sabe continuar texto de forma plausible según lo que vio en su corpus, sin ningún concepto de seguir instrucciones ni de mantener un formato de conversación. El modelo instruct pasa por una fase adicional de afinado, típicamente instruction tuning y RLHF u otra técnica de alineación, para aprender a responder a peticiones concretas, mantener un rol de asistente y evitar salidas problemáticas. En un producto real casi siempre se usa el modelo instruct porque es el que da respuestas útiles y controlables desde la primera petición.",
+      "respuestaModelo": "El modelo base es lo que sale del primer entrenamiento: solo sabe continuar texto de forma creíble según lo que leyó, sin ninguna idea de seguir instrucciones ni de mantener una conversación. El modelo instruct pasa por un entrenamiento extra (normalmente instruction tuning y RLHF u otra técnica de alineación) para aprender a responder a lo que le pides, comportarse como asistente y evitar respuestas problemáticas. En un producto de verdad casi siempre se usa el instruct, porque es el que te da respuestas útiles y controlables desde la primera petición.",
       "test": {
         "enunciado": "¿Qué diferencia a un modelo instruct de un modelo base?",
         "correcta": 2,

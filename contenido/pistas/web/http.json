@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "web-http-01",
-      "version": 1,
+      "version": 2,
       "pista": "web",
       "familia": "http",
       "tipo": "definicion",
@@ -12,7 +12,7 @@
       "nivelMinimo": "junior",
       "frecuencia": "alta",
       "texto": {
-        "es": "Explica la diferencia entre los métodos HTTP GET, POST, PUT, PATCH y DELETE, y cuáles son idempotentes.",
+        "es": "¿Qué diferencia hay entre GET, POST, PUT, PATCH y DELETE? ¿Cuáles son idempotentes?",
         "en": "Explain the difference between HTTP GET, POST, PUT, PATCH and DELETE, and which ones are idempotent."
       },
       "rubrica": {
@@ -26,7 +26,7 @@
           "Explica que para POST que crean algo (pagos, reservas) hace falta una idempotency key manual porque el método no lo garantiza"
         ]
       },
-      "respuestaModelo": "GET lee un recurso sin modificarlo, POST normalmente crea uno nuevo, PUT reemplaza el recurso completo con lo que se envía, PATCH aplica una modificación parcial sobre campos concretos, y DELETE lo elimina. La idempotencia describe si repetir la misma petición produce el mismo estado final que ejecutarla una sola vez: GET, PUT, DELETE, HEAD y OPTIONS son idempotentes por definición HTTP, mientras que POST y PATCH normalmente no lo son. Esto importa en la práctica sobre todo con POST que crean algo con efecto real, como un pago o una reserva: como el método en sí no garantiza idempotencia, si el cliente reintenta tras un timeout de red puede duplicar la operación, y la única forma fiable de evitarlo es que el propio backend implemente una idempotency key generada por el cliente.",
+      "respuestaModelo": "GET lee sin cambiar nada, POST suele crear algo nuevo, PUT sustituye el recurso entero por lo que mandas, PATCH cambia solo algunos campos y DELETE lo borra. Idempotente quiere decir que mandar la misma petición varias veces deja todo igual que mandarla una vez. Por definición lo son GET, PUT, DELETE, HEAD y OPTIONS; POST y PATCH normalmente no. Donde más importa es en un POST que hace algo de verdad, como un pago o una reserva: si el cliente reintenta tras un timeout, puede hacerlo dos veces. La única forma fiable de evitarlo es que el backend acepte una clave de idempotencia que genera el cliente y no repita la operación si ya la ha visto.",
       "test": {
         "enunciado": "¿Cuál de estos métodos HTTP no es idempotente?",
         "correcta": 1,
@@ -60,7 +60,7 @@
     },
     {
       "id": "web-http-02",
-      "version": 1,
+      "version": 2,
       "pista": "web",
       "familia": "http",
       "tipo": "fundamento",
@@ -68,7 +68,7 @@
       "nivelMinimo": "junior",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Qué significan los códigos HTTP 401 vs 403? Da un ejemplo de cuándo usar cada uno.",
+        "es": "¿Qué diferencia hay entre los códigos 401 y 403? Pon un ejemplo de cuándo usar cada uno.",
         "en": "What do HTTP status codes 401 vs 403 mean? Give an example of when to use each."
       },
       "rubrica": {
@@ -82,8 +82,8 @@
           "Menciona que confundirlos es un error común detectado en revisiones de código"
         ]
       },
-      "respuestaModelo": "401 Unauthorized significa 'no sabemos quién eres': falta el token de autenticación, es inválido o expiró, y se espera que el cliente se autentique (o reautentique) antes de reintentar; un ejemplo es una petición a un endpoint protegido sin cabecera de autorización. 403 Forbidden significa 'sabemos quién eres pero no tienes permiso': el usuario está correctamente autenticado, pero su rol o sus permisos no le dan acceso a ese recurso concreto, como un usuario normal intentando acceder a un panel de administración. Confundir estos dos códigos es un error bastante frecuente que aparece en revisiones de código, y tiene consecuencias reales: devolver 401 cuando en realidad es un problema de permisos puede llevar al cliente a intentar reautenticarse en bucle sin ningún resultado.",
-      "resumen": "401: no sabemos quién eres (falta el token, no vale o caducó). 403: sabemos quién eres, pero no tienes permiso, por ejemplo un usuario normal entrando en el panel de administración.",
+      "respuestaModelo": "401 quiere decir \"no sé quién eres\": falta el token, no es válido o ha caducado, y el cliente tiene que identificarse (o volver a hacerlo) antes de reintentar. Por ejemplo, llamar a un endpoint protegido sin cabecera de autorización. 403 quiere decir \"sé quién eres, pero no puedes\": la sesión está bien, pero tu rol no te deja entrar ahí, como un usuario normal intentando abrir el panel de administración. Confundirlos es un fallo muy típico en revisiones, y no es solo un detalle: si devuelves 401 cuando es un tema de permisos, el cliente puede ponerse a pedir login una y otra vez sin conseguir nada.",
+      "resumen": "401: no sé quién eres (falta el token, no vale o caducó). 403: sé quién eres, pero no tienes permiso; por ejemplo, un usuario normal entrando al panel de administración.",
       "test": {
         "enunciado": "Un usuario con sesión válida intenta entrar al panel de administración sin ser admin. ¿Qué código devuelves?",
         "correcta": 2,
@@ -120,7 +120,7 @@
     },
     {
       "id": "web-http-03",
-      "version": 1,
+      "version": 2,
       "pista": "web",
       "familia": "http",
       "tipo": "fundamento",
@@ -128,7 +128,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Cómo funciona la cache HTTP con `Cache-Control`, `ETag` y `Last-Modified`? ¿Qué diferencia hay entre validación y expiración?",
+        "es": "¿Cómo funciona la caché HTTP con `Cache-Control`, `ETag` y `Last-Modified`? ¿Qué diferencia hay entre que algo caduque y que se revalide?",
         "en": "How does HTTP caching work with `Cache-Control`, `ETag` and `Last-Modified`? What's the difference between validation and expiration?"
       },
       "rubrica": {
@@ -141,7 +141,7 @@
           "Distingue `no-cache` (revalida siempre) de `no-store` (nunca cachea)"
         ]
       },
-      "respuestaModelo": "`Cache-Control: max-age` define la expiración: mientras no pase ese tiempo, el navegador usa la respuesta guardada sin ni siquiera preguntar al servidor si sigue siendo válida. Pasado ese tiempo (o si el servidor pide revalidación explícita), entra en juego la validación: el navegador hace una petición condicional con `If-None-Match` (comparando contra el `ETag` guardado) o `If-Modified-Since` (comparando contra `Last-Modified`), y si el servidor confirma que nada cambió responde con un 304 sin body, ahorrando el envío de la respuesta completa aunque sigue habiendo una petición de red. `no-cache` no significa 'no cachear': significa que siempre hay que revalidar antes de usar la copia guardada; `no-store` sí significa literalmente no guardar ninguna copia, ni siquiera para revalidar después, y se usa para respuestas sensibles que nunca deberían persistir en ningún cache intermedio.",
+      "respuestaModelo": "`Cache-Control: max-age` pone fecha de caducidad: mientras no pase ese tiempo, el navegador usa la copia que tiene sin preguntar al servidor. Cuando caduca (o si el servidor pide revalidar siempre), toca revalidar: el navegador pregunta \"¿ha cambiado?\" con `If-None-Match` (enviando el `ETag` que tenía) o con `If-Modified-Since` (con la fecha de `Last-Modified`). Si no ha cambiado, el servidor contesta 304 sin cuerpo: hay petición, pero te ahorras descargar la respuesta entera. Ojo con dos nombres que confunden: `no-cache` no significa \"no guardes\", significa \"guárdalo, pero pregunta siempre antes de usarlo\"; `no-store` sí significa no guardar nada, y es lo que quieres para respuestas con datos sensibles.",
       "test": {
         "enunciado": "¿Qué significa que el servidor responda 304 a una petición condicional con `If-None-Match`?",
         "correcta": 0,

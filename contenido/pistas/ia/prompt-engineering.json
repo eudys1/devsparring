@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "ia-prompt-engineering-01",
-      "version": 2,
+      "version": 3,
       "pista": "ia",
       "familia": "prompt-engineering",
       "tipo": "definicion",
@@ -12,7 +12,7 @@
       "nivelMinimo": "junior",
       "frecuencia": "alta",
       "texto": {
-        "es": "Un compañero cambia el prompt de producción \"porque así suena mejor\" y nadie sabe si ha mejorado. ¿Qué es el prompt engineering y por qué es una práctica de ingeniería y no magia?",
+        "es": "Un compañero cambia el prompt de producción \"porque así suena mejor\" y nadie sabe si ha mejorado. ¿Qué es el prompt engineering y por qué es ingeniería y no magia?",
         "en": "A teammate changes the production prompt \"because it sounds better\" and nobody knows whether it improved. What is prompt engineering and why is it an engineering practice rather than magic?"
       },
       "rubrica": {
@@ -26,7 +26,7 @@
           "Contrasta con el mito de ajustar por intuición suelta"
         ]
       },
-      "respuestaModelo": "El prompt engineering es el diseño deliberado e iterativo de las instrucciones que se dan a un modelo, su estructura, los ejemplos que incluye, las restricciones que fija, para obtener salidas más fiables. No es magia ni una frase mágica que se descubre por casualidad: se trata como cualquier otra pieza de software, se versiona, se prueba contra casos concretos representativos de la tarea real, y se mide su efecto con algún tipo de evaluación antes y después del cambio. Un equipo serio no cambia un prompt en producción por intuición, sino porque midió una mejora en un set de casos de prueba.",
+      "respuestaModelo": "El prompt engineering es diseñar a propósito, e ir mejorando, las instrucciones que le das a un modelo (cómo se ordenan, qué ejemplos llevan, qué límites ponen) para que responda de forma más fiable. No es buscar una frase mágica: se trata como cualquier otra pieza de software. Se guarda con su historial de versiones, se prueba con casos concretos que representan la tarea real y se mide si mejora, antes y después de cada cambio. Un equipo serio no cambia un prompt en producción porque \"suena mejor\", sino porque ha medido que mejora en sus casos de prueba.",
       "test": {
         "enunciado": "¿Qué hace del prompt engineering una práctica de ingeniería?",
         "correcta": 2,
@@ -63,7 +63,7 @@
     },
     {
       "id": "ia-prompt-engineering-02",
-      "version": 1,
+      "version": 2,
       "pista": "ia",
       "familia": "prompt-engineering",
       "tipo": "definicion",
@@ -71,7 +71,7 @@
       "nivelMinimo": "junior",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Qué diferencia hay entre few-shot prompting y zero-shot prompting?",
+        "es": "¿Qué diferencia hay entre few-shot y zero-shot prompting?",
         "en": "Difference between few-shot and zero-shot prompting."
       },
       "rubrica": {
@@ -85,7 +85,7 @@
           "Da un ejemplo de cuándo few-shot no compensa el coste de tokens extra"
         ]
       },
-      "respuestaModelo": "Zero-shot es pedirle la tarea al modelo directamente, sin ningún ejemplo de cómo debe responder. Few-shot incluye en el propio prompt un puñado de ejemplos de entrada y salida deseada, para que el modelo infiera el patrón y lo replique. Few-shot suele mejorar la consistencia de formato en tareas concretas, por ejemplo cuando se necesita una salida en un formato estructurado muy específico, pero tiene un coste: cada ejemplo consume tokens, así que en tareas simples donde zero-shot ya funciona bien no compensa añadir ejemplos solo por costumbre.",
+      "respuestaModelo": "Zero-shot es pedirle la tarea al modelo sin darle ningún ejemplo de cómo responder. Few-shot es meter en el prompt unos cuantos ejemplos de entrada y de la salida que quieres, para que pille el patrón y lo repita. Few-shot suele dar respuestas más consistentes en formato, sobre todo cuando necesitas una salida con una forma muy concreta. Pero cuesta: cada ejemplo gasta tokens, así que si la tarea es sencilla y zero-shot ya funciona, no metas ejemplos por costumbre.",
       "test": {
         "enunciado": "¿Qué diferencia hay entre few-shot y zero-shot prompting?",
         "correcta": 0,
@@ -122,7 +122,7 @@
     },
     {
       "id": "ia-prompt-engineering-03",
-      "version": 1,
+      "version": 2,
       "pista": "ia",
       "familia": "prompt-engineering",
       "tipo": "fundamento",
@@ -130,7 +130,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Qué es chain-of-thought prompting y cuándo ayuda?",
+        "es": "¿Qué es el chain-of-thought prompting y cuándo ayuda?",
         "en": "What is chain-of-thought prompting and when does it help?"
       },
       "rubrica": {
@@ -143,7 +143,7 @@
           "Menciona que en modelos de razonamiento recientes pedirlo explícitamente aporta menos que antes"
         ]
       },
-      "respuestaModelo": "Chain-of-thought consiste en pedir, o inducir, al modelo a razonar paso a paso antes de dar la respuesta final, en vez de saltar directamente a una conclusión. Ayuda especialmente en tareas que requieren varios pasos lógicos o aritméticos encadenados, donde el modelo tiende a cometer menos errores si expone el razonamiento intermedio. En los modelos de razonamiento más recientes, que ya dedican computación interna a pensar antes de responder, pedirlo explícitamente en el prompt aporta bastante menos que con los modelos anteriores, aunque sigue siendo útil para hacer el razonamiento visible y depurable.",
+      "respuestaModelo": "Chain-of-thought es pedirle al modelo (o empujarle) que razone paso a paso antes de dar la respuesta final, en vez de saltar directamente a la conclusión. Ayuda sobre todo en problemas de varios pasos lógicos o de cuentas encadenadas, donde el modelo se equivoca menos si va escribiendo el razonamiento intermedio. Con los modelos de razonamiento más nuevos, que ya piensan por dentro antes de contestar, pedirlo en el prompt aporta bastante menos que antes, aunque sigue siendo útil para ver ese razonamiento y poder depurarlo.",
       "test": {
         "enunciado": "¿Cuándo aporta menos pedir chain-of-thought en el prompt?",
         "correcta": 3,
@@ -180,7 +180,7 @@
     },
     {
       "id": "ia-prompt-engineering-04",
-      "version": 1,
+      "version": 2,
       "pista": "ia",
       "familia": "prompt-engineering",
       "tipo": "razonamiento",
@@ -188,7 +188,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Cómo estructurarías un system prompt para un asistente de soporte al cliente de tu empresa?",
+        "es": "¿Cómo organizarías el prompt de sistema de un asistente de atención al cliente de tu empresa?",
         "en": "How would you structure a system prompt for a customer support assistant for your company?"
       },
       "rubrica": {
@@ -202,7 +202,7 @@
           "Explica cómo separar las instrucciones del sistema del contenido no confiable del usuario o de documentos externos"
         ]
       },
-      "respuestaModelo": "Empezaría definiendo el rol y el objetivo del asistente con claridad, y unos límites explícitos de lo que puede y no puede hacer, por ejemplo no prometer reembolsos sin verificar el caso contra el sistema real. Añadiría el formato de salida esperado y una instrucción explícita de qué hacer cuando falta información: pedir aclaración al usuario en vez de inventar una respuesta plausible. Un punto que muchos pasan por alto es separar claramente las instrucciones del sistema, que son de confianza, del contenido que pueda venir del usuario o de documentos externos, que debe tratarse siempre como dato y nunca como una instrucción nueva a seguir.",
+      "respuestaModelo": "Primero, qué papel tiene el asistente y para qué está, con límites claros de lo que puede y no puede hacer: por ejemplo, no prometer reembolsos sin comprobar el caso en el sistema real. Después, el formato de respuesta que esperas y qué hacer cuando le falta información: preguntar al usuario en vez de inventarse algo que suene bien. Y un punto que mucha gente olvida: separar bien las instrucciones del sistema, que son de fiar, de lo que venga del usuario o de documentos externos, que siempre se trata como dato y nunca como una instrucción nueva que haya que seguir.",
       "etiquetas": ["prompting", "system-prompt"],
       "fuentes": [
         {

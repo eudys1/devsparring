@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "devops-cloud-01",
-      "version": 1,
+      "version": 2,
       "pista": "devops",
       "familia": "cloud",
       "tipo": "razonamiento",
@@ -12,7 +12,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Qué opciones básicas de despliegue en cloud conoces para una app Next.js más API Node más Postgres (Vercel, un VPS con Docker, un PaaS)? ¿Qué trade-offs tiene cada una?",
+        "es": "¿Qué opciones básicas conoces para desplegar una app con Next.js, una API de Node y Postgres (Vercel, un servidor con Docker, un PaaS)? ¿Qué ganas y qué pierdes con cada una?",
         "en": "What basic cloud deployment options do you know for a Next.js + Node API + Postgres app (Vercel, a VPS with Docker, a PaaS)? What are the trade-offs of each?"
       },
       "rubrica": {
@@ -27,8 +27,8 @@
           "Sitúa un PaaS (Railway, Render, Fly.io) como punto intermedio entre ambos extremos"
         ]
       },
-      "respuestaModelo": "Vercel (o equivalente) minimiza la operación para el caso de uso que Next.js está optimizado a resolver, despliegue automático, edge network, Server Actions e ISR funcionando sin configuración extra, a cambio de menos control sobre la infraestructura y un coste que puede crecer bastante con el tráfico o con features avanzadas. Un VPS con Docker da control total sobre el entorno y un coste más predecible mes a mes, pero el equipo gestiona parches de seguridad, escalado manual o semi-automático, y backups. Un PaaS como Railway, Render o Fly.io queda en un punto intermedio: más control que Vercel, menos operación manual que un VPS puro. En cualquiera de las tres opciones, la base de datos (Postgres o Supabase) suele desplegarse por separado del compute de la aplicación, normalmente como un servicio gestionado dedicado.",
-      "resumen": "Vercel: mínima operación para Next.js a cambio de control y coste que crece con el tráfico. VPS con Docker: control y coste previsible, pero parches, escalado y backups son tuyos. PaaS: término medio.",
+      "respuestaModelo": "Vercel (o similares) te quita casi todo el mantenimiento para lo que Next.js hace mejor: despliegues automáticos, red de servidores repartida, Server Actions e ISR funcionando sin configurar nada. A cambio, tienes menos control sobre la infraestructura y el coste puede subir bastante con el tráfico o con funciones avanzadas. Un servidor propio (VPS) con Docker te da control total y un coste más previsible cada mes, pero los parches de seguridad, escalar y las copias de seguridad los haces tú. Un PaaS como Railway, Render o Fly.io está en medio: más control que Vercel y menos trabajo manual que un VPS. En las tres, la base de datos (Postgres o Supabase) suele ir aparte, como un servicio gestionado.",
+      "resumen": "Vercel: casi nada que mantener, a cambio de menos control y un coste que crece con el tráfico. Un servidor con Docker: control y coste previsible, pero parches y copias son cosa tuya. Un PaaS: el punto medio.",
       "etiquetas": ["cloud", "despliegue", "vercel"],
       "fuentes": [
         {

@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "web-api-rest-graphql-01",
-      "version": 1,
+      "version": 2,
       "pista": "web",
       "familia": "api-rest-graphql",
       "tipo": "razonamiento",
@@ -12,7 +12,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "alta",
       "texto": {
-        "es": "REST vs GraphQL: ¿qué problema real de REST resuelve GraphQL y qué problema nuevo introduce?",
+        "es": "REST o GraphQL: ¿qué problema real de REST resuelve GraphQL y qué problema nuevo te trae?",
         "en": "REST vs GraphQL: what real REST problem does GraphQL solve, and what new problem does it introduce?"
       },
       "rubrica": {
@@ -25,8 +25,8 @@
           "Menciona el riesgo de queries costosas/anidadas sin límites y el problema de resolvers N+1"
         ]
       },
-      "respuestaModelo": "GraphQL resuelve el over-fetching y el under-fetching típico de REST: el cliente pide exactamente los campos que necesita, incluso de datos anidados relacionados, en una sola petición, en vez de tener que hacer varias llamadas a distintos endpoints o recibir de vuelta campos que nunca usa. También evita tener que versionar el endpoint cada vez que cambia la forma de los datos, porque el cliente decide la forma de la respuesta en la propia query. A cambio introduce problemas nuevos: complica el cacheo HTTP estándar, porque casi todo va por POST a un único endpoint y las respuestas ya no se pueden cachear por URL como con GET en REST; abre el riesgo de queries muy costosas o anidadas sin límite si no se implementa un límite de complejidad de query; y mueve parte de la lógica de agregación al backend, donde resolver una query anidada de forma ingenua puede caer en el mismo problema N+1 que existe en cualquier ORM si no se usa batching (dataloaders).",
-      "resumen": "GraphQL resuelve el over-fetching y under-fetching de REST: el cliente pide justo los campos, en una sola petición. A cambio, complica el cacheo HTTP y abre la puerta a queries caras que hay que limitar.",
+      "respuestaModelo": "Con REST es fácil que te llegue de más (campos que no usas) o de menos (y tengas que hacer tres llamadas a tres endpoints). Eso se llama over-fetching y under-fetching, y es lo que arregla GraphQL: el cliente pide exactamente los campos que necesita, incluidos los de datos relacionados, en una sola petición. Tampoco tienes que sacar una versión nueva del endpoint cada vez que cambia la forma de los datos, porque la forma la decide la consulta. Lo que te trae: cachear es más difícil, porque casi todo va por POST a una sola URL y ya no puedes cachear por dirección como con un GET; alguien puede mandar consultas enormes o muy anidadas si no pones un límite de complejidad; y si resuelves las relaciones a lo bruto en el backend, caes en el mismo problema N+1 de cualquier ORM, salvo que agrupes las consultas (con dataloaders).",
+      "resumen": "GraphQL arregla que con REST te llegue de más o de menos (over-fetching y under-fetching): pides justo los campos, en una sola petición. A cambio, cachear es más difícil y alguien puede lanzar consultas carísimas si no las limitas.",
       "etiquetas": ["api-rest-graphql", "rest", "graphql"],
       "fuentes": [
         {
@@ -41,7 +41,7 @@
     },
     {
       "id": "web-api-rest-graphql-diseno-listado-pedidos",
-      "version": 1,
+      "version": 2,
       "pista": "web",
       "familia": "api-rest-graphql",
       "tipo": "diseno",
@@ -49,7 +49,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "alta",
       "texto": {
-        "es": "Diseña (rutas, parámetros de query, forma de la respuesta JSON) el endpoint `GET /api/orders` para un panel de administración con potencialmente millones de filas, que soporte paginación, filtro por estado y por rango de fechas, y ordenación. No hace falta el SQL completo, sí el contrato de la API.",
+        "es": "Diseña el endpoint `GET /api/orders` para un panel de administración que puede tener millones de pedidos: paginación, filtro por estado y por fechas, y ordenación. No hace falta el SQL, sí las rutas, los parámetros y cómo es la respuesta JSON.",
         "en": "Design (routes, query params, JSON response shape) the `GET /api/orders` endpoint for an admin panel with potentially millions of rows, supporting pagination, status and date-range filtering, and sorting. No need for the full SQL, but the API contract does matter."
       },
       "rubrica": {
@@ -64,7 +64,7 @@
           "Explica por qué NO se ofrece 'saltar a la página 5000' con este esquema, como limitación aceptada y comunicada"
         ]
       },
-      "respuestaModelo": "El contrato usa paginación por cursor en vez de `page`/`offset`: `GET /api/orders?status=completed&from=2026-01-01&to=2026-01-31&sort=created_at:desc&limit=50&cursor=<opaco>`. Los filtros de estado y de fecha se validan contra una lista de valores permitidos y un formato de fecha estricto, rechazando con 400 cualquier valor que no encaje, en vez de pasarlo crudo hacia la capa de datos. La respuesta incluye los datos junto con un `next_cursor` (codificado, sin exponer detalles internos como el id de fila) para pedir la página siguiente, y opcionalmente un total aproximado en vez de un conteo exacto costoso. Este esquema renuncia deliberadamente a 'saltar a la página 5000' de un salto, porque el cursor solo permite avanzar secuencialmente desde una posición conocida; esa limitación se comunica explícitamente en la documentación de la API en vez de ocultarla, y es el trade-off aceptado a cambio de que cada página cueste lo mismo sin importar cuán profundo se navegue en el listado.",
+      "respuestaModelo": "Paginaría con cursor en vez de con `page`/`offset`: `GET /api/orders?status=completed&from=2026-01-01&to=2026-01-31&sort=created_at:desc&limit=50&cursor=<opaco>`. Los filtros se comprueban contra una lista de valores permitidos y un formato de fecha estricto, y si algo no encaja, 400, en vez de pasarlo tal cual a la base de datos. La respuesta trae los datos y un `next_cursor` (codificado, sin enseñar ids internos) para pedir la siguiente página, y si acaso un total aproximado en vez de contar todo, que con millones de filas sale caro. Con esto renuncias a propósito a \"saltar a la página 5000\" de golpe: el cursor solo avanza desde donde estás. Lo dejaría escrito en la documentación en vez de esconderlo, porque es el precio de que cada página cueste lo mismo por muy adentro que vayas.",
       "etiquetas": ["api-rest-graphql", "paginacion", "diseno-de-api"],
       "fuentes": [
         {
@@ -79,7 +79,7 @@
     },
     {
       "id": "web-api-rest-graphql-diseno-paginacion-simple",
-      "version": 1,
+      "version": 2,
       "pista": "web",
       "familia": "api-rest-graphql",
       "tipo": "razonamiento",
@@ -87,7 +87,7 @@
       "nivelMinimo": "junior",
       "frecuencia": "media",
       "texto": {
-        "es": "Diseña el endpoint `GET /productos`, que debe soportar paginación simple (`page` y `limit`) y filtrar por categoría. ¿Qué parámetros de query y forma de respuesta usarías?",
+        "es": "Diseña el endpoint `GET /productos` con paginación sencilla (`page` y `limit`) y filtro por categoría. ¿Qué parámetros pondrías y cómo sería la respuesta?",
         "en": "Design the `GET /products` endpoint, which must support simple pagination (`page` and `limit`) and filtering by category. What query params and response shape would you use?"
       },
       "rubrica": {
@@ -101,7 +101,7 @@
           "Valida que `page` y `limit` sean números positivos y devuelve 400 si no lo son"
         ]
       },
-      "respuestaModelo": "El contrato sería `GET /productos?category=zapatos&page=2&limit=20`, con `category` opcional. La respuesta no debe ser solo el array de productos: conviene envolverlo en un objeto con metadatos, por ejemplo `{ datos: [...], pagina: 2, porPagina: 20, total: 134 }`, para que el cliente sepa cuántas páginas hay sin tener que adivinarlo contando elementos. `limit` debe tener un máximo razonable en el servidor (por ejemplo 100), ignorando o rechazando valores mayores, para que nadie pueda pedir la tabla entera de un golpe. `page` y `limit` deben validarse como números enteros positivos antes de usarlos en la query; si llega algo como `page=-1` o `limit=abc`, el endpoint debería devolver un 400 en vez de intentar ejecutar una consulta con esos valores.",
+      "respuestaModelo": "Algo como `GET /productos?category=zapatos&page=2&limit=20`, con `category` opcional. La respuesta no la devolvería como un array suelto: mejor un objeto con datos y metadatos, por ejemplo `{ datos: [...], pagina: 2, porPagina: 20, total: 134 }`, para que el cliente sepa cuántas páginas hay sin adivinarlo. `limit` tiene que tener un máximo en el servidor (por ejemplo 100), para que nadie pida la tabla entera de una vez. Y `page` y `limit` se comprueban como enteros positivos antes de usarlos: si llega `page=-1` o `limit=abc`, devuelves 400 en vez de lanzar la consulta con eso.",
       "etiquetas": ["api-rest-graphql", "paginacion"],
       "fuentes": [
         {

@@ -197,3 +197,23 @@ test('una kata carga Monaco desde el propio dominio y ejecuta los tests', async 
   expect(aTerceros).toEqual([]);
   await capturar(page, 'kata');
 });
+
+test('al pasar a la siguiente kata el editor enseña su código, no el de la anterior', async ({
+  page,
+}) => {
+  // Monaco guardaba el código con un nombre de fichero fijo y la segunda kata
+  // salía con el código de la primera (15-10-2026).
+  await page.goto('/practicar?modo=kata&pista=javascript');
+  await page.getByRole('button', { name: 'Empezar' }).click();
+  const lineas = page.locator('.monaco-editor .view-lines').first();
+  await expect(lineas).toContainText('export function', { timeout: 20_000 });
+  // Monaco pinta los espacios como espacios duros: sin normalizar, la
+  // comparación nunca daba "igual" y el test pasaba con el fallo dentro.
+  const codigo = async () => (await lineas.innerText()).replace(/\s+/g, ' ');
+  const primera = await codigo();
+  await page.getByTestId('autoevaluar').click();
+  await page.getByRole('button', { name: /Fallé/ }).click();
+  await page.getByTestId('siguiente').click();
+  await expect(page.getByLabel(/Asalto 2 de/)).toBeVisible();
+  await expect.poll(codigo, { timeout: 20_000 }).not.toBe(primera);
+});

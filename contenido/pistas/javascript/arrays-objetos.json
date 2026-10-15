@@ -66,7 +66,7 @@
     },
     {
       "id": "js-arrays-objetos-01",
-      "version": 1,
+      "version": 2,
       "pista": "javascript",
       "familia": "arrays-objetos",
       "tipo": "fundamento",
@@ -74,7 +74,7 @@
       "nivelMinimo": "junior",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Qué es JSON y cuáles son sus operaciones comunes en JavaScript (`JSON.parse`, `JSON.stringify`)? ¿Qué limitaciones tiene `JSON.stringify` con fechas o funciones?",
+        "es": "¿Qué es JSON y para qué usas `JSON.parse` y `JSON.stringify`? ¿Qué pasa con las fechas o las funciones al convertir a JSON?",
         "en": "What is JSON and what are its common operations in JavaScript (`JSON.parse`, `JSON.stringify`)? What limitations does `JSON.stringify` have with dates or functions?"
       },
       "rubrica": {
@@ -89,7 +89,7 @@
           "Menciona que `JSON.stringify` lanza error ante referencias circulares"
         ]
       },
-      "respuestaModelo": "JSON es un formato de texto para representar datos estructurados. `JSON.stringify(valor)` convierte un valor de JavaScript a su representación en texto JSON, y `JSON.parse(texto)` hace lo contrario. JSON solo soporta un subconjunto de tipos: objetos, arrays, strings, números, booleanos y `null`. Por eso `JSON.stringify` omite silenciosamente las propiedades cuyo valor es una función o `undefined`, en vez de lanzar error. Un `Date` se convierte a un string en formato ISO al serializar, pero `JSON.parse` no lo reconstruye como `Date` automáticamente: queda como string y hay que convertirlo a mano de vuelta. Y si el objeto tiene una referencia circular (un objeto que se referencia a sí mismo), `JSON.stringify` lanza un `TypeError`.",
+      "respuestaModelo": "JSON es un formato de texto para guardar o enviar datos. `JSON.stringify(valor)` convierte un valor de JavaScript en ese texto y `JSON.parse(texto)` hace el camino contrario. El problema es que JSON solo entiende objetos, arrays, textos, números, booleanos y `null`. Así que si un objeto tiene una función o un `undefined`, `JSON.stringify` simplemente se salta esa propiedad, sin avisar. Una fecha (`Date`) se convierte en un texto tipo `\"2026-10-16T09:00:00.000Z\"`, pero al hacer `JSON.parse` no vuelve a ser fecha: se queda como texto y la tienes que convertir tú. Y si el objeto se apunta a sí mismo en algún sitio (una referencia circular), `JSON.stringify` lanza un `TypeError`.",
       "test": {
         "enunciado": "¿Qué hace `JSON.stringify` con una propiedad de un objeto cuyo valor es una función?",
         "correcta": 1,
@@ -126,7 +126,7 @@
     },
     {
       "id": "js-arrays-objetos-02",
-      "version": 1,
+      "version": 2,
       "pista": "javascript",
       "familia": "arrays-objetos",
       "tipo": "definicion",
@@ -134,7 +134,7 @@
       "nivelMinimo": "junior",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Cuál es la diferencia entre `Array.prototype.slice` y `Array.prototype.splice`?",
+        "es": "¿Qué diferencia hay entre `slice` y `splice` en un array?",
         "en": "What is the difference between `Array.prototype.slice` and `Array.prototype.splice`?"
       },
       "rubrica": {
@@ -149,7 +149,7 @@
           "Menciona el riesgo de mutar un array que otra parte del código no esperaba que cambiara al usar `splice`"
         ]
       },
-      "respuestaModelo": "`slice(inicio, fin)` no modifica el array original: devuelve una copia superficial de la porción indicada, sin incluir el índice `fin`. `splice(inicio, cantidadABorrar, ...nuevos)` sí modifica el array original en el sitio: elimina `cantidadABorrar` elementos desde `inicio` y opcionalmente inserta nuevos elementos ahí mismo, devolviendo los elementos eliminados. La confusión típica es usar `splice` esperando el comportamiento no destructivo de `slice`: como `splice` muta el array original, si ese array se comparte con otra parte del código (por ejemplo, viene de props o de un estado compartido), se puede introducir un bug sutil por mutación inesperada.",
+      "respuestaModelo": "`slice(inicio, fin)` no toca el array: te devuelve una copia del trozo que pides, sin incluir la posición `fin`. `splice(inicio, cuantos, ...nuevos)` sí lo modifica: quita `cuantos` elementos desde `inicio`, mete los nuevos si le pasas alguno, y te devuelve lo que ha quitado. La confusión típica es usar `splice` pensando que funciona como `slice`. Como `splice` cambia el array original, si ese array lo comparte otra parte del código (llega por props, es parte del estado), acabas con un bug difícil de pillar.",
       "test": {
         "enunciado": "¿Qué diferencia hay entre `slice` y `splice`?",
         "correcta": 2,
@@ -248,7 +248,7 @@
     },
     {
       "id": "js-arrays-objetos-03",
-      "version": 1,
+      "version": 2,
       "pista": "javascript",
       "familia": "arrays-objetos",
       "tipo": "fundamento",
@@ -256,7 +256,7 @@
       "nivelMinimo": "senior",
       "frecuencia": "baja",
       "texto": {
-        "es": "¿Cuáles son los pros y contras de extender objetos nativos de JavaScript (por ejemplo `Array.prototype`)?",
+        "es": "¿Es buena idea añadir tus propios métodos a objetos nativos, como `Array.prototype`? ¿Qué ganas y qué arriesgas?",
         "en": "What are the pros and cons of extending built-in JavaScript objects (e.g. `Array.prototype`)?"
       },
       "rubrica": {
@@ -271,8 +271,8 @@
           "Reconoce que puede ser aceptable en un polyfill controlado y bien documentado"
         ]
       },
-      "respuestaModelo": "Técnicamente se puede añadir un método a `Array.prototype` y estará disponible en todos los arrays, pero trae riesgos serios: si una futura versión del lenguaje añade un método nativo con el mismo nombre pero comportamiento distinto (como pasó con implementaciones caseras de `flat` antes de que existiera el nativo), el código propio puede romperse silenciosamente al actualizar el motor. También puede romper código de terceros que recorre objetos con `for...in` esperando solo sus propias propiedades, si el método añadido es enumerable. La excepción razonable es un polyfill bien documentado y acotado a rellenar exactamente el comportamiento de una feature estándar que aún no existe en el entorno objetivo, no una extensión de conveniencia propia.",
-      "resumen": "Se puede añadir un método a `Array.prototype`, pero puede chocar con un método nativo futuro del mismo nombre y romper código ajeno que recorre con `for...in`. Solo se justifica un polyfill acotado.",
+      "respuestaModelo": "Poder, puedes: añades el método a `Array.prototype` y lo tienen todos los arrays. Pero arriesgas bastante. Si una versión futura de JavaScript añade un método nativo con el mismo nombre y otro comportamiento (pasó con versiones caseras de `flat` antes de que existiera el oficial), tu código puede romperse en silencio al actualizar el navegador. Y si tu método es enumerable, puede romper código de otros que recorre objetos con `for...in` esperando solo sus propias propiedades. La única excepción razonable es un polyfill: rellenar exactamente una funcionalidad estándar que todavía no existe en el navegador que te importa, bien documentada. Para comodidades propias, mejor una función normal.",
+      "resumen": "Puedes añadir un método a `Array.prototype`, pero puede chocar con un método nativo futuro del mismo nombre y romper código ajeno que recorre objetos con `for...in`. Solo tiene sentido para un polyfill muy acotado.",
       "test": {
         "enunciado": "¿Qué riesgo tiene añadir tus propios métodos a `Array.prototype`?",
         "correcta": 0,
@@ -429,7 +429,7 @@
     },
     {
       "id": "js-arrays-objetos-04",
-      "version": 1,
+      "version": 2,
       "pista": "javascript",
       "familia": "arrays-objetos",
       "tipo": "definicion",
@@ -437,7 +437,7 @@
       "nivelMinimo": "junior",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Puedes explicar la diferencia principal entre el bucle `Array.forEach()` y el método `Array.map()`?",
+        "es": "¿Qué diferencia hay entre `forEach` y `map`?",
         "en": "Can you describe the main difference between the `Array.forEach()` loop and the `Array.map()` method?"
       },
       "rubrica": {
@@ -452,7 +452,7 @@
           "Menciona que ninguno de los dos se puede interrumpir con `break` (a diferencia de un `for` clásico)"
         ]
       },
-      "respuestaModelo": "`forEach` recorre el array ejecutando una función por cada elemento pero siempre devuelve `undefined`; se usa por sus efectos secundarios, como loguear o acumular algo en una variable externa. `map` recorre el array y devuelve un array nuevo con el resultado de aplicar la función a cada elemento, sin mutar el original; se usa para transformar datos, no para efectos secundarios. Un antipatrón común es usar `map` solo para iterar sin usar el array resultante, cuando `forEach` (o un `for...of`) comunica mejor la intención de no producir un resultado nuevo. Ninguno de los dos se puede cortar a mitad de camino con `break` como un `for` clásico; para eso haría falta `for...of` con `break`, o `some`/`every` si la condición de parada encaja con su semántica.",
+      "respuestaModelo": "`forEach` recorre el array ejecutando una función con cada elemento y siempre devuelve `undefined`: lo usas para hacer algo con cada uno, como mostrarlo en consola o sumarlo a una variable de fuera. `map` recorre el array y te devuelve uno nuevo con lo que devuelve tu función para cada elemento, sin tocar el original: lo usas para transformar datos. Un vicio común es usar `map` solo para recorrer, sin usar el array que devuelve; ahí `forEach` o un `for...of` dejan más clara tu intención. Y ninguno de los dos se puede cortar a mitad con `break`: si lo necesitas, usa `for...of`, o `some`/`every` si tu condición de parada encaja con ellos.",
       "test": {
         "enunciado": "¿Qué diferencia hay entre `forEach` y `map`?",
         "correcta": 0,
@@ -489,7 +489,7 @@
     },
     {
       "id": "js-arrays-objetos-review-splice-en-foreach",
-      "version": 1,
+      "version": 2,
       "pista": "javascript",
       "familia": "arrays-objetos",
       "tipo": "review",
@@ -497,7 +497,7 @@
       "nivelMinimo": "junior",
       "frecuencia": "media",
       "texto": {
-        "es": "Revisa esta función, que debería devolver una lista nueva sin los usuarios inactivos, dejando la lista original intacta. ¿Qué falla?",
+        "es": "Esta función tendría que devolver una lista nueva sin los usuarios inactivos, sin tocar la original. ¿Qué falla?",
         "en": "Review this function, which should return a new list without inactive users, leaving the original list untouched. What's wrong?"
       },
       "contexto": "```js\nfunction quitarInactivos(usuarios) {\n  usuarios.forEach((u, i) => {\n    if (!u.activo) {\n      usuarios.splice(i, 1);\n    }\n  });\n  return usuarios;\n}\n```",
@@ -513,7 +513,7 @@
           "Generaliza el antipatrón: mutar un array mientras se itera sobre él con su propio índice, con el método que sea"
         ]
       },
-      "respuestaModelo": "La función tiene dos problemas relacionados. Primero, `splice` muta el array `usuarios` original en el sitio, en vez de devolver una lista nueva, así que quien llama a la función ve alterada su lista aunque no lo esperaba. Segundo, y más grave, está mutando el array a la vez que `forEach` lo recorre por índice: al borrar el elemento `i`, todos los elementos posteriores se desplazan una posición hacia la izquierda, así que si hay dos usuarios inactivos seguidos, el segundo ocupa ahora el índice que ya se visitó y se salta. La forma correcta y sin este problema es `return usuarios.filter((u) => u.activo);`, que construye un array nuevo sin tocar el original y sin depender de índices que cambian mientras se itera.",
+      "respuestaModelo": "Hay dos fallos que van juntos. El primero: `splice` modifica el array `usuarios` original en vez de crear uno nuevo, así que quien llama a la función ve su lista cambiada sin esperarlo. El segundo, más grave: está borrando elementos mientras `forEach` recorre el array por posición. Cuando borras el elemento `i`, todos los de detrás se mueven un sitio a la izquierda; si hay dos inactivos seguidos, el segundo cae en una posición que ya se visitó y se queda sin borrar. Lo correcto es `return usuarios.filter((u) => u.activo);`: crea una lista nueva, no toca la original y no depende de posiciones que cambian mientras recorres.",
       "etiquetas": ["arrays", "mutacion", "code-review"],
       "fuentes": [
         {

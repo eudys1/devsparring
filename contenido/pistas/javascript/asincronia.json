@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "js-asincronia-01",
-      "version": 2,
+      "version": 3,
       "pista": "javascript",
       "familia": "asincronia",
       "tipo": "definicion",
@@ -12,7 +12,7 @@
       "nivelMinimo": "junior",
       "frecuencia": "alta",
       "texto": {
-        "es": "Un `fetch` falla en producción y en la consola solo aparece \"Uncaught (in promise)\". ¿Qué es una Promise, cuáles son sus tres estados posibles y qué pasa si no manejas el `.catch()`?",
+        "es": "Un `fetch` falla en producción y en la consola solo ves \"Uncaught (in promise)\". ¿Qué es una Promise, qué tres estados puede tener y qué pasa si no le pones `.catch()`?",
         "en": "A `fetch` fails in production and the console only shows \"Uncaught (in promise)\". What is a Promise, what are its three possible states, and what happens if you don't handle `.catch()`?"
       },
       "rubrica": {
@@ -27,7 +27,7 @@
           "Explica por qué encadenar `.catch()` al final de una cadena de `.then()` captura errores de cualquier paso anterior"
         ]
       },
-      "respuestaModelo": "Una Promise representa el resultado eventual de una operación asíncrona y tiene tres estados: pending (aún no resuelta), fulfilled (resuelta con éxito) y rejected (falló). Una vez que pasa de pending a fulfilled o rejected, queda fija en ese estado para siempre. Si una promesa se rechaza y no hay ningún `.catch()` (ni un `try/catch` alrededor de un `await`) que maneje ese rechazo, el entorno lo reporta como una excepción no capturada: en el navegador dispara el evento `unhandledrejection` y lo muestra en consola, en Node puede incluso terminar el proceso según la configuración. Un `.catch()` al final de una cadena de `.then()` captura el error de cualquier paso anterior de la cadena, no solo del último.",
+      "respuestaModelo": "Una Promise es la promesa de un resultado que llegará más tarde. Puede estar en tres estados: pending (todavía esperando), fulfilled (salió bien) o rejected (falló). Cuando pasa de pending a uno de los otros dos, ya no cambia nunca más. Si la promesa falla y nadie recoge ese error, ni con `.catch()` ni con un `try/catch` alrededor del `await`, el entorno lo trata como un error sin capturar: el navegador lanza el evento `unhandledrejection` y te lo enseña en consola, que es justo ese \"Uncaught (in promise)\", y Node puede llegar a cerrar el proceso según cómo esté configurado. Un truco útil: un solo `.catch()` al final de una cadena de `.then()` recoge el error de cualquier paso anterior, no solo del último.",
       "test": {
         "enunciado": "¿Cuáles son los tres estados de una Promise?",
         "correcta": 2,
@@ -64,7 +64,7 @@
     },
     {
       "id": "js-asincronia-02",
-      "version": 1,
+      "version": 2,
       "pista": "javascript",
       "familia": "asincronia",
       "tipo": "fundamento",
@@ -72,7 +72,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿En qué se diferencia usar `async/await` de encadenar `.then()`? ¿Sigue siendo asíncrono el código con `await`?",
+        "es": "¿Qué cambia entre usar `async/await` y encadenar `.then()`? ¿El código con `await` sigue siendo asíncrono?",
         "en": "How is using `async/await` different from chaining `.then()`? Is code with `await` still asynchronous?"
       },
       "rubrica": {
@@ -87,7 +87,7 @@
           "Menciona un caso donde `.then()` sigue siendo útil (lanzar varias promesas en paralelo sin esperar cada una por turno)"
         ]
       },
-      "respuestaModelo": "`async/await` es azúcar sintáctico sobre las promesas: por debajo sigue siendo el mismo mecanismo, no bloquea el hilo principal ni convierte el código en síncrono. La diferencia es de legibilidad: encadenar varios `.then()` para pasos secuenciales se vuelve difícil de leer, mientras que con `await` el código secuencial se lee de arriba a abajo como si fuera síncrono. Una función `async` siempre devuelve una promesa, y los errores se capturan con `try/catch` alrededor del `await` en vez de un `.catch()` en la cadena. Aun así, `.then()` sigue siendo útil cuando se quieren lanzar varias promesas en paralelo sin esperar cada una en su propia línea con `await` (para eso normalmente se combina con `Promise.all`).",
+      "respuestaModelo": "Sigue siendo asíncrono. `async/await` es otra forma de escribir promesas: por debajo es lo mismo, no bloquea nada ni vuelve el código síncrono. Lo que gana es que se lee mejor: varios `.then()` seguidos se hacen un lío, y con `await` lees el código de arriba abajo como si fuera normal. Una función `async` siempre devuelve una promesa, y los errores se recogen con `try/catch` alrededor del `await` en vez de con `.catch()`. Un matiz que suma: si pones un `await` por línea, las peticiones van una detrás de otra. Cuando son independientes, lánzalas a la vez y espéralas juntas con `Promise.all`.",
       "test": {
         "enunciado": "¿Qué es cierto sobre el código que usa `await`?",
         "correcta": 3,
@@ -123,7 +123,7 @@
     },
     {
       "id": "js-asincronia-03",
-      "version": 1,
+      "version": 2,
       "pista": "javascript",
       "familia": "asincronia",
       "tipo": "fundamento",
@@ -131,7 +131,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Cuál es la diferencia entre `Promise.all`, `Promise.race`, `Promise.allSettled` y `Promise.any`? Da un caso de uso de cada uno.",
+        "es": "¿Qué diferencia hay entre `Promise.all`, `Promise.race`, `Promise.allSettled` y `Promise.any`? Pon un caso real de cada una.",
         "en": "What is the difference between `Promise.all`, `Promise.race`, `Promise.allSettled` and `Promise.any`? Give a use case for each."
       },
       "rubrica": {
@@ -146,7 +146,7 @@
           "Explica `Promise.any` (se resuelve con la primera que tenga éxito, ignora rechazos) con un caso de uso como pedir a varios servidores espejo"
         ]
       },
-      "respuestaModelo": "`Promise.all` espera a que todas las promesas se resuelvan y devuelve sus valores en orden, pero rechaza inmediatamente en cuanto una falla, útil cuando todas las peticiones son necesarias para continuar. `Promise.race` se resuelve o rechaza en cuanto la primera promesa termina, se usa por ejemplo para implementar un timeout corriendo la petición real contra una promesa que rechaza pasado cierto tiempo. `Promise.allSettled` espera a todas sin fallar por una rechazada, devolviendo el estado de cada una; útil para cargar varios widgets independientes de un dashboard donde el fallo de uno no debe tumbar los demás. `Promise.any` se resuelve con la primera que tenga éxito e ignora los rechazos salvo que todas fallen; útil para pedir el mismo dato a varios servidores espejo y quedarse con el primero que responda bien.",
+      "respuestaModelo": "`Promise.all` espera a todas y te da sus resultados en orden, pero en cuanto una falla, falla todo. Úsala cuando necesitas todos los datos para seguir. `Promise.race` se queda con la primera que acabe, salga bien o mal; el uso típico es un timeout: pones a correr la petición contra una promesa que falla a los cinco segundos. `Promise.allSettled` espera a todas sin rendirse cuando una falla y te dice cómo acabó cada una; perfecta para un panel con varios widgets independientes, donde si uno falla los demás se pintan igual. `Promise.any` se queda con la primera que salga bien e ignora los fallos, salvo que fallen todas; sirve para pedir lo mismo a varios servidores y quedarte con el que conteste antes.",
       "test": {
         "enunciado": "Cargas tres widgets independientes y quieres pintar los que funcionen aunque alguno falle. ¿Qué usas?",
         "correcta": 1,
@@ -182,7 +182,7 @@
     },
     {
       "id": "js-asincronia-04",
-      "version": 1,
+      "version": 2,
       "pista": "javascript",
       "familia": "asincronia",
       "tipo": "fundamento",
@@ -190,7 +190,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Cómo implementarías `debounce(fn, delay)`? Explica la idea sin necesidad de ejecutar código, y da un caso de uso real.",
+        "es": "¿Cómo harías un `debounce(fn, delay)`? Explica la idea sin escribir código y pon un caso real.",
         "en": "How would you implement `debounce(fn, delay)`? Explain the idea without needing to run code, and give a real use case."
       },
       "rubrica": {
@@ -205,10 +205,10 @@
           "Menciona la variante \"leading\" (ejecutar en la primera llamada) frente a la habitual \"trailing\""
         ]
       },
-      "respuestaModelo": "`debounce(fn, delay)` devuelve una función que, cada vez que se llama, cancela el temporizador pendiente con `clearTimeout` y programa uno nuevo con `setTimeout` para ejecutar `fn` pasados `delay` milisegundos; si llega otra llamada antes de que se cumpla el plazo, el ciclo se reinicia. El resultado es que `fn` solo se ejecuta cuando ha pasado `delay` ms sin nuevas llamadas. El caso de uso típico es un autocompletado de búsqueda o una validación de formulario mientras se escribe: sin debounce se dispararía una petición o un cálculo costoso en cada tecla pulsada. La variante \"leading\" ejecuta en la primera llamada y luego ignora hasta que pase el periodo de calma, útil cuando se quiere respuesta inmediata pero sin repetir la acción en ráfaga.",
-      "resumen": "Una función que en cada llamada cancela el temporizador pendiente con `clearTimeout` y programa otro: `fn` solo corre tras `delay` ms sin llamadas. Caso típico: un autocompletado mientras escribes.",
+      "respuestaModelo": "`debounce(fn, delay)` te devuelve una función que, cada vez que la llamas, cancela el temporizador pendiente con `clearTimeout` y pone otro con `setTimeout` para dentro de `delay` milisegundos. Si llega otra llamada antes de que se cumpla, vuelta a empezar. Resultado: `fn` solo se ejecuta cuando pasan `delay` ms sin que nadie la llame. El caso de siempre es un buscador con sugerencias o una validación mientras escribes: sin debounce lanzarías una petición por cada tecla. Hay una variante, la \"leading\", que ejecuta en la primera llamada y luego ignora las demás hasta que haya un rato de calma; sirve cuando quieres respuesta inmediata pero sin repetirla en ráfaga.",
+      "resumen": "Cada vez que la llamas, cancela el temporizador que hubiera con `clearTimeout` y pone uno nuevo: `fn` solo se ejecuta cuando pasan `delay` ms sin llamadas. El caso típico: un buscador que sugiere mientras escribes.",
       "test": {
-        "enunciado": "¿Qué hace un `debounce(fn, delay)` sobre un buscador que se dispara en cada tecla?",
+        "enunciado": "Un buscador lanza una búsqueda con cada tecla. ¿Qué hace si lo envuelves en `debounce(fn, delay)`?",
         "correcta": 0,
         "opciones": [
           {
@@ -243,7 +243,7 @@
     },
     {
       "id": "js-asincronia-05",
-      "version": 1,
+      "version": 2,
       "pista": "javascript",
       "familia": "asincronia",
       "tipo": "fundamento",
@@ -251,7 +251,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Cómo implementarías `throttle(fn, interval)`? ¿En qué se diferencia de `debounce`?",
+        "es": "¿Cómo harías un `throttle(fn, interval)`? ¿En qué se diferencia de `debounce`?",
         "en": "How would you implement `throttle(fn, interval)`? How does it differ from `debounce`?"
       },
       "rubrica": {
@@ -266,10 +266,10 @@
           "Menciona las variantes \"leading\" y \"trailing\" (la última llamada dentro del intervalo también se ejecuta al final)"
         ]
       },
-      "respuestaModelo": "`throttle(fn, interval)` garantiza que `fn` se ejecute como máximo una vez cada `interval` milisegundos, sin importar cuántas veces se llame mientras tanto: se puede implementar guardando el timestamp de la última ejecución y, en cada llamada, comparando si ya pasó el intervalo para ejecutar de nuevo o ignorar la llamada. La diferencia con `debounce` es que `debounce` espera a que pare la actividad para ejecutar una sola vez al final, mientras `throttle` sigue ejecutando periódicamente aunque la actividad no pare. El caso de uso típico es un handler de scroll o resize, donde se necesita reaccionar mientras el usuario interactúa, no solo al terminar. La variante \"trailing\" añade que la última llamada dentro de un intervalo también se ejecuta al final de ese intervalo, para no perder el estado más reciente.",
-      "resumen": "`throttle` ejecuta `fn` como mucho una vez cada `interval` ms, recordando cuándo fue la última. `debounce` espera a que pare la actividad; `throttle` ejecuta a ritmo fijo mientras dura (scroll, resize).",
+      "respuestaModelo": "`throttle(fn, interval)` hace que `fn` se ejecute como mucho una vez cada `interval` milisegundos, la llames las veces que la llames. Para hacerlo basta con apuntar cuándo se ejecutó la última vez y, en cada llamada, mirar si ya ha pasado el intervalo: si sí, ejecutas; si no, ignoras. La diferencia con `debounce` es que `debounce` espera a que pares para ejecutar una sola vez al final, y `throttle` va ejecutando cada cierto tiempo mientras sigas. Por eso es lo que quieres en el scroll o al redimensionar la ventana: reaccionar mientras el usuario se mueve, no solo cuando acaba. Hay una variante, la \"trailing\", que además ejecuta la última llamada al final del intervalo para no perder el estado más reciente.",
+      "resumen": "`throttle` ejecuta `fn` como mucho una vez cada `interval` ms, apuntando cuándo fue la última. `debounce` espera a que pare la actividad; `throttle` va ejecutando a ritmo fijo mientras dura (scroll, resize).",
       "test": {
-        "enunciado": "¿Qué caso encaja mejor con throttle que con debounce?",
+        "enunciado": "¿Cuál de estos casos pide throttle y no debounce?",
         "correcta": 3,
         "opciones": [
           {

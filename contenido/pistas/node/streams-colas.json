@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "node-streams-colas-01",
-      "version": 1,
+      "version": 2,
       "pista": "node",
       "familia": "streams-colas",
       "tipo": "fundamento",
@@ -12,7 +12,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Qué son los streams en Node.js y por qué usarías uno para servir un fichero de 2GB en vez de leerlo entero en memoria?",
+        "es": "¿Qué son los streams en Node.js? ¿Por qué usarías uno para servir un fichero de 2 GB en vez de leerlo entero?",
         "en": "What are streams in Node.js, and why would you use one to serve a 2GB file instead of reading it entirely into memory?"
       },
       "rubrica": {
@@ -25,7 +25,7 @@
           "Explica que `fs.createReadStream().pipe(res)` mantiene el uso de memoria constante frente a `fs.readFile`"
         ]
       },
-      "respuestaModelo": "Un stream procesa datos en trozos pequeños (chunks) a medida que van llegando o saliendo, sin necesidad de tener el contenido completo cargado en memoria en ningún momento. Leer un fichero de 2GB con `fs.readFile` intentaría cargarlo entero en memoria de golpe, lo que puede reventar el límite de memoria del proceso o al menos dispararlo innecesariamente. Con `fs.createReadStream(ruta).pipe(res)`, el fichero se lee y se envía en pequeños trozos de forma continua, manteniendo el uso de memoria prácticamente constante sin importar el tamaño del fichero. Los streams además incorporan backpressure: si quien consume los datos (por ejemplo, una conexión de red lenta) no puede procesarlos tan rápido como se producen, el propio mecanismo pausa automáticamente la lectura del origen hasta que el consumidor esté listo para más, evitando acumular todo en un buffer intermedio sin control.",
+      "respuestaModelo": "Un stream trabaja con los datos a trozos (chunks) a medida que llegan o salen, sin tenerlos nunca enteros en memoria. Si lees un fichero de 2 GB con `fs.readFile`, intentas meterlo entero en memoria de golpe, y eso puede tumbar el proceso o, como poco, disparar su consumo sin necesidad. Con `fs.createReadStream(ruta).pipe(res)`, el fichero se va leyendo y enviando a trocitos, y la memoria se queda casi igual sea el fichero del tamaño que sea. Además, los streams traen control de flujo (backpressure): si quien recibe, por ejemplo una conexión lenta, no da abasto, la lectura se pausa sola hasta que esté listo, en vez de ir acumulando todo en un buffer sin control.",
       "test": {
         "enunciado": "¿Por qué servir un fichero de 2 GB con un stream en vez de `fs.readFile`?",
         "correcta": 2,
@@ -62,7 +62,7 @@
     },
     {
       "id": "node-streams-colas-02",
-      "version": 1,
+      "version": 2,
       "pista": "node",
       "familia": "streams-colas",
       "tipo": "razonamiento",
@@ -70,7 +70,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Cuándo usarías una cola de mensajes (RabbitMQ, SQS, BullMQ sobre Redis) en vez de procesar todo síncronamente en el request?",
+        "es": "¿Cuándo usarías una cola de mensajes (RabbitMQ, SQS, BullMQ sobre Redis) en vez de hacerlo todo dentro de la petición?",
         "en": "When would you use a message queue (RabbitMQ, SQS, BullMQ over Redis) instead of processing everything synchronously in the request?"
       },
       "rubrica": {
@@ -83,7 +83,7 @@
           "Menciona el trade-off: complejidad operativa extra y diseño para 'eventualmente consistente' en vez de respuesta inmediata"
         ]
       },
-      "respuestaModelo": "Una cola tiene sentido cuando la tarea es lenta o no es crítica para devolver la respuesta inmediata al usuario: enviar un email de confirmación, generar un PDF, procesar una imagen subida. En vez de hacer que el request espere a que termine ese trabajo, se publica un mensaje en la cola y se responde de inmediato al usuario. Encolar desacopla al productor (quien genera el trabajo) del consumidor (quien lo procesa), lo que permite reintentos automáticos si el consumidor falla, y absorbe picos de carga porque los mensajes se acumulan en la cola en vez de tumbar el sistema con peticiones simultáneas. El trade-off es complejidad operativa adicional (un componente más que monitorizar y mantener) y que el diseño pasa a ser 'eventualmente consistente': el usuario ya no ve el resultado de esa tarea al instante, sino más tarde, lo que hay que comunicar bien en la interfaz.",
+      "respuestaModelo": "Cuando la tarea es lenta o el usuario no necesita su resultado para recibir la respuesta: mandar un email de confirmación, generar un PDF, procesar una imagen que ha subido. En vez de hacerle esperar, metes un mensaje en la cola y le contestas al momento. La cola separa a quien genera el trabajo de quien lo hace, y eso te da reintentos automáticos si algo falla y aguanta los picos, porque los mensajes se acumulan en la cola en vez de tumbarte el sistema. El precio: una pieza más que vigilar y mantener, y que el resultado ya no es inmediato, llega un poco después (lo llaman consistencia eventual). Eso hay que contárselo bien al usuario en la interfaz.",
       "etiquetas": ["streams-colas", "colas-de-mensajes", "arquitectura"],
       "fuentes": [
         {
@@ -98,7 +98,7 @@
     },
     {
       "id": "node-streams-colas-03",
-      "version": 1,
+      "version": 2,
       "pista": "node",
       "familia": "streams-colas",
       "tipo": "razonamiento",
@@ -106,7 +106,7 @@
       "nivelMinimo": "senior",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Cómo mantienes sincronizados varios servidores Node con WebSockets abiertos (por ejemplo, un chat) cuando escalas horizontalmente?",
+        "es": "Tienes un chat con WebSockets y montas varios servidores de Node detrás de un balanceador. ¿Cómo haces que un mensaje llegue a todos?",
         "en": "How do you keep multiple Node servers with open WebSockets in sync (e.g. a chat app) when you scale horizontally?"
       },
       "rubrica": {
@@ -117,8 +117,8 @@
           "Menciona sticky sessions o un balanceador consciente de WebSockets"
         ]
       },
-      "respuestaModelo": "Un socket WebSocket abierto vive en la memoria del proceso concreto que lo aceptó; si el usuario A está conectado a la instancia 1 y el usuario B a la instancia 2, un mensaje que llega a la instancia 1 no tiene forma directa de llegar al socket de B, porque viven en procesos completamente separados. La solución es un bus compartido entre instancias, típicamente Redis Pub/Sub (con el adaptador `socket.io-redis` si se usa Socket.IO) o un broker de mensajes: cuando un mensaje se publica en la instancia 1, se retransmite también al canal compartido, y la instancia 2 (suscrita a ese mismo canal) lo recibe y lo reenvía por su propio socket al usuario B. Además conviene configurar sticky sessions en el balanceador (para que las reconexiones del mismo cliente vuelvan a la misma instancia cuando haga falta mantener estado local) o directamente usar un balanceador consciente de WebSockets que gestione esto de forma nativa.",
-      "resumen": "Cada socket vive en la memoria de su proceso, así que un mensaje no llega a usuarios de otra instancia. Se resuelve con un bus compartido, típicamente Redis Pub/Sub con el adaptador de Socket.IO.",
+      "respuestaModelo": "Cada conexión WebSocket vive en la memoria del servidor que la aceptó. Si Ana está conectada al servidor 1 y Luis al 2, un mensaje que llega al 1 no tiene forma de llegar al socket de Luis: están en procesos distintos. La solución es un canal compartido entre servidores, normalmente Redis Pub/Sub (con el adaptador de Redis si usas Socket.IO) o un broker de mensajes. El servidor 1 publica el mensaje en ese canal, el 2 está escuchando, lo recibe y se lo manda a Luis por su socket. Además conviene configurar sticky sessions en el balanceador, para que cuando alguien se reconecte vuelva al mismo servidor si hace falta, o usar un balanceador que entienda de WebSockets.",
+      "resumen": "Cada socket vive en la memoria de su servidor, así que un mensaje no llega a quien está conectado a otro. Se arregla con un canal compartido, normalmente Redis Pub/Sub con el adaptador de Socket.IO.",
       "etiquetas": ["streams-colas", "websockets", "escalado-horizontal"],
       "fuentes": [
         {
@@ -133,7 +133,7 @@
     },
     {
       "id": "node-streams-colas-04",
-      "version": 1,
+      "version": 2,
       "pista": "node",
       "familia": "streams-colas",
       "tipo": "fundamento",
@@ -141,7 +141,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Qué diferencia hay entre autenticación con sesión en memoria del proceso Node y sesión en Redis, en un entorno con varios contenedores?",
+        "es": "Tienes varios contenedores de tu API de Node detrás de un balanceador. ¿Qué cambia entre guardar la sesión en la memoria del proceso o en Redis?",
         "en": "What's the difference between authentication with an in-process Node session and a Redis-backed session, in a multi-container environment?"
       },
       "rubrica": {
@@ -154,8 +154,8 @@
           "Explica que Redis (u otro store compartido) permite que cualquier instancia lea la sesión, requisito básico para escalar sin sticky sessions"
         ]
       },
-      "respuestaModelo": "Guardar la sesión en la memoria del propio proceso Node ata al usuario a ese contenedor concreto: si la siguiente petición del mismo usuario la atiende otro contenedor (algo habitual con un balanceador round-robin, o simplemente porque el primer contenedor se reinició o escaló hacia abajo), ese segundo contenedor no tiene ni idea de que esa sesión existe y el usuario aparece como no autenticado aunque acabe de hacer login. Guardar la sesión en Redis (o cualquier store compartido entre instancias) resuelve esto porque cualquier contenedor puede leer y escribir la misma sesión consultando ese almacén central, sin importar cuál de las instancias atendió el login originalmente. Esto es un requisito básico para escalar horizontalmente de forma limpia sin depender de sticky sessions, que además complican el balanceo de carga al forzar que un mismo usuario siempre vuelva al mismo contenedor.",
-      "resumen": "La sesión en memoria ata al usuario a un contenedor: si otra instancia atiende su siguiente petición, aparece sin sesión. En Redis la ven todas las instancias por igual.",
+      "respuestaModelo": "Si la sesión está en la memoria del proceso, el usuario queda atado a ese contenedor. En cuanto su siguiente petición la atienda otro, cosa normal con un balanceador que va repartiendo, o porque el primero se reinició o se quitó al escalar, ese otro contenedor no sabe nada de la sesión y el usuario aparece como no logueado, aunque acabe de entrar. Con la sesión en Redis (o en cualquier almacén compartido), cualquier contenedor la puede leer y escribir, da igual cuál atendió el login. Es lo básico para escalar con varias instancias sin depender de sticky sessions, que además complican el reparto porque obligan a que cada usuario vuelva siempre al mismo contenedor.",
+      "resumen": "La sesión en memoria ata al usuario a un contenedor: si su siguiente petición la atiende otro, aparece sin sesión. En Redis la ven todos los contenedores por igual.",
       "test": {
         "enunciado": "Con varios contenedores detrás de un balanceador, ¿por qué falla guardar la sesión en memoria del proceso?",
         "correcta": 0,
@@ -192,7 +192,7 @@
     },
     {
       "id": "node-streams-colas-05",
-      "version": 1,
+      "version": 2,
       "pista": "node",
       "familia": "streams-colas",
       "tipo": "razonamiento",
@@ -200,7 +200,7 @@
       "nivelMinimo": "senior",
       "frecuencia": "baja",
       "texto": {
-        "es": "¿Qué patrón usarías para no bloquear el event loop al procesar una imagen o un CSV grande subido por el usuario?",
+        "es": "¿Cómo procesarías una imagen o un CSV enorme que sube un usuario sin dejar colgado el event loop?",
         "en": "What pattern would you use to avoid blocking the event loop when processing an uploaded image or large CSV?"
       },
       "rubrica": {
@@ -213,8 +213,8 @@
           "Explica por qué nunca debe hacerse el parseo/transformación pesada de forma síncrona en el hilo principal que atiende peticiones"
         ]
       },
-      "respuestaModelo": "El patrón correcto es mover el trabajo intensivo de CPU fuera del hilo principal que atiende peticiones HTTP: un `worker_thread`, un proceso hijo dedicado, o directamente encolar el trabajo en una cola externa para que lo procese un worker aparte, de forma completamente asíncrona respecto al request original. Además, siempre que sea posible conviene procesar el fichero en streaming, por chunks, en vez de cargarlo entero en memoria antes de empezar a transformarlo, sobre todo con un CSV grande donde se puede parsear fila a fila sin esperar a tener el archivo completo. Lo que nunca hay que hacer es ejecutar ese parseo o transformación pesada de forma síncrona directamente en el hilo principal que atiende otras peticiones concurrentes, porque mientras dura ese trabajo, el event loop queda bloqueado y ninguna otra petición se procesa, sin importar cuántas conexiones simultáneas tenga el servidor abiertas.",
-      "resumen": "Sacar el trabajo de CPU del hilo que atiende peticiones: `worker_thread`, proceso hijo o una cola con un worker aparte. Y procesar el fichero en streaming, por chunks, en vez de cargarlo entero.",
+      "respuestaModelo": "Sacando el trabajo pesado de CPU del hilo que atiende las peticiones: a un `worker_thread`, a un proceso hijo, o metiéndolo en una cola para que lo haga un worker aparte, sin que la petición original tenga que esperar. Y siempre que puedas, procesa el fichero a trozos en vez de cargarlo entero en memoria antes de empezar; con un CSV es fácil ir leyéndolo fila a fila sin tenerlo completo. Lo que nunca hay que hacer es parsearlo o transformarlo de golpe en el hilo principal: mientras dura, el event loop está bloqueado y no se atiende ninguna otra petición, tengas las conexiones abiertas que tengas.",
+      "resumen": "Saca el trabajo pesado del hilo que atiende peticiones: un `worker_thread`, un proceso hijo o una cola con un worker aparte. Y procesa el fichero a trozos, en streaming, en vez de cargarlo entero.",
       "etiquetas": ["streams-colas", "worker-threads", "rendimiento"],
       "fuentes": [
         {

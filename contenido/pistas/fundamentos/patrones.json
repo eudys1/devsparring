@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "fund-patrones-01",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "patrones",
       "tipo": "fundamento",
@@ -12,7 +12,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Qué es el patrón Singleton, cuándo lo usarías y qué problemas trae (testing, estado global)?",
+        "es": "¿Qué es el patrón Singleton, cuándo lo usarías y qué problemas te da (en los tests, con el estado global)?",
         "en": "What is the Singleton pattern, when would you use it, and what problems does it cause (testing, global state)?"
       },
       "rubrica": {
@@ -27,7 +27,7 @@
           "Explica cómo aislaría un Singleton en los tests (reset manual, factory que puede sustituirse)"
         ]
       },
-      "respuestaModelo": "Singleton garantiza que una clase tenga una única instancia accesible globalmente, típico en conexiones a base de datos o configuración de la app. El problema es que introduce estado global implícito: cualquier módulo puede depender de él sin que se vea en su firma, lo que dificulta testear en aislamiento (los tests se contaminan entre sí si el Singleton guarda estado) y sustituirlo por un doble de prueba. La alternativa habitual es inyectar la instancia como dependencia en vez de importarla directamente, manteniendo la garantía de instancia única a nivel de configuración de la app, no acoplada al código que la usa.",
+      "respuestaModelo": "Singleton asegura que de una clase solo exista una instancia, accesible desde cualquier sitio. Típico para la conexión a la base de datos o la configuración de la app. El problema es que es estado global escondido: cualquier módulo puede depender de él sin que se vea en lo que recibe, y eso complica probar las cosas por separado (los tests se contaminan entre ellos si el Singleton guarda estado) y cambiarlo por un doble de prueba. La alternativa habitual es pasar la instancia como dependencia en vez de importarla directamente: sigues teniendo una sola, pero eso lo decide la configuración de la app, no el código que la usa.",
       "test": {
         "enunciado": "¿Qué problema trae el patrón Singleton en los tests?",
         "correcta": 0,
@@ -64,7 +64,7 @@
     },
     {
       "id": "fund-patrones-02",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "patrones",
       "tipo": "fundamento",
@@ -72,7 +72,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "alta",
       "texto": {
-        "es": "Explica el patrón Factory, el patrón Observer y el patrón Strategy, y da un caso de uso real de cada uno en una app web.",
+        "es": "Explica los patrones Factory, Observer y Strategy, con un caso real de cada uno en una app web.",
         "en": "Explain the Factory pattern, the Observer pattern and the Strategy pattern, and give a real use case for each in a web app."
       },
       "rubrica": {
@@ -87,7 +87,7 @@
           "Liga Strategy con sustituir algoritmos intercambiables sin tocar el código que los usa"
         ]
       },
-      "respuestaModelo": "Factory encapsula la lógica de crear objetos: en vez de que el cliente haga `new ClienteEmail()` o `new ClienteSMS()`, una función `crearNotificador(tipo)` decide qué clase instanciar. Observer permite que varios suscriptores reaccionen a un evento sin acoplarse entre sí, como el propio modelo de eventos del DOM o un `EventEmitter` de Node. Strategy permite intercambiar un algoritmo (por ejemplo distintas formas de calcular el precio con descuento) pasando la estrategia como parámetro, sin que el código cliente sepa cuál se está usando. Los tres comparten la idea de aislar una decisión (qué crear, quién se entera, qué algoritmo aplicar) detrás de una interfaz.",
+      "respuestaModelo": "Factory esconde cómo se crean los objetos: en vez de hacer tú `new ClienteEmail()` o `new ClienteSMS()`, llamas a `crearNotificador(tipo)` y ella decide cuál crear. Observer deja que varios interesados reaccionen a un evento sin conocerse entre ellos, como los eventos del DOM o un `EventEmitter` de Node. Strategy te deja cambiar el algoritmo que se usa, por ejemplo distintas formas de calcular un descuento, pasándolo como parámetro, sin que el código que lo usa sepa cuál es. Los tres tienen la misma idea de fondo: esconder una decisión (qué crear, quién se entera, qué cálculo hacer) detrás de una interfaz.",
       "test": {
         "enunciado": "Tienes varias formas de calcular el precio con descuento y quieres cambiar entre ellas sin tocar el código que las usa. ¿Qué patrón es?",
         "correcta": 2,
@@ -123,7 +123,7 @@
     },
     {
       "id": "fund-patrones-03",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "patrones",
       "tipo": "fundamento",
@@ -146,7 +146,7 @@
           "Reconoce cuándo es sobre-ingeniería (un CRUD trivial de una sola tabla)"
         ]
       },
-      "respuestaModelo": "El patrón Repository abstrae el origen de los datos (base de datos, API externa, caché) detrás de una interfaz simple con operaciones de dominio, como `buscarPorId` o `guardar`. La lógica de negocio depende de esa interfaz, no de una librería de base de datos concreta, lo que permite sustituirla en los tests por un repositorio en memoria y probar reglas de negocio sin levantar infraestructura real. También facilita cambiar de proveedor de datos con un impacto acotado. En proyectos muy pequeños puede ser sobre-ingeniería si solo hay un CRUD trivial sobre una tabla.",
+      "respuestaModelo": "Un Repository esconde de dónde salen los datos (base de datos, una API, una caché) detrás de unas pocas operaciones con nombre de negocio, como `buscarPorId` o `guardar`. Tu lógica de negocio depende de esas operaciones, no de una librería de base de datos concreta. Eso te deja probar las reglas de negocio cambiándolo en los tests por un repositorio en memoria, sin levantar una base de datos de verdad. Y si un día cambias de proveedor, el cambio queda en un solo sitio. En proyectos muy pequeños, con un CRUD sencillo sobre una tabla, puede ser complicarse sin necesidad.",
       "test": {
         "enunciado": "¿Qué ganas al acceder a los datos a través de un Repository?",
         "correcta": 1,

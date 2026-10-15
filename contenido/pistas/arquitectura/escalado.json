@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "arq-escalado-01",
-      "version": 1,
+      "version": 2,
       "pista": "arquitectura",
       "familia": "escalado",
       "tipo": "razonamiento",
@@ -12,7 +12,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Cómo escalarías horizontalmente una API que hoy corre en un solo servidor y empieza a saturarse?",
+        "es": "Tu API corre en un solo servidor y empieza a no dar abasto. ¿Cómo la escalarías añadiendo más servidores?",
         "en": "How would you scale horizontally an API that today runs on a single server and is starting to get saturated?"
       },
       "rubrica": {
@@ -27,8 +27,8 @@
           "Considera cache (CDN para estáticos, Redis para queries calientes) antes de escalar la base de datos, que suele ser más caro y complejo"
         ]
       },
-      "respuestaModelo": "El primer paso es hacer el servidor 'stateless': sacar la sesión y cualquier estado en memoria fuera del proceso (a Redis o a la base de datos) para poder levantar N réplicas idénticas detrás de un balanceador de carga sin que importe a cuál llegue cada request. Antes de simplemente añadir más réplicas conviene identificar el cuello de botella real con métricas: si el problema es CPU de la aplicación, replicar ayuda; si el problema es la base de datos, añadir más instancias del servidor solo traslada la saturación río abajo. Conviene explorar cache primero, un CDN para estáticos y Redis para queries calientes, porque suele ser más barato y rápido de implementar que escalar la base de datos, que es la pieza más cara y compleja de escalar horizontalmente.",
-      "resumen": "Primero, servidor stateless (sesión fuera del proceso) para poner N réplicas tras un balanceador; antes, medir el cuello de botella: si es la base de datos, replicar la API no sirve.",
+      "respuestaModelo": "El primer paso es que el servidor no guarde nada importante en su propia memoria (que sea stateless): la sesión y cualquier estado van fuera del proceso, a Redis o a la base de datos. Así puedes levantar N copias idénticas detrás de un balanceador y da igual a cuál llegue cada petición. Pero antes de añadir copias, mide dónde está el atasco de verdad: si es la CPU de la aplicación, más copias ayudan; si es la base de datos, más servidores solo empujan el problema hacia ella. Y mira la caché primero: una CDN para lo estático y Redis para las consultas que más se repiten suelen salir más baratas y rápidas de montar que escalar la base de datos, que es la pieza más cara y complicada de repartir.",
+      "resumen": "Primero, que el servidor no guarde estado propio (la sesión fuera del proceso) para poner N copias detrás de un balanceador. Y antes, medir dónde está el atasco: si es la base de datos, más copias de la API no sirven.",
       "etiquetas": ["arquitectura", "escalado", "stateless"],
       "fuentes": [
         {
@@ -43,7 +43,7 @@
     },
     {
       "id": "arq-escalado-02",
-      "version": 1,
+      "version": 2,
       "pista": "arquitectura",
       "familia": "escalado",
       "tipo": "fundamento",
@@ -51,7 +51,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Qué es un CDN y qué tipo de contenido NO deberías poner detrás de uno sin pensarlo bien?",
+        "es": "¿Qué es una CDN y qué tipo de contenido NO deberías poner detrás de una sin pensarlo bien?",
         "en": "What is a CDN, and what kind of content should you NOT put behind one without thinking it through?"
       },
       "rubrica": {
@@ -65,8 +65,8 @@
           "Explica el riesgo concreto: un error de configuración de la cache key puede servirle a un usuario datos de otro"
         ]
       },
-      "respuestaModelo": "Un CDN (Content Delivery Network) sirve contenido cacheado desde nodos geográficamente cerca del usuario, reduciendo la latencia frente a pedirlo siempre al servidor de origen; encaja de forma natural con estáticos (JS, CSS, imágenes) y páginas generadas estáticamente. El contenido personalizado por usuario, o muy sensible a estar siempre actualizado, como el saldo de una cuenta o cualquier dato privado, necesita reglas de cache muy cuidadosas o directamente no debería cachearse en el CDN: un error de configuración en la clave de cache (por ejemplo, no incluir el id de usuario o la cookie de sesión en esa clave) puede acabar sirviéndole a un usuario los datos cacheados de otro, un fallo de seguridad grave y difícil de detectar hasta que ya ha pasado.",
-      "resumen": "Un CDN sirve caché desde nodos cercanos al usuario: ideal para estáticos. Lo personalizado o privado (el saldo de una cuenta) no va ahí sin reglas muy cuidadas, o se sirve a quien no toca.",
+      "respuestaModelo": "Una CDN (red de distribución de contenido) guarda copias de tu contenido en servidores repartidos por el mundo y se las sirve a cada usuario desde el más cercano, así tarda menos que ir siempre a tu servidor. Encaja de maravilla con lo estático (JavaScript, CSS, imágenes) y con páginas generadas de antemano. Lo que es distinto para cada usuario, o tiene que estar siempre al día, como el saldo de una cuenta o cualquier dato privado, necesita reglas de caché muy cuidadas o directamente no ir a la CDN. Un fallo en la clave con la que se guarda (por ejemplo, no tener en cuenta el usuario o la cookie de sesión) puede acabar enseñándole a una persona los datos de otra: un fallo de seguridad grave que no ves hasta que ya ha pasado.",
+      "resumen": "Una CDN sirve copias guardadas desde servidores cerca del usuario: ideal para lo estático. Lo personal o privado (el saldo de una cuenta) no va ahí sin reglas muy cuidadas, o acabas enseñándoselo a quien no es.",
       "test": {
         "enunciado": "¿Qué contenido no deberías poner detrás de un CDN sin reglas de caché muy cuidadas?",
         "correcta": 0,

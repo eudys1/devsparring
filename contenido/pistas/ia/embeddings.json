@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "ia-embeddings-01",
-      "version": 2,
+      "version": 3,
       "pista": "ia",
       "familia": "embeddings",
       "tipo": "definicion",
@@ -26,7 +26,7 @@
           "Da un ejemplo de por qué dos frases con palabras distintas pueden tener embeddings cercanos"
         ]
       },
-      "respuestaModelo": "Un embedding es un vector de números que representa el significado de un texto, una imagen u otro dato, generado por un modelo entrenado para esa tarea. Lo interesante no es el vector en sí, sino la geometría: elementos con significado parecido quedan cerca en ese espacio, aunque usen palabras distintas. Por ejemplo, 'coche' y 'automóvil' tendrían embeddings próximos aunque no compartan ni una letra, porque el modelo aprendió el contexto en el que aparecen. Esa propiedad es la que permite hacer búsqueda semántica en vez de búsqueda por coincidencia exacta de palabras.",
+      "respuestaModelo": "Un embedding es una lista de números que representa el significado de un texto (o de una imagen, o de otro dato), y lo genera un modelo entrenado para eso. Lo interesante no son los números en sí, sino que las cosas con significado parecido quedan cerca unas de otras, aunque usen palabras distintas: \"coche\" y \"automóvil\" quedan juntos aunque no compartan ni una letra, porque el modelo aprendió en qué contextos aparecen. Por eso \"devolver un pedido\" acabaría cerca del documento de \"reembolsos\". Esa cercanía es lo que permite buscar por significado en vez de por palabras exactas.",
       "test": {
         "enunciado": "¿Qué propiedad de los embeddings permite hacer búsqueda semántica?",
         "correcta": 1,
@@ -63,7 +63,7 @@
     },
     {
       "id": "ia-embeddings-02",
-      "version": 1,
+      "version": 2,
       "pista": "ia",
       "familia": "embeddings",
       "tipo": "fundamento",
@@ -71,7 +71,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Qué métrica se usa habitualmente para comparar embeddings y por qué?",
+        "es": "¿Qué medida se suele usar para comparar embeddings y por qué?",
         "en": "What metric is typically used to compare embeddings and why?"
       },
       "rubrica": {
@@ -85,7 +85,7 @@
           "Menciona que algunas bases vectoriales normalizan los vectores para que coseno y producto punto coincidan"
         ]
       },
-      "respuestaModelo": "La métrica más habitual es la similitud coseno, que mide el ángulo entre dos vectores en vez de la distancia entre sus puntos. Esto la hace más robusta que la distancia euclidiana cuando la magnitud del vector varía con la longitud del texto original: dos textos con el mismo significado pero distinta longitud pueden tener vectores de magnitud diferente pero orientación similar, y el coseno lo captura mejor. Muchas bases vectoriales, de hecho, normalizan los vectores de antemano para que la similitud coseno se pueda calcular como un simple producto punto, más barato de computar a gran escala.",
+      "respuestaModelo": "La más habitual es la similitud coseno, que mira el ángulo entre dos vectores en vez de la distancia entre sus puntas. Va mejor que la distancia euclídea cuando el tamaño del vector cambia con la longitud del texto: dos textos que dicen lo mismo, uno corto y otro largo, pueden tener vectores de distinto tamaño pero apuntar hacia el mismo sitio, y el coseno capta justo eso. Muchas bases vectoriales normalizan los vectores de antemano para que el coseno se calcule como un simple producto escalar, que sale más barato con millones de vectores.",
       "test": {
         "enunciado": "¿Por qué se usa tanto la similitud coseno para comparar embeddings?",
         "correcta": 2,
@@ -122,7 +122,7 @@
     },
     {
       "id": "ia-embeddings-03",
-      "version": 1,
+      "version": 2,
       "pista": "ia",
       "familia": "embeddings",
       "tipo": "razonamiento",
@@ -130,7 +130,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "Da un caso de uso de embeddings que no sea RAG.",
+        "es": "Dime un uso de los embeddings que no sea RAG.",
         "en": "Give a use case for embeddings that is not RAG."
       },
       "rubrica": {
@@ -143,8 +143,8 @@
           "Menciona una consideración práctica del caso elegido (por ejemplo, cómo se define un umbral de similitud para detectar duplicados)"
         ]
       },
-      "respuestaModelo": "Un caso claro es la detección de tickets de soporte duplicados o muy similares: se genera el embedding de cada ticket nuevo y se compara contra los recientes, marcando como posible duplicado cualquiera que supere un umbral de similitud coseno. Otros casos habituales son la búsqueda semántica de productos en un catálogo, el clustering de opiniones de usuarios para detectar temas recurrentes, o sistemas de recomendación que buscan ítems con embedding cercano al historial del usuario. En todos estos casos no hay generación de texto de por medio, solo comparación y agrupación de vectores.",
-      "resumen": "Detectar tickets de soporte duplicados comparando el embedding de cada nuevo con los recientes. También búsqueda semántica en un catálogo, clustering de opiniones y recomendaciones.",
+      "respuestaModelo": "Un caso claro: detectar tickets de soporte repetidos o casi iguales. Sacas el embedding de cada ticket nuevo, lo comparas con los recientes y marcas como posible duplicado cualquiera que se parezca más de un umbral. Otros usos habituales: buscar productos de un catálogo por significado, agrupar opiniones de usuarios para ver qué temas se repiten, o recomendar cosas cuyo embedding se parece a lo que ya le gustó a alguien. En ninguno de estos casos se genera texto: solo se comparan y agrupan vectores.",
+      "resumen": "Detectar tickets de soporte repetidos comparando el embedding de cada nuevo con los recientes. También buscar productos por significado, agrupar opiniones por tema y recomendar.",
       "etiquetas": ["embeddings", "casos-de-uso"],
       "fuentes": [
         {
@@ -159,7 +159,7 @@
     },
     {
       "id": "ia-embeddings-04",
-      "version": 1,
+      "version": 2,
       "pista": "ia",
       "familia": "embeddings",
       "tipo": "razonamiento",
@@ -167,7 +167,7 @@
       "nivelMinimo": "senior",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Qué pasa si mezclas embeddings generados por dos modelos distintos en el mismo índice?",
+        "es": "¿Qué pasa si mezclas en el mismo índice embeddings hechos con dos modelos distintos?",
         "en": "What happens if you mix embeddings from two different models in the same index?"
       },
       "rubrica": {
@@ -181,8 +181,8 @@
           "Menciona cómo detectaría el problema en producción (resultados de búsqueda sin sentido)"
         ]
       },
-      "respuestaModelo": "Los vectores de dos modelos de embeddings distintos no son comparables entre sí, aunque tengan la misma dimensión: cada modelo aprendió su propio espacio vectorial con su propia distribución, así que la distancia entre un vector del modelo A y uno del modelo B no tiene ningún significado. El síntoma en producción es que las búsquedas empiezan a devolver resultados sin relación aparente con la consulta, y suele pasar tras cambiar de modelo de embeddings sin darse cuenta de que el índice antiguo quedó mezclado. La solución es re-indexar todo el contenido con el modelo nuevo antes de servir tráfico, no simplemente añadir los vectores nuevos al índice existente.",
-      "resumen": "Los vectores de modelos distintos no son comparables aunque tengan la misma dimensión: cada modelo tiene su espacio. Las búsquedas devuelven basura. La solución es reindexar todo con un solo modelo.",
+      "respuestaModelo": "Que los vectores no se pueden comparar entre sí, aunque tengan el mismo número de dimensiones. Cada modelo aprende su propio \"mapa\", así que la distancia entre un vector del modelo A y otro del modelo B no significa nada. En producción lo notas porque las búsquedas empiezan a devolver resultados que no tienen nada que ver, y suele pasar justo después de cambiar de modelo sin darte cuenta de que el índice viejo se quedó mezclado. La solución es volver a generar los embeddings de todo el contenido con el modelo nuevo antes de usarlo, no ir añadiendo los nuevos al índice que ya tenías.",
+      "resumen": "Los vectores de modelos distintos no se pueden comparar aunque tengan el mismo tamaño: cada modelo tiene su propio espacio. Las búsquedas devuelven basura. La solución es volver a indexarlo todo con un solo modelo.",
       "etiquetas": ["embeddings", "produccion"],
       "fuentes": [
         {

@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "web-seguridad-01",
-      "version": 1,
+      "version": 2,
       "pista": "web",
       "familia": "seguridad",
       "tipo": "fundamento",
@@ -12,7 +12,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Qué es CORS y por qué un error de CORS en consola NO es un problema de seguridad del navegador de la víctima?",
+        "es": "¿Qué es CORS? ¿Por qué un error de CORS en la consola NO quiere decir que tu servidor esté protegido?",
         "en": "What is CORS, and why is a CORS error in the console NOT a security problem for the victim's browser?"
       },
       "rubrica": {
@@ -25,8 +25,8 @@
           "Explica que un atacante que no usa navegador (curl, servidor a servidor) no está limitado por CORS, así que CORS no sustituye autenticación/autorización en el backend"
         ]
       },
-      "respuestaModelo": "CORS es una restricción que aplican los navegadores, no los servidores: impide que código JavaScript ejecutado en el origen A lea la respuesta de una petición hecha al origen B, salvo que el servidor B lo permita explícitamente devolviendo la cabecera `Access-Control-Allow-Origin` con el origen A autorizado. Un error de CORS en consola indica que el navegador bloqueó la lectura de esa respuesta en el JavaScript de la página, pero no significa que el atacante no pudiera acceder a ese endpoint de otra forma: un atacante que no usa un navegador (con curl, un script, o servidor a servidor) nunca estuvo sujeto a la restricción de CORS, porque esa comprobación la hace el navegador, no el servidor. Por eso CORS nunca debe tratarse como una medida de seguridad real del backend, es solo una política de qué páginas web pueden leer una respuesta desde JavaScript; la autenticación y autorización siguen siendo responsabilidad exclusiva del servidor.",
-      "resumen": "CORS lo aplican los navegadores: impiden que el JS del origen A lea respuestas del origen B salvo que B lo permita. No protege al servidor: un atacante lo llama igual con curl o desde su servidor.",
+      "respuestaModelo": "CORS es una regla que aplica el navegador, no el servidor: no deja que el JavaScript de una página en el origen A lea la respuesta de una petición al origen B, salvo que B lo permita con la cabecera `Access-Control-Allow-Origin`. Un error de CORS en consola solo significa que el navegador no ha dejado leer esa respuesta a esa página. Pero alguien que no use un navegador (con curl, un script, o desde su propio servidor) nunca tuvo esa restricción, porque la comprobación la hace el navegador. Por eso CORS no es una medida de seguridad de tu backend: solo decide qué webs pueden leer tus respuestas desde JavaScript. Quién puede hacer qué lo sigue decidiendo tu servidor con autenticación y permisos.",
+      "resumen": "CORS lo aplica el navegador: no deja que el JavaScript de la web A lea respuestas de la web B salvo que B lo permita. No protege al servidor: un atacante lo llama igual con curl o desde su propio servidor.",
       "test": {
         "enunciado": "¿Qué quiere decir un error de CORS en la consola del navegador?",
         "correcta": 2,
@@ -63,7 +63,7 @@
     },
     {
       "id": "web-seguridad-02",
-      "version": 1,
+      "version": 2,
       "pista": "web",
       "familia": "seguridad",
       "tipo": "fundamento",
@@ -71,7 +71,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "alta",
       "texto": {
-        "es": "Explica XSS (cross-site scripting) y cómo lo mitigas en una app React/Next.js.",
+        "es": "¿Qué es el XSS (cross-site scripting) y cómo lo evitas en una app de React o Next.js?",
         "en": "Explain XSS (cross-site scripting) and how you mitigate it in a React/Next.js app."
       },
       "rubrica": {
@@ -82,7 +82,7 @@
           "Identifica los puntos de riesgo reales: `dangerouslySetInnerHTML`, atributos `href`/`src` con URLs controladas por el usuario, o HTML de un CMS sin sanitizar"
         ]
       },
-      "respuestaModelo": "XSS ocurre cuando un atacante consigue que su propio código JavaScript se ejecute en el navegador de otro usuario, normalmente inyectándolo a través de un input que la aplicación acaba mostrando sin sanitizar. React mitiga la mayor parte de este riesgo por defecto: cualquier valor interpolado en JSX (`{texto}`) se escapa automáticamente, así que un `<script>` guardado como texto se muestra como texto plano, no se ejecuta. El riesgo real está en los puntos donde esa protección automática se salta deliberadamente: `dangerouslySetInnerHTML`, que inyecta HTML crudo tal cual; atributos como `href` o `src` con URLs controladas por el usuario, donde un valor tipo `javascript:alert(1)` puede ejecutarse; o renderizar HTML proveniente de un CMS externo sin pasarlo antes por una librería de sanitización como DOMPurify. La mitigación es sanitizar explícitamente cualquier HTML que no haya sido generado por el propio código de la app antes de insertarlo en el DOM.",
+      "respuestaModelo": "El XSS es cuando un atacante consigue que su JavaScript se ejecute en el navegador de otro usuario, normalmente colándolo por un campo que tu app luego enseña sin limpiar. React te protege de casi todo por defecto: lo que metes en JSX con `{texto}` se escapa solo, así que un `<script>` guardado como texto se ve como texto y no se ejecuta. El riesgo de verdad está donde te saltas esa protección: `dangerouslySetInnerHTML`, que mete HTML tal cual; atributos como `href` o `src` con URLs que pone el usuario, donde algo como `javascript:alert(1)` se puede ejecutar; o HTML que viene de un CMS y pintas sin pasarlo antes por un limpiador como DOMPurify. La regla: cualquier HTML que no haya generado tu propio código, límpialo antes de meterlo en la página.",
       "test": {
         "enunciado": "En React, ¿dónde está el riesgo real de XSS?",
         "correcta": 0,
@@ -119,7 +119,7 @@
     },
     {
       "id": "web-seguridad-03",
-      "version": 1,
+      "version": 2,
       "pista": "web",
       "familia": "seguridad",
       "tipo": "fundamento",
@@ -127,7 +127,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "Explica CSRF (cross-site request forgery) y por qué las Server Actions/formularios necesitan protección aunque uses cookies `httpOnly`.",
+        "es": "¿Qué es el CSRF (cross-site request forgery) y por qué tus formularios y Server Actions necesitan protección aunque la cookie sea `httpOnly`?",
         "en": "Explain CSRF (cross-site request forgery) and why Server Actions/forms need protection even with `httpOnly` cookies."
       },
       "rubrica": {
@@ -140,7 +140,7 @@
           "Menciona mitigaciones: `SameSite=Lax/Strict`, tokens CSRF, o verificar el header `Origin`/`Referer`"
         ]
       },
-      "respuestaModelo": "CSRF explota que el navegador adjunta automáticamente las cookies de sesión a cualquier petición hacia el dominio que las emitió, sin importar desde qué página se originó esa petición. Un sitio malicioso puede montar un formulario oculto o una petición automática hacia la app legítima, y si la víctima tiene sesión activa, el navegador incluye su cookie de sesión sin que ella se entere, ejecutando una acción autenticada en su nombre. `httpOnly` evita que JavaScript malicioso LEA el contenido de la cookie (protege contra robo vía XSS), pero no evita que el navegador la ENVÍE automáticamente en esa petición cross-site, que es exactamente lo que CSRF explota: son dos ataques distintos con mitigaciones distintas. La protección real contra CSRF pasa por `SameSite=Lax` o `Strict` en la cookie de sesión, tokens CSRF únicos por formulario, o verificar la cabecera `Origin`/`Referer` en el servidor antes de procesar la petición.",
+      "respuestaModelo": "El CSRF aprovecha que el navegador manda solo las cookies de sesión en cualquier petición a tu dominio, venga de la web que venga. Una web maliciosa monta un formulario oculto o una petición automática hacia tu app y, si el usuario tiene la sesión abierta, el navegador pone su cookie sin que se entere: el atacante hace algo en su nombre. `httpOnly` impide que JavaScript LEA la cookie, que es lo que te protege de que te la roben con un XSS, pero no impide que el navegador la MANDE en esa petición, que es justo lo que usa el CSRF. Son dos ataques distintos con defensas distintas. Contra CSRF: `SameSite=Lax` o `Strict` en la cookie de sesión, un token CSRF por formulario, o comprobar en el servidor la cabecera `Origin` (o `Referer`) antes de hacer nada.",
       "test": {
         "enunciado": "¿Por qué una cookie `httpOnly` no protege contra CSRF?",
         "correcta": 3,
@@ -177,7 +177,7 @@
     },
     {
       "id": "web-seguridad-04",
-      "version": 1,
+      "version": 2,
       "pista": "web",
       "familia": "seguridad",
       "tipo": "fundamento",
@@ -185,7 +185,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Qué son las inyecciones SQL y por qué un ORM no te protege automáticamente al 100%?",
+        "es": "¿Qué es una inyección SQL? ¿Por qué un ORM no te protege siempre al 100 %?",
         "en": "What are SQL injections, and why doesn't an ORM automatically protect you 100%?"
       },
       "rubrica": {
@@ -198,8 +198,8 @@
           "Explica que el riesgo reaparece con métodos de SQL crudo con interpolación de strings (`$queryRawUnsafe` u equivalentes)"
         ]
       },
-      "respuestaModelo": "Una inyección SQL ocurre cuando el input de un usuario se concatena directamente dentro del texto de una consulta SQL, permitiendo que ese input altere la estructura lógica de la query, por ejemplo cerrando una condición con comillas y añadiendo su propia lógica. ORMs como Prisma o Drizzle protegen de esto por defecto porque construyen las queries con parámetros (placeholders) en vez de concatenar strings, y el driver de la base de datos trata el valor como un dato, nunca como código SQL ejecutable. El riesgo vuelve a aparecer cuando el desarrollador se salta ese mecanismo a propósito: métodos de SQL crudo con interpolación manual de strings, como `$queryRawUnsafe` en Prisma con una plantilla de texto que incluye directamente el input del usuario, reabren exactamente el mismo agujero que el ORM estaba evitando.",
-      "resumen": "El input se concatena en el SQL y cambia la lógica de la query. Un ORM protege por defecto porque usa parámetros, pero no si escribes SQL crudo concatenando lo que envía el usuario.",
+      "respuestaModelo": "Una inyección SQL pasa cuando lo que escribe el usuario se pega dentro del texto de una consulta y cambia lo que hace, por ejemplo cerrando una comilla y añadiendo su propia condición. ORMs como Prisma o Drizzle te protegen por defecto porque montan las consultas con parámetros: el valor viaja aparte y la base de datos lo trata como un dato, nunca como código. El riesgo vuelve cuando te saltas eso a propósito: escribir SQL a mano metiendo el input del usuario en el texto, por ejemplo con `$queryRawUnsafe` en Prisma, te abre exactamente el mismo agujero que el ORM te estaba tapando.",
+      "resumen": "Lo que escribe el usuario se pega dentro del SQL y cambia lo que hace la consulta. Un ORM te protege porque usa parámetros, pero no si escribes SQL a mano pegando lo que manda el usuario.",
       "test": {
         "enunciado": "¿Cuándo un ORM como Prisma no te protege de una inyección SQL?",
         "correcta": 1,
@@ -236,7 +236,7 @@
     },
     {
       "id": "web-seguridad-05",
-      "version": 1,
+      "version": 2,
       "pista": "web",
       "familia": "seguridad",
       "tipo": "fundamento",
@@ -244,7 +244,7 @@
       "nivelMinimo": "senior",
       "frecuencia": "baja",
       "texto": {
-        "es": "Nombra 2 categorías nuevas del OWASP Top 10 más reciente y explica una.",
+        "es": "Dime dos categorías nuevas del OWASP Top 10 más reciente y explica una de ellas.",
         "en": "Name 2 new categories from the latest OWASP Top 10 and explain one."
       },
       "rubrica": {
@@ -255,8 +255,8 @@
           "Explica con un ejemplo concreto al menos una de las dos"
         ]
       },
-      "respuestaModelo": "La edición 2025 del OWASP Top 10 incorporó dos categorías nuevas: 'Software Supply Chain Failures', centrada en dependencias o paquetes comprometidos y pipelines de build inseguros, y 'Mishandling of Exceptional Conditions', centrada en errores y excepciones mal gestionados. Sobre esta segunda: un ejemplo típico es un endpoint que, al recibir un input inesperado, lanza una excepción no controlada cuyo stack trace completo se filtra en la respuesta al cliente, revelando rutas internas del servidor o detalles de la base de datos; o un flujo de pago que, al fallar a mitad de una operación, deja el sistema en un estado inconsistente porque nadie consideró explícitamente qué pasa cuando esa excepción concreta ocurre, en vez de tratarla como un caso de diseño más.",
-      "resumen": "OWASP Top 10 de 2025 añadió fallos en la cadena de suministro de software (dependencias y pipelines comprometidos) y mala gestión de condiciones excepcionales (errores que filtran datos o dejan estados rotos).",
+      "respuestaModelo": "La edición de 2025 del OWASP Top 10 metió dos nuevas: \"Software Supply Chain Failures\", sobre dependencias o paquetes comprometidos y pipelines de build inseguros, y \"Mishandling of Exceptional Conditions\", sobre errores y excepciones mal llevados. Un ejemplo de la segunda: un endpoint que, ante un dato inesperado, lanza una excepción sin capturar y devuelve al cliente el stack entero, con rutas internas del servidor o detalles de la base de datos. Otro: un pago que falla a mitad y deja el sistema a medias porque nadie pensó qué pasa si esa excepción concreta salta, en vez de tratarla como un caso más del diseño.",
+      "resumen": "El OWASP Top 10 de 2025 añadió los fallos en la cadena de suministro de software (dependencias y pipelines comprometidos) y la mala gestión de situaciones excepcionales (errores que filtran datos o dejan las cosas a medias).",
       "test": {
         "enunciado": "¿Cuál es una de las categorías nuevas del OWASP Top 10 de 2025?",
         "correcta": 2,
@@ -293,7 +293,7 @@
     },
     {
       "id": "web-seguridad-06",
-      "version": 1,
+      "version": 2,
       "pista": "web",
       "familia": "seguridad",
       "tipo": "comportamental",
@@ -301,7 +301,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "Cuéntame de un bug de seguridad o de rendimiento que encontraste en producción. ¿Cómo lo detectaste y qué cambiaste en el proceso para que no volviera a pasar?",
+        "es": "Cuéntame un bug de seguridad o de rendimiento que encontraras en producción. ¿Cómo lo detectaste y qué cambiaste para que no volviera a pasar?",
         "en": "Tell me about a security or performance bug you found in production. How did you detect it and what did you change in the process so it wouldn't happen again?"
       },
       "rubrica": {
@@ -312,7 +312,7 @@
           "Muestra pensamiento sistémico, no solo el parche puntual"
         ]
       },
-      "respuestaModelo": "Una respuesta sólida describe un caso concreto y verificable, con la causa raíz técnica explicada con precisión (no 'había un bug' sino qué exactamente fallaba y por qué), en vez de una anécdota genérica sin detalle. Lo que distingue a un senior es no quedarse en 'lo arreglé y ya', sino explicar qué cambió en el proceso del equipo para que ese tipo de fallo no vuelva a pasar: un test específico que ahora cubre ese caso, una alerta nueva que detecta la condición antes de que llegue a producción, o un ítem añadido a una checklist de revisión de código. Eso demuestra pensamiento sistémico sobre el problema, tratando el bug como una señal de un hueco en el proceso y no solo como algo que se arregla y se olvida.",
+      "respuestaModelo": "Una buena respuesta cuenta un caso concreto y explica la causa con precisión: no \"había un bug\", sino qué fallaba exactamente y por qué. Lo que te sube de nivel es no quedarte en \"lo arreglé y ya\", sino contar qué cambiaste en la forma de trabajar del equipo para que ese tipo de fallo no se repita: un test que ahora cubre ese caso, una alerta que lo detecta antes de llegar a producción, o un punto nuevo en la checklist de revisión de código. Eso enseña que ves el bug como la señal de un hueco en el proceso, no como algo que se arregla y se olvida.",
       "etiquetas": ["seguridad", "comportamental", "produccion"],
       "fuentes": [
         {

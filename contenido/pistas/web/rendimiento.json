@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "web-rendimiento-01",
-      "version": 2,
+      "version": 3,
       "pista": "web",
       "familia": "rendimiento",
       "tipo": "definicion",
@@ -12,7 +12,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "alta",
       "texto": {
-        "es": "Search Console marca tu landing como \"necesita mejorar\" en Core Web Vitals. ¿Qué son los Core Web Vitals actuales (LCP, INP, CLS) y qué mide cada uno?",
+        "es": "Search Console dice que tu landing \"necesita mejorar\" en Core Web Vitals. ¿Qué son LCP, INP y CLS y qué mide cada uno?",
         "en": "Search Console flags your landing page as \"needs improvement\" on Core Web Vitals. What are the current Core Web Vitals (LCP, INP, CLS) and what does each measure?"
       },
       "rubrica": {
@@ -26,7 +26,7 @@
           "Menciona que se evalúan en el percentil 75 de usuarios reales (CrUX), no en un solo test de laboratorio"
         ]
       },
-      "respuestaModelo": "LCP (Largest Contentful Paint) mide cuánto tarda en pintarse el elemento más grande visible en pantalla, como proxy de la velocidad de carga percibida; se considera bueno por debajo de 2.5 segundos. INP (Interaction to Next Paint) mide la latencia de cualquier interacción del usuario durante toda la visita a la página, no solo la primera como hacía la métrica FID a la que sustituyó, y se considera bueno por debajo de 200ms. CLS (Cumulative Layout Shift) mide cuánto se mueve visualmente el contenido de forma inesperada mientras la página carga o el usuario interactúa, con un buen valor por debajo de 0.1. Las tres se evalúan en el percentil 75 de usuarios reales recogido por CrUX (Chrome User Experience Report), no en un único test de laboratorio, porque lo que importa es la experiencia real agregada, no un caso aislado favorable.",
+      "respuestaModelo": "LCP (Largest Contentful Paint) mide cuánto tarda en aparecer lo más grande que se ve en pantalla; es la forma de medir \"cuánto parece que tarda en cargar\". Está bien por debajo de 2,5 segundos. INP (Interaction to Next Paint) mide cuánto tarda la página en reaccionar a lo que haces (un clic, una tecla) durante toda la visita, no solo la primera vez como hacía FID, la métrica a la que sustituyó. Está bien por debajo de 200 ms. CLS (Cumulative Layout Shift) mide cuánto se te mueve el contenido sin esperarlo mientras carga o mientras la usas; está bien por debajo de 0,1. Las tres se miden con usuarios reales (los datos de CrUX, el informe de experiencia de usuarios de Chrome), mirando el percentil 75, no con una prueba en tu ordenador, porque lo que cuenta es lo que viven tus usuarios.",
       "test": {
         "enunciado": "¿Qué mide INP, que sustituyó a FID en los Core Web Vitals?",
         "correcta": 3,
@@ -63,7 +63,7 @@
     },
     {
       "id": "web-rendimiento-02",
-      "version": 1,
+      "version": 2,
       "pista": "web",
       "familia": "rendimiento",
       "tipo": "fundamento",
@@ -71,7 +71,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "Menciona 3 causas típicas de un CLS alto y cómo las arreglarías.",
+        "es": "Dime tres causas típicas de que el contenido de una página se mueva mientras carga (un CLS alto) y cómo las arreglarías.",
         "en": "Name 3 typical causes of a high CLS and how you'd fix them."
       },
       "rubrica": {
@@ -82,8 +82,8 @@
           "Menciona contenido inyectado dinámicamente (banners, anuncios) sin espacio reservado"
         ]
       },
-      "respuestaModelo": "La causa más común es cargar imágenes o vídeos sin declarar `width`/`height` (o `aspect-ratio`), de forma que el navegador no reserva espacio para ellos y el contenido de alrededor salta en cuanto el recurso termina de cargar; se arregla declarando siempre esas dimensiones aunque el tamaño final se ajuste por CSS. La segunda causa habitual son las fuentes web sin `font-display` configurado, que provocan un reflow visible cuando la fuente personalizada sustituye a la fuente de respaldo con métricas distintas (FOUT); se mitiga con `font-display: swap` u optando por fuentes de respaldo con métricas similares. La tercera causa es contenido inyectado dinámicamente por encima del pliegue, como banners o anuncios que se cargan después del render inicial y empujan todo lo demás hacia abajo; se arregla reservando de antemano el espacio que ese contenido va a ocupar, aunque todavía no haya llegado.",
-      "resumen": "Imágenes o vídeos sin dimensiones (se arregla con `width`/`height` o `aspect-ratio`), fuentes web que cambian al cargar (`font-display` y fallback ajustado) y contenido que se inyecta arriba sin hueco reservado.",
+      "respuestaModelo": "La más común: imágenes o vídeos sin `width` y `height` (o `aspect-ratio`). El navegador no les guarda sitio y, cuando llegan, empujan todo lo de alrededor. Se arregla poniendo siempre esas medidas, aunque luego el tamaño final lo ajuste el CSS. La segunda: fuentes web que, al terminar de cargar, sustituyen a la fuente de respaldo con otras medidas y el texto se recoloca. Se suaviza con `font-display: swap` y eligiendo una fuente de respaldo de tamaño parecido. La tercera: contenido que se mete arriba después de pintar, como banners o anuncios, y empuja el resto hacia abajo. Se arregla reservando ya el hueco que va a ocupar, aunque todavía no haya llegado.",
+      "resumen": "Imágenes o vídeos sin tamaño (pon `width` y `height` o `aspect-ratio`), fuentes que cambian al cargar (`font-display` y una fuente de respaldo parecida) y contenido que se mete arriba sin hueco reservado.",
       "test": {
         "enunciado": "¿Cuál es la causa más común de un CLS alto?",
         "correcta": 1,
@@ -120,7 +120,7 @@
     },
     {
       "id": "web-rendimiento-03",
-      "version": 1,
+      "version": 2,
       "pista": "web",
       "familia": "rendimiento",
       "tipo": "razonamiento",
@@ -128,7 +128,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "Tu API tarda 3 segundos en responder una lista simple. ¿Qué pasos seguirías para diagnosticar antes de \"optimizar a ciegas\"?",
+        "es": "Tu API tarda 3 segundos en devolver una lista sencilla. ¿Qué harías para encontrar el problema antes de ponerte a \"optimizar\" a ciegas?",
         "en": "Your API takes 3 seconds to respond with a simple list. What steps would you follow to diagnose before \"optimizing blindly\"?"
       },
       "rubrica": {
@@ -141,8 +141,8 @@
           "Explica que se prueban hipótesis una a una en vez de reescribir todo de golpe"
         ]
       },
-      "respuestaModelo": "El primer paso es medir antes de tocar nada: revisar logs con tiempos por etapa, usar `EXPLAIN ANALYZE` en la query si se sospecha de la base de datos, o levantar una traza con una herramienta de APM que desglose dónde se va el tiempo real dentro de esos 3 segundos. Con esos datos se separa el cuello de botella por categoría: ¿es red (latencia entre servicios), es base de datos (falta un índice, hay un N+1 escondido), es serialización (convertir un objeto enorme a JSON), o es el propio cliente esperando algo que no depende del servidor? Cada hipótesis se prueba y se descarta de forma individual con evidencia concreta, en vez de reescribir la query, cambiar el ORM y añadir cache todo a la vez, porque así no se sabe cuál de los cambios fue el que realmente arregló el problema ni si alguno lo empeoró.",
-      "resumen": "Medir antes de tocar: tiempos por etapa en los logs, `EXPLAIN ANALYZE` o una traza de APM. Luego probar una hipótesis cada vez: red, base de datos (índice, N+1), serialización o el cliente.",
+      "respuestaModelo": "Primero medir, antes de tocar nada: mirar los logs con tiempos de cada fase, pasar `EXPLAIN ANALYZE` a la consulta si sospecho de la base de datos, o sacar una traza con una herramienta de APM que me diga en qué se van esos 3 segundos. Con eso separo dónde está el atasco: ¿la red entre servicios?, ¿la base de datos (falta un índice, hay un N+1 escondido)?, ¿convertir a JSON un objeto enorme?, ¿o el cliente esperando algo que no depende del servidor? Y voy probando y descartando una hipótesis cada vez, con datos. Si reescribo la consulta, cambio el ORM y meto caché todo a la vez, no sabré qué lo arregló ni si algo lo empeoró.",
+      "resumen": "Medir antes de tocar: tiempos por fase en los logs, `EXPLAIN ANALYZE` o una traza de APM. Luego descartar hipótesis de una en una: red, base de datos (índice, N+1), convertir a JSON o el propio cliente.",
       "etiquetas": ["rendimiento", "diagnostico", "backend"],
       "fuentes": [
         {

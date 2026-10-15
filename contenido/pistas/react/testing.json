@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "react-testing-01",
-      "version": 1,
+      "version": 2,
       "pista": "react",
       "familia": "testing",
       "tipo": "fundamento",
@@ -12,7 +12,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Cómo testearías un componente que hace fetch de datos, usando Testing Library?",
+        "es": "¿Cómo probarías con Testing Library un componente que pide datos con `fetch`?",
         "en": "How would you test a component that fetches data, using Testing Library?"
       },
       "rubrica": {
@@ -26,7 +26,7 @@
           "Explica la filosofía de Testing Library: testear lo que ve el usuario, no detalles internos del componente"
         ]
       },
-      "respuestaModelo": "Se renderiza el componente con `render()` y se mockea la petición de red (con MSW o un mock del cliente de fetch) para controlar qué responde la API, en vez de mockear funciones internas del componente. Como la petición es asíncrona, hay que usar las consultas `findBy...` de `screen`, que esperan a que el elemento aparezca, en lugar de `getBy...`, que falla inmediatamente si el dato todavía no llegó; por ejemplo `await screen.findByText('nombre del usuario')`. La filosofía de Testing Library es testear el comportamiento observable por el usuario (qué texto aparece, qué botón se puede pulsar) en vez de detalles de implementación como el nombre de un estado interno, lo que hace que el test siga pasando aunque se refactorice cómo está construido el componente por dentro.",
+      "respuestaModelo": "Pintas el componente con `render()` y simulas la API (con MSW o un mock de fetch), para decidir tú qué contesta, en vez de simular funciones de dentro del componente. Como la respuesta tarda, usas las consultas `findBy...`, que esperan a que aparezca el elemento, y no las `getBy...`, que fallan al instante si el dato aún no ha llegado: por ejemplo `await screen.findByText('Ana García')`. La idea de Testing Library es probar lo que ve y hace el usuario (qué texto sale, qué botón puede pulsar) y no detalles internos como el nombre de un estado. Así el test sigue pasando aunque reorganices el componente por dentro.",
       "test": {
         "enunciado": "Un componente pinta el nombre del usuario tras un `fetch`. ¿Qué consulta de Testing Library usas?",
         "correcta": 2,

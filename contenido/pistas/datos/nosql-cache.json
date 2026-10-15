@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "datos-nosql-cache-01",
-      "version": 1,
+      "version": 2,
       "pista": "datos",
       "familia": "nosql-cache",
       "tipo": "razonamiento",
@@ -12,7 +12,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Cuándo elegirías una base de datos NoSQL (documento o clave-valor) en vez de SQL para una feature nueva?",
+        "es": "¿Cuándo elegirías una base de datos NoSQL (de documentos o clave-valor) en vez de SQL para algo nuevo?",
         "en": "When would you choose a NoSQL (document/key-value) database over SQL for a new feature?"
       },
       "rubrica": {
@@ -27,8 +27,8 @@
           "Rechaza la idea de que 'NoSQL siempre escala mejor' sin matices: Postgres bien indexado aguanta mucho más de lo que la gente cree"
         ]
       },
-      "respuestaModelo": "NoSQL (documento o clave-valor) encaja cuando el esquema es muy variable o anidado y no hace falta hacer JOINs complejos ni transacciones estrictas entre varias entidades, por ejemplo logs de eventos o catálogos con atributos dinámicos por producto. También tiene sentido cuando la escala de escritura/lectura horizontal pesa más que la consistencia fuerte inmediata. Pero 'NoSQL escala mejor' no es un axioma: un Postgres bien indexado, con las queries correctas, aguanta mucho más tráfico del que la gente asume por defecto, así que la decisión debería partir de las características reales del dato, no de una moda.",
-      "resumen": "NoSQL encaja con esquemas variables o anidados, sin JOINs ni transacciones entre entidades (logs, catálogos dinámicos). «Escala mejor» no es un axioma: un Postgres bien indexado aguanta mucho.",
+      "respuestaModelo": "NoSQL encaja cuando la forma de los datos cambia mucho o viene muy anidada, y no necesitas JOINs complicados ni transacciones estrictas entre varias cosas. Por ejemplo, logs de eventos o un catálogo donde cada producto tiene atributos distintos. También cuando repartir la carga entre muchas máquinas te importa más que tener todo perfectamente al día al instante. Pero \"NoSQL escala mejor\" no es una ley: un Postgres bien indexado y con buenas consultas aguanta mucho más tráfico del que la gente cree. Decide por cómo son tus datos de verdad, no por moda.",
+      "resumen": "NoSQL encaja con datos de forma muy variable o anidados, sin JOINs ni transacciones entre varias entidades (logs, catálogos con atributos libres). \"Escala mejor\" no es una ley: un Postgres bien indexado aguanta muchísimo.",
       "etiquetas": ["nosql", "modelado", "postgres"],
       "fuentes": [
         {
@@ -43,7 +43,7 @@
     },
     {
       "id": "datos-nosql-cache-02",
-      "version": 1,
+      "version": 2,
       "pista": "datos",
       "familia": "nosql-cache",
       "tipo": "razonamiento",
@@ -51,7 +51,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Para qué usarías Redis en un stack Next.js más Postgres, más allá de 'cache genérica'? Dame 3 casos concretos.",
+        "es": "¿Para qué usarías Redis en un proyecto con Next.js y Postgres, aparte de como \"caché\" en general? Dame tres casos concretos.",
         "en": "What would you use Redis for in a Next.js + Postgres stack, beyond 'generic cache'? Give 3 concrete cases."
       },
       "rubrica": {
@@ -66,8 +66,8 @@
           "Menciona una cola ligera o pub-sub para notificar eventos entre servicios (BullMQ, WebSocket fan-out)"
         ]
       },
-      "respuestaModelo": "Tres casos concretos más allá de cachear resultados de queries caras: (1) rate limiting, con un contador atómico con expiración por usuario o IP, típicamente un token bucket resuelto con un script Lua para que incrementar y comprobar el límite sea una sola operación atómica; (2) sesiones compartidas entre varias instancias del servidor, sacando el estado de sesión del proceso Node para poder escalar horizontalmente; (3) una cola ligera o pub-sub para notificar eventos entre servicios, por ejemplo BullMQ para trabajos en background o un canal de pub-sub para hacer fan-out de mensajes a varias conexiones WebSocket.",
-      "resumen": "Más allá de cachear queries: rate limiting con contadores atómicos que expiran, sesiones compartidas entre instancias y colas o pub-sub ligeros (BullMQ) para trabajos y eventos.",
+      "respuestaModelo": "Tres casos, aparte de guardar resultados de consultas caras. Uno: limitar peticiones (rate limiting), con un contador por usuario o IP que caduca solo; lo normal es hacerlo con un script Lua para que sumar y comprobar el límite sea una sola operación que no se pueda partir. Dos: sesiones compartidas entre varios servidores, sacando la sesión de la memoria del proceso de Node para poder tener varias instancias. Tres: una cola ligera o un canal de avisos entre servicios, por ejemplo BullMQ para trabajos en segundo plano, o pub/sub para mandar un mismo mensaje a muchas conexiones WebSocket.",
+      "resumen": "Además de cachear consultas: limitar peticiones con contadores que caducan solos, sesiones compartidas entre instancias y colas o avisos ligeros (BullMQ, pub/sub) para trabajos y eventos.",
       "etiquetas": ["redis", "cache", "arquitectura"],
       "fuentes": [
         {
@@ -82,7 +82,7 @@
     },
     {
       "id": "datos-nosql-cache-03",
-      "version": 1,
+      "version": 2,
       "pista": "datos",
       "familia": "nosql-cache",
       "tipo": "razonamiento",
@@ -90,7 +90,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "baja",
       "texto": {
-        "es": "Un cron job que se ejecuta cada minuto empieza a solaparse consigo mismo cuando el trabajo tarda más de un minuto. ¿Cómo lo evitas a nivel de diseño?",
+        "es": "Una tarea programada que corre cada minuto empieza a pisarse consigo misma cuando tarda más de un minuto. ¿Cómo lo evitas?",
         "en": "A cron job that runs every minute starts overlapping with itself when the job takes longer than a minute. How do you prevent this at the design level?"
       },
       "rubrica": {
@@ -105,8 +105,8 @@
           "Menciona que el lock necesita un TTL de seguridad por si el proceso muere sin liberarlo, para no dejar el sistema bloqueado para siempre"
         ]
       },
-      "respuestaModelo": "La solución es un lock distribuido: el job intenta adquirir una clave en Redis (por ejemplo con `SET lock:job-x NX EX 300`) al empezar; si la clave ya existe, significa que la ejecución anterior sigue en marcha y este ciclo se salta sin duplicar trabajo. Al terminar, el job libera la clave. El TTL (`EX`) es la parte crítica: si el proceso muere o se cuelga sin liberar el lock, la clave expira sola pasado ese tiempo, evitando que el sistema quede bloqueado para siempre esperando una liberación que nunca llega. Una tabla en la base de datos con una fila de estado y `SELECT ... FOR UPDATE` cumple el mismo papel si no hay Redis disponible.",
-      "resumen": "Un lock distribuido: el job hace `SET lock NX EX 300` en Redis al empezar y se salta el ciclo si ya existe. El TTL es lo crítico: si el proceso muere, el lock caduca solo.",
+      "respuestaModelo": "Con un cerrojo compartido (un lock distribuido). Al empezar, la tarea intenta crear una clave en Redis, por ejemplo con `SET lock:tarea-x NX EX 300`. Si la clave ya existe, es que la anterior sigue trabajando, y esta vuelta se salta sin duplicar nada. Al terminar, la tarea borra la clave. Lo crítico es la caducidad (`EX`): si el proceso muere o se cuelga sin liberar el cerrojo, la clave desaparece sola pasado ese tiempo, y el sistema no se queda bloqueado para siempre esperando algo que nunca llega. Si no tienes Redis, una fila de estado en una tabla con `SELECT ... FOR UPDATE` hace el mismo papel.",
+      "resumen": "Con un cerrojo compartido: al empezar, la tarea hace `SET lock NX EX 300` en Redis y, si ya existe, se salta esa vuelta. Lo clave es que caduque: si el proceso muere, el cerrojo se libera solo.",
       "etiquetas": ["redis", "locks", "cron", "distribuido"],
       "fuentes": [
         {

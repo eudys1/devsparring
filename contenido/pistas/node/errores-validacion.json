@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "node-errores-validacion-01",
-      "version": 1,
+      "version": 2,
       "pista": "node",
       "familia": "errores-validacion",
       "tipo": "fundamento",
@@ -12,7 +12,7 @@
       "nivelMinimo": "junior",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Dónde y cómo validarías el body de una petición POST, y por qué no basta con validar en el frontend?",
+        "es": "¿Dónde y cómo validarías el body de una petición POST? ¿Por qué no basta con validarlo en el frontend?",
         "en": "Where and how would you validate a POST request body, and why isn't frontend validation enough?"
       },
       "rubrica": {
@@ -25,8 +25,8 @@
           "Explica que el frontend se puede saltar completamente con curl/Postman, así que solo es UX, nunca la barrera de seguridad real"
         ]
       },
-      "respuestaModelo": "La validación tiene que ocurrir en el borde de entrada del servidor, en un middleware o al inicio del propio handler, usando una librería de esquemas como Zod, Joi, o la validación integrada de JSON Schema en Fastify, y siempre antes de que el dato llegue a tocar la base de datos. La validación en el frontend mejora la experiencia de usuario (feedback inmediato, sin esperar a un viaje de red), pero no es una barrera de seguridad: cualquiera puede saltarse por completo el formulario y mandar la petición directamente con curl o Postman con cualquier body que quiera, así que si el servidor no valida por su cuenta, esa validación de frontend no protege nada. La regla práctica es que el frontend valida para UX, el backend valida porque es la única barrera real.",
-      "resumen": "En el borde del servidor, al inicio del handler o en un middleware, con un esquema (Zod, JSON Schema) antes de tocar la base de datos. La validación del frontend es comodidad; cualquiera la salta con curl.",
+      "respuestaModelo": "En la puerta de entrada del servidor: en un middleware o al principio del handler, con una librería de esquemas como Zod o Joi (o la validación con JSON Schema que trae Fastify), y siempre antes de que el dato toque la base de datos. Validar en el frontend está bien para el usuario, porque ve el error al momento sin esperar al servidor. Pero no protege nada: cualquiera puede saltarse tu formulario y mandar la petición directamente con curl o Postman con lo que le dé la gana. Si el servidor no valida por su cuenta, no hay barrera. La regla: el frontend valida para que sea cómodo, el backend valida porque es el único que de verdad protege.",
+      "resumen": "En la entrada del servidor, al principio del handler o en un middleware, con un esquema (Zod, JSON Schema) y antes de tocar la base de datos. La validación del frontend es comodidad: cualquiera se la salta con curl.",
       "test": {
         "enunciado": "¿Por qué no basta con validar el body de un POST en el frontend?",
         "correcta": 2,
@@ -63,7 +63,7 @@
     },
     {
       "id": "node-errores-validacion-02",
-      "version": 1,
+      "version": 2,
       "pista": "node",
       "familia": "errores-validacion",
       "tipo": "razonamiento",
@@ -71,7 +71,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Cómo diseñarías el manejo de errores centralizado en una API Express, distinguiendo errores esperados (404, validación) de errores inesperados (excepción no controlada)?",
+        "es": "¿Cómo montarías el manejo de errores en un solo sitio en una API de Express, separando los errores esperados (404, validación) de los que no esperabas (una excepción sin capturar)?",
         "en": "How would you design centralized error handling in an Express API, distinguishing expected errors (404, validation) from unexpected ones (unhandled exceptions)?"
       },
       "rubrica": {
@@ -84,8 +84,8 @@
           "Explica que los errores de programación se loguean con stack completo y, según el proceso, se deja morir el proceso de forma controlada en vez de intentar 'seguir como si nada'"
         ]
       },
-      "respuestaModelo": "Los errores 'operacionales', esperables dentro del funcionamiento normal de la API (un input inválido, un recurso que no existe, un conflicto de negocio), se representan con clases de error propias (por ejemplo `NotFoundError`, `ValidationError`) que un middleware de error final en Express captura y traduce al código HTTP y formato de respuesta correspondiente. Los errores de programación, una excepción que nadie esperaba y que revela un bug real (una referencia nula, un fallo de tipo), se tratan distinto: se loguean con el stack trace completo para poder diagnosticarlos después, y según la arquitectura del proceso, conviene dejar morir ese proceso de forma controlada en vez de intentar 'seguir como si nada hubiera pasado', porque su estado interno puede haber quedado inconsistente; un proceso supervisor u orquestador (PM2, Kubernetes) lo reinicia automáticamente, lo que es más seguro que un proceso que sigue vivo pero en un estado desconocido.",
-      "resumen": "Errores operacionales con clases propias (`NotFoundError`, `ValidationError`) que un middleware final traduce a su código HTTP. Los de programación se loguean con stack y el proceso muere controlado para que lo reinicien.",
+      "respuestaModelo": "Primero separa dos tipos. Los errores esperados son parte del funcionamiento normal: un dato mal enviado, algo que no existe, un conflicto de negocio. Para esos creas tus propias clases (`NotFoundError`, `ValidationError`...) y un middleware de errores al final de Express los recoge y los convierte en su código HTTP y su formato de respuesta. Los otros son bugs: una excepción que nadie esperaba, como leer algo de `null`. Esos se apuntan en el log con el stack completo para poder investigarlos y, según cómo esté montado, lo más seguro es dejar que el proceso se caiga de forma controlada en vez de seguir como si nada, porque puede haber quedado en un estado raro. Un supervisor (PM2, Kubernetes) lo vuelve a levantar limpio, y eso es mejor que un proceso vivo en un estado que no conoces.",
+      "resumen": "Los errores esperados, con clases propias (`NotFoundError`, `ValidationError`) que un middleware final traduce a su código HTTP. Los bugs, al log con su stack, y el proceso se cae de forma controlada para que lo reinicien.",
       "etiquetas": ["errores-validacion", "manejo-de-errores"],
       "fuentes": [
         {
@@ -100,7 +100,7 @@
     },
     {
       "id": "node-errores-validacion-diseno-crear-pedido",
-      "version": 1,
+      "version": 2,
       "pista": "node",
       "familia": "errores-validacion",
       "tipo": "diseno",
@@ -108,7 +108,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "alta",
       "texto": {
-        "es": "Diseña el contrato de una API REST para \"crear un pedido\" (`POST /orders`): ¿qué validaciones, códigos de respuesta y estructura de error usarías?",
+        "es": "Diseña el contrato de una API REST para \"crear un pedido\" (`POST /orders`): ¿qué validarías, qué códigos de respuesta devolverías y cómo serían los errores?",
         "en": "Design the contract of a REST API for \"create an order\" (`POST /orders`): what validations, response codes and error structure would you use?"
       },
       "rubrica": {
@@ -123,7 +123,7 @@
           "Menciona idempotencia con una `Idempotency-Key` para evitar pedidos duplicados si el cliente reintenta por timeout de red"
         ]
       },
-      "respuestaModelo": "El endpoint valida el body con un esquema (Zod o similar) antes de tocar la base de datos, rechazando con 400 y un error por campo explicable si algo no cumple el formato esperado. En éxito devuelve 201 con el recurso creado en el body y la cabecera `Location` apuntando a `/orders/{id}`, siguiendo la convención REST de indicar dónde vive el nuevo recurso. Si hay un conflicto de negocio, como stock insuficiente para completar el pedido, responde 409 en vez de un 400 genérico, porque el problema no es que el input esté mal formado sino que el estado actual del sistema no permite la operación. Para evitar pedidos duplicados si el cliente reintenta tras un timeout de red sin saber si el primer intento llegó, el endpoint acepta una cabecera `Idempotency-Key` generada por el cliente: guarda el resultado de la primera ejecución asociado a esa key, y en reintentos con la misma key devuelve el mismo resultado sin crear un segundo pedido.",
+      "respuestaModelo": "Lo primero, validar el body con un esquema (Zod o parecido) antes de tocar la base de datos, y si algo no cuadra, devolver 400 con un error por campo que diga qué está mal. Si sale bien, 201 con el pedido creado y la cabecera `Location` apuntando a `/orders/{id}`, que es la costumbre en REST para decir dónde vive lo nuevo. Si el problema no es el formato sino el negocio, por ejemplo que no hay stock suficiente, mejor 409 que un 400 genérico: los datos están bien, es el estado del sistema el que no deja. Y para no crear pedidos duplicados cuando el cliente reintenta tras un timeout sin saber si el primero llegó, acepta una cabecera `Idempotency-Key` que genera el cliente: guardas el resultado de la primera vez con esa clave y, si vuelve a llegar, devuelves lo mismo sin crear otro pedido.",
       "etiquetas": ["errores-validacion", "diseno-de-api", "idempotencia"],
       "fuentes": [
         {
@@ -138,7 +138,7 @@
     },
     {
       "id": "node-errores-validacion-registro-usuario",
-      "version": 1,
+      "version": 2,
       "pista": "node",
       "familia": "errores-validacion",
       "tipo": "razonamiento",
@@ -146,7 +146,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "alta",
       "texto": {
-        "es": "Implementa `POST /api/users` en Express o Fastify que reciba `{ email, password, name }`, valide con una librería de esquemas, hashee la contraseña antes de guardarla, y devuelva 201 con el usuario creado (sin la contraseña) o 400 con un error por campo. Debe rechazar emails duplicados con 409.",
+        "es": "Monta `POST /api/users` en Express o Fastify. Recibe `{ email, password, name }`: valídalo con una librería de esquemas, guarda la contraseña cifrada con un hash y devuelve 201 con el usuario (sin la contraseña) o 400 con un error por campo. Si el email ya existe, 409.",
         "en": "Implement `POST /api/users` in Express or Fastify that receives `{ email, password, name }`, validates it with a schema library, hashes the password before storing it, and returns 201 with the created user (without the password) or 400 with a per-field error. It must reject duplicate emails with 409."
       },
       "rubrica": {
@@ -160,8 +160,8 @@
           "Maneja el caso de email duplicado con el código HTTP correcto (409, no 500 por una excepción de constraint de base de datos sin capturar)"
         ]
       },
-      "respuestaModelo": "El handler empieza validando el body con un esquema (por ejemplo Zod) que comprueba formato de email, longitud mínima de contraseña y presencia del nombre, devolviendo 400 con un objeto de error que identifica campo por campo qué falló, no un mensaje genérico como 'datos inválidos'. Si la validación pasa, hashea la contraseña con bcrypt o argon2 antes de guardarla; en ningún momento se persiste ni se devuelve en texto plano. Al insertar el usuario, si la base de datos rechaza la operación por violar el constraint único de email, el handler captura esa excepción concreta (no un catch genérico que devuelva 500) y responde 409 indicando que el email ya está registrado. En éxito devuelve 201 con el usuario creado, excluyendo explícitamente el campo de contraseña (hasheada o no) del objeto de respuesta.",
-      "resumen": "Validar el body con un esquema y devolver 400 con errores por campo; hashear con bcrypt o argon2; devolver 409 si el email ya existe (mejor con constraint único) y 201 con el usuario sin la contraseña.",
+      "respuestaModelo": "El handler empieza validando el body con un esquema (Zod, por ejemplo): email con formato válido, contraseña con un mínimo de caracteres y nombre presente. Si falla, 400 con un error por campo que diga exactamente qué está mal, no un \"datos inválidos\" que no ayuda a nadie. Si pasa, la contraseña se pasa por bcrypt o argon2 antes de guardarla; nunca se guarda ni se devuelve tal cual. Al insertar, si la base de datos protesta porque el email ya existe (la restricción de email único), capturas ese error en concreto, no con un catch que lo convierta todo en 500, y devuelves 409 diciendo que ese email ya está registrado. Si todo va bien, 201 con el usuario creado, quitando a propósito el campo de la contraseña de la respuesta.",
+      "resumen": "Valida el body con un esquema y devuelve 400 con errores por campo; hashea con bcrypt o argon2; devuelve 409 si el email ya existe (mejor con una restricción única en la base) y 201 con el usuario sin contraseña.",
       "etiquetas": ["errores-validacion", "autenticacion", "hashing"],
       "fuentes": [
         {
@@ -176,7 +176,7 @@
     },
     {
       "id": "node-errores-validacion-review-login",
-      "version": 2,
+      "version": 3,
       "pista": "node",
       "familia": "errores-validacion",
       "tipo": "review",
@@ -200,7 +200,7 @@
         ]
       },
       "respuestaModelo": "El fallo es una inyección SQL: el `email` del cuerpo de la petición se mete en la consulta concatenando texto. Con un email como `' OR '1'='1' --` la condición se vuelve siempre cierta y la consulta devuelve usuarios que no son el suyo; con otras variantes se pueden leer o modificar tablas. Se arregla con una consulta parametrizada, `db.query('SELECT id, password_hash FROM users WHERE email = $1', [email])`, o usando el ORM, que separan el dato del SQL y el motor nunca lo interpreta como código. Escapar comillas a mano no es la solución: es fácil olvidarse de un caso. El resto del endpoint está bien hecho: compara con `bcrypt`, devuelve el mismo error tanto si el usuario no existe como si la contraseña falla (no deja enumerar correos) y lee el secreto del entorno.",
-      "resumen": "Inyección SQL: el email entra en la query concatenado. Se arregla con una consulta parametrizada ($1) o el ORM; escapar a mano no basta.",
+      "resumen": "Inyección SQL: el email se mete en la consulta pegando texto. Se arregla con una consulta parametrizada (`$1`) o con el ORM; escapar comillas a mano no basta.",
       "etiquetas": ["errores-validacion", "seguridad", "sql-injection", "review"],
       "fuentes": [
         {
@@ -215,7 +215,7 @@
     },
     {
       "id": "node-errores-validacion-review-cierre-pedido",
-      "version": 2,
+      "version": 3,
       "pista": "node",
       "familia": "errores-validacion",
       "tipo": "review",
@@ -239,7 +239,7 @@
         ]
       },
       "respuestaModelo": "No hay transacción: marcar el pedido como cerrado y descontar el stock de cada línea son escrituras independientes. Si la base de datos falla o el proceso se cae en la tercera línea de cinco, el pedido queda `cerrado` pero solo se ha descontado el stock de dos productos, y nada lo deshace. Peor aún, si alguien reintenta la operación, las dos primeras líneas se descuentan otra vez. La solución es agrupar todo en `prisma.$transaction(async (tx) => { ... })` usando `tx` en cada operación: o se aplica todo o no se aplica nada. Como mejora, en vez de un `update` por línea se pueden agrupar, pero lo que corrige el fallo es la transacción.",
-      "resumen": "Sin transacción: si falla a mitad, el pedido queda cerrado con el stock a medio descontar, y reintentar descuenta dos veces. Todo dentro de $transaction.",
+      "resumen": "No hay transacción: si falla a mitad, el pedido queda cerrado con el stock a medio descontar, y si reintentas se descuenta dos veces. Todo dentro de `$transaction`.",
       "etiquetas": ["errores-validacion", "prisma", "transacciones", "review"],
       "fuentes": [
         {
@@ -254,7 +254,7 @@
     },
     {
       "id": "node-errores-validacion-review-crear-usuario",
-      "version": 1,
+      "version": 2,
       "pista": "node",
       "familia": "errores-validacion",
       "tipo": "review",
@@ -262,7 +262,7 @@
       "nivelMinimo": "junior",
       "frecuencia": "media",
       "texto": {
-        "es": "Revisa este endpoint que crea un usuario. ¿Qué validación falta antes de guardar en la base de datos?",
+        "es": "Revisa este endpoint que crea un usuario. ¿Qué comprobación falta antes de guardar en la base de datos?",
         "en": "Review this endpoint that creates a user. What validation is missing before saving to the database?"
       },
       "contexto": "```js\napp.post('/usuarios', async (req, res) => {\n  const { nombre, email } = req.body;\n  const usuario = await db.usuarios.crear({ nombre, email });\n  res.status(201).json(usuario);\n});\n```",
@@ -278,7 +278,7 @@
           "Menciona validar el formato del email, no solo su presencia"
         ]
       },
-      "respuestaModelo": "El endpoint confía ciegamente en `req.body` sin comprobar que `nombre` y `email` lleguen realmente: si el cliente los omite, la función intenta guardar `undefined` en la base de datos en vez de rechazar la petición con un mensaje útil. Antes de llamar a `db.usuarios.crear`, hace falta comprobar que ambos campos existen (y que el email tiene un formato razonable) y devolver un `400` con un mensaje claro si no es así. Además, la llamada a la base de datos no está protegida con `try/catch`: si `email` tiene una restricción `UNIQUE` y ya existe, Prisma u otro ORM lanzaría una excepción que aquí no se captura, y el cliente recibiría un error 500 genérico (o el proceso se caería) en vez de un 409 o 400 explicando que ese email ya está en uso.",
+      "respuestaModelo": "El endpoint se fía a ciegas de `req.body` y no comprueba que `nombre` y `email` lleguen de verdad. Si el cliente no los manda, intenta guardar `undefined` en vez de rechazar la petición con un mensaje útil. Antes de `db.usuarios.crear` falta comprobar que los dos campos están (y que el email tiene pinta de email) y devolver 400 con un mensaje claro si no. Además, la llamada a la base de datos no tiene `try/catch`: si el email tiene que ser único y ya existe, el ORM lanza una excepción que nadie recoge, y el cliente recibe un 500 genérico (o se cae el proceso) en vez de un 409 que le diga que ese email ya está en uso.",
       "etiquetas": ["errores-validacion", "validacion-entrada"],
       "fuentes": [
         {

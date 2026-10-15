@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "datos-orm-01",
-      "version": 1,
+      "version": 2,
       "pista": "datos",
       "familia": "orm",
       "tipo": "razonamiento",
@@ -12,7 +12,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Qué es el problema N+1 y cómo lo detectarías y arreglarías usando Prisma?",
+        "es": "¿Qué es el problema N+1 y cómo lo detectarías y arreglarías con Prisma?",
         "en": "What is the N+1 problem and how would you detect and fix it using Prisma?"
       },
       "rubrica": {
@@ -27,8 +27,8 @@
           "Da un ejemplo concreto (posts con su autor) mostrando la diferencia entre la versión con N+1 y la corregida"
         ]
       },
-      "respuestaModelo": "El N+1 ocurre cuando traes N filas con una query y luego haces una query adicional por cada una para su relación, por ejemplo un `findMany` de posts seguido de un `findUnique` del autor dentro de un `.map()`: eso es 1 + N queries en vez de 1 o 2. Se detecta activando el logging de queries de Prisma (`log: ['query']`) en desarrollo y viendo docenas de `SELECT` idénticos repetidos en el log. Se arregla con `include`/`select` en la misma llamada a `findMany` (Prisma genera un JOIN o un batch automático), o explícitamente con `relationLoadStrategy: 'join'`; en casos más complejos con múltiples fuentes, un dataloader que agrupa las peticiones del mismo tick también resuelve el patrón.",
-      "resumen": "N+1 es una query para la lista y otra por cada fila para su relación. Se ve en el log de queries de Prisma y se arregla con `include`/`select` en la misma llamada.",
+      "respuestaModelo": "Pasa cuando traes N filas con una consulta y luego haces otra por cada una para traer su relación. Por ejemplo, un `findMany` de posts y, dentro de un `.map()`, un `findUnique` del autor de cada uno: son 1 + N consultas en vez de una o dos. Se ve activando el log de consultas de Prisma (`log: ['query']`) en desarrollo: aparecen docenas de `SELECT` casi iguales seguidos. Se arregla con `include` o `select` en la misma llamada a `findMany` (Prisma hace un JOIN o agrupa las consultas solo), o pidiéndolo explícitamente con `relationLoadStrategy: 'join'`. En casos más complicados, con varias fuentes, un dataloader que junta las peticiones que salen a la vez también lo resuelve.",
+      "resumen": "N+1 es una consulta para la lista y otra por cada fila para traer su relación. Se ve en el log de consultas de Prisma y se arregla con `include` o `select` en la misma llamada.",
       "etiquetas": ["prisma", "orm", "n+1", "rendimiento"],
       "fuentes": [
         {
@@ -43,7 +43,7 @@
     },
     {
       "id": "datos-orm-02",
-      "version": 1,
+      "version": 2,
       "pista": "datos",
       "familia": "orm",
       "tipo": "razonamiento",
@@ -51,7 +51,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Qué diferencia hay entre Prisma y Drizzle como ORM o query builder para un proyecto Postgres nuevo?",
+        "es": "¿Qué diferencia hay entre Prisma y Drizzle para un proyecto nuevo con Postgres?",
         "en": "What's the difference between Prisma and Drizzle as an ORM/query builder for a new Postgres project?"
       },
       "rubrica": {
@@ -66,8 +66,8 @@
           "Da un criterio de decisión: depende de cuánto control sobre el SQL quiere el equipo, no dice que uno sea objetivamente mejor"
         ]
       },
-      "respuestaModelo": "Prisma define el esquema en su propio DSL y genera un cliente TypeScript totalmente tipado a través de un motor intermedio; la experiencia de desarrollo es muy pulida pero añade una capa de 'magia' y algo de overhead, sobre todo notable en cold starts serverless. Drizzle es un query builder tipado sobre TypeScript, mucho más cercano al SQL real, sin motor Rust intermedio: da más control fino sobre la query exacta que se ejecuta y suele arrancar más rápido en entornos edge/serverless. Ninguno es objetivamente mejor; la decisión depende de si el equipo prefiere la DX guiada de Prisma o el control explícito de Drizzle.",
-      "resumen": "Prisma: esquema en su DSL y cliente generado muy pulido, con algo de magia y overhead en cold starts. Drizzle: query builder tipado, cercano al SQL, más control y arranque ligero. Depende del equipo.",
+      "respuestaModelo": "Con Prisma escribes el esquema en su propio lenguaje y te genera un cliente de TypeScript totalmente tipado, que trabaja a través de un motor intermedio. Es muy cómodo de usar, pero tiene su parte de magia y algo de peso extra, que se nota sobre todo al arrancar en serverless. Drizzle es un constructor de consultas tipado en TypeScript, mucho más cerca del SQL de verdad y sin motor intermedio: te da más control sobre la consulta exacta que se ejecuta y suele arrancar más rápido en edge o serverless. Ninguno es mejor sin más: depende de si el equipo prefiere la comodidad guiada de Prisma o el control de Drizzle.",
+      "resumen": "Prisma: el esquema en su propio lenguaje y un cliente generado muy cómodo, con algo de magia y más lento al arrancar en serverless. Drizzle: tipado y muy cerca del SQL, más control y arranque ligero. Depende del equipo.",
       "etiquetas": ["prisma", "drizzle", "orm"],
       "fuentes": [
         {
@@ -82,7 +82,7 @@
     },
     {
       "id": "datos-orm-03",
-      "version": 1,
+      "version": 2,
       "pista": "datos",
       "familia": "orm",
       "tipo": "razonamiento",
@@ -90,7 +90,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "alta",
       "texto": {
-        "es": "Tienes el modelo Prisma User { id, posts Post[] } y Post { id, title, authorId, author User }. Escribe el endpoint que devuelve los últimos 20 posts con el nombre de su autor, evitando el N+1, y añade el índice que falte.",
+        "es": "Tienes el modelo Prisma `User { id, posts Post[] }` y `Post { id, title, authorId, author User }`. Escribe el endpoint que devuelve los últimos 20 posts con el nombre de su autor, sin caer en el N+1, y añade el índice que falte.",
         "en": "You have the Prisma model User { id, posts Post[] } and Post { id, title, authorId, author User }. Write the endpoint that returns the latest 20 posts with their author's name, avoiding N+1, and add the missing index."
       },
       "contexto": "```prisma\nmodel User {\n  id    String @id @default(cuid())\n  name  String\n  posts Post[]\n}\n\nmodel Post {\n  id        String   @id @default(cuid())\n  title     String\n  createdAt DateTime @default(now())\n  authorId  String\n  author    User     @relation(fields: [authorId], references: [id])\n}\n```",
@@ -107,7 +107,7 @@
         ]
       },
       "respuestaModelo": "```ts\nconst posts = await prisma.post.findMany({\n  orderBy: { createdAt: 'desc' },\n  take: 20,\n  select: {\n    id: true,\n    title: true,\n    createdAt: true,\n    author: { select: { name: true } },\n  },\n});\n```\nUna sola llamada a `findMany` con `select` anidado trae los 20 posts y el nombre de su autor en una query (o dos, resueltas eficientemente por Prisma), en vez de un `findUnique` por post dentro de un `.map()`. Si hubiera N+1 se vería en el log como un `SELECT * FROM Post ...` seguido de 20 `SELECT * FROM User WHERE id = ...` casi idénticos. Para que el filtro por `authorId` sea rápido hace falta `@@index([authorId])` en el modelo `Post`, si no lo trae ya implícito la relación.",
-      "resumen": "Un solo `findMany` con `orderBy`, `take: 20` y `select` anidado del nombre del autor, en vez de un `findUnique` por post dentro de un `.map()`; y `@@index([authorId])` en `Post`.",
+      "resumen": "Un solo `findMany` con `orderBy`, `take: 20` y un `select` anidado del nombre del autor, en vez de un `findUnique` por post dentro de un `.map()`; y `@@index([authorId])` en `Post`.",
       "etiquetas": ["prisma", "orm", "n+1", "indices"],
       "fuentes": [
         {

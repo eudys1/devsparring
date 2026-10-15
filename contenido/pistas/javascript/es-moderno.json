@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "js-es-moderno-01",
-      "version": 1,
+      "version": 2,
       "pista": "javascript",
       "familia": "es-moderno",
       "tipo": "definicion",
@@ -27,7 +27,7 @@
           "Menciona que `?.` se puede encadenar con llamadas a función (`obj.metodo?.()`) y con acceso a arrays (`arr?.[0]`)"
         ]
       },
-      "respuestaModelo": "`?.` (optional chaining) accede a una propiedad, llama a un método, o indexa un array, devolviendo `undefined` en corto-circuito si el valor de la izquierda es `null` o `undefined`, en vez de lanzar `TypeError`. `??` (nullish coalescing) devuelve el operando derecho solo si el izquierdo es `null` o `undefined`, a diferencia de `||`, que cae al operando derecho ante cualquier valor falsy, incluidos `0`, `''` o `false`. El bug clásico es `cantidad || 10`: si `cantidad` vale `0` (un valor legítimo), la expresión da `10` en vez de `0`; `cantidad ?? 10` trata `0` como válido y solo cae al default si `cantidad` es `null` o `undefined`.",
+      "respuestaModelo": "`?.` te deja leer una propiedad, llamar a un método o acceder a un array sin miedo: si lo que hay a la izquierda es `null` o `undefined`, se para ahí y te da `undefined` en vez de lanzar un `TypeError`. `??` te da el valor de la derecha solo cuando el de la izquierda es `null` o `undefined`. `||`, en cambio, salta a la derecha con cualquier valor que cuente como falso, incluidos `0`, `''` y `false`. El bug clásico es `cantidad || 10`: si `cantidad` vale `0`, que es un valor válido, te da `10`. Con `cantidad ?? 10` el `0` se respeta y solo usas el `10` cuando de verdad no hay valor.",
       "test": {
         "enunciado": "Si `cantidad` vale `0`, ¿qué da `cantidad ?? 10`?",
         "correcta": 0,
@@ -64,7 +64,7 @@
     },
     {
       "id": "js-es-moderno-02",
-      "version": 1,
+      "version": 2,
       "pista": "javascript",
       "familia": "es-moderno",
       "tipo": "fundamento",
@@ -72,7 +72,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "baja",
       "texto": {
-        "es": "Nombra 3 características introducidas desde ES2020 en adelante que usas en tu día a día.",
+        "es": "Dime tres cosas de JavaScript que han salido de ES2020 en adelante y que uses en tu día a día.",
         "en": "Name 3 features introduced from ES2020 onward that you use day to day."
       },
       "rubrica": {
@@ -86,9 +86,9 @@
           "Distingue features del lenguaje (ECMAScript) de APIs del navegador/Node que a veces se confunden con ellas"
         ]
       },
-      "respuestaModelo": "Optional chaining (`?.`) y nullish coalescing (`??`), de ES2020, para acceder a propiedades anidadas de forma segura y dar valores por defecto sin el bug de `||` con `0`. `Promise.allSettled`, también de ES2020, para esperar varias promesas sin que el fallo de una cancele el resultado de las demás. Y top-level `await` en módulos ES (ES2022), que permite usar `await` fuera de una función `async` a nivel de módulo, útil para inicializar configuración asíncrona al cargar un módulo. `structuredClone` como API global (no parte del estándar ECMAScript en sí, pero disponible en navegadores y Node modernos) también se usa mucho para clones profundos sin librerías.",
+      "respuestaModelo": "Por ejemplo: `?.` y `??` (ES2020), para leer propiedades anidadas sin miedo y poner valores por defecto sin el bug de `||` con el `0`. `Promise.allSettled` (también ES2020), para esperar varias promesas sin que una que falle se lleve por delante el resultado de las demás. Y el `await` de nivel superior en módulos (ES2022), que te deja usar `await` fuera de una función `async`, muy útil para cargar configuración al importar un módulo. Otra que se usa mucho es `structuredClone`, para copias profundas sin librerías; no es parte del estándar del lenguaje en sí, pero la tienen los navegadores y Node modernos.",
       "test": {
-        "enunciado": "¿Qué permite el `await` de nivel superior (top-level await, ES2022)?",
+        "enunciado": "¿Qué te permite el `await` de nivel superior (top-level await, ES2022)?",
         "correcta": 2,
         "opciones": [
           {
@@ -351,7 +351,7 @@
     },
     {
       "id": "js-es-moderno-03",
-      "version": 2,
+      "version": 3,
       "pista": "javascript",
       "familia": "es-moderno",
       "tipo": "definicion",
@@ -359,7 +359,7 @@
       "nivelMinimo": "senior",
       "frecuencia": "baja",
       "texto": {
-        "es": "Quieres registrar en consola cada propiedad que tu app lee de un objeto de configuración, para saber cuáles se usan de verdad. ¿Qué es un `Proxy` en JavaScript y cómo interceptarías ese acceso?",
+        "es": "Quieres apuntar en consola cada propiedad que tu app lee de un objeto de configuración, para saber cuáles se usan de verdad. ¿Qué es un `Proxy` y cómo pillarías esas lecturas?",
         "en": "You want to log every property your app reads from a configuration object, to find out which ones are really used. What is a `Proxy` in JavaScript and how would you intercept that access?"
       },
       "rubrica": {
@@ -373,7 +373,7 @@
           "Da un caso de uso real (validación automática, logging de accesos, un ORM ligero)"
         ]
       },
-      "respuestaModelo": "Un `Proxy` envuelve un objeto y permite interceptar operaciones fundamentales sobre él (leer una propiedad, asignarla, comprobar si existe, etc.) mediante \"traps\". Por ejemplo, `new Proxy(objetivo, { get(obj, prop) { console.log('leyendo', prop); return Reflect.get(obj, prop); } })` intercepta cualquier lectura de propiedad, la loguea, y delega el comportamiento real a `Reflect.get`, que hace lo que haría el acceso normal. `Reflect` se usa junto a `Proxy` precisamente para no reimplementar a mano el comportamiento por defecto dentro de cada trap. Un caso de uso real es validar automáticamente que solo se asignen valores de un tipo esperado a un objeto, o construir un ORM ligero donde acceder a una propiedad dispara una consulta a base de datos de forma transparente.",
+      "respuestaModelo": "Un `Proxy` envuelve un objeto y te deja meterte en medio de lo que se hace con él: leer una propiedad, cambiarla, preguntar si existe... Cada una de esas intercepciones se llama \"trap\". Para tu caso: `new Proxy(config, { get(obj, prop) { console.log('leyendo', prop); return Reflect.get(obj, prop); } })`. Cada lectura pasa por tu `get`, la apuntas, y `Reflect.get` hace lo que habría hecho la lectura normal. Para eso existe `Reflect`: para que no tengas que reescribir a mano el comportamiento de siempre dentro de cada trap. En la vida real se usa, por ejemplo, para validar que a un objeto solo se le asignen valores del tipo esperado, o en ORMs ligeros donde leer una propiedad lanza una consulta sin que lo notes.",
       "test": {
         "enunciado": "En un `Proxy` con una trampa `get`, ¿para qué se usa `Reflect.get`?",
         "correcta": 1,

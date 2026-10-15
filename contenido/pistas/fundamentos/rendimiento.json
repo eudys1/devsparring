@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "fund-rendimiento-01",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "rendimiento",
       "tipo": "razonamiento",
@@ -12,7 +12,7 @@
       "nivelMinimo": "senior",
       "frecuencia": "media",
       "texto": {
-        "es": "Los usuarios reportan que una página tarda mucho en cargar. ¿Cómo averiguarías dónde está el cuello de botella y qué harías después?",
+        "es": "Los usuarios dicen que una página tarda mucho en cargar. ¿Cómo averiguarías dónde está el atasco y qué harías después?",
         "en": "Users are reporting that a page takes a long time to load. How would you find out where the time is being spent, and what would you do next?"
       },
       "rubrica": {
@@ -27,7 +27,7 @@
           "Menciona métricas concretas (Web Vitals: LCP, TTFB, TBT) en vez de \"se siente lento\""
         ]
       },
-      "respuestaModelo": "Primero mido antes de actuar: DevTools Performance y Network, Lighthouse, y Web Vitals reales (LCP, TTFB, TBT) para no optimizar a ciegas. Con eso separo el problema en categorías: tiempo de red (payload grande, demasiadas peticiones, sin caché), tiempo de parseo/render (bundle de JS enorme, CSS bloqueante), o JS bloqueante en el hilo principal (cálculos pesados antes del primer render). Priorizo por impacto: si el TTFB es alto el problema es de backend o red, si el LCP tarda pero el TTFB es bueno probablemente sea render o imágenes sin optimizar. Solo después de identificar la causa dominante propongo una solución concreta, en vez de aplicar optimizaciones genéricas sin medir antes y después.",
+      "respuestaModelo": "Primero medir, antes de cambiar nada: las pestañas Performance y Network de las DevTools, Lighthouse, y las Web Vitals de usuarios reales (LCP, TTFB, TBT), para no optimizar a ciegas. Con eso separo el problema: ¿es la red (descargas muy grandes, demasiadas peticiones, sin caché)?, ¿es pintar la página (un bundle de JavaScript enorme, CSS que bloquea)?, ¿o es JavaScript pesado ocupando el hilo principal antes de enseñar nada? Y voy a lo que más pesa: si el TTFB (lo que tarda en llegar el primer byte) es alto, el problema está en el backend o en la red; si el TTFB va bien pero el LCP tarda, seguramente es el pintado o imágenes sin optimizar. Solo cuando sé cuál es la causa principal propongo una solución concreta, y mido antes y después.",
       "etiquetas": ["rendimiento", "web"],
       "fuentes": [
         {
@@ -41,7 +41,7 @@
     },
     {
       "id": "fund-rendimiento-02",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "rendimiento",
       "tipo": "razonamiento",
@@ -49,7 +49,7 @@
       "nivelMinimo": "senior",
       "frecuencia": "baja",
       "texto": {
-        "es": "Tienes una función que tarda 1 segundo en ejecutarse y necesitas ejecutarla 10 millones de veces. ¿Cómo reducirías el tiempo total de ejecución?",
+        "es": "Tienes una función que tarda 1 segundo y la tienes que ejecutar 10 millones de veces. ¿Cómo reducirías el tiempo total?",
         "en": "Say there was a function that took 1 second to execute and you needed to run this function 10 million times, how would you cut down on the execution time?"
       },
       "rubrica": {
@@ -61,7 +61,7 @@
           "Calcula que 10 millones por 1 segundo son unos 115 días, y concluye que el enfoque es evitar ejecutar la función completa, no solo acelerarla"
         ]
       },
-      "respuestaModelo": "10 millones de ejecuciones a 1 segundo cada una son unos 115 días seguidos, así que optimizar la función línea a línea no va a resolver el problema por sí solo; el enfoque casi seguro es evitar ejecutarla por completo tantas veces. Primero preguntaría si hay inputs repetidos: si es así, memoizar el resultado por argumentos elimina de raíz la mayoría de las ejecuciones. Si el trabajo es genuinamente independiente entre llamadas, lo paralelizaría en varios procesos o Web Workers para usar todos los núcleos disponibles. Y solo después de eso miraría si el algoritmo interno tiene una complejidad mejorable, porque optimizar un algoritmo ineficiente en paralelo sigue siendo ineficiente, solo que más rápido.",
+      "respuestaModelo": "Echando la cuenta: 10 millones de segundos son unos 115 días seguidos. Así que pulir la función línea a línea no lo va a arreglar; casi seguro, la clave es no ejecutarla tantas veces. Lo primero que preguntaría es si se repiten las entradas: si sí, guardar el resultado por argumentos (memoizar) elimina de un plumazo la mayoría de las ejecuciones. Si cada llamada es independiente de verdad, repartiría el trabajo en varios procesos o Web Workers para usar todos los núcleos. Y después miraría si el algoritmo de dentro se puede mejorar, porque un algoritmo malo en paralelo sigue siendo malo, solo que algo más rápido.",
       "etiquetas": ["rendimiento"],
       "fuentes": [
         {
@@ -76,7 +76,7 @@
     },
     {
       "id": "fund-rendimiento-03",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "rendimiento",
       "tipo": "razonamiento",
@@ -84,7 +84,7 @@
       "nivelMinimo": "senior",
       "frecuencia": "baja",
       "texto": {
-        "es": "Un endpoint que normalmente recibe 100 peticiones por minuto de repente recibe 10.000 en un minuto (por ejemplo, una promoción). ¿Qué harías para que no caiga, pensando tanto en frontend como en backend?",
+        "es": "Un endpoint que suele recibir 100 peticiones por minuto de repente recibe 10.000 en un minuto (por una promoción, por ejemplo). ¿Qué harías para que no se caiga, tanto en el frontend como en el backend?",
         "en": "An endpoint that normally gets 100 requests per minute suddenly gets 10,000 in a minute (e.g. a promotion). What would you do to keep it from falling over, thinking about both frontend and backend?"
       },
       "rubrica": {
@@ -98,7 +98,7 @@
           "Prioriza las medidas en vez de intentar resolverlo todo a la vez"
         ]
       },
-      "respuestaModelo": "En el lado cliente evitaría que el propio frontend agrave el pico: deshabilitar el botón tras el primer clic, y si hay reintentos automáticos, usar backoff exponencial en vez de reintentar inmediatamente y machacar más el servidor. En el lado servidor priorizaría rate limiting para proteger el endpoint de un cliente que reintenta agresivamente, una cola para absorber el pico en vez de procesarlo todo de golpe, caché para las respuestas que no cambian por petición, y escalado horizontal si la infraestructura lo permite. No intentaría aplicar las cinco medidas a la vez bajo presión: priorizaría rate limiting y caché como las de mayor impacto inmediato, y dejaría el escalado horizontal para una segunda fase si el problema persiste.",
+      "respuestaModelo": "En el frontend, evitar que la propia web empeore el pico: desactivar el botón después del primer clic y, si hay reintentos automáticos, espaciarlos cada vez más (backoff exponencial) en vez de reintentar al momento y machacar el servidor. En el backend: limitar peticiones (rate limiting) para que un cliente que reintenta a lo loco no lo tumbe todo, una cola que absorba el pico en vez de procesarlo todo de golpe, caché para las respuestas que son iguales para todos, y escalar en horizontal si la infraestructura lo permite. Con presión no intentaría hacer las cinco cosas a la vez: empezaría por el límite de peticiones y la caché, que son lo que más se nota al momento, y dejaría escalar para una segunda fase si el problema sigue.",
       "etiquetas": ["rendimiento", "escalabilidad"],
       "fuentes": [
         {
@@ -113,7 +113,7 @@
     },
     {
       "id": "fund-rendimiento-04",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "rendimiento",
       "tipo": "razonamiento",
@@ -121,7 +121,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "baja",
       "texto": {
-        "es": "Tienes un listado de productos que cambia poco (una vez al día) pero se consulta miles de veces por minuto. ¿Dónde y cómo lo cachearías?",
+        "es": "Tienes un listado de productos que cambia poco (una vez al día) pero se consulta miles de veces por minuto. ¿Dónde y cómo lo guardarías en caché?",
         "en": "You have a product listing that changes rarely (once a day) but is queried thousands of times per minute. Where and how would you cache it?"
       },
       "rubrica": {
@@ -135,8 +135,8 @@
           "Justifica el nivel elegido según el patrón de acceso descrito, no solo dice \"lo cacheo\""
         ]
       },
-      "respuestaModelo": "Dado que cambia una vez al día pero se consulta miles de veces por minuto, cachearía en varios niveles: en el servidor, un caché en memoria (o Redis si hay varias instancias) para no golpear la base de datos en cada petición, con un TTL de unas horas; y en el borde, cabeceras `Cache-Control` para que una CDN sirva la respuesta directamente sin llegar siquiera al servidor la mayoría de las veces. Para invalidar cuando el dato cambia, en vez de esperar solo al TTL, invalidaría manualmente la clave de caché en el momento del cambio (o usaría un esquema de versionado de la clave, tipo `productos:v123`), así el dato nuevo se sirve de inmediato sin esperar a que expire el TTL.",
-      "resumen": "Caché en varios niveles: en memoria o Redis en el servidor con TTL de horas, y `Cache-Control` para que la CDN sirva casi todo. Al cambiar el dato, invalidar la clave sin esperar al TTL.",
+      "respuestaModelo": "Como cambia una vez al día y se lee miles de veces por minuto, lo guardaría en varios niveles. En el servidor, una caché en memoria (o Redis si hay varias instancias) para no ir a la base de datos en cada petición, con una caducidad (TTL) de unas horas. Y delante, cabeceras `Cache-Control` para que una CDN conteste directamente sin que la mayoría de peticiones lleguen siquiera al servidor. Cuando el dato cambia, no esperaría a que caduque: borraría la clave de caché en ese momento, o cambiaría su nombre con una versión (tipo `productos:v123`), así el listado nuevo se ve al instante.",
+      "resumen": "Caché en varios niveles: en memoria o Redis en el servidor, con caducidad de horas, y `Cache-Control` para que la CDN sirva casi todo. Cuando cambia el dato, borras esa clave sin esperar a que caduque.",
       "etiquetas": ["rendimiento", "cache"],
       "fuentes": [
         {
@@ -151,7 +151,7 @@
     },
     {
       "id": "fund-rendimiento-05",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "rendimiento",
       "tipo": "razonamiento",
@@ -159,7 +159,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "Quieren implementar un sistema que registre cada clic que hace el usuario en el sitio. ¿Cómo lo diseñarías sin degradar el rendimiento?",
+        "es": "Quieren apuntar cada clic que hace el usuario en la web. ¿Cómo lo montarías sin que se vuelva lenta?",
         "en": "The team wants to implement a way of tracking every click the user makes on the site. How would you design it without degrading performance?"
       },
       "rubrica": {
@@ -173,7 +173,7 @@
           "Reconoce el trade-off entre capturar todo (más datos, más coste) y muestrear"
         ]
       },
-      "respuestaModelo": "Usaría event delegation: un único listener de `click` en un ancestro común (por ejemplo `document`) en vez de un listener por cada elemento, para no pagar el coste de miles de listeners individuales. Los clics capturados no los enviaría uno a uno, sino que los acumularía en un buffer y los enviaría por lotes cada pocos segundos o cuando el buffer alcance cierto tamaño, para no saturar la red con una petición por clic. Para no perder los eventos pendientes cuando el usuario cierra la pestaña, usaría `navigator.sendBeacon` en el evento `visibilitychange` o `pagehide`, que garantiza el envío incluso al navegar fuera de la página.",
+      "respuestaModelo": "Usaría delegación de eventos: un solo listener de `click` arriba del todo (en `document`, por ejemplo) en vez de uno en cada elemento, para no cargar con miles de listeners. Los clics no los mandaría uno a uno: los iría guardando y los enviaría en grupo cada pocos segundos, o cuando se junten unos cuantos, para no saturar la red con una petición por clic. Y para no perder los últimos cuando el usuario cierra la pestaña, usaría `navigator.sendBeacon` en el evento `visibilitychange` o `pagehide`, que asegura que el envío sale aunque se esté yendo de la página.",
       "etiquetas": ["rendimiento", "eventos"],
       "fuentes": [
         {

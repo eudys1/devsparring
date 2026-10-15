@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "ts-configuracion-01",
-      "version": 1,
+      "version": 2,
       "pista": "typescript",
       "familia": "configuracion",
       "tipo": "definicion",
@@ -12,7 +12,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Qué activa la opción `strict: true` en `tsconfig.json`? Nombra al menos 3 flags que incluye.",
+        "es": "¿Qué enciende la opción `strict: true` del `tsconfig.json`? Nombra al menos tres comprobaciones que incluye.",
         "en": "What does the `strict: true` option in `tsconfig.json` enable? Name at least 3 flags it includes."
       },
       "rubrica": {
@@ -26,7 +26,7 @@
           "Explica por qué activarlo desde el inicio de un proyecto es más fácil que migrarlo después"
         ]
       },
-      "respuestaModelo": "`strict: true` activa de golpe un conjunto de flags de comprobación más estrictos en vez de tener que activarlos uno a uno. Entre ellos, `strictNullChecks` obliga a manejar explícitamente `null` y `undefined` (sin él, cualquier tipo admite `null` implícitamente, una fuente clásica de errores en tiempo de ejecución). `noImplicitAny` prohíbe que una variable o parámetro termine con tipo `any` de forma implícita cuando TypeScript no puede inferir nada mejor, obligando a anotarlo explícitamente. `strictFunctionTypes` hace más estricta la comprobación de compatibilidad entre firmas de funciones. Activar `strict` desde el inicio de un proyecto es mucho más fácil que migrar un proyecto grande después, porque cada flag adicional suele destapar decenas o cientos de errores que había pasado por alto un tipado más laxo.",
+      "respuestaModelo": "`strict: true` enciende de golpe un paquete de comprobaciones más exigentes, en vez de ir activándolas una a una. Por ejemplo: `strictNullChecks` te obliga a tener en cuenta `null` y `undefined` (sin ella, cualquier tipo acepta `null` sin decir nada, y eso acaba en errores al ejecutar). `noImplicitAny` no te deja que algo acabe siendo `any` sin querer cuando TypeScript no sabe deducir el tipo: te obliga a ponerlo tú. `strictFunctionTypes` revisa con más cuidado si una función encaja donde la pasas. Consejo práctico: actívalo desde el primer día. Activarlo en un proyecto grande ya hecho destapa de golpe decenas o cientos de errores que estaban escondidos.",
       "test": {
         "enunciado": "¿Qué flag de los que activa `strict: true` obliga a manejar `null` y `undefined`?",
         "correcta": 0,
@@ -63,7 +63,7 @@
     },
     {
       "id": "ts-configuracion-02",
-      "version": 1,
+      "version": 2,
       "pista": "typescript",
       "familia": "configuracion",
       "tipo": "comportamental",
@@ -71,7 +71,7 @@
       "nivelMinimo": "senior",
       "frecuencia": "baja",
       "texto": {
-        "es": "¿En qué casos consideras que NO vale la pena usar TypeScript en un proyecto?",
+        "es": "¿En qué casos crees que NO compensa usar TypeScript en un proyecto?",
         "en": "In what cases do you think it's NOT worth using TypeScript on a project?"
       },
       "rubrica": {
@@ -85,7 +85,7 @@
           "Menciona la migración incremental (`// @ts-check` con JSDoc, `allowJs`) como alternativa intermedia"
         ]
       },
-      "respuestaModelo": "No presento TypeScript como una elección obligatoria en todos los casos. En prototipos muy cortos o scripts de un solo uso, el coste de configurar tipos no se amortiza porque el código no va a vivir lo suficiente para que ese beneficio importe. Con un equipo sin experiencia previa en TypeScript bajo mucha presión de plazo, forzarlo puede ralentizar la entrega más de lo que ahorra en errores detectados. Y en proyectos donde el coste de configurar el tooling (build, tipos de dependencias sin tipar) supera claramente el beneficio a corto plazo, también lo replantearía. Una alternativa intermedia que uso cuando no está claro si vale la pena el salto completo es `// @ts-check` con JSDoc sobre JavaScript normal, o `allowJs` para migrar de forma incremental sin reescribir todo de golpe.",
+      "respuestaModelo": "No lo vendo como obligatorio siempre. En un prototipo corto o un script de usar y tirar, montar los tipos no compensa, porque el código no va a vivir lo suficiente para que te ahorre problemas. Con un equipo que no lo conoce y un plazo muy apretado, forzarlo puede retrasar la entrega más de lo que ahorra en errores. Y si configurar todo (el build, los tipos de librerías que no los traen) cuesta claramente más de lo que vas a ganar a corto plazo, también me lo pensaría. Cuando no tengo claro si dar el salto entero, uso un punto medio: `// @ts-check` con comentarios JSDoc sobre JavaScript normal, o `allowJs` para ir migrando poco a poco sin reescribir todo de golpe.",
       "etiquetas": ["configuracion", "criterio-tecnico"],
       "fuentes": [
         {
@@ -100,7 +100,7 @@
     },
     {
       "id": "ts-configuracion-03",
-      "version": 1,
+      "version": 2,
       "pista": "typescript",
       "familia": "configuracion",
       "tipo": "razonamiento",
@@ -108,7 +108,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "baja",
       "texto": {
-        "es": "Tienes que usar una librería de JavaScript que no tiene tipos. ¿Cómo le añadirías tipos en TypeScript?",
+        "es": "Tienes que usar una librería de JavaScript que no trae tipos. ¿Cómo se los añadirías?",
         "en": "You need to use a JavaScript library with no types. How would you add types to it in TypeScript?"
       },
       "rubrica": {
@@ -120,7 +120,7 @@
           "Menciona contribuir el tipado de vuelta a DefinitelyTyped como buena práctica si el esfuerzo ya se hizo"
         ]
       },
-      "respuestaModelo": "Primero buscaría si existe un paquete `@types/<nombre-de-la-libreria>` en DefinitelyTyped, la fuente más habitual de tipos para librerías de JavaScript sin tipos propios. Si no existe, escribiría un fichero `.d.ts` propio con `declare module 'nombre-de-la-libreria'`, empezando con un tipado mínimo (incluso vacío, tratando todo como `any` temporalmente) para que TypeScript deje de quejarse, e iría refinándolo con las funciones y tipos concretos que realmente uso, sin necesidad de tipar la librería entera de golpe. Si el esfuerzo de tipado se vuelve sustancial y la librería es de uso común, consideraría contribuir esos tipos de vuelta a DefinitelyTyped para que otros no tengan que repetir el trabajo.",
+      "respuestaModelo": "Primero miraría si existe el paquete `@types/nombre-de-la-libreria`, que es donde la comunidad (DefinitelyTyped) publica los tipos de casi todas las librerías que no los traen. Si no existe, me haría un fichero `.d.ts` con `declare module 'nombre-de-la-libreria'`. Empezaría por lo mínimo, aunque sea dejarlo todo como `any` un rato, para que TypeScript deje de quejarse, y lo iría afinando solo con las funciones que de verdad uso, sin tipar la librería entera. Si acabo tipando bastante y la librería la usa mucha gente, compartiría esos tipos en DefinitelyTyped para que nadie tenga que repetir el trabajo.",
       "etiquetas": ["configuracion"],
       "fuentes": [
         {
@@ -134,7 +134,7 @@
     },
     {
       "id": "ts-configuracion-04",
-      "version": 1,
+      "version": 2,
       "pista": "typescript",
       "familia": "configuracion",
       "tipo": "definicion",
@@ -142,7 +142,7 @@
       "nivelMinimo": "junior",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Cómo se compilan los archivos TypeScript a JavaScript? ¿Qué rol juega el `target` en `tsconfig.json`?",
+        "es": "¿Cómo se convierte TypeScript en JavaScript? ¿Para qué sirve el `target` del `tsconfig.json`?",
         "en": "How are TypeScript files compiled to JavaScript? What role does `target` play in `tsconfig.json`?"
       },
       "rubrica": {
@@ -156,8 +156,8 @@
           "Menciona que herramientas como esbuild o SWC hacen esta misma transpilación mucho más rápido que `tsc`, aunque sin comprobar tipos (eso se delega a `tsc --noEmit` aparte)"
         ]
       },
-      "respuestaModelo": "El compilador de TypeScript (`tsc`, o herramientas más rápidas como esbuild o SWC que reimplementan la transpilación) convierte los archivos `.ts` en `.js` quitando las anotaciones de tipo y transformando sintaxis que el entorno objetivo no soporte. El `target` en `tsconfig.json` decide a qué versión de ECMAScript se transpila la sintaxis moderna: con `target: 'ES2015'`, una arrow function o una clase se convierten en su equivalente con funciones tradicionales para navegadores antiguos; con un `target` más moderno como `ES2020`, se preserva más sintaxis nativa, generando código más compacto pero menos compatible con entornos viejos. Herramientas como esbuild o SWC hacen esta transpilación mucho más rápido que `tsc`, pero no comprueban tipos: por eso en un pipeline moderno suele haber un paso separado de `tsc --noEmit` solo para el chequeo de tipos, y esbuild/SWC solo para generar el JavaScript final.",
-      "resumen": "`tsc`, esbuild o SWC quitan los tipos y transforman la sintaxis que el entorno no soporte. `target` decide a qué versión de ECMAScript se baja: con uno antiguo, arrows y clases se reescriben.",
+      "respuestaModelo": "El compilador (`tsc`, o herramientas más rápidas como esbuild o SWC) coge tus `.ts`, les quita los tipos y te da `.js`. Por el camino también reescribe la sintaxis que el entorno de destino no entienda. Eso lo decide el `target`: con `target: 'ES2015'`, una arrow function o una clase se reescriben con funciones de las de antes para navegadores viejos; con uno moderno como `ES2020`, se deja casi todo tal cual, y el código sale más corto pero no funciona en entornos antiguos. Un detalle que suelen preguntar: esbuild y SWC son muchísimo más rápidos que `tsc`, pero no comprueban tipos. Por eso lo normal hoy es usar `tsc --noEmit` solo para revisar los tipos y esbuild o SWC para generar el JavaScript.",
+      "resumen": "`tsc`, esbuild o SWC quitan los tipos y reescriben la sintaxis que el entorno no entienda. `target` dice a qué versión de JavaScript se baja: con uno antiguo, las arrow functions y las clases se reescriben.",
       "test": {
         "enunciado": "¿Qué decide el `target` de `tsconfig.json`?",
         "correcta": 2,

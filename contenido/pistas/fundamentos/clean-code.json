@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "fund-clean-code-01",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "clean-code",
       "tipo": "fundamento",
@@ -12,7 +12,7 @@
       "nivelMinimo": "junior",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Qué hace que una función esté \"limpia\"? Da 3 reglas prácticas que sigues al nombrar variables y funciones.",
+        "es": "¿Qué hace que una función esté \"limpia\"? Dame tres reglas prácticas que sigas al poner nombres a variables y funciones.",
         "en": "What makes a function \"clean\"? Give 3 practical rules you follow when naming variables and functions."
       },
       "rubrica": {
@@ -27,7 +27,7 @@
           "Menciona que el nombre debe reflejar la intención, no la implementación"
         ]
       },
-      "respuestaModelo": "Una función limpia hace una sola cosa, su nombre lo dice sin necesidad de leer el cuerpo, y opera a un solo nivel de abstracción (no mezcla validar, calcular y loguear en la misma función). Tres reglas prácticas: usar verbos para funciones (`calcularTotal`, no `total`), evitar abreviaturas ambiguas (`usr` en vez de `usuario`), y que el nombre refleje qué hace, no cómo lo hace por dentro (`obtenerUsuarioActivo`, no `filtrarArrayPorFlag`). Esto importa porque una función con un nombre preciso y una sola responsabilidad es mucho más fácil de testear y de reutilizar en otro contexto.",
+      "respuestaModelo": "Una función limpia hace una sola cosa, su nombre te dice cuál sin leerla por dentro, y no mezcla niveles (no valida, calcula y escribe en el log todo a la vez). Tres reglas para los nombres: verbos para las funciones (`calcularTotal`, no `total`); nada de abreviaturas que haya que adivinar (`usuario`, no `usr`); y que el nombre diga qué hace, no cómo lo hace por dentro (`obtenerUsuarioActivo`, no `filtrarArrayPorFlag`). Compensa porque una función con un buen nombre y una sola tarea es mucho más fácil de probar y de reutilizar en otro sitio.",
       "test": {
         "enunciado": "¿Qué nombre de función sigue mejor las reglas de código limpio?",
         "correcta": 0,
@@ -63,7 +63,7 @@
     },
     {
       "id": "fund-clean-code-02",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "clean-code",
       "tipo": "fundamento",
@@ -71,7 +71,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Qué significan DRY, KISS e YAGNI? ¿Puedes dar un ejemplo de cuando aplicar DRY demasiado pronto es contraproducente?",
+        "es": "¿Qué significan DRY, KISS y YAGNI? ¿Me pones un ejemplo de cuando aplicar DRY demasiado pronto sale caro?",
         "en": "What do DRY, KISS and YAGNI mean? Can you give an example of when applying DRY too early backfires?"
       },
       "rubrica": {
@@ -83,7 +83,7 @@
           "Da un ejemplo concreto de una abstracción compartida que terminó siendo más difícil de mantener que la duplicación original"
         ]
       },
-      "respuestaModelo": "DRY (Don't Repeat Yourself) evita duplicar la misma lógica en varios sitios; KISS (Keep It Simple) prefiere la solución más simple que funcione; YAGNI (You Aren't Gonna Need It) evita construir flexibilidad para casos hipotéticos. Aplicar DRY demasiado pronto es contraproducente cuando dos piezas de código se parecen hoy por casualidad pero representan conceptos distintos: unificarlas crea una abstracción con parámetros y condicionales para cubrir ambos casos, y cuando uno cambia por su cuenta, esa abstracción compartida se vuelve más frágil que tener las dos copias separadas. La heurística práctica es esperar a la tercera repetición real antes de extraer una abstracción común.",
+      "respuestaModelo": "DRY (Don't Repeat Yourself, no te repitas) es no tener la misma lógica copiada en varios sitios. KISS (Keep It Simple) es quedarte con la solución más sencilla que funcione. YAGNI (You Aren't Gonna Need It, no lo vas a necesitar) es no construir flexibilidad para casos que solo te imaginas. DRY demasiado pronto sale caro cuando dos trozos de código se parecen hoy por casualidad pero en realidad son cosas distintas. Los juntas en una función, empiezas a meterle parámetros e `if` para cubrir los dos casos, y cuando uno de ellos cambia por su cuenta, esa función compartida es más frágil que si hubieras dejado las dos copias. Una regla práctica: espera a que se repita de verdad tres veces antes de sacar algo común.",
       "test": {
         "enunciado": "¿Cuándo es contraproducente aplicar DRY demasiado pronto?",
         "correcta": 3,
@@ -119,7 +119,7 @@
     },
     {
       "id": "fund-clean-code-03",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "clean-code",
       "tipo": "fundamento",
@@ -127,7 +127,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Qué es el acoplamiento y la cohesión en el diseño de software? ¿Cómo los medirías o detectarías en una revisión de código?",
+        "es": "¿Qué son el acoplamiento y la cohesión? ¿Cómo los detectarías en una revisión de código?",
         "en": "What are coupling and cohesion in software design? How would you measure or spot them in a code review?"
       },
       "rubrica": {
@@ -142,7 +142,7 @@
           "Relaciona ambos conceptos con SRP y con la facilidad de testear en aislamiento"
         ]
       },
-      "respuestaModelo": "Bajo acoplamiento significa que los módulos dependen poco entre sí, así que cambiar uno no obliga a tocar muchos otros. Alta cohesión significa que un módulo agrupa responsabilidades relacionadas entre sí, no una mezcla arbitraria. Una señal de alto acoplamiento en revisión de código es que un cambio pequeño en un módulo dispara cambios en cascada en varios archivos no relacionados directamente. Una señal de baja cohesión es una clase \"utilidades\" con métodos que no comparten ni datos ni propósito. Ambos se relacionan directamente con SRP: una clase con alta cohesión suele tener una sola razón para cambiar.",
+      "respuestaModelo": "Bajo acoplamiento quiere decir que los módulos dependen poco unos de otros, así que cambiar uno no te obliga a tocar muchos más. Alta cohesión quiere decir que lo que hay dentro de un módulo tiene que ver entre sí, no es un cajón de sastre. En una revisión, la señal de acoplamiento alto es que un cambio pequeño en un sitio arrastra cambios en un montón de ficheros que no tienen nada que ver. La señal de cohesión baja es una clase \"utilidades\" con métodos que no comparten ni datos ni propósito. Las dos cosas van muy ligadas a la responsabilidad única (SRP): una clase con buena cohesión suele tener un solo motivo para cambiar.",
       "test": {
         "enunciado": "En una revisión de código, ¿qué señal apunta a un acoplamiento alto?",
         "correcta": 1,
@@ -178,7 +178,7 @@
     },
     {
       "id": "fund-clean-code-04",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "clean-code",
       "tipo": "fundamento",
@@ -186,7 +186,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "baja",
       "texto": {
-        "es": "¿Cuándo un comentario en el código es una señal de que el código debería reescribirse en vez de comentarse?",
+        "es": "¿Cuándo un comentario en el código es la señal de que ese código habría que reescribirlo en vez de comentarlo?",
         "en": "When is a code comment a sign that the code should be rewritten instead of commented?"
       },
       "rubrica": {
@@ -201,7 +201,7 @@
           "Menciona el riesgo de comentarios que quedan desactualizados y mienten sobre lo que hace el código"
         ]
       },
-      "respuestaModelo": "Un comentario que explica *qué* hace un bloque de código (\"suma el IVA al total\") suele ser una señal de que ese bloque debería extraerse a una función con un nombre que lo diga (`sumarIVA(total)`), en vez de comentarse. Los comentarios útiles explican el *por qué* de una decisión no obvia (por ejemplo, un workaround necesario por un bug de una librería, con un enlace al issue), no el qué. El riesgo de los comentarios explicativos del qué es que el código cambia y el comentario se queda desactualizado, mintiendo sobre lo que realmente hace el código.",
+      "respuestaModelo": "Cuando el comentario explica qué hace un trozo de código (\"suma el IVA al total\"). Normalmente es la señal de que ese trozo debería ser una función con un nombre que lo diga, `sumarIva(total)`, y sobra el comentario. Los comentarios que valen la pena explican el porqué de una decisión que no es obvia, por ejemplo un apaño necesario por un bug de una librería, con el enlace al issue. El problema de comentar el qué es que el código cambia, el comentario se queda igual, y al final te miente sobre lo que hace el código.",
       "test": {
         "enunciado": "¿Qué comentario indica que el código debería reescribirse en vez de comentarse?",
         "correcta": 2,
@@ -238,7 +238,7 @@
     },
     {
       "id": "fund-clean-code-05",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "clean-code",
       "tipo": "razonamiento",
@@ -246,7 +246,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "baja",
       "texto": {
-        "es": "Te llega un Pull Request de 400 líneas. ¿En qué te fijas primero al revisarlo?",
+        "es": "Te llega un pull request de 400 líneas. ¿En qué te fijas primero al revisarlo?",
         "en": "You receive a 400-line Pull Request. What do you look at first when reviewing it?"
       },
       "rubrica": {
@@ -261,7 +261,7 @@
           "Distingue comentarios bloqueantes de sugerencias opcionales, y lo comunica así al autor"
         ]
       },
-      "respuestaModelo": "Primero leo la descripción del PR para entender la intención antes de mirar el código línea a línea. Luego priorizo corrección y riesgo: ¿esto puede romper algo en producción?, ¿tiene tests que cubran el caso nuevo y los casos límite? El estilo y las preferencias personales van después, y las marco como sugerencia opcional, no como bloqueo. Si el PR es difícil de revisar por su tamaño, lo comento directamente: pido dividirlo en cambios más pequeños y revisables cuando es posible, en vez de aprobar a ciegas por cansancio.",
+      "respuestaModelo": "Primero leo la descripción del PR para entender qué pretende, antes de ir línea a línea. Después voy a lo que importa: ¿esto puede romper algo en producción? ¿tiene tests que cubran el caso nuevo y los casos límite? El estilo y los gustos personales van después, y los marco como sugerencia, no como algo que bloquee. Y si el PR es demasiado grande para revisarlo bien, lo digo: pido partirlo en cambios más pequeños cuando se pueda, en vez de aprobarlo a ciegas por cansancio.",
       "etiquetas": ["clean-code", "code-review"],
       "fuentes": [
         {
@@ -276,7 +276,7 @@
     },
     {
       "id": "fund-clean-code-review-nombres-genericos",
-      "version": 2,
+      "version": 3,
       "pista": "fundamentos",
       "familia": "clean-code",
       "tipo": "review",
@@ -300,7 +300,7 @@
         ]
       },
       "respuestaModelo": "Dos cosas. Los nombres no comunican nada: `calc` no dice qué calcula y `a` y `b` obligan a adivinar si son cantidad, precio o descuento. Algo como `precioConIva(cantidad, precioUnitario)` se entiende sin leer el cuerpo. Y `1.21` es un número mágico: quien lo lee tiene que deducir que es multiplicar por un IVA del 21 %. Una constante con nombre, `const IVA_GENERAL = 0.21`, y `cantidad * precioUnitario * (1 + IVA_GENERAL)` lo dejan explícito. Si el tipo de IVA puede cambiar (reducido, otro país), mejor que llegue como parámetro o de la configuración en vez de quedar fijo en la función.",
-      "resumen": "Nombres que no dicen nada (calc, a, b) y un número mágico (1.21 es un IVA del 21 %). Nombres concretos y una constante con nombre.",
+      "resumen": "Nombres que no dicen nada (`calc`, `a`, `b`) y un número mágico (`1.21` es un IVA del 21 %). Nombres concretos y una constante con nombre.",
       "etiquetas": ["clean-code", "code-review", "nombres"],
       "fuentes": [
         {

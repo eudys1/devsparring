@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "ia-fine-tuning-eleccion-01",
-      "version": 1,
+      "version": 2,
       "pista": "ia",
       "familia": "fine-tuning-eleccion",
       "tipo": "fundamento",
@@ -25,7 +25,7 @@
           "Explica que fine-tuning es mejor cuando se necesita un estilo/formato muy consistente"
         ]
       },
-      "respuestaModelo": "El fine-tuning reentrena, al menos parcialmente, los pesos del modelo con ejemplos propios, cambiando su comportamiento o estilo de forma permanente. RAG deja el modelo intacto y en su lugar le da contexto externo en el momento de la consulta. RAG es la mejor opción cuando la información cambia a menudo y hay que poder actualizarla sin reentrenar nada, mientras que el fine-tuning encaja mejor cuando se necesita un estilo o formato muy consistente, o un comportamiento especializado que no se consigue solo con prompting y contexto añadido.",
+      "respuestaModelo": "Con fine-tuning vuelves a entrenar el modelo (al menos en parte) con tus propios ejemplos, y eso le cambia el comportamiento o el estilo para siempre. Con RAG el modelo se queda como está y, en cada pregunta, le pasas información de fuera para que la use. RAG es lo mejor cuando la información cambia a menudo y quieres actualizarla sin reentrenar nada. El fine-tuning encaja cuando necesitas un estilo o un formato muy constante, o un comportamiento muy especializado que no consigues solo con un buen prompt y contexto.",
       "test": {
         "enunciado": "Tu asistente tiene que responder con la documentación interna, que cambia cada semana. ¿Qué eliges?",
         "correcta": 2,
@@ -62,7 +62,7 @@
     },
     {
       "id": "ia-fine-tuning-eleccion-02",
-      "version": 1,
+      "version": 2,
       "pista": "ia",
       "familia": "fine-tuning-eleccion",
       "tipo": "razonamiento",
@@ -70,7 +70,7 @@
       "nivelMinimo": "senior",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Es el fine-tuning una buena forma de enseñarle hechos nuevos a un modelo?",
+        "es": "¿Es buena idea usar fine-tuning para enseñarle datos nuevos a un modelo?",
         "en": "Is fine-tuning a good way to \"teach a model new facts\"?"
       },
       "rubrica": {
@@ -81,7 +81,7 @@
           "Concluye que RAG suele ser más fiable y más barato de mantener para hechos consultables y cambiantes"
         ]
       },
-      "respuestaModelo": "Generalmente no es la mejor herramienta para eso. El fine-tuning ajusta bien patrones de comportamiento y de estilo, pero es menos fiable a la hora de fijar hechos concretos y verificables de forma consistente, y desde luego no resuelve la necesidad de actualizar esa información con frecuencia: cada cambio de hechos exigiría un nuevo ciclo de reentrenamiento. Para hechos consultables y que cambian con el tiempo, RAG suele ser más fiable, porque el hecho vive en una fuente externa auditable, y más barato de mantener, porque actualizar la fuente no requiere reentrenar nada.",
+      "respuestaModelo": "Normalmente no. El fine-tuning va bien para cambiar comportamiento y estilo, pero es poco fiable para que el modelo se quede con datos concretos y los diga siempre bien. Y no resuelve que esos datos cambien: cada cambio te obligaría a volver a entrenar. Para datos que se consultan y que cambian con el tiempo, RAG suele ser más fiable, porque el dato vive en una fuente que puedes revisar, y más barato de mantener, porque actualizar la fuente no obliga a reentrenar nada.",
       "etiquetas": ["fine-tuning"],
       "fuentes": [
         {
@@ -96,7 +96,7 @@
     },
     {
       "id": "ia-fine-tuning-eleccion-03",
-      "version": 1,
+      "version": 2,
       "pista": "ia",
       "familia": "fine-tuning-eleccion",
       "tipo": "razonamiento",
@@ -104,7 +104,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Qué criterios usarías para elegir qué modelo de LLM usar en una funcionalidad nueva?",
+        "es": "¿En qué te fijarías para elegir qué LLM usar en una funcionalidad nueva?",
         "en": "What criteria would you use to choose which LLM to use for a new feature?"
       },
       "rubrica": {
@@ -115,7 +115,7 @@
           "Menciona capacidades requeridas (tool use, visión) y consideraciones de datos/cumplimiento"
         ]
       },
-      "respuestaModelo": "Empezaría midiendo la calidad de respuesta en la tarea concreta con un eval propio, no solo mirando benchmarks generales que no reflejan necesariamente el caso de uso real. Después consideraría el coste por llamada y la latencia, sobre todo si el volumen de tráfico esperado es alto, y los límites de contexto necesarios para la tarea. También pesarían las capacidades requeridas, como tool use o visión, que no todos los modelos ofrecen igual, y finalmente consideraciones de datos y cumplimiento normativo según dónde se aloje el proveedor y qué tipo de datos va a procesar.",
+      "respuestaModelo": "Primero, en cómo responde en mi tarea concreta, medido con un eval propio, no solo en los rankings generales, que no tienen por qué parecerse a mi caso. Después, en lo que cuesta cada llamada y lo que tarda, sobre todo si va a haber mucho tráfico, y en cuánto contexto necesita la tarea. También en si tiene lo que me hace falta, como usar herramientas o entender imágenes, que no todos los modelos ofrecen igual. Y al final, en temas de datos y normativa: dónde está el proveedor y qué tipo de datos va a procesar.",
       "etiquetas": ["seleccion-modelo"],
       "fuentes": [
         {
@@ -130,7 +130,7 @@
     },
     {
       "id": "ia-fine-tuning-eleccion-04",
-      "version": 1,
+      "version": 2,
       "pista": "ia",
       "familia": "fine-tuning-eleccion",
       "tipo": "definicion",
@@ -138,7 +138,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Qué es un modelo de razonamiento (reasoning model) y en qué se diferencia de un LLM convencional para esta tarea?",
+        "es": "¿Qué es un modelo de razonamiento (reasoning model) y en qué se diferencia de un LLM normal?",
         "en": "What is a \"reasoning model\" and how does it differ from a conventional LLM for this task?"
       },
       "rubrica": {
@@ -149,7 +149,7 @@
           "Reconoce que no siempre compensa usarlos para tareas simples"
         ]
       },
-      "respuestaModelo": "Un modelo de razonamiento está entrenado o configurado para dedicar más cómputo y más pasos internos a razonar antes de dar la respuesta final, a veces mostrando o resumiendo ese proceso intermedio. Esto suele mejorar los resultados en tareas lógicas o que requieren varios pasos encadenados, a cambio de más latencia y más coste por llamada. No siempre compensa usarlo: para una tarea simple, como clasificar un texto corto en una categoría, un modelo convencional suele dar un resultado igual de bueno mucho más rápido y barato, así que conviene reservarlo para tareas que de verdad se benefician del razonamiento extendido.",
+      "respuestaModelo": "Un modelo de razonamiento está entrenado o configurado para pensar más, dar más pasos por dentro, antes de dar la respuesta final, y a veces te enseña o te resume ese proceso. Suele acertar más en problemas de lógica o que necesitan varios pasos encadenados, a cambio de tardar más y costar más por llamada. No siempre compensa: para algo sencillo, como clasificar un texto corto, un modelo normal lo hace igual de bien, mucho más rápido y más barato. Resérvalo para las tareas que de verdad ganan con pensar más.",
       "test": {
         "enunciado": "¿Cuándo no compensa usar un modelo de razonamiento?",
         "correcta": 0,
@@ -186,7 +186,7 @@
     },
     {
       "id": "ia-fine-tuning-eleccion-05",
-      "version": 1,
+      "version": 2,
       "pista": "ia",
       "familia": "fine-tuning-eleccion",
       "tipo": "razonamiento",
@@ -194,7 +194,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "Tu empresa quiere añadir un chatbot que responde preguntas sobre las políticas internas de RRHH, que cambian cada trimestre. ¿Fine-tuning o RAG, y por qué?",
+        "es": "Tu empresa quiere un chatbot que conteste dudas sobre las políticas internas de RRHH, que cambian cada trimestre. ¿Fine-tuning o RAG? ¿Por qué?",
         "en": "Your company wants a chatbot that answers questions about internal HR policies, which change every quarter. Fine-tuning or RAG, and why?"
       },
       "rubrica": {
@@ -205,7 +205,7 @@
           "Menciona que RAG facilita citar la política exacta como fuente, algo difícil con un modelo fine-tuned"
         ]
       },
-      "respuestaModelo": "RAG, sin dudarlo. Las políticas cambian cada trimestre, y con RAG basta con actualizar la fuente de datos, el documento con la política nueva, sin tener que reentrenar nada cada vez que cambia un párrafo. Además RAG facilita citar la política exacta como fuente de la respuesta, algo muy útil en un contexto de RRHH donde el empleado querrá poder verificar de dónde sale la información, mientras que con un modelo fine-tuned es mucho más difícil garantizar que la respuesta cita literalmente la versión vigente del documento.",
+      "respuestaModelo": "RAG, sin dudarlo. Las políticas cambian cada trimestre, y con RAG basta con actualizar el documento con la política nueva, sin reentrenar nada cada vez que cambia un párrafo. Además, con RAG es fácil citar la política exacta de donde sale cada respuesta, algo muy útil en RRHH, donde la persona querrá comprobar de dónde sale lo que le dicen. Con un modelo afinado con fine-tuning es mucho más difícil asegurar que cita la versión que está en vigor.",
       "etiquetas": ["fine-tuning", "rag", "caso-practico"],
       "fuentes": [
         {

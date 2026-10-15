@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "react-estado-01",
-      "version": 1,
+      "version": 2,
       "pista": "react",
       "familia": "estado",
       "tipo": "razonamiento",
@@ -12,7 +12,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "alta",
       "texto": {
-        "es": "Estado local vs estado global: ¿cómo decides dónde vive un dato?",
+        "es": "Estado local o estado global: ¿cómo decides dónde guardar un dato?",
         "en": "Local vs global state: how do you decide where a piece of data lives?"
       },
       "rubrica": {
@@ -26,7 +26,7 @@
           "Explica cuándo Context es apropiado (configuración de baja frecuencia de cambio) y cuándo no (sustituto de gestor de estado)"
         ]
       },
-      "respuestaModelo": "La regla práctica es 'lift state up' solo hasta el ancestro común más cercano que realmente necesita ese dato, ni más arriba ni más abajo: si solo dos componentes hermanos lo usan, vive en su padre directo, no en un store global. Antes de decidir dónde ponerlo conviene distinguir el tipo de dato: el 'server state' (lo que viene de una API, necesita cache, revalidación y manejo de carga/error) se gestiona mejor con una librería especializada como TanStack Query que con `useState` a mano; el 'UI state' puro (un modal abierto, la pestaña activa, un filtro) sí encaja en estado de componente o Context. Context conviene para datos de baja frecuencia de cambio como el tema o el idioma; cuando el valor cambia a menudo y muchos componentes lo consumen, un store con selectores (Zustand, Redux) evita el problema de que Context re-renderice a todos los consumidores en cada cambio.",
+      "respuestaModelo": "La regla práctica: sube el estado solo hasta el primer componente que tienen en común quienes lo usan, ni más arriba ni más abajo (lo llaman lift state up). Si solo lo usan dos hermanos, va en su padre, no en un store global. Antes de decidir, mira qué tipo de dato es. Si viene de una API (server state), necesita caché, volver a pedirse y gestionar carga y error: para eso hay librerías como TanStack Query, mejor que montarlo a mano con `useState`. Si es estado de la interfaz (un modal abierto, la pestaña activa, un filtro), va bien en el componente o en Context. Context está bien para cosas que cambian poco, como el tema o el idioma. Si cambia a menudo y lo leen muchos componentes, un store con selectores (Zustand, Redux) evita que cada cambio vuelva a pintar a todos.",
       "etiquetas": ["estado", "arquitectura-frontend"],
       "fuentes": [
         {
@@ -41,7 +41,7 @@
     },
     {
       "id": "react-estado-02",
-      "version": 1,
+      "version": 2,
       "pista": "react",
       "familia": "estado",
       "tipo": "fundamento",
@@ -49,7 +49,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Cuál es el problema clásico de rendimiento con `Context` y cómo se mitiga?",
+        "es": "¿Cuál es el problema de rendimiento típico de `Context` y cómo lo evitas?",
         "en": "What's the classic performance problem with `Context` and how is it mitigated?"
       },
       "rubrica": {
@@ -62,7 +62,7 @@
           "Da al menos dos mitigaciones: dividir en contextos más pequeños, memoizar el valor del Provider, o mover el estado a un store con selectores"
         ]
       },
-      "respuestaModelo": "Cuando cambia el valor que pasa un `<Context.Provider>`, React re-renderiza a todos los componentes que consumen ese contexto, incluso a los que solo leen una propiedad del objeto que no cambió. Esto se agrava si el valor del Provider es un objeto literal creado en cada render (`{ user, setUser }`), porque React lo trata como un valor nuevo aunque el contenido sea igual. Las mitigaciones habituales son dividir un contexto grande en varios más pequeños y específicos (para que cambiar uno no afecte a consumidores de otro), memoizar el valor del Provider con `useMemo`, o directamente mover ese estado a una librería con selectores como Zustand, donde cada componente solo se suscribe a la porción de estado que realmente usa.",
+      "respuestaModelo": "Cuando cambia el valor de un `<Context.Provider>`, React vuelve a pintar todos los componentes que leen ese contexto, aunque solo usen una parte que no ha cambiado. Y empeora si el valor es un objeto escrito en línea (`value={{ user, setUser }}`): se crea uno nuevo en cada render y React lo ve como distinto aunque tenga lo mismo dentro. Las soluciones habituales: partir un contexto grande en varios pequeños, para que cambiar uno no moleste a quien lee otro; envolver el valor en `useMemo`; o llevar ese estado a una librería con selectores como Zustand, donde cada componente solo se entera de la parte que usa.",
       "test": {
         "enunciado": "¿Cuál es el problema de rendimiento clásico con `Context`?",
         "correcta": 3,
@@ -99,7 +99,7 @@
     },
     {
       "id": "react-estado-03",
-      "version": 1,
+      "version": 2,
       "pista": "react",
       "familia": "estado",
       "tipo": "razonamiento",
@@ -107,7 +107,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "alta",
       "texto": {
-        "es": "Zustand, Redux Toolkit y TanStack Query resuelven problemas distintos. ¿Cuáles y cuándo elegirías cada uno?",
+        "es": "Zustand, Redux Toolkit y TanStack Query resuelven problemas distintos. ¿Cuáles, y cuándo elegirías cada uno?",
         "en": "Zustand, Redux Toolkit and TanStack Query solve different problems. Which ones, and when would you pick each?"
       },
       "rubrica": {
@@ -121,7 +121,7 @@
           "Advierte contra meter datos de servidor a mano en Redux/Zustand cuando una librería de cache ya resuelve eso"
         ]
       },
-      "respuestaModelo": "Cada herramienta ataca un tipo de estado distinto. TanStack Query es para 'server state': datos que vienen de una API y necesitan cache, revalidación en segundo plano, reintentos y deduplicación de peticiones; intentar replicar eso a mano con Redux o Zustand suele acabar reinventando peor lo que la librería ya resuelve. Zustand encaja en 'client state' simple: un modal abierto, un filtro, el tema, con muy poco boilerplate y sin necesidad de reducers ni acciones tipadas. Redux Toolkit tiene sentido cuando el estado de cliente tiene reglas de negocio no triviales, muchos flujos que se cruzan entre sí, y el equipo valora las DevTools de time-travel y una estructura muy predecible aunque cueste algo más de código. La señal de alarma es meter datos que vienen de una API directamente en Redux o Zustand gestionados a mano: si ya existe una librería de cache para eso, duplicar esa lógica es trabajo extra sin beneficio.",
+      "respuestaModelo": "Cada una va a un tipo de estado. TanStack Query es para los datos que vienen de una API: caché, volver a pedirlos en segundo plano, reintentos, no repetir la misma petición. Intentar hacer eso a mano con Redux o Zustand suele acabar en reinventar peor lo que la librería ya hace. Zustand es para estado de la interfaz sencillo (un modal, un filtro, el tema) con muy poco código: sin reducers ni acciones. Redux Toolkit compensa cuando el estado de la interfaz tiene reglas de negocio de verdad, muchos flujos que se cruzan, y al equipo le vale la pena tener las DevTools para ir atrás en el tiempo y una estructura muy predecible, aunque escribas más. La señal de alarma: datos de una API metidos a mano en Redux o Zustand cuando ya tienes una librería de caché para eso.",
       "etiquetas": ["estado", "gestores-de-estado", "server-state"],
       "fuentes": [
         {

@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "fund-git-01",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "git",
       "tipo": "fundamento",
@@ -12,7 +12,7 @@
       "nivelMinimo": "junior",
       "frecuencia": "alta",
       "texto": {
-        "es": "¿Cuál es la diferencia entre `git merge` y `git rebase`? ¿Cuándo usarías cada uno en un equipo?",
+        "es": "¿Qué diferencia hay entre `git merge` y `git rebase`? ¿Cuándo usarías cada uno en un equipo?",
         "en": "What is the difference between `git merge` and `git rebase`? When would you use each on a team?"
       },
       "rubrica": {
@@ -27,7 +27,7 @@
           "Menciona `--force-with-lease` como forma más segura de forzar un push tras un rebase local"
         ]
       },
-      "respuestaModelo": "`git merge` combina dos ramas creando un commit de fusión con dos padres, preservando el historial real tal como ocurrió, con las ramas visibles. `git rebase` reescribe los commits de una rama para que parezcan creados a partir del último commit de otra, dejando un historial lineal sin commit de fusión. La regla práctica es no rebasear ramas públicas o compartidas, porque reescribe commits que otras personas ya tienen y les rompe el historial local; sí es seguro rebasear tu propia rama de feature antes de abrir el PR para limpiar el historial, usando `git push --force-with-lease` en vez de `--force` a secas.",
+      "respuestaModelo": "`git merge` junta dos ramas creando un commit de unión con dos padres: el historial queda tal como pasó, con las ramas a la vista. `git rebase` rehace los commits de tu rama como si los hubieras hecho a partir del último commit de la otra: el historial queda en línea recta, sin commit de unión. La regla: no hagas rebase de ramas que comparte más gente, porque reescribes commits que otros ya tienen y les rompes su historial. Sí es seguro hacerlo en tu propia rama antes de abrir el PR, para dejarla limpia, y luego subirla con `git push --force-with-lease` en vez de `--force` a secas.",
       "test": {
         "enunciado": "¿Cuándo no deberías hacer `git rebase`?",
         "correcta": 3,
@@ -63,7 +63,7 @@
     },
     {
       "id": "fund-git-02",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "git",
       "tipo": "razonamiento",
@@ -71,7 +71,7 @@
       "nivelMinimo": "junior",
       "frecuencia": "media",
       "texto": {
-        "es": "Se produce un conflicto de merge en un archivo compartido por dos personas. Camina al entrevistador por los pasos que seguirías para resolverlo con seguridad.",
+        "es": "Hay un conflicto de merge en un fichero que tocan dos personas. Cuéntale al entrevistador, paso a paso, cómo lo resolverías sin romper nada.",
         "en": "A merge conflict happens in a file shared by two people. Walk the interviewer through the steps you'd take to resolve it safely."
       },
       "rubrica": {
@@ -86,7 +86,7 @@
           "Corre los tests o el linter tras resolver, no solo compila mentalmente"
         ]
       },
-      "respuestaModelo": "Primero identifico los marcadores `<<<<<<<`, `=======` y `>>>>>>>` para ver exactamente qué cambió cada lado. Antes de elegir una versión leo ambos cambios para entender la intención de cada uno, porque un conflicto textual puede esconder un conflicto semántico donde ambas versiones son sintácticamente válidas pero contradictorias en lógica. Si no tengo claro por qué la otra persona cambió esa línea, hablo con ella antes de decidir. Una vez resuelto, ejecuto los tests y reviso manualmente la zona del conflicto antes de hacer commit, no doy por bueno que compile sin más.",
+      "respuestaModelo": "Primero busco las marcas `<<<<<<<`, `=======` y `>>>>>>>` para ver qué cambió cada lado. Antes de quedarme con una versión, leo los dos cambios para entender qué pretendía cada uno, porque a veces las dos versiones son código válido pero se contradicen en lo que hacen. Si no tengo claro por qué la otra persona cambió esa línea, se lo pregunto antes de decidir. Cuando lo tengo resuelto, paso los tests y reviso a mano la zona del conflicto antes de hacer commit: que compile no significa que esté bien.",
       "etiquetas": ["git"],
       "fuentes": [
         {
@@ -100,7 +100,7 @@
     },
     {
       "id": "fund-git-03",
-      "version": 1,
+      "version": 2,
       "pista": "fundamentos",
       "familia": "git",
       "tipo": "comportamental",
@@ -108,7 +108,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "baja",
       "texto": {
-        "es": "¿Qué estrategia de ramas (git flow, trunk-based, GitHub flow) usas normalmente y por qué?",
+        "es": "¿Qué forma de trabajar con ramas usas normalmente (git flow, trunk-based, GitHub flow) y por qué?",
         "en": "What branching strategy (git flow, trunk-based, GitHub flow) do you normally use and why?"
       },
       "rubrica": {
@@ -120,7 +120,7 @@
           "No presenta una única estrategia como universalmente correcta"
         ]
       },
-      "respuestaModelo": "En equipos con despliegue continuo prefiero GitHub flow o trunk-based: ramas de feature cortas que se integran a `main` rápido tras revisión, con `main` siempre desplegable. Git flow, con ramas `develop`, `release` y `hotfix` separadas, aporta más estructura cuando hay que mantener varias versiones en producción a la vez o releases planificadas con antelación, pero añade ceremonia que no compensa en un producto que despliega varias veces al día. La elección depende del contexto del equipo, no hay una estrategia universalmente mejor.",
+      "respuestaModelo": "En equipos que despliegan a menudo prefiero GitHub flow o trunk-based: ramas cortas que se juntan pronto con `main` después de revisarlas, y `main` siempre lista para desplegar. Git flow, con ramas `develop`, `release` y `hotfix` aparte, da más estructura cuando tienes que mantener varias versiones en producción a la vez o lanzamientos planificados con tiempo, pero añade mucho ritual que no compensa en un producto que despliega varias veces al día. Depende del equipo; no hay una que sea mejor siempre.",
       "etiquetas": ["git"],
       "fuentes": [
         {

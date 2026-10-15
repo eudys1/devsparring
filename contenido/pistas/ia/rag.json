@@ -4,7 +4,7 @@
   "preguntas": [
     {
       "id": "ia-rag-01",
-      "version": 2,
+      "version": 3,
       "pista": "ia",
       "familia": "rag",
       "tipo": "definicion",
@@ -26,8 +26,8 @@
           "Relaciona RAG con la reducción de alucinaciones al anclar la respuesta en contexto real"
         ]
       },
-      "respuestaModelo": "RAG combina un paso de recuperación con la generación del LLM: en vez de confiar solo en lo que el modelo aprendió durante su entrenamiento, que puede estar desactualizado o no incluir datos privados de la empresa, se busca contexto relevante en una fuente externa y se inyecta en el prompt antes de generar la respuesta. Esto resuelve dos problemas a la vez: permite usar información propia sin reentrenar nada, y reduce la tasa de alucinaciones porque el modelo tiene datos concretos en los que apoyarse en vez de inventar a partir de patrones generales.",
-      "resumen": "Recuperar contexto relevante de una fuente externa y meterlo en el prompt antes de generar. Permite usar datos propios o recientes sin reentrenar y reduce las alucinaciones.",
+      "respuestaModelo": "RAG junta dos pasos: primero buscar y luego generar. En vez de fiarse solo de lo que el modelo aprendió al entrenarse, que puede estar viejo o no incluir los datos privados de tu empresa, buscas la información relevante en una fuente de fuera (tu documentación, por ejemplo) y la metes en el prompt antes de que responda. Resuelve dos cosas a la vez: puedes usar tu propia información sin reentrenar nada, y se inventa menos cosas, porque tiene datos concretos en los que apoyarse en vez de tirar de patrones generales.",
+      "resumen": "Buscar información relevante en una fuente de fuera y meterla en el prompt antes de generar. Te deja usar tus datos o datos recientes sin reentrenar y hace que se invente menos.",
       "test": {
         "enunciado": "¿Qué problema resuelve RAG frente a usar solo el LLM?",
         "correcta": 1,
@@ -64,7 +64,7 @@
     },
     {
       "id": "ia-rag-02",
-      "version": 1,
+      "version": 2,
       "pista": "ia",
       "familia": "rag",
       "tipo": "fundamento",
@@ -72,7 +72,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "alta",
       "texto": {
-        "es": "Describe el pipeline completo de un sistema RAG.",
+        "es": "Describe todo el camino de un sistema RAG, de los documentos a la respuesta.",
         "en": "Describe the full pipeline of a RAG system."
       },
       "rubrica": {
@@ -86,7 +86,7 @@
           "Explica el orden completo con sus dependencias: chunk, embed, index, retrieve, rerank, generate"
         ]
       },
-      "respuestaModelo": "El pipeline empieza troceando los documentos fuente en fragmentos manejables (chunking), generando un embedding de cada fragmento y guardándolos en un vector store. En tiempo de consulta, la pregunta del usuario se convierte también en embedding, se recuperan los fragmentos más relevantes por similitud, opcionalmente se reordenan con un reranker más preciso, y finalmente esos fragmentos se pasan como contexto al LLM junto con la pregunta original para generar la respuesta final. Cada uno de esos pasos, chunk, embed, index, retrieve, rerank, generate, puede fallar por separado y conviene poder medirlos por separado.",
+      "respuestaModelo": "Primero partes los documentos en trozos manejables (chunking), sacas el embedding de cada trozo y los guardas en una base vectorial. Cuando llega una pregunta, sacas también su embedding, buscas los trozos más parecidos y, si quieres, los reordenas con un reranker más preciso. Al final le pasas esos trozos al LLM junto con la pregunta, y genera la respuesta. Cada uno de esos pasos (trocear, sacar embeddings, indexar, buscar, reordenar, generar) puede fallar por su cuenta, así que conviene poder medirlos por separado.",
       "test": {
         "enunciado": "¿Cuál es el orden correcto de un pipeline RAG?",
         "correcta": 2,
@@ -123,7 +123,7 @@
     },
     {
       "id": "ia-rag-03",
-      "version": 1,
+      "version": 2,
       "pista": "ia",
       "familia": "rag",
       "tipo": "razonamiento",
@@ -131,7 +131,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Qué problemas tiene un chunking mal hecho?",
+        "es": "¿Qué problemas da trocear mal los documentos (el chunking) en un sistema RAG?",
         "en": "What problems does bad chunking cause?"
       },
       "rubrica": {
@@ -145,7 +145,7 @@
           "Propone una mitigación concreta (overlap entre chunks, respetar límites semánticos como párrafos)"
         ]
       },
-      "respuestaModelo": "Si los chunks son demasiado grandes, cada uno mezcla varios temas y el embedding resultante diluye la relevancia, así que la búsqueda trae fragmentos que solo tocan el tema por encima y desperdician espacio de contexto. Si son demasiado pequeños, se pierde el contexto que le daba sentido a la frase, por ejemplo una cifra sin el párrafo que explica a qué se refiere. Cortar justo a mitad de una idea o de una fila de una tabla es especialmente dañino porque el fragmento recuperado queda incompleto y el modelo puede rellenar el hueco inventando. Ayuda respetar límites semánticos naturales del documento (párrafos, secciones) y dejar cierto solapamiento entre chunks consecutivos.",
+      "respuestaModelo": "Si los trozos son demasiado grandes, cada uno mezcla varios temas y su embedding queda difuso: la búsqueda te trae trozos que solo rozan el tema y te comen sitio en el contexto. Si son demasiado pequeños, pierden lo que les daba sentido, por ejemplo una cifra sin el párrafo que dice a qué se refiere. Y cortar justo a mitad de una idea o de una fila de una tabla es especialmente malo: el trozo llega incompleto y el modelo puede rellenar el hueco inventando. Ayuda cortar por donde el documento ya se separa solo (párrafos, secciones) y dejar que trozos seguidos se solapen un poco.",
       "etiquetas": ["rag", "chunking"],
       "fuentes": [
         {
@@ -160,7 +160,7 @@
     },
     {
       "id": "ia-rag-04",
-      "version": 1,
+      "version": 2,
       "pista": "ia",
       "familia": "rag",
       "tipo": "razonamiento",
@@ -182,7 +182,7 @@
           "Propone cómo instrumentar cada fase (evals de recuperación, evals de fidelidad)"
         ]
       },
-      "respuestaModelo": "Hay que medir por separado la fase de recuperación y la de generación, porque son fallos distintos con soluciones distintas. En recuperación se mide si los chunks devueltos son realmente los relevantes para la pregunta, con métricas de recall y precisión sobre un set de preguntas de referencia. En generación se mide si la respuesta final es fiel al contexto recuperado, es decir, si el modelo usa lo que se le dio o inventa por encima. Sin esa separación, un fallo visible en producción, una respuesta mala, puede venir de cualquiera de las dos fases y se pierde tiempo intentando arreglar el paso equivocado.",
+      "respuestaModelo": "Midiendo por separado la búsqueda y la generación, porque fallan de formas distintas y se arreglan distinto. En la búsqueda, miras si los trozos que trae son los que de verdad hacen falta para esa pregunta (con métricas de recall y precisión sobre unas preguntas de referencia). En la generación, miras si la respuesta se ciñe a lo que se encontró, o si el modelo se inventa cosas por encima. Si no lo separas, cuando veas una respuesta mala no sabrás de cuál de las dos partes viene, y perderás tiempo arreglando la que no era.",
       "etiquetas": ["rag", "evaluacion", "produccion"],
       "fuentes": [
         {
@@ -197,7 +197,7 @@
     },
     {
       "id": "ia-rag-05",
-      "version": 1,
+      "version": 2,
       "pista": "ia",
       "familia": "rag",
       "tipo": "razonamiento",
@@ -218,7 +218,7 @@
           "Justifica cada caso con el trade-off de coste, latencia o consistencia frente a RAG"
         ]
       },
-      "respuestaModelo": "No conviene usar RAG cuando la información necesaria cabe entera en el prompt sin coste relevante, por ejemplo un documento corto que se puede pegar directamente. Tampoco aporta gran cosa cuando lo que se necesita es un estilo o formato muy específico y consistente en cada respuesta, algo que un fine-tuning suele lograr mejor que meter ejemplos en el contexto cada vez. Y en casos donde la latencia es crítica, añadir una búsqueda vectorial antes de generar puede no ser aceptable si el presupuesto de tiempo es muy ajustado; ahí conviene precalcular o simplificar el flujo.",
+      "respuestaModelo": "Cuando lo que el modelo necesita cabe entero en el prompt sin que cueste mucho, por ejemplo un documento corto que puedes pegar directamente. Tampoco aporta mucho cuando lo que necesitas es un estilo o un formato muy concreto y siempre igual; eso lo consigue mejor un fine-tuning que meter ejemplos en el contexto cada vez. Y si cada milisegundo cuenta, añadir una búsqueda antes de generar puede ser demasiado; ahí conviene calcularlo antes o simplificar el flujo.",
       "etiquetas": ["rag", "trade-offs"],
       "fuentes": [
         {
@@ -233,7 +233,7 @@
     },
     {
       "id": "ia-rag-06",
-      "version": 1,
+      "version": 2,
       "pista": "ia",
       "familia": "rag",
       "tipo": "fundamento",
@@ -241,7 +241,7 @@
       "nivelMinimo": "mid",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Qué es el reranking en un pipeline RAG y por qué se añade después de la búsqueda vectorial?",
+        "es": "¿Qué es el reranking en un sistema RAG y por qué va después de la búsqueda vectorial?",
         "en": "What is reranking in a RAG pipeline and why is it added after vector search?"
       },
       "rubrica": {
@@ -255,7 +255,7 @@
           "Explica por qué no se aplica ese modelo pesado a todo el índice directamente"
         ]
       },
-      "respuestaModelo": "La búsqueda vectorial inicial recorre el índice entero de forma rápida pero aproximada, así que trae un conjunto de candidatos razonablemente relevantes aunque no perfectamente ordenados. El reranker toma ese conjunto reducido, normalmente unas decenas de candidatos, y lo reordena con un modelo más pesado, a menudo un cross-encoder que compara la pregunta y cada candidato juntos en vez de comparar vectores sueltos. Aplicar ese modelo pesado a todo el índice sería demasiado caro, pero aplicarlo solo a los candidatos preseleccionados mejora bastante la relevancia final sin disparar el coste.",
+      "respuestaModelo": "La búsqueda vectorial recorre todo el índice rápido pero a ojo, así que te trae candidatos bastante relevantes pero no perfectamente ordenados. El reranker coge ese grupo pequeño (unas decenas de candidatos) y lo reordena con un modelo más pesado, a menudo un cross-encoder, que mira la pregunta y cada candidato juntos en vez de comparar vectores sueltos. Pasar ese modelo pesado por todo el índice sería carísimo; pasarlo solo por los candidatos ya filtrados mejora bastante qué acaba arriba sin disparar el coste.",
       "test": {
         "enunciado": "¿Por qué el reranking se aplica después de la búsqueda vectorial y no a todo el índice?",
         "correcta": 0,
@@ -292,7 +292,7 @@
     },
     {
       "id": "ia-rag-07",
-      "version": 1,
+      "version": 2,
       "pista": "ia",
       "familia": "rag",
       "tipo": "razonamiento",
@@ -300,7 +300,7 @@
       "nivelMinimo": "senior",
       "frecuencia": "media",
       "texto": {
-        "es": "¿Cómo mantienes un vector store sincronizado con la fuente de verdad, por ejemplo una base de datos de productos que cambia cada día?",
+        "es": "¿Cómo mantienes la base vectorial al día con la fuente de verdad, por ejemplo una base de datos de productos que cambia cada día?",
         "en": "How do you keep a vector store in sync with the source of truth (e.g. a product database that changes daily)?"
       },
       "rubrica": {
@@ -312,8 +312,8 @@
           "Aclara que reindexar todo desde cero solo tiene sentido si el volumen lo permite"
         ]
       },
-      "respuestaModelo": "Lo habitual es montar un pipeline de indexación incremental disparado por eventos de cambio en la base de datos de origen o por un job periódico, que solo re-embebe y actualiza los registros que cambiaron en vez de reprocesar todo el catálogo. Cada entrada del índice lleva metadatos de versión o timestamp que permiten detectar y purgar entradas obsoletas cuando un producto se elimina o cambia de forma significativa. Reindexar todo desde cero es más simple de implementar, pero solo es viable si el volumen de datos y la frecuencia de cambio son lo bastante bajos como para que el coste y el tiempo de reindexado no afecten a la disponibilidad del sistema.",
-      "resumen": "Indexación incremental disparada por cambios o por un job: solo se re-embebe lo que cambió, con metadatos de versión para purgar lo obsoleto. Reindexar todo solo vale si el volumen es pequeño.",
+      "respuestaModelo": "Lo habitual es actualizar solo lo que cambia: cuando cambia algo en la base de datos de origen (o con una tarea que corre cada cierto tiempo), vuelves a generar el embedding solo de esos productos, en vez de procesar el catálogo entero. Cada entrada del índice lleva una versión o una fecha que te deja detectar y borrar lo que se ha quedado viejo, por ejemplo cuando un producto se elimina o cambia mucho. Rehacer todo el índice desde cero es más fácil de programar, pero solo compensa si hay pocos datos y cambian poco, porque si no el tiempo y el coste de rehacerlo acaban afectando al servicio.",
+      "resumen": "Actualizando solo lo que cambia, cuando cambia o con una tarea periódica, y con datos de versión para borrar lo viejo. Rehacer el índice entero solo compensa si hay pocos datos.",
       "etiquetas": ["rag", "produccion", "sincronizacion"],
       "fuentes": [
         {
