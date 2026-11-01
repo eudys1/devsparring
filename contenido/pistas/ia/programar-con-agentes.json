@@ -454,6 +454,90 @@
       ],
       "origen": "generada-revisada",
       "estado": "publicada"
+    },
+    {
+      "id": "ia-programar-con-agentes-09",
+      "version": 1,
+      "pista": "ia",
+      "familia": "programar-con-agentes",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "media",
+      "texto": {
+        "es": "En una entrevista te dan acceso a un asistente de IA, por ejemplo dentro de CodeSignal, para resolver el ejercicio de código. ¿Cómo lo usas para que el entrevistador vea que entiendes la solución y no solo que sabes pedírsela a la IA?",
+        "en": "In an interview you're given access to an AI assistant, for example inside CodeSignal, to solve the coding exercise. How do you use it so the interviewer sees you understand the solution, not just that you know how to ask the AI for it?"
+      },
+      "rubrica": {
+        "junior": [
+          "Revisa la propuesta de la IA antes de enviarla, en vez de aceptarla a ciegas",
+          "Explica en voz alta qué hace el código antes de que se lo pidan"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Hace preguntas de aclaración sobre la especificación antes de pedir código, no después",
+          "Da una explicación completa de su propio código cuando se la piden, no solo la idea general",
+          "Menciona que revisar la propuesta antes del primer envío se asocia a más aciertos en los tests"
+        ]
+      },
+      "respuestaModelo": "Trataría al asistente como una propuesta que reviso, no como la respuesta final. Antes de pedirle código, aclararía con el entrevistador lo que falte de la especificación: muchas de estas rondas la dejan incompleta a propósito para ver si preguntas antes de construir. Cuando el asistente proponga una solución, la leería entera antes de enviarla, señalando qué hace cada parte y por qué la acepto o la cambio. Si después me piden explicar el código, no me quedaría en la idea general: trazaría cada decisión, que es justo donde más falla la gente. Un informe de octubre de 2026 sobre miles de sesiones de práctica con asistente encontró que solo el 9 % de las explicaciones del propio código fueron completas, casi ocho de cada diez quedaron a medias, y que quienes revisaron la propuesta de la IA antes del primer envío aprobaron los tests el 87 % de las veces frente al 53 % de quienes no la revisaron. La ronda ya no premia escribir rápido: premia entender y poder defender lo que se entrega, aunque lo haya escrito la IA.",
+      "resumen": "Revisar la propuesta de la IA antes de enviarla, aclarar la especificación antes de construir y poder explicar el código entero, no solo la idea: eso es lo que distingue a quien aprueba esta ronda.",
+      "etiquetas": ["agentes", "entrevista", "revisión"],
+      "fuentes": [
+        {
+          "url": "https://nyrion.ai/research/ai-coding-interviews-2026",
+          "fecha": "2026-11-01",
+          "tipo": "leida",
+          "nota": "Datos de sesiones de práctica con asistente hasta el 21-10-2026: completitud de las explicaciones de código propio y tasa de aciertos según si se revisó la propuesta antes del primer envío."
+        },
+        {
+          "url": "https://www.techempower.com/blog/2026/09/11/hiring-in-the-age-of-agentic-ai/",
+          "fecha": "2026-11-01",
+          "tipo": "leida",
+          "nota": "Ejercicio con especificación incompleta a propósito, para evaluar preguntas de aclaración y no reconocimiento de algoritmos."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "borrador"
+    },
+    {
+      "id": "ia-programar-con-agentes-10",
+      "version": 1,
+      "pista": "ia",
+      "familia": "programar-con-agentes",
+      "tipo": "razonamiento",
+      "modos": ["verbal"],
+      "nivelMinimo": "mid",
+      "frecuencia": "baja",
+      "texto": {
+        "es": "En una entrevista técnica te piden clonar un repositorio que ningún agente ha tocado y dejarlo \"listo\" para trabajar con un agente de código, sin que te digan qué significa \"listo\". ¿Qué haces primero y por qué?",
+        "en": "In a technical interview you're asked to clone a repository no agent has touched and get it \"ready\" for agent-driven development, without being told what \"ready\" means. What do you do first, and why?"
+      },
+      "rubrica": {
+        "junior": [
+          "Explora el repositorio (documentación, tests, convenciones) antes de pedirle código a nada",
+          "No empieza a implementar hasta entender cómo se construye y se prueba el proyecto"
+        ],
+        "senior": [
+          "Lo anterior",
+          "Interpreta \"listo\" como que un agente no tenga que adivinar nada: comandos de build y test, convenciones, trampas documentadas",
+          "Tras implementar con el agente, revisa la salida de forma crítica, no la acepta solo porque pasó los tests",
+          "Convierte cada error del agente en una regla que se queda en el repo (CLAUDE.md o AGENTS.md), para no repetirlo"
+        ]
+      },
+      "respuestaModelo": "Lo primero sería no tocar código: leer qué hay (documentación, tests, cómo se construye, qué convenciones sigue) para entender el proyecto antes de pedirle nada a un agente. \"Listo\" lo interpreto como que un agente podría entrar aquí y no tener que adivinar: que existan los comandos de build y test, que las trampas no obvias del proyecto estén escritas en algún sitio, aunque sea un fichero breve, y que el agente pueda comprobar si su trabajo funciona sin que yo tenga que decírselo. Con eso resuelto, implementaría el ticket con el agente, pero revisando la salida con el mismo cuidado que una PR de una persona: que las dependencias que añade existan de verdad, que no haya tocado tests para que pasen, que no se haya ido fuera de lo que pedía el ticket. Y si el agente comete un error que podría repetirse, no me lo guardo: lo añado como regla al fichero de instrucciones, para que la próxima sesión no tropiece con lo mismo.",
+      "resumen": "Explorar el repo antes de tocar código: listo es que un agente no tenga que adivinar nada. Revisar su salida igual que una PR humana y convertir cada error suyo en una regla escrita.",
+      "etiquetas": ["agentes", "entrevista", "preparación del repo"],
+      "fuentes": [
+        {
+          "url": "https://www.techempower.com/blog/2026/09/11/hiring-in-the-age-of-agentic-ai/",
+          "fecha": "2026-11-01",
+          "tipo": "leida",
+          "nota": "Tercer ejercicio de la nueva entrevista: repo que ningún agente ha tocado, prepararlo, implementar un ticket con IA y revisar la salida."
+        }
+      ],
+      "origen": "generada-revisada",
+      "estado": "borrador"
     }
   ]
 }
